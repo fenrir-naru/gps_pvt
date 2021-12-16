@@ -1,0 +1,3 @@
+[submodule "ext/ninja-scan-light"]
+	path = ext/ninja-scan-light
+	url = https://github.com/fenrir-naru/ninja-scan-light.git
