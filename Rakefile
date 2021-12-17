@@ -50,3 +50,21 @@ namespace :git do
     end
   end
 end
+
+
+desc "Generate SWIG wrapper codes"
+task :swig do
+  swig_dir = File::join(File::dirname(__FILE__), 'ext', 'ninja-scan-light', 'tool', 'swig')
+  out_base_dir = File::join(File::dirname(__FILE__), 'ext', 'gps_pvt')
+  Dir::chdir(swig_dir){
+    Dir::glob("*.i"){|src|
+      mod_name = File::basename(src, '.*')
+      out_dir = File::join(out_base_dir, mod_name)
+      sh "mkdir -p #{out_dir}"
+      sh [:make, :clean,
+          File::join(out_dir, "#{mod_name}_wrap.cxx"),
+          "BUILD_DIR=#{out_dir}",
+          "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
+    }
+  }
+end
