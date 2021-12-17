@@ -5,6 +5,12 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 
+require "rake/extensiontask"
+
+Rake::ExtensionTask.new("gps_pvt") do |ext|
+  ext.lib_dir = "lib/gps_pvt"
+end
+
 task default: :spec
 
 namespace :git do
