@@ -11,8 +11,6 @@ Rake::ExtensionTask.new("gps_pvt") do |ext|
   ext.lib_dir = "lib/gps_pvt"
 end
 
-task :default => [:compile, :spec]
-
 namespace :git do
   namespace :submodules do
     desc "Initialize git submodules"
@@ -74,3 +72,5 @@ task :swig do
     }
   }
 end
+
+task :default => ["git:submodules:init", :compile, :spec]
