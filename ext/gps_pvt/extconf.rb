@@ -12,7 +12,7 @@ Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
   }
   if src != dst then
     FileUtils::mkdir_p(dst)
-    FileUtils::cp_r(src, File::join(dst, '..')) # really need?
+    #FileUtils::cp_r(src, File::join(dst, '..')) # no need, 2nd arg of create_makefile resolves it
   end
   Dir::chdir(dst){
     Process.waitpid(fork{
@@ -24,10 +24,9 @@ Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
       dir_config("gps_pvt")
       
       # @see https://stackoverflow.com/a/35842162/15992898
-      $srcs = Dir::glob(File::join(dst, '*.cxx'))
-      $VPATH << "$(srcdir)" # really need?
+      $srcs = Dir::glob(File::join(src, '*.cxx'))
 
-      create_makefile(mod_name)
+      create_makefile(mod_name, src)
     })
   }
 }
