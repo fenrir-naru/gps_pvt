@@ -17,9 +17,9 @@ namespace :git do
     task :init do
       sh "git submodule init"
       # for sparse-checkout; @see https://stackoverflow.com/a/59521050/15992898
-      `git submodule status`.lines.each{|str|
+      `git config --file .gitmodules --name-only --get-regexp path`.lines.each{|str|
         # list submodule; @see https://stackoverflow.com/a/23490756/15992898
-        next unless str =~ /^ *[\da-fA-F]+ +(.+)$/
+        next unless str =~ /submodule\.(.+)\.path/
         repo_dir = $1
         sh "git clone -n `git config submodule.#{repo_dir}.url` #{repo_dir}"
       }
