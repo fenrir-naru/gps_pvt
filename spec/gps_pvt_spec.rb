@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe GpsPvt do
+RSpec.describe GPS_PVT do
   it "has a version number" do
-    expect(GpsPvt::VERSION).not_to be nil
+    expect(GPS_PVT::VERSION).not_to be nil
   end
 
   it "does something useful" do

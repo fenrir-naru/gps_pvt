@@ -1,4 +1,4 @@
-# GpsPvt
+# GPS_PVT
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/gps_pvt`. To experiment with that code, run `bin/console` for an interactive prompt.
 
@@ -36,4 +36,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 
 ## Code of Conduct
 
-Everyone interacting in the GpsPvt project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/gps_pvt/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the GPS_PVT project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/gps_pvt/blob/master/CODE_OF_CONDUCT.md).

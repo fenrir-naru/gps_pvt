@@ -2,7 +2,7 @@
 
 require_relative "gps_pvt/version"
 
-module GpsPvt
+module GPS_PVT
   class Error < StandardError; end
   # Your code goes here...
 end

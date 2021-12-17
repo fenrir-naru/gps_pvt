@@ -4,7 +4,7 @@ require_relative "lib/gps_pvt/version"
 
 Gem::Specification.new do |spec|
   spec.name = "gps_pvt"
-  spec.version = GpsPvt::VERSION
+  spec.version = GPS_PVT::VERSION
   spec.authors = ["fenrir(M.Naruoka)"]
   spec.email = ["fenrir.naru@gmail.com"]
 
