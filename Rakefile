@@ -21,7 +21,7 @@ namespace :git do
         # list submodule; @see https://stackoverflow.com/a/23490756/15992898
         next unless str =~ /submodule\.(.+)\.path/
         repo_dir = $1
-        sh "git clone -n `git config submodule.#{repo_dir}.url` #{repo_dir}"
+        sh "git clone -n #{`git config submodule.#{repo_dir}.url`.chomp} #{repo_dir}"
       }
       {
         'ext/ninja-scan-light' => [
