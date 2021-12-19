@@ -1,45 +1,52 @@
-extconf_abs_path = File::expand_path(__FILE__)
-ninja_tool_dir = File::join(
-    File::dirname(extconf_abs_path), '..', 'ninja-scan-light', 'tool')
+ninja_tool_dir = File::absolute_path(File::join(
+    File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool'))
 
-if idx = ARGV.find_index{|arg| arg =~ /^--src_dir=(.+)$/} then
-  ARGV.delete_at(idx)
-  src_dir = $1
-  
-  require "mkmf"
-  cflags = " -Wall -I#{ninja_tool_dir}"
-  $CFLAGS += cflags
-  $CPPFLAGS += cflags if RUBY_VERSION >= "2.0.0"
-  $LOCAL_LIBS += " -lstdc++ "
-  
-  # @see https://stackoverflow.com/a/35842162/15992898
-  $srcs = Dir::glob(File::join(src_dir, '*.cxx'))
+require "mkmf"
+cflags = " -Wall -I#{ninja_tool_dir}"
+$CFLAGS += cflags
+$CPPFLAGS += cflags if RUBY_VERSION >= "2.0.0"
+$LOCAL_LIBS += " -lstdc++ "
 
-  create_makefile(File::basename(src_dir), src_dir)
-  exit
+IO_TARGETS = [
+  [Kernel, :instance_eval],
+  [(class << File; self; end), :class_eval], # https://github.com/ruby/ruby/commit/19beb028
+]
+def IO_TARGETS.mod(&b)
+  self.each{|class_, func| class_.send(func, &b)}
 end
 
-require 'fileutils'
-require 'rbconfig'
+IO_TARGETS.mod{
+  alias_method(:open_orig, :open)
+}
 
 Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
   mod_name = File::basename(dir)
-  src, dst = [
-      dir,
-      File::join(Dir.getwd, mod_name)].collect{|path|
-    File::absolute_path(path)
+  
+  dst = File::join(Dir.getwd, mod_name)
+  FileUtils::mkdir_p(dst) if dir != dst
+  
+  $stderr.puts "For #{mod_name} ..."
+
+  # @see https://stackoverflow.com/a/35842162/15992898
+  $srcs = Dir::glob(File::join(dir, '*.cxx')).collect{|path|
+    File::join(mod_name, File::basename(path))
   }
-  if src != dst then
-    FileUtils::mkdir_p(dst)
-    #FileUtils::cp_r(src, File::join(dst, '..')) # no need, 2nd arg of create_makefile resolves it
-  end
-  Dir::chdir(dst){
-    cmd = [RbConfig.ruby, ARGV, extconf_abs_path, "--src_dir=#{src}"].flatten.collect{|str|
-      str =~ /\s+/ ? "'#{str}'" : str
-    }.join(' ')
-    $stderr.puts "#{cmd} ..."
-    system(cmd)
+  $objs = $srcs.collect{|path|
+    path.sub(/\.[^\.]+$/, '.o')
   }
+
+  IO_TARGETS.mod{
+    # rename Makefile to Makefile.#{mod_name}
+    define_method(:open){|*args, &b|
+      args[0] += ".#{mod_name}" if (args[0] && (args[0] == "Makefile"))
+      open_orig(*args, &b)
+    }
+  }
+  create_makefile("gps_pvt/#{mod_name}")
+}
+
+IO_TARGETS.mod{
+  alias_method(:open, :open_orig)
 }
 
 # manual generation of top-level Makefile
@@ -47,16 +54,17 @@ Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
 open("Makefile", 'w'){|io|
   # @see https://stackoverflow.com/a/17845120/15992898
   io.write(<<-__TOPLEVEL_MAKEFILE__)
-TOPTARGETS := all clean install
+TOPTARGETS := all clean distclean realclean install site-install
 
-SUBDIRS := $(wildcard */.)
+SUBMFS := $(wildcard Makefile.*)
 
-$(TOPTARGETS): $(SUBDIRS)
-$(SUBDIRS):
-#{"\t"}$(MAKE) -C $@ $(MAKECMDGOALS)
+$(TOPTARGETS): $(SUBMFS)
+$(SUBMFS):
+#{"\t"}$(MAKE) -f $@ $(MAKECMDGOALS)
 
-.PHONY: $(TOPTARGETS) $(SUBDIRS)
+.PHONY: $(TOPTARGETS) $(SUBMFS)
   __TOPLEVEL_MAKEFILE__
-} unless File.exist?("Makefile")
+}
 
+require 'fileutils'
 FileUtils::touch("gps_pvt.so") # dummy
