@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   
   spec.files += proc{
-    base_dir = File.dirname(__FILE__)
+    base_dir = File::absolute_path(File.dirname(__FILE__))
     require 'pathname'
     # get an array of submodule dirs by executing 'pwd' inside each submodule
     `git submodule --quiet foreach pwd`.split($/).collect{|dir|
