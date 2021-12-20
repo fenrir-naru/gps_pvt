@@ -42,7 +42,9 @@ Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
       open_orig(*args, &b)
     }
   }
-  create_makefile("gps_pvt/#{mod_name}")
+  # from camel to underscore style
+  mod_path = "gps_pvt/#{mod_name.scan(/[A-Z]+[^A-Z_]*|[^A-Z_]+/).join('_').downcase}"
+  create_makefile(mod_path)
 }
 
 IO_TARGETS.mod{

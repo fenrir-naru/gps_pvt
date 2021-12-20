@@ -65,10 +65,19 @@ task :swig do
       mod_name = File::basename(src, '.*')
       out_dir = File::join(out_base_dir, mod_name)
       sh "mkdir -p #{out_dir}"
-      sh [:make, :clean,
-          File::join(out_dir, "#{mod_name}_wrap.cxx"),
+      wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
+      sh [:make, :clean, wrapper,
           "BUILD_DIR=#{out_dir}",
           "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
+      lines = open(wrapper, 'r').read.lines.collect{|line|
+        line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
+          mod_path = $1.split('/').collect{|str|
+            str.scan(/[A-Z]+[^A-Z_]*|[^A-Z_]+/).join('_')
+          }.join('/').downcase
+          "rb_require(\"#{mod_path}\")"
+        }
+      }
+      open(wrapper, 'w').write(lines.join)
     }
   }
 end
