@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "gps_pvt/version"
-require_relative "gps_pvt/gps.so"
+require_relative "gps_pvt/GPS.so"
 
 module GPS_PVT
   class Error < StandardError; end

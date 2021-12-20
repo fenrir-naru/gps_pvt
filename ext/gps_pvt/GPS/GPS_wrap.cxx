@@ -15733,8 +15733,8 @@ SWIGEXPORT void Init_GPS(void) {
   
   swig::SwigGCReferences::initialize();
   
-  rb_require("GPS_PVT/SylphideMath");
-  rb_require("GPS_PVT/Coordinate");
+  rb_require("gps_pvt/SylphideMath");
+  rb_require("gps_pvt/Coordinate");
   rb_define_const(mGPS, "GPS_SC2RAD", SWIG_From_double(static_cast< double >(3.1415926535898)));
   
   SwigClassTime.klass = rb_define_class_under(mGPS, "Time", rb_cObject);

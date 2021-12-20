@@ -71,10 +71,7 @@ task :swig do
           "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
       lines = open(wrapper, 'r').read.lines.collect{|line|
         line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
-          mod_path = $1.split('/').collect{|str|
-            str.scan(/[A-Z]+[^A-Z_]*|[^A-Z_]+/).join('_')
-          }.join('/').downcase
-          "rb_require(\"#{mod_path}\")"
+          "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
         }
       }
       open(wrapper, 'w').write(lines.join)
