@@ -11,11 +11,12 @@ RSpec::describe GPS_PVT do
   end
 end
 
-GPS = GPS_PVT::GPS
-SylphideMath = GPS_PVT::SylphideMath
-Coordinate = GPS_PVT::Coordinate
 
-RSpec::describe GPS::Solver do
+RSpec::describe GPS_PVT do
+  GPS = GPS_PVT::GPS
+  SylphideMath = GPS_PVT::SylphideMath
+  Coordinate = GPS_PVT::Coordinate
+  
   let(:input){{
     :rinex_nav => Tempfile::open{|f|
       # brdc1670.15n
@@ -202,9 +203,9 @@ __RINEX_OBS_TEXT__
       f.path
     },
   }}
-  let(:solver){GPS::Solver::new}
   
-  describe 'demo' do
+  describe GPS::Solver do
+    let(:solver){GPS::Solver::new}
     it 'calculates position without any error' do
       sn = solver.gps_space_node
       expect(sn.read(input[:rinex_nav])).to eq(6)
@@ -360,6 +361,18 @@ __RINEX_OBS_TEXT__
           } 
         end
       }
+    end
+  end
+  
+  describe GPS_PVT::Receiver do
+    let(:receiver){GPS_PVT::Receiver::new}
+    it 'calculates position without any error with RINEX nav+obs files' do
+      expect{
+        receiver.parse_rinex_nav(input[:rinex_nav])
+      }.to output(/6 items\./).to_stderr
+      expect{
+        receiver.parse_rinex_obs(input[:rinex_obs]){|pvt, meas| }
+      }.to output(/3 epochs\./).to_stderr
     end
   end
 end
