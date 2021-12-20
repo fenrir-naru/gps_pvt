@@ -79,4 +79,8 @@ task :swig do
   }
 end
 
-task :default => ["git:submodules:init", :compile, :spec]
+file "ext/ninja-scan-light" do |t|
+  Rake::Task["git:submodules:init"].invoke
+end
+
+task :default => ["ext/ninja-scan-light", :compile, :spec]
