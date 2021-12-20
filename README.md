@@ -2,7 +2,10 @@
 
 GPS_PVT is a Ruby GPS (Global positioning system) PVT (position, velocity and time) solver. It accepts RINEX NAV and OBS files in addition to u-blox ubx format. Its significant features are easy to use with highly flexibility to customize internal solver behavior such as weight for each available satellite.
 
-The PVT solution is obtained with a stand alone positioning (i.e. neither differential nor kinematic) with lease square. Its main internal codes are derived from ones of [ninja-scan-light](https://github.com/fenrir-naru/ninja-scan-light) having capability to calculate tightly-coupled GNSS/INS integrated solution. These codes are written by C++, and wrapped by [SWIG](http://www.swig.org/).
+The PVT solution is obtained with a stand alone positioning (i.e. neither differential nor kinematic) with least square. Its main internal codes are derived from ones of [ninja-scan-light](https://github.com/fenrir-naru/ninja-scan-light) having capability to calculate tightly-coupled GNSS/INS integrated solution. These codes are written by C++, and wrapped by [SWIG](http://www.swig.org/).
+
+[![Gem Version](https://badge.fury.io/rb/gps_pvt.svg)](https://badge.fury.io/rb/gps_pvt)
+[![Ruby](https://github.com/fenrir-naru/gps_pvt/actions/workflows/main.yml/badge.svg)](https://github.com/fenrir-naru/gps_pvt/actions/workflows/main.yml)
 
 ## Installation
 
@@ -20,18 +23,19 @@ Or install it yourself as:
 
     $ gem install gps_pvt
 
+For Windows users, this gem requires Devkit because of native compilation.
+
 ## Usage
 
 ```ruby
 require 'gps_pvt'
 
 receiver = GPS_PVT::Receiver::new
-receiver.parse_rinex_nav(rinex_nav_file)
+receiver.parse_rinex_nav(rinex_nav_file) # This is required before parsing RINEX obs file (For ubx, skippable)
 
 # For generate solution in CSV format
 puts GPS_PVT::Receiver::header
 receiver.parse_rinex_obs(rinex_obs_file)
-
 # receiver.parse_ubx(ubx_file) # same as above for ubx file including RXM-RAW(X) and RXM-SFRB(X)
 
 # Or precise control of outputs
