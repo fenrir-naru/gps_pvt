@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require 'gps_pvt'
+
+# runnable quick example to solve PVT by using RINEX NAV/OBS or u-blox ubx
+
+$stderr.puts <<__STRING__
+Usage: #{__FILE__} GPS_file1 GPS_file2 ...
+As GPS_file, rinex_nav(*.YYn), rinex_obs(*.YYo), and ubx(*.ubx) format are currently supported.
+File format is automatically determined based on its extention described in above parentheses.
+Note: YY = last two digit of year.
+__STRING__
+
+options = {}
+
+# check options
+ARGV.reject!{|arg|
+  next false unless arg =~ /^--([^=]+)=?/
+  options[$1.to_sym] = $'
+  true
+}
+
+# Check file existence
+ARGV.each{|arg|
+  raise "File not found: #{arg}" unless File::exist?(arg)
+}
+
+rcv = GPS_PVT::Receiver::new(options)
+
+puts GPS_PVT::Receiver::header
+
+# parse RINEX NAV
+ARGV.reject!{|arg|
+  next false unless arg =~ /\.\d{2}n$/
+  rcv.parse_rinex_nav(arg)
+}
+
+# other files
+ARGV.each{|arg|
+  case arg
+  when /\.ubx$/
+    rcv.parse_ubx(arg)
+  when /\.\d{2}o$/
+    rcv.parse_rinex_obs(arg)
+  end
+}

@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 =begin
 Receiver class to be an top level interface to a user
 (The origin is ninja-scan-light/tool/misc/receiver_debug.rb)
@@ -335,41 +333,4 @@ class Receiver
     $stderr.puts ", %d epochs."%[count] 
   end
 end
-end
-
-if __FILE__ == $0 then
-  # runnable quick example to solve PVT by using RINEX NAV/OBS or u-blox ubx
-  options = {}
-
-  # check options
-  ARGV.reject!{|arg|
-    next false unless arg =~ /^--([^=]+)=?/
-    options[$1.to_sym] = $'
-    true
-  }
-
-  # Check file existence
-  ARGV.each{|arg|
-    raise "File not found: #{arg}" unless File::exist?(arg)
-  }
-
-  rcv = GPS_PVT::Receiver::new(options)
-  
-  puts GPS_PVT::Receiver::header
-
-  # parse RINEX NAV
-  ARGV.reject!{|arg|
-    next false unless arg =~ /\.\d{2}n$/
-    rcv.parse_rinex_nav(arg)
-  }
-  
-  # other files
-  ARGV.each{|arg|
-    case arg
-    when /\.ubx$/
-      rcv.parse_ubx(arg)
-    when /\.\d{2}o$/
-      rcv.parse_rinex_obs(arg)
-    end
-  }
 end

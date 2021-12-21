@@ -27,6 +27,12 @@ For Windows users, this gem requires Devkit because of native compilation.
 
 ## Usage
 
+For user who just generate PVT solution, an attached executable is useful. After installation, type
+
+    $ gps_pvt RINEX_or_UBX_file(s)
+
+For developer, this library will be used in the following:
+
 ```ruby
 require 'gps_pvt'
 
