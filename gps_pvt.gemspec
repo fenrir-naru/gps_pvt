@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "GPS position, velocity, and time (PVT) solver"
   spec.description = "This module calculate PVT by using raw observation obtained from a GPS receiver"
   spec.homepage = "https://github.com/fenrir-naru/gps_pvt"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.3.0"
 
   #spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
@@ -33,8 +33,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   
   spec.files += proc{
-    base_dir = File::absolute_path(File.dirname(__FILE__))
     require 'pathname'
+    base_dir = Pathname::new(File::absolute_path(File.dirname(__FILE__)))
     # get an array of submodule dirs by executing 'pwd' inside each submodule
     `git submodule --quiet foreach pwd`.split($/).collect{|dir|
       # issue git ls-files in submodule's directory

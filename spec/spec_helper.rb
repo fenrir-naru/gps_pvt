@@ -13,3 +13,10 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+module Enumerable
+  def sum(init=0, &b)
+    b ? each{|v| init += b.call(v)} : each{|v| init += v}
+    init
+  end
+end if RUBY_VERSION < "2.4.0"
