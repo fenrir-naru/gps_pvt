@@ -242,9 +242,15 @@ class Receiver
           {
             :L1_PSEUDORANGE => [16, 8, "E"],
             :L1_DOPPLER => [24, 4, "e"],
+            :L1_CARRIER_PHASE => [8, 8, "E"],
+            :L1_SIGNAL_STRENGTH_dBHz => [30, 1, "c"],
           }.each{|k, prop|
             meas.add(prn, GPS::Measurement.const_get(k), loader.call(*prop))
           }
+          # bit 0 of RINEX LLI (loss of lock indicator) shows lost lock
+          # between previous and current observation, which maps negative lock seconds
+          meas.add(prn, GPS::Measurement::L1_LOCK_SEC,
+              (packet[6 + 31 + (i * 24)] & 0x01 == 0x01) ? -1 : 0)
         }
         after_run.call(run(meas, t_meas), [meas, t_meas])
       when [0x02, 0x15] # RXM-RAWX
@@ -270,6 +276,12 @@ class Receiver
             }],
             :L1_DOPPLER => [32, 4, "e"],
             :L1_DOPPLER_SIGMA => [45, 1, nil, proc{|v| 2E-3 * (v[0] & 0xF)}],
+            :L1_CARRIER_PHASE => [24, 8, "E", proc{|v| (trk_stat & 0x2 == 0x2) ? v : nil}],
+            :L1_CARRIER_PHASE_SIGMA => [44, 1, nil, proc{|v|
+              (trk_stat & 0x2 == 0x2) ? (0.004 * (v[0] & 0xF)) : nil
+            }],
+            :L1_SIGNAL_STRENGTH_dBHz => [42, 1],
+            :L1_LOCK_SEC => [40, 2, "v", proc{|v| 1E-3 * v}],
           }.each{|k, prop|
             next unless v = loader.call(*prop)
             meas.add(svid, GPS::Measurement.const_get(k), v)
