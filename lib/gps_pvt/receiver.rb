@@ -344,7 +344,6 @@ class Receiver
           meas.add(prn, type_, v[i][0]) if v[i]
         }
       }
-      p meas.to_hash
       after_run.call(run(meas, t_meas), [meas, t_meas])
     }
     $stderr.puts ", %d epochs."%[count] 
