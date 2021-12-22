@@ -69,12 +69,15 @@ task :swig do
       sh [:make, :clean, wrapper,
           "BUILD_DIR=#{out_dir}",
           "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
-      lines = open(wrapper, 'r').read.lines.collect{|line|
-        line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
-          "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
+      open(wrapper, 'r+'){|io|
+        lines = io.read.lines.collect{|line|
+          line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
+            "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
+          }
         }
+        io.rewind
+        io.write(lines.join)
       }
-      open(wrapper, 'w').write(lines.join)
     }
   }
 end
