@@ -327,8 +327,12 @@ class Receiver
         case type_
         when "C1", "C1C"
           [i, GPS::Measurement::L1_PSEUDORANGE]
+        when "L1", "L1C"
+          [i, GPS::Measurement::L1_CARRIER_PHASE]
         when "D1", "D1C"
           [i, GPS::Measurement::L1_DOPPLER]
+        when "S1", "S1C"
+          [i, GPS::Measurement::L1_SIGNAL_STRENGTH_dBHz]
         else
           nil 
         end
@@ -340,6 +344,7 @@ class Receiver
           meas.add(prn, type_, v[i][0]) if v[i]
         }
       }
+      p meas.to_hash
       after_run.call(run(meas, t_meas), [meas, t_meas])
     }
     $stderr.puts ", %d epochs."%[count] 
