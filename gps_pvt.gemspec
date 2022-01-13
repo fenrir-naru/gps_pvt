@@ -42,7 +42,13 @@ Gem::Specification.new do |spec|
         next nil unless f =~ /^H */ # consider git sparse checkout
         # get relative path
         f = Pathname::new(File::join(dir, $'))
-        (f.relative? ? f : f.relative_path_from(base_dir)).to_s
+        begin
+          (f.relative? ? f : f.relative_path_from(base_dir)).to_s
+        rescue
+          # Patch for Windows drive letter problem
+          base_dir = Pathname::new(base_dir.to_s.sub(/^([^\/])+:\//){"/#{$1}/"})
+          f.relative_path_from(base_dir).to_s
+        end
       }.compact
     }.flatten
   }.call
