@@ -72,8 +72,9 @@ receiver.parse_rinex_obs(rinex_obs_file){|pvt, meas| # per epoch
 }
 
 # Customize solution
-receiver.solver.options.exclude(prn) # Exclude satellite; the default is to use every satellite if visible
-receiver.solver.options.include(prn) # Discard previous setting of exclusion
+receiver.solver.gps_options.exclude(prn) # Exclude satellite; the default is to use every satellite if visible
+receiver.solver.gps_options.include(prn) # Discard previous setting of exclusion
+receiver.solver.gps_options.elevation_mask = Math::PI / 180 * 10 # example 10 [deg] elevation mask
 receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, usr_pos, usr_vel|
   # control weight per satellite per iteration
   weight, range_c, range_r, rate_rel_neg, *los_neg = rel_prop # relative property
