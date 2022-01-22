@@ -27,7 +27,7 @@ ARGV.each{|arg|
 
 rcv = GPS_PVT::Receiver::new(options)
 
-puts GPS_PVT::Receiver::header
+puts rcv.header
 
 # parse RINEX NAV
 ARGV.reject!{|arg|
