@@ -11,12 +11,12 @@ File format is automatically determined based on its extention described in abov
 Note: YY = last two digit of year.
 __STRING__
 
-options = {}
+options = []
 
 # check options
 ARGV.reject!{|arg|
   next false unless arg =~ /^--([^=]+)=?/
-  options[$1.to_sym] = $'
+  options << [$1.to_sym, $']
   true
 }
 
