@@ -31,6 +31,10 @@ For user who just generate PVT solution, an attached executable is useful. After
 
     $ gps_pvt RINEX_or_UBX_file(s)
 
+From version 0.2.0, SBAS and QZSS are supported in addition to GPS. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. If you want to activate SBAS ranging, "--with=(SBAS PRN number, ex. 137)" option is used with gps_pvt executable like
+
+    $ gps_pvt --with=137 RINEX_or_UBX_file(s)
+
 For developer, this library will be used in the following:
 
 ```ruby
