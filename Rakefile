@@ -30,6 +30,8 @@ namespace :git do
           "sparse-checkout set" + (<<-__SPARSE_PATTERNS__).lines.collect{|str| str.chomp.gsub(/^ */, ' ')}.join,
             /tool/param/
             /tool/navigation/GPS*
+            /tool/navigation/SBAS*
+            /tool/navigation/QZSS*
             /tool/navigation/coordinate.h
             /tool/navigation/EGM.h
             /tool/navigation/MagneticField.h
