@@ -47,12 +47,21 @@ class Receiver
     ]] + [
       [:used_satellites, proc{|pvt| pvt.used_satellites}],
     ] + opt[:system].collect{|sys, range|
-      base_prn = range.min
-      ["#{sys}_PRN", proc{|pvt|
-        pvt.used_satellite_list.inject("0" * range.size){|res, i|
+      bit_flip = if range.kind_of?(Array) then
+        proc{|res, i|
+          res[i] = "1" if i = range.index(i)
+          res
+        }
+      else # expect Range
+        base_prn = range.min
+        proc{|res, i|
           res[i - base_prn] = "1" if range.include?(i)
           res
-        }.scan(/.{1,8}/).join('_').reverse
+        }
+      end
+      ["#{sys}_PRN", proc{|pvt|
+        pvt.used_satellite_list.inject("0" * range.size, &bit_flip) \
+            .scan(/.{1,8}/).join('_').reverse
       }]
     } + [[
       opt[:satellites].collect{|prn, label|
@@ -125,12 +134,17 @@ class Receiver
       rel_prop[0] = 1 if rel_prop[0] > 0 # weight = 1
       rel_prop
     }
+    @debug = {}
     output_options = {
-      :system => [[:GPS, 1..32]],
-      :satellites => (1..32).to_a, # [idx, ...] or [[idx, label], ...] is acceptable
+      :system => [[:GPS, 1..32], [:QZSS, 193..202]],
+      :satellites => (1..32).to_a + (193..202).to_a, # [idx, ...] or [[idx, label], ...] is acceptable
     }
     options = options.reject{|k, v|
       case k
+      when :debug
+        v = v.split(/,/)
+        @debug[v[0].upcase.to_sym] = v[1..-1]
+        next true
       when :weight
         case v.to_sym
         when :elevation # (same as underneath C++ library)
@@ -180,7 +194,7 @@ class Receiver
           when Integer
             [nil, spec]
           when /([a-zA-Z]+)(?::(-?\d+))?/
-            [$1.upcase.to_sym, ($2.to_i rescue nil)]
+            [$1.upcase.to_sym, (Integre($2) rescue nil)]
           when /-?\d+/
             [nil, $&.to_i]
           else
@@ -192,10 +206,25 @@ class Receiver
           else
             (k == :with) ? :include : :exclude
           end
-          if (sys == :GPS) || (svid && (1..32).include?(svid)) then
-            [svid || (1..32).to_a].flatten.each{
+          if (sys == :GPS) || (sys == :QZSS) \
+              || (svid && ((1..32).include?(svid) || (193..202).include?(svid))) then
+            [svid || ((1..32).to_a + (193..202).to_a)].flatten.each{
               @solver.gps_options.send(mode, svid)
             }
+          elsif (sys == :SBAS) || (svid && (120..158).include?(svid)) then
+            prns = [svid || (120..158).to_a].flatten
+            unless (i = output_options[:system].index{|sys, range| sys == :SBAS}) then
+              i = -1
+              output_options[:system] << [:SBAS, []]
+            else
+              output_options[:system][i].reject!{|prn| prns.include?(prn)}
+            end
+            output_options[:satellites].reject!{|prn, label| prns.include?(prn)}
+            if mode == :include then
+              output_options[:system][i][1] += prns
+              output_options[:satellites] += prns
+            end
+            prns.each{|prn| @solver.sbas_options.send(mode, prn)}
           else
             next false  
           end
@@ -290,14 +319,14 @@ class Receiver
   }
   
   proc{
-    eph_list = Hash[*(1..32).collect{|prn|
+    eph_list = Hash[*((1..32).to_a + (193..202).to_a).collect{|prn|
       eph = GPS::Ephemeris::new
       eph.svid = prn
       [prn, eph]
     }.flatten(1)]
     define_method(:register_ephemeris){|t_meas, sys, prn, bcast_data|
       case sys
-      when :GPS
+      when :GPS, :QZSS
         next unless eph = eph_list[prn]
         sn = @solver.gps_space_node
         subframe, iodc_or_iode = eph.parse(bcast_data)
@@ -316,6 +345,14 @@ class Receiver
           eph.WN = ((t_meas.week / 1024).to_i * 1024) + (eph.WN % 1024)
           sn.register_ephemeris(prn, eph)
           eph.invalidate
+        end
+      when :SBAS
+        case @solver.sbas_space_node.decode_message(bcast_data[0..7], prn, t_meas)
+        when 26
+          ['', "IGP broadcasted by PRN#{prn} @ #{Time::utc(*t_meas.c_tm)}",
+              @solver.sbas_space_node.ionospheric_grid_points(prn)].each{|str|
+            $stderr.puts str
+          } if @debug[:SBAS_IGP] 
         end
       end
     }
@@ -394,7 +431,7 @@ class Receiver
           }
           sys, svid = gnss_serial.call(*loader.call(36, 2).reverse)
           case sys
-          when :GPS; 
+          when :GPS, :QZSS; 
           else; next
           end
           trk_stat = loader.call(46, 1)[0]
@@ -423,7 +460,8 @@ class Receiver
             t_meas,
             sys, svid,
             packet.slice(6 + 2, 40).each_slice(4).collect{|v|
-              (v.pack("C*").unpack("V")[0] & 0xFFFFFF) << 6
+              res = v.pack("C*").unpack("V")[0]
+              (sys == :GPS) ? ((res & 0xFFFFFF) << 6) : res
             })
       when [0x02, 0x13] # RXM-SFRBX
         sys, svid = gnss_serial.call(packet[6 + 1], packet[6])
