@@ -2584,7 +2584,11 @@ struct GPS_Solver
     if(prn > 0 && prn <= 32){return gps.solver;}
     if(prn >= 120 && prn <= 158){return sbas.solver;}
     if(prn > 192 && prn <= 202){return gps.solver;}
-    return *this;
+    // call order: base_t::solve => this returned by select() 
+    //     => relative_property() => select_solver()
+    // For not supported satellite, call loop prevention is required.
+    static const base_t dummy; 
+    return dummy;
   }
   virtual typename base_t::relative_property_t relative_property(
       const typename base_t::prn_t &prn,
@@ -2596,9 +2600,7 @@ struct GPS_Solver
   virtual typename base_t::xyz_t *satellite_position(
       const typename base_t::prn_t &prn,
       const typename base_t::gps_time_t &time,
-      typename base_t::xyz_t &res) const {
-    return select_solver(prn).satellite_position(prn, time, res);
-  }
+      typename base_t::xyz_t &res) const;
   virtual bool update_position_solution(
       const typename base_t::geometric_matrices_t &geomat,
       typename base_t::user_pvt_t &res) const;
@@ -3200,11 +3202,8 @@ SWIG_AsCharPtrAndSize(VALUE obj, char** cptr, size_t* psize, int *alloc)
 
 SWIGINTERN int GPS_SpaceNode_Sl_double_Sg__read(GPS_SpaceNode< double > *self,char const *fname){
     std::fstream fin(fname, std::ios::in | std::ios::binary);
-    typename RINEX_NAV_Reader<double>::space_node_list_t space_nodes = {
-      self, // GPS
-      NULL, // SBAS
-      self, // QZSS
-    };
+    typename RINEX_NAV_Reader<double>::space_node_list_t space_nodes = {self};
+    space_nodes.qzss = self;
     return RINEX_NAV_Reader<double>::read_all(fin, space_nodes);
   }
 SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_alpha(GPS_Ionospheric_UTC_Parameters< double > *self,double const values[4]){
@@ -3648,16 +3647,16 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_f_10_7(GPS_S
 }
 
     template <>
-    typename GPS_Solver<double>::base_t::relative_property_t
+    GPS_Solver<double>::base_t::relative_property_t
         GPS_Solver<double>::relative_property(
-          const typename GPS_Solver<double>::base_t::prn_t &prn,
-          const typename GPS_Solver<double>::base_t::measurement_t::mapped_type &measurement,
-          const typename GPS_Solver<double>::base_t::float_t &receiver_error,
-          const typename GPS_Solver<double>::base_t::gps_time_t &time_arrival,
-          const typename GPS_Solver<double>::base_t::pos_t &usr_pos,
-          const typename GPS_Solver<double>::base_t::xyz_t &usr_vel) const {
+          const GPS_Solver<double>::base_t::prn_t &prn,
+          const GPS_Solver<double>::base_t::measurement_t::mapped_type &measurement,
+          const GPS_Solver<double>::base_t::float_t &receiver_error,
+          const GPS_Solver<double>::base_t::gps_time_t &time_arrival,
+          const GPS_Solver<double>::base_t::pos_t &usr_pos,
+          const GPS_Solver<double>::base_t::xyz_t &usr_vel) const {
       union {
-        typename base_t::relative_property_t prop;
+        base_t::relative_property_t prop;
         double values[7];
       } res = {
           select_solver(prn).relative_property(
@@ -3709,15 +3708,15 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_f_10_7(GPS_S
     }
     template <>
     bool GPS_Solver<double>::update_position_solution(
-        const typename GPS_Solver<double>::base_t::geometric_matrices_t &geomat,
-        typename GPS_Solver<double>::base_t::user_pvt_t &res) const {
+        const GPS_Solver<double>::base_t::geometric_matrices_t &geomat,
+        GPS_Solver<double>::base_t::user_pvt_t &res) const {
 
       do{
         static const VALUE key(ID2SYM(rb_intern("update_position_solution")));
         VALUE hook(rb_hash_lookup(hooks, key));
         if(NIL_P(hook)){break;}
-        typename base_t::geometric_matrices_t &geomat_(
-            const_cast< typename base_t::geometric_matrices_t & >(geomat));
+        base_t::geometric_matrices_t &geomat_(
+            const_cast< base_t::geometric_matrices_t & >(geomat));
         VALUE values[] = {
             SWIG_NewPointerObj(&geomat_.G,
               SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0),
@@ -3729,6 +3728,51 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_f_10_7(GPS_S
       }while(false);
 
       return super_t::update_position_solution(geomat, res);
+    }
+    template <>
+    GPS_Solver<double>::base_t::xyz_t *GPS_Solver<double>::satellite_position(
+        const GPS_Solver<double>::base_t::prn_t &prn,
+        const GPS_Solver<double>::base_t::gps_time_t &time,
+        GPS_Solver<double>::base_t::xyz_t &buf) const {
+      GPS_Solver<double>::base_t::xyz_t *res(
+          select_solver(prn).satellite_position(prn, time, buf));
+
+      do{
+        static const VALUE key(ID2SYM(rb_intern("satellite_position")));
+        VALUE hook(rb_hash_lookup(hooks, key));
+        if(NIL_P(hook)){break;}
+        VALUE values[] = {
+            SWIG_From_int  (prn), // prn
+            SWIG_NewPointerObj( // time
+              new base_t::gps_time_t(time), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN),
+            (res // position (internally calculated)
+              ? SWIG_NewPointerObj(res, SWIGTYPE_p_System_XYZT_double_WGS84_t, 0) 
+              : Qnil)};
+        VALUE res_hook(proc_call_throw_if_error(hook, sizeof(values) / sizeof(values[0]), values));
+        if(NIL_P(res_hook)){ // unknown position
+          res = NULL;
+          break;
+        }else if(RB_TYPE_P(res_hook, T_ARRAY) && (RARRAY_LEN(res_hook) == 3)){
+          int i(0);
+          for(; i < 3; ++i){
+            VALUE v(RARRAY_AREF(res_hook, i));
+            if(!SWIG_IsOK(swig::asval(v, &buf[i]))){break;}
+          }
+          if(i == 3){
+            res = &buf;
+            break;
+          }
+        }else if(SWIG_IsOK(SWIG_ConvertPtr(
+            res_hook, (void **)&res, SWIGTYPE_p_System_XYZT_double_WGS84_t, 0))){
+          res = &(buf = *res);
+          break;
+        }
+        throw std::runtime_error(
+            std::string("System_XYZ or [d * 3] is expected (d: " "double" "), however ")
+              .append(inspect_str(res_hook)));
+      }while(false);
+
+      return res;
     }
   
 SWIGINTERN unsigned int SBAS_Ephemeris_Sl_double_Sg__set_svid(SBAS_Ephemeris< double > *self,unsigned int const &v){
@@ -3836,7 +3880,8 @@ SWIGINTERN SBAS_Ephemeris< double > SBAS_SpaceNode_Sl_double_Sg__ephemeris(SBAS_
   }
 SWIGINTERN int SBAS_SpaceNode_Sl_double_Sg__read(SBAS_SpaceNode< double > *self,char const *fname){
     std::fstream fin(fname, std::ios::in | std::ios::binary);
-    RINEX_NAV_Reader<double>::space_node_list_t space_nodes = {NULL, self};
+    RINEX_NAV_Reader<double>::space_node_list_t space_nodes = {NULL};
+    space_nodes.sbas = self;
     return RINEX_NAV_Reader<double>::read_all(fin, space_nodes);
   }
 SWIGINTERN int SBAS_SpaceNode_Sl_double_Sg__decode_message__SWIG_2(SBAS_SpaceNode< double > *self,unsigned int const buf[8],int const &prn,GPS_Time< double > const &t_reception,bool const &LNAV_VNAV_LP_LPV_approach=false){
