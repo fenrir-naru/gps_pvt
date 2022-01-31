@@ -31,6 +31,12 @@ For user who just generate PVT solution, an attached executable is useful. After
 
     $ gps_pvt RINEX_or_UBX_file(s)
 
+The format of RINEX_or_UBX_file is automatically determined with its extention, such as .ubx will be treated as UBX format. If you want to specify the file format, instead of RINEX_or_UBX_file(s), use the following arguments:
+
+    --rinex_nav=filename
+    --rinex_obs=filename
+    --ubx=filename
+
 From version 0.2.0, SBAS and QZSS are supported in addition to GPS. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. If you want to activate SBAS ranging, "--with=(SBAS PRN number, ex. 137)" option is used with gps_pvt executable like
 
     $ gps_pvt --with=137 RINEX_or_UBX_file(s)
@@ -79,9 +85,10 @@ receiver.parse_rinex_obs(rinex_obs_file){|pvt, meas| # per epoch
 receiver.solver.gps_options.exclude(prn) # Exclude satellite; the default is to use every satellite if visible
 receiver.solver.gps_options.include(prn) # Discard previous setting of exclusion
 receiver.solver.gps_options.elevation_mask = Math::PI / 180 * 10 # example 10 [deg] elevation mask
-receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, usr_pos, usr_vel|
+receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
   # control weight per satellite per iteration
   weight, range_c, range_r, rate_rel_neg, *los_neg = rel_prop # relative property
+  # meas is measurement represented by pseudo range of the selected satellite.
   # rcv_e, t_arv, usr_pos, usr_vel are temporary solution of 
   # receiver clock error [m], time of arrival [s], user position and velocity in ECEF, respectively.
   
@@ -98,7 +105,7 @@ receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, u
   alias_method(:run_orig, :run)
   define_method(:run){|meas, t_meas, &b|
     meas # observation, same as the 2nd argument of parse_XXX
-    receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, usr_pos, usr_vel|
+    receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
       # Do something based on meas, t_meas.
       rel_prop
     }

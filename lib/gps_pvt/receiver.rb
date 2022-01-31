@@ -130,7 +130,7 @@ class Receiver
 
   def initialize(options = {})
     @solver = GPS::Solver::new
-    @solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, usr_pos, usr_vel|
+    @solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
       rel_prop[0] = 1 if rel_prop[0] > 0 # weight = 1
       rel_prop
     }
@@ -148,7 +148,7 @@ class Receiver
       when :weight
         case v.to_sym
         when :elevation # (same as underneath C++ library)
-          @solver.hooks[:relative_property] = proc{|prn, rel_prop, rcv_e, t_arv, usr_pos, usr_vel|
+          @solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
             if rel_prop[0] > 0 then
               elv = Coordinate::ENU::relative_rel(
                   Coordinate::XYZ::new(*rel_prop[4..6]), usr_pos).elevation
@@ -477,8 +477,15 @@ class Receiver
   end
   
   def parse_rinex_nav(fname)
-    $stderr.puts "Read RINEX NAV file (%s): %d items."%[
-        fname, @solver.gps_space_node.read(fname)]
+    items = [
+      @solver.gps_space_node,
+      @solver.sbas_space_node,
+    ].inject(0){|res, sn|
+      loaded_items = sn.send(:read, fname)
+      raise "Format error! (Not RINEX) #{fname}" if loaded_items < 0
+      res + loaded_items
+    }
+    $stderr.puts "Read RINEX NAV file (%s): %d items."%[fname, items]
   end
   
   def parse_rinex_obs(fname, &b)
@@ -515,7 +522,8 @@ class Receiver
         when 'J'; prn += 192
         else; next
         end
-        (types[sys] || []).each{|i, type_|
+        types[sys] = (types[' '] || []) unless types[sys]
+        types[sys].each{|i, type_|
           meas.add(prn, type_, v[i][0]) if v[i]
         }
       }

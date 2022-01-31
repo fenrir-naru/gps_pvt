@@ -3592,6 +3592,18 @@ SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GPS_Ephemeris<
 
         return SWIG_ERROR;
       }
+
+      template <>
+      VALUE from(const GPS_Measurement<double>::items_t::mapped_type &val) {
+        VALUE per_sat(rb_hash_new());
+        for(typename GPS_Measurement<double>::items_t::mapped_type::const_iterator 
+              it(val.begin()), it_end(val.end());
+            it != it_end; ++it){
+          rb_hash_aset(per_sat, SWIG_From_int  (it->first), swig::from(it->second));
+        }
+        return per_sat;
+      }
+
     }
   
 SWIGINTERN void GPS_Measurement_Sl_double_Sg__each(GPS_Measurement< double > const *self){
@@ -3617,13 +3629,7 @@ SWIGINTERN VALUE GPS_Measurement_Sl_double_Sg__to_hash(GPS_Measurement< double >
     for(typename GPS_Measurement<double>::items_t::const_iterator
           it(self->items.begin()), it_end(self->items.end());
         it != it_end; ++it){
-      VALUE per_sat(rb_hash_new());
-      rb_hash_aset(res, SWIG_From_int  (it->first), per_sat);
-      for(typename GPS_Measurement<double>::items_t::mapped_type::const_iterator 
-            it2(it->second.begin()), it2_end(it->second.end());
-          it2 != it2_end; ++it2){
-        rb_hash_aset(per_sat, SWIG_From_int  (it2->first), swig::from(it2->second));
-      }
+      rb_hash_aset(res, SWIG_From_int  (it->first), swig::from(it->second));
     }
     return res;
   }
@@ -3678,6 +3684,7 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_f_10_7(GPS_S
               swig::from(res.prop.los_neg[0]),
               swig::from(res.prop.los_neg[1]),
               swig::from(res.prop.los_neg[2])),
+            swig::from(measurement), // measurement => Hash
             swig::from(receiver_error), // receiver_error
             SWIG_NewPointerObj( // time_arrival
               new base_t::gps_time_t(time_arrival), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN),
