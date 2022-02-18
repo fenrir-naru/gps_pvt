@@ -2465,6 +2465,7 @@ struct GPS_Measurement {
     L1_RANGE_RATE_SIGMA,
     L1_SIGNAL_STRENGTH_dBHz,
     L1_LOCK_SEC,
+    L1_FREQUENCY,
     ITEMS_PREDEFINED,
   };
   void add(const int &prn, const int &key, const FloatT &value){
@@ -3738,7 +3739,9 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
             SWIG_NewPointerObj(&geomat_.W,
               SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0),
             SWIG_NewPointerObj(&geomat_.delta_r,
-              SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0)};
+              SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0),
+            SWIG_NewPointerObj(&res,
+              SWIGTYPE_p_GPS_User_PVTT_double_t, 0)};
         proc_call_throw_if_error(hook, sizeof(values) / sizeof(values[0]), values);
       }while(false);
 
@@ -6481,6 +6484,50 @@ _wrap_SpaceNode_gamma_L1_L2_get(VALUE self) {
   
   _val = SWIG_From_double(static_cast< double >(GPS_SpaceNode< double >::gamma_L1_L2));
   return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode.gamma_per_L1
+
+  call-seq:
+    gamma_per_L1(GPS_SpaceNode< double >::float_t const & freq) -> GPS_SpaceNode< double >::float_t const
+
+A class method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_gamma_per_L1(int argc, VALUE *argv, VALUE self) {
+  GPS_SpaceNode< double >::float_t *arg1 = 0 ;
+  GPS_SpaceNode< double >::float_t temp1 ;
+  double val1 ;
+  int ecode1 = 0 ;
+  GPS_SpaceNode< double >::float_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_double(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "GPS_SpaceNode< double >::float_t","GPS_SpaceNode<(double)>::gamma_per_L1", 1, argv[0] ));
+  } 
+  temp1 = static_cast< GPS_SpaceNode< double >::float_t >(val1);
+  arg1 = &temp1;
+  {
+    try {
+      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR gamma_per_L1((double const &)*arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
 }
 
 
@@ -14360,6 +14407,15 @@ A class method.
 
 */
 /*
+  Document-method: GPS_PVT::GPS.L1_FREQUENCY
+
+  call-seq:
+    L1_FREQUENCY -> int
+
+A class method.
+
+*/
+/*
   Document-method: GPS_PVT::GPS.ITEMS_PREDEFINED
 
   call-seq:
@@ -19414,6 +19470,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_singleton_method(SwigClassSpaceNode.klass, "L2_Frequency", VALUEFUNC(_wrap_SpaceNode_L2_Frequency_get), 0);
   rb_define_singleton_method(SwigClassSpaceNode.klass, "L2_WaveLength", VALUEFUNC(_wrap_SpaceNode_L2_WaveLength), -1);
   rb_define_singleton_method(SwigClassSpaceNode.klass, "gamma_L1_L2", VALUEFUNC(_wrap_SpaceNode_gamma_L1_L2_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode.klass, "gamma_per_L1", VALUEFUNC(_wrap_SpaceNode_gamma_per_L1), -1);
   rb_define_method(SwigClassSpaceNode.klass, "iono_utc", VALUEFUNC(_wrap_SpaceNode_iono_utc), -1);
   rb_define_method(SwigClassSpaceNode.klass, "is_valid_iono", VALUEFUNC(_wrap_SpaceNode_is_valid_iono), -1);
   rb_define_method(SwigClassSpaceNode.klass, "is_valid_utc", VALUEFUNC(_wrap_SpaceNode_is_valid_utc), -1);
@@ -19596,6 +19653,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_const(SwigClassMeasurement.klass, "L1_RANGE_RATE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_RANGE_RATE_SIGMA)));
   rb_define_const(SwigClassMeasurement.klass, "L1_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_SIGNAL_STRENGTH_dBHz)));
   rb_define_const(SwigClassMeasurement.klass, "L1_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_LOCK_SEC)));
+  rb_define_const(SwigClassMeasurement.klass, "L1_FREQUENCY", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_FREQUENCY)));
   rb_define_const(SwigClassMeasurement.klass, "ITEMS_PREDEFINED", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::ITEMS_PREDEFINED)));
   rb_define_method(SwigClassMeasurement.klass, "add", VALUEFUNC(_wrap_Measurement_add), -1);
   rb_define_method(SwigClassMeasurement.klass, "each", VALUEFUNC(_wrap_Measurement_each), -1);

@@ -73,12 +73,12 @@ class Receiver
         next ([nil] * 6 * opt[:satellites].size) unless pvt.position_solved?
         sats = pvt.used_satellite_list
         r, w = [:delta_r, :W].collect{|f| pvt.send(f)}
-        opt[:satellites].collect{|i|
-          next ([nil] * 6) unless i2 = sats.index(i)
+        opt[:satellites].collect{|prn, label|
+          next ([nil] * 6) unless i2 = sats.index(prn)
           [r[i2, 0], w[i2, i2]] +
               [:azimuth, :elevation].collect{|f|
-                pvt.send(f)[i] / Math::PI * 180
-              } + [pvt.slopeH[i], pvt.slopeV[i]]
+                pvt.send(f)[prn] / Math::PI * 180
+              } + [pvt.slopeH[prn], pvt.slopeV[prn]]
         }.flatten
       },
     ]] + [[
@@ -106,16 +106,19 @@ class Receiver
     opt = {
       :satellites => (1..32).to_a,
     }.merge(opt)
+    keys = [:PSEUDORANGE, :RANGE_RATE, :DOPPLER, :FREQUENCY].collect{|k|
+      GPS::Measurement.const_get("L1_#{k}".to_sym)
+    }
     [[
       opt[:satellites].collect{|prn, label|
         [:L1_range, :L1_rate].collect{|str| "#{str}(#{label || prn})"}
       }.flatten,
       proc{|meas|
-        meas_hash = Hash[*(meas.collect{|prn, k, v| [[prn, k], v]}.flatten(1))]
-        opt[:satellites].collect{|prn|
-          [:L1_PSEUDORANGE, [:L1_DOPPLER, GPS::SpaceNode.L1_WaveLength]].collect{|k, sf|
-            meas_hash[[prn, GPS::Measurement.const_get(k)]] * (sf || 1) rescue nil
-          }
+        meas_hash = meas.to_hash
+        opt[:satellites].collect{|prn, label|
+          pr, rate, doppler, freq = keys.collect{|k| meas_hash[prn][k] rescue nil}
+          freq ||= GPS::SpaceNode.L1_Frequency
+          [pr, rate || ((doppler * GPS::SpaceNode::light_speed / freq) rescue nil)]
         }
       }
     ]]
@@ -135,6 +138,11 @@ class Receiver
       rel_prop
     }
     @debug = {}
+    [:gps_options, :sbas_options].each{|target|
+      opt = @solver.send(target) # default solver options
+      opt.elevation_mask = 0.0 / 180 * Math::PI # 0 deg (use satellite over horizon)
+      opt.residual_mask = 1E4 # 10 km (without residual filter, practically)
+    }
     output_options = {
       :system => [[:GPS, 1..32], [:QZSS, 193..202]],
       :satellites => (1..32).to_a + (193..202).to_a, # [idx, ...] or [[idx, label], ...] is acceptable
@@ -193,9 +201,9 @@ class Receiver
           sys, svid = case spec
           when Integer
             [nil, spec]
-          when /([a-zA-Z]+)(?::(-?\d+))?/
-            [$1.upcase.to_sym, (Integre($2) rescue nil)]
-          when /-?\d+/
+          when /^([a-zA-Z]+)(?::(-?\d+))?$/
+            [$1.upcase.to_sym, (Integer($2) rescue nil)]
+          when /^-?\d+$/
             [nil, $&.to_i]
           else
             next false
@@ -206,27 +214,35 @@ class Receiver
           else
             (k == :with) ? :include : :exclude
           end
-          if (sys == :GPS) || (sys == :QZSS) \
-              || (svid && ((1..32).include?(svid) || (193..202).include?(svid))) then
-            [svid || ((1..32).to_a + (193..202).to_a)].flatten.each{
-              @solver.gps_options.send(mode, svid)
-            }
-          elsif (sys == :SBAS) || (svid && (120..158).include?(svid)) then
-            prns = [svid || (120..158).to_a].flatten
-            unless (i = output_options[:system].index{|sys, range| sys == :SBAS}) then
+          update_output = proc{|sys_target, prns, labels|
+            unless (i = output_options[:system].index{|sys, range| sys == sys_target}) then
               i = -1
-              output_options[:system] << [:SBAS, []]
+              output_options[:system] << [sys_target, []]
             else
               output_options[:system][i].reject!{|prn| prns.include?(prn)}
             end
             output_options[:satellites].reject!{|prn, label| prns.include?(prn)}
             if mode == :include then
               output_options[:system][i][1] += prns
-              output_options[:satellites] += prns
+              output_options[:satellites] += (labels ? prns.zip(labels) : prns)
             end
+          }
+          check_sys_svid = proc{|sys_target, range_in_sys, offset|
+            next range_in_sys.include?(svid - (offset || 0)) unless sys # svid is specified without system
+            next false unless sys == sys_target
+            next true unless svid # All satellites in a target system (svid == nil)
+            range_in_sys.include?(svid)
+          }
+          if check_sys_svid.call(:GPS, 1..32) then
+            [svid || (1..32).to_a].flatten.each{|prn| @solver.gps_options.send(mode, prn)}
+          elsif check_sys_svid.call(:SBAS, 120..158) then
+            prns = [svid || (120..158).to_a].flatten
+            update_output.call(:SBAS, prns)
             prns.each{|prn| @solver.sbas_options.send(mode, prn)}
+          elsif check_sys_svid.call(:QZSS, 193..202) then
+            [svid || (193..202).to_a].flatten.each{|prn| @solver.gps_options.send(mode, prn)}
           else
-            next false  
+            raise "Unknown satellite: #{spec}"
           end
           $stderr.puts "#{mode.capitalize} satellite: #{[sys, svid].compact.join(':')}"
         }
@@ -235,10 +251,6 @@ class Receiver
       false
     }
     raise "Unknown receiver options: #{options.inspect}" unless options.empty?
-    proc{|opt|
-      opt.elevation_mask = 0.0 / 180 * Math::PI # 0 deg
-      opt.residual_mask = 1E4 # 10 km
-    }.call(@solver.gps_options)
     @output = {
       :pvt => Receiver::pvt_items(output_options),
       :meas => Receiver::meas_items(output_options),

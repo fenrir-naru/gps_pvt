@@ -1862,8 +1862,9 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void swig_types[12]
 #define SWIGTYPE_p_self_t swig_types[13]
 #define SWIGTYPE_p_swig__GC_VALUE swig_types[14]
-static swig_type_info *swig_types[16];
-static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
+#define SWIGTYPE_p_unsigned_int swig_types[15]
+static swig_type_info *swig_types[17];
+static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3667,6 +3668,15 @@ SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc
     MatrixUtil::each(*self, each_func, each_which, self);
     return *self;
   }
+SWIGINTERN Matrix< double,Array2D_Dense< double > > &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__resize(Matrix< double,Array2D_Dense< double > > *self,unsigned int const *r_p,unsigned int const *c_p){
+    unsigned int r(r_p ? *r_p : self->rows()), c(c_p ? *c_p : self->columns());
+    Matrix<double, Array2D_Dense<double > > mat_new(r, c);
+    unsigned int r_min(r), c_min(c);
+    if(r_min > self->rows()){r_min = self->rows();}
+    if(c_min > self->columns()){c_min = self->columns();}
+    mat_new.partial(r_min, c_min).replace(self->partial(r_min, c_min), false);
+    return (*(self) = mat_new);
+  }
 SWIGINTERN Complex< double > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg____getitem__(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self,unsigned int const &row,unsigned int const &column){
     return (self)->operator()(row, column);
   }
@@ -4131,6 +4141,15 @@ SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_
 SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &),MatrixUtil::each_which_t const &each_which=MatrixUtil::EACH_ALL){
     MatrixUtil::each(*self, each_func, each_which, self);
     return *self;
+  }
+SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > > &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__resize(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,unsigned int const *r_p,unsigned int const *c_p){
+    unsigned int r(r_p ? *r_p : self->rows()), c(c_p ? *c_p : self->columns());
+    Matrix<Complex<double>, Array2D_Dense<Complex<double> > > mat_new(r, c);
+    unsigned int r_min(r), c_min(c);
+    if(r_min > self->rows()){r_min = self->rows();}
+    if(c_min > self->columns()){c_min = self->columns();}
+    mat_new.partial(r_min, c_min).replace(self->partial(r_min, c_min), false);
+    return (*(self) = mat_new);
   }
 static swig_class SwigClassGC_VALUE;
 
@@ -13295,6 +13314,77 @@ fail:
 }
 
 
+/*
+  Document-method: GPS_PVT::SylphideMath::MatrixD.resize
+
+  call-seq:
+    resize(r_p, c_p) -> MatrixD
+
+Resize the size of the MatrixD.
+*/
+SWIGINTERN VALUE
+_wrap_MatrixD_resizeN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
+  unsigned int *arg2 = (unsigned int *) 0 ;
+  unsigned int *arg3 = (unsigned int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int temp3 ;
+  Matrix< double,Array2D_Dense< double > > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","resize", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
+  {
+    if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[0], &temp2))){
+      arg2 = &temp2;
+    }
+    
+    else if(NIL_P(argv[0])){
+      arg2 = NULL;
+    }
+    
+    else{
+      SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+    }
+  }
+  {
+    if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[1], &temp3))){
+      arg3 = &temp3;
+    }
+    
+    else if(NIL_P(argv[1])){
+      arg3 = NULL;
+    }
+    
+    else{
+      SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+    }
+  }
+  {
+    try {
+      result = (Matrix< double,Array2D_Dense< double > > *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__resize(arg1,(unsigned int const *)arg2,(unsigned int const *)arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
 SWIGINTERN void
 free_Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg_(void *self) {
     Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *)self;
@@ -20388,6 +20478,77 @@ fail:
 }
 
 
+/*
+  Document-method: GPS_PVT::SylphideMath::MatrixComplexD.resize
+
+  call-seq:
+    resize(r_p, c_p) -> MatrixComplexD
+
+Resize the size of the MatrixComplexD.
+*/
+SWIGINTERN VALUE
+_wrap_MatrixComplexD_resizeN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
+  unsigned int *arg2 = (unsigned int *) 0 ;
+  unsigned int *arg3 = (unsigned int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int temp3 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","resize", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
+  {
+    if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[0], &temp2))){
+      arg2 = &temp2;
+    }
+    
+    else if(NIL_P(argv[0])){
+      arg2 = NULL;
+    }
+    
+    else{
+      SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+    }
+  }
+  {
+    if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[1], &temp3))){
+      arg3 = &temp3;
+    }
+    
+    else if(NIL_P(argv[1])){
+      arg3 = NULL;
+    }
+    
+    else{
+      SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+    }
+  }
+  {
+    try {
+      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__resize(arg1,(unsigned int const *)arg2,(unsigned int const *)arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
 SWIGINTERN void
 free_Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg_(void *self) {
     Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *)self;
@@ -20418,6 +20579,7 @@ static swig_type_info _swigt__p_f_r_q_const__Complex__double___p_Complex__double
 static swig_type_info _swigt__p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void = {"_p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void", "void (*)(double const &,double *,unsigned int const &,unsigned int const &)", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_self_t = {"_p_self_t", "self_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__GC_VALUE = {"_p_swig__GC_VALUE", "swig::GC_VALUE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_int = {"_p_unsigned_int", "unsigned int *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ComplexT_double_t,
@@ -20435,6 +20597,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void,
   &_swigt__p_self_t,
   &_swigt__p_swig__GC_VALUE,
+  &_swigt__p_unsigned_int,
 };
 
 static swig_cast_info _swigc__p_ComplexT_double_t[] = {  {&_swigt__p_ComplexT_double_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -20452,6 +20615,7 @@ static swig_cast_info _swigc__p_f_r_q_const__Complex__double___p_Complex__double
 static swig_cast_info _swigc__p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void[] = {  {&_swigt__p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_self_t[] = {  {&_swigt__p_self_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__GC_VALUE[] = {  {&_swigt__p_swig__GC_VALUE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_int[] = {  {&_swigt__p_unsigned_int, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ComplexT_double_t,
@@ -20469,6 +20633,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_f_r_q_const__double_p_double_r_q_const__unsigned_int_r_q_const__unsigned_int__void,
   _swigc__p_self_t,
   _swigc__p_swig__GC_VALUE,
+  _swigc__p_unsigned_int,
 };
 
 
@@ -20903,6 +21068,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_alias(SwigClassMatrixD.klass, "collect!", "map!");
   rb_define_alias(SwigClassMatrixD.klass, "map_with_index!", "map!");
   rb_define_alias(SwigClassMatrixD.klass, "collect_with_index!", "map!");
+  rb_define_method(SwigClassMatrixD.klass, "resize!", VALUEFUNC(_wrap_MatrixD_resizeN___), -1);
   SwigClassMatrixD.mark = 0;
   SwigClassMatrixD.destroy = (void (*)(void *)) free_Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg_;
   SwigClassMatrixD.trackObjects = 0;
@@ -21036,6 +21202,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_alias(SwigClassMatrixComplexD.klass, "collect!", "map!");
   rb_define_alias(SwigClassMatrixComplexD.klass, "map_with_index!", "map!");
   rb_define_alias(SwigClassMatrixComplexD.klass, "collect_with_index!", "map!");
+  rb_define_method(SwigClassMatrixComplexD.klass, "resize!", VALUEFUNC(_wrap_MatrixComplexD_resizeN___), -1);
   SwigClassMatrixComplexD.mark = 0;
   SwigClassMatrixComplexD.destroy = (void (*)(void *)) free_Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg_;
   SwigClassMatrixComplexD.trackObjects = 0;
