@@ -3203,6 +3203,16 @@ SWIG_AsVal_unsigned_SS_int (VALUE obj, unsigned int *val)
   return res;
 }
 
+
+  inline bool is_lt_zero_after_asval(const unsigned int &i){
+    return ((sizeof(unsigned int) == sizeof(unsigned long)) && ((UINT_MAX >> 1) <= i));
+  }
+  void raise_if_lt_zero_after_asval(const unsigned int &i){
+    if(is_lt_zero_after_asval(i)){
+      SWIG_exception(SWIG_ValueError, "Expected positive value.");
+    }
+  } 
+
 SWIGINTERN double Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg____getitem__(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self,unsigned int const &row,unsigned int const &column){
     return (self)->operator()(row, column);
   }
@@ -3616,13 +3626,10 @@ SWIGINTERN Matrix< double,Array2D_Dense< double > > *new_Matrix_Sl_double_Sc_Arr
       MatrixUtil::replace(res, replacer);
       return new Matrix<double, Array2D_Dense< double >, MatrixViewBase< >>(res);
     }else if(value && rb_respond_to(*value, id_r) && rb_respond_to(*value, id_c)){
-      /* "unsigned" is remove because SWIG_AsVal(unsigned int)
-       * can not detect less than zero in Windows Ruby devkit.
-       */
-      int r, c; 
+      unsigned int r, c; 
       VALUE v_r(rb_funcall(*value, id_r, 0, 0)), v_c(rb_funcall(*value, id_c, 0, 0));
-      if(!SWIG_IsOK(SWIG_AsVal_int (v_r, &r)) || (r < 0)
-          || !SWIG_IsOK(SWIG_AsVal_int (v_c, &c)) || (c < 0)){
+      if(!SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (v_r, &r)) || is_lt_zero_after_asval(r)
+          || !SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (v_c, &c)) || is_lt_zero_after_asval(c)){
         throw std::runtime_error(
             std::string("Unexpected length [")
               .append(inspect_str(v_r)).append(", ")
@@ -4090,13 +4097,10 @@ SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *new_M
       MatrixUtil::replace(res, replacer);
       return new Matrix<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewBase< >>(res);
     }else if(value && rb_respond_to(*value, id_r) && rb_respond_to(*value, id_c)){
-      /* "unsigned" is remove because SWIG_AsVal(unsigned int)
-       * can not detect less than zero in Windows Ruby devkit.
-       */
-      int r, c; 
+      unsigned int r, c; 
       VALUE v_r(rb_funcall(*value, id_r, 0, 0)), v_c(rb_funcall(*value, id_c, 0, 0));
-      if(!SWIG_IsOK(SWIG_AsVal_int (v_r, &r)) || (r < 0)
-          || !SWIG_IsOK(SWIG_AsVal_int (v_c, &c)) || (c < 0)){
+      if(!SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (v_r, &r)) || is_lt_zero_after_asval(r)
+          || !SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (v_c, &c)) || is_lt_zero_after_asval(c)){
         throw std::runtime_error(
             std::string("Unexpected length [")
               .append(inspect_str(v_r)).append(", ")
@@ -6790,6 +6794,8 @@ _wrap_Matrix_FrozenD___getitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (double)Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg____getitem__((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -6916,6 +6922,10 @@ _wrap_Matrix_FrozenD_circular__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__circular__SWIG_0((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -6969,6 +6979,8 @@ _wrap_Matrix_FrozenD_circular__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__circular__SWIG_1((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -9064,6 +9076,10 @@ _wrap_Matrix_FrozenD_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -9116,6 +9132,7 @@ _wrap_Matrix_FrozenD_row_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__row_vector((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2);
@@ -9168,6 +9185,7 @@ _wrap_Matrix_FrozenD_column_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__column_vector((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2);
@@ -9815,6 +9833,8 @@ _wrap_Matrix_FrozenD_f___getitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (double)Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg____getitem__((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -9941,6 +9961,10 @@ _wrap_Matrix_FrozenD_f_circular__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__circular__SWIG_0((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -9994,6 +10018,8 @@ _wrap_Matrix_FrozenD_f_circular__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__circular__SWIG_1((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -12089,6 +12115,10 @@ _wrap_Matrix_FrozenD_f_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -12141,6 +12171,7 @@ _wrap_Matrix_FrozenD_f_row_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__row_vector((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2);
@@ -12193,6 +12224,7 @@ _wrap_Matrix_FrozenD_f_column_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__column_vector((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2);
@@ -12327,6 +12359,8 @@ _wrap_MatrixD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (Matrix< double,Array2D_Dense< double > >::self_t *) &(arg1)->swapRows((unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -12389,6 +12423,8 @@ _wrap_MatrixD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (Matrix< double,Array2D_Dense< double > >::self_t *) &(arg1)->swapColumns((unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -12449,6 +12485,8 @@ _wrap_new_MatrixD__SWIG_0(int argc, VALUE *argv, VALUE self) {
   {
     arg3 = &argv[2];
   }
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< double,Array2D_Dense< double > > *)new_Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg___SWIG_0((unsigned int const &)*arg1,(unsigned int const &)*arg2,(void const *)arg3);
@@ -12493,6 +12531,8 @@ _wrap_new_MatrixD__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< double,Array2D_Dense< double > > *)new_Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg___SWIG_0((unsigned int const &)*arg1,(unsigned int const &)*arg2);
@@ -12545,6 +12585,8 @@ _wrap_new_MatrixD__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "double const *","Matrix<(double,Array2D_Dense<(double)>)>", 3, argv[2] )); 
   }
   arg3 = reinterpret_cast< double * >(argp3);
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< double,Array2D_Dense< double > > *)new_Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg___SWIG_2((unsigned int const &)*arg1,(unsigned int const &)*arg2,(double const *)arg3);
@@ -12754,6 +12796,8 @@ _wrap_MatrixD___setitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< double >(val4);
   arg4 = &temp4;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (double *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg____setitem__(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(double const &)*arg4);
@@ -12808,6 +12852,7 @@ _wrap_MatrixD_scalar(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg1);
   {
     try {
       result = Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__getScalar((unsigned int const &)*arg1,(double const &)*arg2);
@@ -12852,6 +12897,7 @@ _wrap_MatrixD_I(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< unsigned int >(val1);
   arg1 = &temp1;
+  raise_if_lt_zero_after_asval(*arg1);
   {
     try {
       result = Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__getI((unsigned int const &)*arg1);
@@ -13344,6 +13390,8 @@ _wrap_MatrixD_resizeN___(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
   {
     if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[0], &temp2))){
+      raise_if_lt_zero_after_asval(temp2);
+      
       arg2 = &temp2;
     }
     
@@ -13357,6 +13405,8 @@ _wrap_MatrixD_resizeN___(int argc, VALUE *argv, VALUE self) {
   }
   {
     if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[1], &temp3))){
+      raise_if_lt_zero_after_asval(temp3);
+      
       arg3 = &temp3;
     }
     
@@ -13968,6 +14018,8 @@ _wrap_Matrix_FrozenComplexD___getitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg____getitem__((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -14096,6 +14148,10 @@ _wrap_Matrix_FrozenComplexD_circular__SWIG_0(int argc, VALUE *argv, VALUE self) 
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__circular__SWIG_0((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -14149,6 +14205,8 @@ _wrap_Matrix_FrozenComplexD_circular__SWIG_1(int argc, VALUE *argv, VALUE self) 
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__circular__SWIG_1((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -16232,6 +16290,10 @@ _wrap_Matrix_FrozenComplexD_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -16284,6 +16346,7 @@ _wrap_Matrix_FrozenComplexD_row_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__row_vector((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2);
@@ -16336,6 +16399,7 @@ _wrap_Matrix_FrozenComplexD_column_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__column_vector((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2);
@@ -16993,6 +17057,8 @@ _wrap_Matrix_FrozenComplexD_f___getitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg____getitem__((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -17121,6 +17187,10 @@ _wrap_Matrix_FrozenComplexD_f_circular__SWIG_0(int argc, VALUE *argv, VALUE self
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__circular__SWIG_0((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -17174,6 +17244,8 @@ _wrap_Matrix_FrozenComplexD_f_circular__SWIG_1(int argc, VALUE *argv, VALUE self
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__circular__SWIG_1((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -19257,6 +19329,10 @@ _wrap_Matrix_FrozenComplexD_f_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< unsigned int >(val5);
   arg5 = &temp5;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  raise_if_lt_zero_after_asval(*arg5);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
@@ -19309,6 +19385,7 @@ _wrap_Matrix_FrozenComplexD_f_row_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__row_vector((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2);
@@ -19361,6 +19438,7 @@ _wrap_Matrix_FrozenComplexD_f_column_vector(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__column_vector((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2);
@@ -19495,6 +19573,8 @@ _wrap_MatrixComplexD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &(arg1)->swapRows((unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -19557,6 +19637,8 @@ _wrap_MatrixComplexD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &(arg1)->swapColumns((unsigned int const &)*arg2,(unsigned int const &)*arg3);
@@ -19617,6 +19699,8 @@ _wrap_new_MatrixComplexD__SWIG_0(int argc, VALUE *argv, VALUE self) {
   {
     arg3 = &argv[2];
   }
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *)new_Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg___SWIG_0((unsigned int const &)*arg1,(unsigned int const &)*arg2,(void const *)arg3);
@@ -19661,6 +19745,8 @@ _wrap_new_MatrixComplexD__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *)new_Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg___SWIG_0((unsigned int const &)*arg1,(unsigned int const &)*arg2);
@@ -19713,6 +19799,8 @@ _wrap_new_MatrixComplexD__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Complex< double > const *","Matrix<(Complex<(double)>,Array2D_Dense<(Complex<(double)>)>)>", 3, argv[2] )); 
   }
   arg3 = reinterpret_cast< Complex< double > * >(argp3);
+  raise_if_lt_zero_after_asval(*arg1);
+  raise_if_lt_zero_after_asval(*arg2);
   {
     try {
       result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *)new_Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg___SWIG_2((unsigned int const &)*arg1,(unsigned int const &)*arg2,(Complex< double > const *)arg3);
@@ -19920,6 +20008,8 @@ _wrap_MatrixComplexD___setitem__(int argc, VALUE *argv, VALUE self) {
       SWIG_exception(SWIG_TypeError, "in method '__setitem__', expecting type Complex< double >");
     }
   }
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
   {
     try {
       result = (Complex< double > *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg____setitem__(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(Complex< double > const &)*arg4);
@@ -19972,6 +20062,7 @@ _wrap_MatrixComplexD_scalar(int argc, VALUE *argv, VALUE self) {
       SWIG_exception(SWIG_TypeError, "in method 'Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__getScalar', expecting type Complex< double >");
     }
   }
+  raise_if_lt_zero_after_asval(*arg1);
   {
     try {
       result = Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__getScalar((unsigned int const &)*arg1,(Complex< double > const &)*arg2);
@@ -20016,6 +20107,7 @@ _wrap_MatrixComplexD_I(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< unsigned int >(val1);
   arg1 = &temp1;
+  raise_if_lt_zero_after_asval(*arg1);
   {
     try {
       result = Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__getI((unsigned int const &)*arg1);
@@ -20508,6 +20600,8 @@ _wrap_MatrixComplexD_resizeN___(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
   {
     if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[0], &temp2))){
+      raise_if_lt_zero_after_asval(temp2);
+      
       arg2 = &temp2;
     }
     
@@ -20521,6 +20615,8 @@ _wrap_MatrixComplexD_resizeN___(int argc, VALUE *argv, VALUE self) {
   }
   {
     if(SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (argv[1], &temp3))){
+      raise_if_lt_zero_after_asval(temp3);
+      
       arg3 = &temp3;
     }
     
