@@ -47,23 +47,31 @@ class Receiver
     ]] + [
       [:used_satellites, proc{|pvt| pvt.used_satellites}],
     ] + opt[:system].collect{|sys, range|
-      bit_flip = if range.kind_of?(Array) then
-        proc{|res, i|
+      range = range.kind_of?(Array) ? proc{
+        # check whether inputs can be converted to Range
+        next nil if range.empty?
+        a, b = range.minmax
+        ((b - a) == (range.length - 1)) ? (a..b) : range
+      }.call : range
+      next nil unless range
+      bit_flip, label = case range
+      when Array
+        [proc{|res, i|
           res[i] = "1" if i = range.index(i)
           res
-        }
-      else # expect Range
+        }, range.collect{|pen| pen & 0xFF}.reverse.join('+')]
+      when Range
         base_prn = range.min
-        proc{|res, i|
+        [proc{|res, i|
           res[i - base_prn] = "1" if range.include?(i)
           res
-        }
+        }, [:max, :min].collect{|f| range.send(f) & 0xFF}.join('..')]
       end
-      ["#{sys}_PRN", proc{|pvt|
+      ["#{sys}_PRN(#{label})", proc{|pvt|
         pvt.used_satellite_list.inject("0" * range.size, &bit_flip) \
             .scan(/.{1,8}/).join('_').reverse
       }]
-    } + [[
+    }.compact + [[
       opt[:satellites].collect{|prn, label|
         [:range_residual, :weight, :azimuth, :elevation, :slopeH, :slopeV].collect{|str|
           "#{str}(#{label || prn})"
@@ -138,8 +146,11 @@ class Receiver
       rel_prop
     }
     @debug = {}
-    [:gps_options, :sbas_options].each{|target|
-      opt = @solver.send(target) # default solver options
+    solver_opts = [:gps_options, :sbas_options].collect{|target|
+      @solver.send(target)
+    }
+    solver_opts.each{|opt|
+      # default solver options
       opt.elevation_mask = 0.0 / 180 * Math::PI # 0 deg (use satellite over horizon)
       opt.residual_mask = 1E4 # 10 km (without residual filter, practically)
     }
@@ -168,6 +179,13 @@ class Receiver
         when :identical # same as default
           next true
         end
+      when :elevation_mask_deg
+        raise "Unknown elevation mask angle: #{v}" unless elv_deg = (Float(v) rescue nil)
+        $stderr.puts "Elevation mask: #{elv_deg} deg"
+        solver_opts.each{|opt|
+          opt.elevation_mask = elv_deg / 180 * Math::PI # 0 deg (use satellite over horizon)
+        }
+        next true
       when :base_station
         crd, sys = v.split(/ *, */).collect.with_index{|item, i|
           case item
@@ -219,12 +237,14 @@ class Receiver
               i = -1
               output_options[:system] << [sys_target, []]
             else
-              output_options[:system][i].reject!{|prn| prns.include?(prn)}
+              output_options[:system][i][1].reject!{|prn| prns.include?(prn)}
             end
             output_options[:satellites].reject!{|prn, label| prns.include?(prn)}
             if mode == :include then
               output_options[:system][i][1] += prns
+              output_options[:system][i][1].sort!
               output_options[:satellites] += (labels ? prns.zip(labels) : prns)
+              output_options[:satellites].sort!{|a, b| [a].flatten[0] <=> [b].flatten[0]}
             end
           }
           check_sys_svid = proc{|sys_target, range_in_sys, offset|
@@ -327,6 +347,11 @@ class Receiver
     }
     [:azimuth, :elevation, :slopeH, :slopeV].each{|k|
       eval("define_method(:#{k}){@#{k} || self.post_solution(:@#{k})}")
+    }
+    define_method(:other_state){
+      # If a design matrix G has columns larger than 4, 
+      # other states excluding position and time are estimated.
+      (self.G.rows <= 4) ? [] : (self.S * self.delta_r).transpose.to_a[0][4..-1]
     }
   }
   

@@ -2508,6 +2508,26 @@ struct SBAS_SolverOptions
 
 
 template <class FloatT>
+struct GPS_RangeCorrector
+    : public GPS_Solver_Base<FloatT>::range_corrector_t {
+  VALUE callback;
+  GPS_RangeCorrector(const VALUE &callback_)
+      : GPS_Solver_Base<FloatT>::range_corrector_t(),
+      callback(callback_) {}
+  bool is_available(const typename GPS_Solver_Base<FloatT>::gps_time_t &t) const {
+    return false;
+  }
+  FloatT *calculate(
+      const typename GPS_Solver_Base<FloatT>::gps_time_t &t, 
+      const typename GPS_Solver_Base<FloatT>::pos_t &usr_pos, 
+      const typename GPS_Solver_Base<FloatT>::enu_t &sat_rel_pos,
+      FloatT &buf) const {
+    return NULL;
+  }
+};
+
+
+template <class FloatT>
 struct GPS_Solver 
     : public GPS_Solver_RAIM_LSR<FloatT, 
         GPS_Solver_Base_Debug<FloatT, GPS_Solver_Base<FloatT> > > {
@@ -2527,14 +2547,22 @@ struct GPS_Solver
     sbas_t() : space_node(), options(), solver(space_node) {}
   } sbas;
   VALUE hooks;
+  typedef std::vector<GPS_RangeCorrector<FloatT> > user_correctors_t;
+  user_correctors_t user_correctors;
 
   static void mark(void *ptr){
     GPS_Solver<FloatT> *solver = (GPS_Solver<FloatT> *)ptr;
-    if(solver->hooks == Qnil){return;}
     rb_gc_mark(solver->hooks);
+    for(typename user_correctors_t::const_iterator 
+          it(solver->user_correctors.begin()), it_end(solver->user_correctors.end());
+        it != it_end; ++it){
+      rb_gc_mark(it->callback);
+    }
   }
 
-  GPS_Solver() : super_t(), gps(), sbas(), hooks() {
+  GPS_Solver() : super_t(),
+      gps(), sbas(),
+      hooks(), user_correctors() {
 
     hooks = rb_hash_new();
 
@@ -2606,6 +2634,19 @@ struct GPS_Solver
         if(!update){break;}
         typename range_correction_list_t::const_iterator it(list.find(i));
         if(it == list.end()){break;}
+
+        // Remove user defined unused correctors
+        for(typename base_t::range_correction_t::const_iterator
+              it2(root[i]->begin()), it2_end(root[i]->end());
+            it2 != it2_end; ++it2){
+          for(typename user_correctors_t::const_iterator
+                it3(user_correctors.begin()), it3_end(user_correctors.end());
+              it3 != it3_end; ++it3){
+            if(*it2 != &(*it3)){continue;}
+            user_correctors.erase(it3);
+          }
+        }
+
         root[i]->clear();
         for(typename range_correction_list_t::mapped_type::const_iterator
               it2(it->second.begin()), it2_end(it->second.end());
@@ -3794,6 +3835,38 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
     }
   
 
+    template <>
+    bool GPS_RangeCorrector<double>::is_available(
+        const typename GPS_Solver_Base<double>::gps_time_t &t) const {
+      VALUE values[] = {
+        SWIG_NewPointerObj(
+            const_cast< GPS_Time<double> * >(&t), SWIGTYPE_p_GPS_TimeT_double_t, 0),
+      };
+      VALUE res(proc_call_throw_if_error(
+          callback, sizeof(values) / sizeof(values[0]), values));
+      return RTEST(res) ? true : false;
+    }
+    template <>
+    double *GPS_RangeCorrector<double>::calculate(
+        const typename GPS_Solver_Base<double>::gps_time_t &t,
+        const typename GPS_Solver_Base<double>::pos_t &usr_pos, 
+        const typename GPS_Solver_Base<double>::enu_t &sat_rel_pos,
+        double &buf) const {
+      VALUE values[] = {
+        SWIG_NewPointerObj(
+            const_cast< GPS_Time<double> * >(&t),
+            SWIGTYPE_p_GPS_TimeT_double_t, 0),
+        SWIG_NewPointerObj(
+            (const_cast< System_XYZ<double,WGS84> * >(&usr_pos.xyz)),
+            SWIGTYPE_p_System_XYZT_double_WGS84_t, 0),
+        SWIG_NewPointerObj(
+            (const_cast< System_ENU<double,WGS84> * >(&sat_rel_pos)),
+            SWIGTYPE_p_System_ENUT_double_WGS84_t, 0),
+      };
+      VALUE res(proc_call_throw_if_error(
+          callback, sizeof(values) / sizeof(values[0]), values));
+      return SWIG_IsOK(swig::asval(res, &buf)) ? &buf : NULL;
+    }
     template<>
     VALUE GPS_Solver<double>::update_correction(
         const bool &update, const VALUE &hash){
@@ -3836,10 +3909,12 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
             for(; k < sizeof(item) / sizeof(item[0]); ++k){
               if(v == item[k].sym){break;}
             }
-            if(k >= sizeof(item) / sizeof(item[0])){
-              continue; // TODO other than symbol
+            if(k >= sizeof(item) / sizeof(item[0])){ // other than symbol
+              user_correctors.push_back(GPS_RangeCorrector<double>(v));
+              input[i].push_back(&user_correctors.back());
+            }else{
+              input[i].push_back(item[k].obj);
             }
-            input[i].push_back(item[k].obj);
           }
         }
         VALUE opt(rb_hash_lookup(hash, k_opt));
@@ -3866,10 +3941,12 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
           for(; i < sizeof(item) / sizeof(item[0]); ++i){
             if(*it2 == item[i].obj){break;}
           }
-          if(i >= sizeof(item) / sizeof(item[0])){
-            continue; // TODO other than built-in corrector
+          if(i >= sizeof(item) / sizeof(item[0])){ // other than built-in corrector
+            rb_ary_push(v, 
+                reinterpret_cast<const GPS_RangeCorrector<double> *>(*it2)->callback);
+          }else{
+            rb_ary_push(v, item[i].sym);
           }
-          rb_ary_push(v, item[i].sym);
         }
         rb_hash_aset(res, k, v);
       }
