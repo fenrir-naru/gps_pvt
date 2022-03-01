@@ -41,7 +41,7 @@ From version 0.2.0, SBAS and QZSS are supported in addition to GPS. QZSS ranging
 
     $ gps_pvt --with=137 RINEX_or_UBX_file(s)
 
-For developer, this library will be used in the following:
+For developer, this library will be used like:
 
 ```ruby
 require 'gps_pvt'
@@ -81,23 +81,39 @@ receiver.parse_rinex_obs(rinex_obs_file){|pvt, meas| # per epoch
   }
 }
 
-# Customize solution
+## Further customization
+# General options
 receiver.solver.gps_options.exclude(prn) # Exclude satellite; the default is to use every satellite if visible
 receiver.solver.gps_options.include(prn) # Discard previous setting of exclusion
 receiver.solver.gps_options.elevation_mask = Math::PI / 180 * 10 # example 10 [deg] elevation mask
+# receiver.solver.sbas_options is for SBAS.
+
+# Precise control of properties for each satellite and for each iteration
 receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
-  # control weight per satellite per iteration
   weight, range_c, range_r, rate_rel_neg, *los_neg = rel_prop # relative property
   # meas is measurement represented by pseudo range of the selected satellite.
   # rcv_e, t_arv, usr_pos, usr_vel are temporary solution of 
   # receiver clock error [m], time of arrival [s], user position and velocity in ECEF, respectively.
   
   weight = 1 # same as default; identical weight for each visible satellite
-  # or weight based on elevation
+  # or weight based on elevation, for example:
   # elv = GPS_PVT::Coordinate::ENU::relative_rel(GPS_PVT::Coordinate::XYZ::new(*los_neg), usr_pos).elevation
   # weight = (Math::sin(elv)/0.8)**2
   
   [weight, range_c, range_r, rate_rel_neg] + los_neg # must return relative property
+}
+
+# Range correction (since v0.3.0)
+receiver.solver.correction = { # provide by using a Hash
+  # ionospheric and transpheric models are changeable, and current configuration
+  # can be obtained by receiver.solver.correction without assigner.
+  :gps_ionospheric => proc{|t, usr_pos_xyz, sat_pos_enu|
+    # t, usr_pos_xyz, sat_pos_enu are temporary solution of 
+    # time of arrival [s], user position in ECEF, 
+    # and satellite position in ENU respectively.
+    0 # must return correction value, delaying is negative.
+  },
+  # combination of (gps or sbas) and (ionospheric or tropospheric) are available
 }
 
 # Dynamic customization of weight for each epoch
