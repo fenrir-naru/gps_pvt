@@ -48,8 +48,8 @@ Additionally, the following command options *--key=value* are available.
 ----|----|----|----
 | base_station | 3 \* (numeric+coordinate) | base position used for relative ENU position calculation. XYZ, NEU formats are acceptable. *ex1) --base_station=0X,0Y,0Z*, *ex2) --base_station=12.34N,56.789E,0U* | v0.1.7 |
 | elevation_mask_deg | numeric | satellite elevation mask specified in degrees. *ex) --elevation_mask_deg=10* | v0.3.0 |
-| start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.2 |
-| end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.2 |
+| start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.3 |
+| end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.3 |
 
 ### For developer
 
