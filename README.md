@@ -27,7 +27,8 @@ For Windows users, this gem requires Devkit because of native compilation.
 
 ## Usage
 
-For user who just generate PVT solution, an attached executable is useful. After installation, type
+### For user who just generate PVT solution
+An attached executable is useful. After installation, type
 
     $ gps_pvt RINEX_or_UBX_file(s)
 
@@ -41,7 +42,18 @@ From version 0.2.0, SBAS and QZSS are supported in addition to GPS. QZSS ranging
 
     $ gps_pvt --with=137 RINEX_or_UBX_file(s)
 
-For developer, this library will be used like:
+Additionally, the following command options *--key=value* are available.
+
+| key | value | comment | version |
+----|----|----|----
+| base_station | 3 \* (numeric+coordinate) | base position used for relative ENU position calculation. XYZ, NEU formats are acceptable. *ex1) --base_station=0X,0Y,0Z*, *ex2) --base_station=12.34N,56.789E,0U* | v0.1.7 |
+| elevation_mask_deg | numeric | satellite elevation mask specified in degrees. *ex) --elevation_mask_deg=10* | v0.3.0 |
+| start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.1 |
+| end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.1 |
+
+### For developer
+
+This library will be used like:
 
 ```ruby
 require 'gps_pvt'
