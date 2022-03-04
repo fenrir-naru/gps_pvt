@@ -7,15 +7,22 @@ require_relative 'GPS'
 
 module GPS_PVT
 class Receiver
+
+  GPS::Time.define_method(:utc){
+    res = c_tm(GPS::Time::guess_leap_seconds(self))
+    res[-1] += (seconds % 1)
+    res
+  }
+
   def self.pvt_items(opt = {})
     opt = {
       :system => [[:GPS, 1..32]],
       :satellites => (1..32).to_a,
     }.merge(opt)
     [[
-      [:week, :itow_rcv, :year, :month, :mday, :hour, :min, :sec],
+      [:week, :itow_rcv, :year, :month, :mday, :hour, :min, :sec_rcv_UTC],
       proc{|pvt|
-        [:week, :seconds, :c_tm].collect{|f| pvt.receiver_time.send(f)}.flatten
+        [:week, :seconds, :utc].collect{|f| pvt.receiver_time.send(f)}.flatten
       }
     ]] + [[
       [:receiver_clock_error_meter, :longitude, :latitude, :height, :rel_E, :rel_N, :rel_U],
@@ -402,7 +409,7 @@ class Receiver
     ubx = UBX::new(open(ubx_fname))  
     ubx_kind = Hash::new(0)
     
-    after_run = b || proc{|pvt| puts pvt.to_s}
+    after_run = b || proc{|pvt| puts pvt.to_s if pvt}
     
     gnss_serial = proc{|svid, sys|
       if sys then # new numbering
@@ -526,7 +533,7 @@ class Receiver
   end
   
   def parse_rinex_obs(fname, &b)
-    after_run = b || proc{|pvt| puts pvt.to_s}
+    after_run = b || proc{|pvt| puts pvt.to_s if pvt}
     $stderr.print "Reading RINEX observation file (%s)"%[fname]
     types = nil
     count = 0

@@ -2896,6 +2896,9 @@ SWIG_AsVal_unsigned_SS_int (VALUE obj, unsigned int *val)
   return res;
 }
 
+SWIGINTERN GPS_Time< double > *new_GPS_Time_Sl_double_Sg___SWIG_4(int const &week_,GPS_Time< double >::float_t const &seconds_,void *dummy){
+    return &((new GPS_Time<double>(week_, seconds_))->canonicalize());
+  }
 SWIGINTERN void GPS_Time_Sl_double_Sg__to_a(GPS_Time< double > const *self,int *week,double *seconds){
     *week = self->week;
     *seconds = self->seconds;
@@ -4642,9 +4645,9 @@ fail:
   call-seq:
     Time.new
     Time.new(Time t)
-    Time.new(int const & _week, GPS_Time< double >::float_t const & _seconds)
     Time.new(std::tm const & t, GPS_Time< double >::float_t const & leap_seconds=0)
     Time.new(std::tm const & t)
+    Time.new(int const & week_, GPS_Time< double >::float_t const & seconds_)
 
 Class constructor.
 
@@ -4710,105 +4713,6 @@ fail:
 
 SWIGINTERN VALUE
 _wrap_new_Time__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  int *arg1 = 0 ;
-  GPS_Time< double >::float_t *arg2 = 0 ;
-  int temp1 ;
-  int val1 ;
-  int ecode1 = 0 ;
-  GPS_Time< double >::float_t temp2 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  GPS_Time< double > *result = 0 ;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  ecode1 = SWIG_AsVal_int(argv[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "int","GPS_Time<(double)>", 1, argv[0] ));
-  } 
-  temp1 = static_cast< int >(val1);
-  arg1 = &temp1;
-  ecode2 = SWIG_AsVal_double(argv[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "GPS_Time< double >::float_t","GPS_Time<(double)>", 2, argv[1] ));
-  } 
-  temp2 = static_cast< GPS_Time< double >::float_t >(val2);
-  arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double > *)new GPS_Time< double >((int const &)*arg1,(GPS_Time< double >::float_t const &)*arg2);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  return self;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::GPS::Time.canonicalize
-
-  call-seq:
-    canonicalize -> Time
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_Time_canonicalize(int argc, VALUE *argv, VALUE self) {
-  GPS_Time< double > *arg1 = (GPS_Time< double > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  GPS_Time< double > *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_TimeT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > *","canonicalize", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double > *) &(arg1)->canonicalize();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_TimeT_double_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::GPS::Time.new
-
-  call-seq:
-    Time.new
-    Time.new(Time t)
-    Time.new(int const & _week, GPS_Time< double >::float_t const & _seconds)
-    Time.new(std::tm const & t, GPS_Time< double >::float_t const & leap_seconds=0)
-    Time.new(std::tm const & t)
-
-Class constructor.
-
-*/
-SWIGINTERN VALUE
-_wrap_new_Time__SWIG_3(int argc, VALUE *argv, VALUE self) {
   std::tm *arg1 = 0 ;
   GPS_Time< double >::float_t *arg2 = 0 ;
   std::tm temp1 = {
@@ -4876,22 +4780,7 @@ fail:
 
 
 SWIGINTERN VALUE
-#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
-_wrap_Time_allocate(VALUE self)
-#else
-_wrap_Time_allocate(int argc, VALUE *argv, VALUE self)
-#endif
-{
-  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_GPS_TimeT_double_t);
-#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
-  rb_obj_call_init(vresult, argc, argv);
-#endif
-  return vresult;
-}
-
-
-SWIGINTERN VALUE
-_wrap_new_Time__SWIG_4(int argc, VALUE *argv, VALUE self) {
+_wrap_new_Time__SWIG_3(int argc, VALUE *argv, VALUE self) {
   std::tm *arg1 = 0 ;
   std::tm temp1 = {
     0
@@ -4944,81 +4833,6 @@ _wrap_new_Time__SWIG_4(int argc, VALUE *argv, VALUE self) {
   }
   return self;
 fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_new_Time(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[2];
-  int ii;
-  
-  argc = nargs;
-  if (argc > 2) SWIG_fail;
-  for (ii = 0; (ii < argc); ++ii) {
-    argv[ii] = args[ii];
-  }
-  if (argc == 0) {
-    return _wrap_new_Time__SWIG_0(nargs, args, self);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_Time__SWIG_1(nargs, args, self);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
-    }
-    if (_v) {
-      return _wrap_new_Time__SWIG_4(nargs, args, self);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_double(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_Time__SWIG_3(nargs, args, self);
-      }
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      int res = SWIG_AsVal_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_double(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_Time__SWIG_2(nargs, args, self);
-      }
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 2, "Time.new", 
-    "    Time.new()\n"
-    "    Time.new(GPS_Time< double > const &t)\n"
-    "    Time.new(int const &_week, GPS_Time< double >::float_t const &_seconds)\n"
-    "    Time.new(std::tm const &t, GPS_Time< double >::float_t const &leap_seconds)\n"
-    "    Time.new(std::tm const &t)\n");
-  
   return Qnil;
 }
 
@@ -6229,6 +6043,155 @@ fail:
   Ruby_Format_OverloadedError( argc, 1, "Time.guess_leap_seconds", 
     "    int Time.guess_leap_seconds(std::tm const &t)\n"
     "    int Time.guess_leap_seconds(GPS_Time< GPS_Time< double >::float_t > const &uncorrected)\n");
+  
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_Time_allocate(VALUE self)
+#else
+_wrap_Time_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_GPS_TimeT_double_t);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Time.new
+
+  call-seq:
+    Time.new
+    Time.new(Time t)
+    Time.new(std::tm const & t, GPS_Time< double >::float_t const & leap_seconds=0)
+    Time.new(std::tm const & t)
+    Time.new(int const & week_, GPS_Time< double >::float_t const & seconds_)
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_Time__SWIG_4(int argc, VALUE *argv, VALUE self) {
+  int *arg1 = 0 ;
+  GPS_Time< double >::float_t *arg2 = 0 ;
+  void *arg3 = (void *) 0 ;
+  int temp1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  GPS_Time< double >::float_t temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  GPS_Time< double > *result = 0 ;
+  
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_int(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "int","GPS_Time<(double)>", 1, argv[0] ));
+  } 
+  temp1 = static_cast< int >(val1);
+  arg1 = &temp1;
+  ecode2 = SWIG_AsVal_double(argv[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "GPS_Time< double >::float_t","GPS_Time<(double)>", 2, argv[1] ));
+  } 
+  temp2 = static_cast< GPS_Time< double >::float_t >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (GPS_Time< double > *)new_GPS_Time_Sl_double_Sg___SWIG_4((int const &)*arg1,(double const &)*arg2,arg3);
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_new_Time(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[2];
+  int ii;
+  
+  argc = nargs;
+  if (argc > 2) SWIG_fail;
+  for (ii = 0; (ii < argc); ++ii) {
+    argv[ii] = args[ii];
+  }
+  if (argc == 0) {
+    return _wrap_new_Time__SWIG_0(nargs, args, self);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_Time__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 1) {
+    int _v;
+    {
+      _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
+    }
+    if (_v) {
+      return _wrap_new_Time__SWIG_3(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    {
+      _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_double(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_Time__SWIG_2(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    {
+      int res = SWIG_AsVal_int(argv[0], NULL);
+      _v = SWIG_CheckState(res);
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_double(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_Time__SWIG_4(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 2, "Time.new", 
+    "    Time.new()\n"
+    "    Time.new(GPS_Time< double > const &t)\n"
+    "    Time.new(std::tm const &t, GPS_Time< double >::float_t const &leap_seconds)\n"
+    "    Time.new(std::tm const &t)\n"
+    "    Time.new(int const &week_, GPS_Time< double >::float_t const &seconds_, void *dummy)\n");
   
   return Qnil;
 }
@@ -19515,7 +19478,6 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassTime.klass, "week", VALUEFUNC(_wrap_Time_week_get), -1);
   rb_define_method(SwigClassTime.klass, "seconds=", VALUEFUNC(_wrap_Time_seconds_set), -1);
   rb_define_method(SwigClassTime.klass, "seconds", VALUEFUNC(_wrap_Time_seconds_get), -1);
-  rb_define_method(SwigClassTime.klass, "canonicalize", VALUEFUNC(_wrap_Time_canonicalize), -1);
   rb_define_singleton_method(SwigClassTime.klass, "now", VALUEFUNC(_wrap_Time_now), -1);
   rb_define_method(SwigClassTime.klass, "serialize", VALUEFUNC(_wrap_Time_serialize), -1);
   rb_define_method(SwigClassTime.klass, "+", VALUEFUNC(_wrap_Time___add__), -1);

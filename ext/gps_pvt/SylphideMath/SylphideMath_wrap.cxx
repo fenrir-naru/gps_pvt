@@ -3653,27 +3653,30 @@ SWIGINTERN Matrix< double,Array2D_Dense< double > > Matrix_Sl_double_Sc_Array2D_
     return Matrix<double, Array2D_Dense<double> >(
         Matrix_Frozen<double, Array2D_Dense< double >, MatrixViewBase< >>::getI(size));
   }
-SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(Matrix< double,Array2D_Dense< double > > *self,Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &matrix){
-    return self->replace(matrix);
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__swap_rows(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,unsigned int const &r1,unsigned int const &r2){
+    self->swapRows(r1, r2);
   }
-SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(Matrix< double,Array2D_Dense< double > > *self,Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &matrix){
-    return self->replace(matrix);
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__swap_columns(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,unsigned int const &c1,unsigned int const &c2){
+    self->swapColumns(c1, c2);
   }
-SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(Matrix< double,Array2D_Dense< double > > *self,void const *replacer=NULL){
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &matrix){
+    self->replace(matrix);
+  }
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &matrix){
+    self->replace(matrix);
+  }
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,void const *replacer=NULL){
     if(!MatrixUtil::replace(*self, replacer)){
       throw std::runtime_error("Unsupported replacement");
     }
-    return *self;
   }
-SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_5(Matrix< double,Array2D_Dense< double > > *self,double const *serialized){
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_5(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,double const *serialized){
     if(!MatrixUtil::replace(*self, serialized)){
       throw std::runtime_error("Unsupported replacement");
     }
-    return *self;
   }
-SWIGINTERN Matrix< double,Array2D_Dense< double > >::self_t &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(Matrix< double,Array2D_Dense< double > > *self,void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &),MatrixUtil::each_which_t const &each_which=MatrixUtil::EACH_ALL){
+SWIGINTERN void Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(Matrix< double,Array2D_Dense< double > > *self,Matrix< double,Array2D_Dense< double > >::self_t *self_p,void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &),MatrixUtil::each_which_t const &each_which=MatrixUtil::EACH_ALL){
     MatrixUtil::each(*self, each_func, each_which, self);
-    return *self;
   }
 SWIGINTERN Matrix< double,Array2D_Dense< double > > &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__resize(Matrix< double,Array2D_Dense< double > > *self,unsigned int const *r_p,unsigned int const *c_p){
     unsigned int r(r_p ? *r_p : self->rows()), c(c_p ? *c_p : self->columns());
@@ -4124,27 +4127,30 @@ SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > > Matrix
     return Matrix<Complex< double >, Array2D_Dense<Complex< double >> >(
         Matrix_Frozen<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewBase< >>::getI(size));
   }
-SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &matrix){
-    return self->replace(matrix);
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__swap_rows(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,unsigned int const &r1,unsigned int const &r2){
+    self->swapRows(r1, r2);
   }
-SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &matrix){
-    return self->replace(matrix);
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__swap_columns(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,unsigned int const &c1,unsigned int const &c2){
+    self->swapColumns(c1, c2);
   }
-SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,void const *replacer=NULL){
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &matrix){
+    self->replace(matrix);
+  }
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &matrix){
+    self->replace(matrix);
+  }
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,void const *replacer=NULL){
     if(!MatrixUtil::replace(*self, replacer)){
       throw std::runtime_error("Unsupported replacement");
     }
-    return *self;
   }
-SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_5(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Complex< double > const *serialized){
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_5(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,Complex< double > const *serialized){
     if(!MatrixUtil::replace(*self, serialized)){
       throw std::runtime_error("Unsupported replacement");
     }
-    return *self;
   }
-SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &),MatrixUtil::each_which_t const &each_which=MatrixUtil::EACH_ALL){
+SWIGINTERN void Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p,void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &),MatrixUtil::each_which_t const &each_which=MatrixUtil::EACH_ALL){
     MatrixUtil::each(*self, each_func, each_which, self);
-    return *self;
   }
 SWIGINTERN Matrix< Complex< double >,Array2D_Dense< Complex< double > > > &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__resize(Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *self,unsigned int const *r_p,unsigned int const *c_p){
     unsigned int r(r_p ? *r_p : self->rows()), c(c_p ? *c_p : self->columns());
@@ -12315,134 +12321,6 @@ free_Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg_(voi
 static swig_class SwigClassMatrixD;
 
 /*
-  Document-method: GPS_PVT::SylphideMath::MatrixD.swap_rows
-
-  call-seq:
-    swap_rows(unsigned int const & row1, unsigned int const & row2) -> MatrixD
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_MatrixD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
-  Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  unsigned int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int temp2 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
-  int ecode3 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","swapRows", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","swapRows", 2, argv[0] ));
-  } 
-  temp2 = static_cast< unsigned int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swapRows", 3, argv[1] ));
-  } 
-  temp3 = static_cast< unsigned int >(val3);
-  arg3 = &temp3;
-  raise_if_lt_zero_after_asval(*arg2);
-  raise_if_lt_zero_after_asval(*arg3);
-  {
-    try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &(arg1)->swapRows((unsigned int const &)*arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SylphideMath::MatrixD.swap_columns
-
-  call-seq:
-    swap_columns(unsigned int const & column1, unsigned int const & column2) -> MatrixD
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_MatrixD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
-  Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  unsigned int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int temp2 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
-  int ecode3 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","swapColumns", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","swapColumns", 2, argv[0] ));
-  } 
-  temp2 = static_cast< unsigned int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swapColumns", 3, argv[1] ));
-  } 
-  temp3 = static_cast< unsigned int >(val3);
-  arg3 = &temp3;
-  raise_if_lt_zero_after_asval(*arg2);
-  raise_if_lt_zero_after_asval(*arg3);
-  {
-    try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &(arg1)->swapColumns((unsigned int const &)*arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
   Document-method: GPS_PVT::SylphideMath::MatrixD.new
 
   call-seq:
@@ -12916,27 +12794,158 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SylphideMath::MatrixD.swap_rows
+
+  call-seq:
+    swap_rows(unsigned int const & r1, unsigned int const & r2)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_MatrixD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  unsigned int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","swap_rows", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swap_rows", 3, argv[0] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","swap_rows", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  {
+    try {
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__swap_rows(arg1,arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SylphideMath::MatrixD.swap_columns
+
+  call-seq:
+    swap_columns(unsigned int const & c1, unsigned int const & c2)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_MatrixD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  unsigned int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","swap_columns", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swap_columns", 3, argv[0] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","swap_columns", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  {
+    try {
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__swap_columns(arg1,arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SylphideMath::MatrixD.replace!
 
   call-seq:
-    replace!(matrix) -> MatrixD
-    replace!(matrix) -> MatrixD
-    replace!(replacer=nil) -> MatrixD
-    replace! -> MatrixD
-    replace!(serialized) -> MatrixD
+    replace!(matrix)
+    replace!(matrix)
+    replace!(replacer=nil)
+    replace!
+    replace!(serialized)
 
 Replace all or a portion of the MatrixD.
 */
 SWIGINTERN VALUE
 _wrap_MatrixD_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *arg2 = 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -12946,17 +12955,17 @@ _wrap_MatrixD_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 3, argv[0] )); 
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 2, argv[0])); 
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 3, argv[0])); 
   }
-  arg2 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > * >(argp2);
+  arg3 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > * >(argp3);
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(arg1,(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &)*arg2);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(arg1,arg2,(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -12974,13 +12983,14 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixD_replaceN_____SWIG_2(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > *arg2 = 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -12990,17 +13000,17 @@ _wrap_MatrixD_replaceN_____SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 3, argv[0] )); 
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 2, argv[0])); 
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 3, argv[0])); 
   }
-  arg2 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > * >(argp2);
+  arg3 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > * >(argp3);
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(arg1,(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &)*arg2);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(arg1,arg2,(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13018,11 +13028,12 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixD_replaceN_____SWIG_3(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  void *arg2 = (void *) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -13033,11 +13044,11 @@ _wrap_MatrixD_replaceN_____SWIG_3(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
   {
-    arg2 = &argv[0];
+    arg3 = &argv[0];
   }
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(arg1,(void const *)arg2);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(arg1,arg2,(void const *)arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13055,10 +13066,11 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixD_replaceN_____SWIG_4(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
@@ -13070,7 +13082,7 @@ _wrap_MatrixD_replaceN_____SWIG_4(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(arg1);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_3(arg1,arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13088,13 +13100,14 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixD_replaceN_____SWIG_5(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  double *arg2 = (double *) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  double *arg3 = (double *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -13104,14 +13117,14 @@ _wrap_MatrixD_replaceN_____SWIG_5(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > *","replace", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2,SWIGTYPE_p_double, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "double const *","replace", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "double const *","replace", 3, argv[0] )); 
   }
-  arg2 = reinterpret_cast< double * >(argp2);
+  arg3 = reinterpret_cast< double * >(argp3);
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_5(arg1,(double const *)arg2);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__replace__SWIG_5(arg1,arg2,(double const *)arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13208,11 +13221,11 @@ SWIGINTERN VALUE _wrap_MatrixD_replaceN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "replace!", 
-    "    Matrix< double,Array2D_Dense< double > >::self_t replace!(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &matrix)\n"
-    "    Matrix< double,Array2D_Dense< double > >::self_t replace!(Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &matrix)\n"
-    "    Matrix< double,Array2D_Dense< double > >::self_t replace!(void const *replacer)\n"
-    "    Matrix< double,Array2D_Dense< double > >::self_t replace!()\n"
-    "    Matrix< double,Array2D_Dense< double > >::self_t & replace!(double const *serialized)\n");
+    "    void replace!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const &matrix)\n"
+    "    void replace!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const &matrix)\n"
+    "    void replace!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, void const *replacer)\n"
+    "    void replace!(Matrix< double,Array2D_Dense< double > >::self_t *self_p)\n"
+    "    void replace!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, double const *serialized)\n");
   
   return Qnil;
 }
@@ -13222,8 +13235,8 @@ fail:
   Document-method: GPS_PVT::SylphideMath::MatrixD.map!
 
   call-seq:
-    map!(MatrixUtil::each_which_t const & each_which=MatrixUtil::EACH_ALL) -> MatrixD
-    map! -> MatrixD
+    map!(MatrixUtil::each_which_t const & each_which=MatrixUtil::EACH_ALL)
+    map!
 
 An instance method.
 
@@ -13231,18 +13244,19 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_MatrixD_mapN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  void (*arg2)(double const &,double *,unsigned int const &,unsigned int const &) = (void (*)(double const &,double *,unsigned int const &,unsigned int const &)) 0 ;
-  MatrixUtil::each_which_t *arg3 = 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  void (*arg3)(double const &,double *,unsigned int const &,unsigned int const &) = (void (*)(double const &,double *,unsigned int const &,unsigned int const &)) 0 ;
+  MatrixUtil::each_which_t *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   {
     if(!rb_block_given_p()){
       return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
     }
-    arg2 = matrix_each((const double *)0);
+    arg3 = matrix_each((const double *)0);
   }
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -13254,14 +13268,14 @@ _wrap_MatrixD_mapN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
   {
     try{
-      arg3 = &const_cast<typename MatrixUtil::each_which_t &>(MatrixUtil::sym2each_which(argv[0]));
+      arg4 = &const_cast<typename MatrixUtil::each_which_t &>(MatrixUtil::sym2each_which(argv[0]));
     }catch(std::runtime_error &e){
       SWIG_exception(SWIG_TypeError, e.what());
     }
   }
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(arg1,arg2,(MatrixUtil::each_which_t const &)*arg3);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(arg1,arg2,arg3,(MatrixUtil::each_which_t const &)*arg4);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13279,17 +13293,18 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixD_mapN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   Matrix< double,Array2D_Dense< double > > *arg1 = (Matrix< double,Array2D_Dense< double > > *) 0 ;
-  void (*arg2)(double const &,double *,unsigned int const &,unsigned int const &) = (void (*)(double const &,double *,unsigned int const &,unsigned int const &)) 0 ;
+  Matrix< double,Array2D_Dense< double > >::self_t *arg2 = (Matrix< double,Array2D_Dense< double > >::self_t *) 0 ;
+  void (*arg3)(double const &,double *,unsigned int const &,unsigned int const &) = (void (*)(double const &,double *,unsigned int const &,unsigned int const &)) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< double,Array2D_Dense< double > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   {
     if(!rb_block_given_p()){
       return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
     }
-    arg2 = matrix_each((const double *)0);
+    arg3 = matrix_each((const double *)0);
   }
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
@@ -13301,7 +13316,7 @@ _wrap_MatrixD_mapN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp1);
   {
     try {
-      result = (Matrix< double,Array2D_Dense< double > >::self_t *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(arg1,arg2);
+      Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__map_bang__SWIG_0(arg1,arg2,arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13353,8 +13368,8 @@ SWIGINTERN VALUE _wrap_MatrixD_mapN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "map!", 
-    "    Matrix< double,Array2D_Dense< double > >::self_t map!(void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &), MatrixUtil::each_which_t const &each_which)\n"
-    "    Matrix< double,Array2D_Dense< double > >::self_t & map!(void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &))\n");
+    "    void map!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &), MatrixUtil::each_which_t const &each_which)\n"
+    "    void map!(Matrix< double,Array2D_Dense< double > >::self_t *self_p, void (*each_func)(double const &,double *,unsigned int const &,unsigned int const &))\n");
   
   return Qnil;
 }
@@ -19529,134 +19544,6 @@ free_Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_doubl
 static swig_class SwigClassMatrixComplexD;
 
 /*
-  Document-method: GPS_PVT::SylphideMath::MatrixComplexD.swap_rows
-
-  call-seq:
-    swap_rows(unsigned int const & row1, unsigned int const & row2) -> MatrixComplexD
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_MatrixComplexD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  unsigned int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int temp2 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
-  int ecode3 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","swapRows", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","swapRows", 2, argv[0] ));
-  } 
-  temp2 = static_cast< unsigned int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swapRows", 3, argv[1] ));
-  } 
-  temp3 = static_cast< unsigned int >(val3);
-  arg3 = &temp3;
-  raise_if_lt_zero_after_asval(*arg2);
-  raise_if_lt_zero_after_asval(*arg3);
-  {
-    try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &(arg1)->swapRows((unsigned int const &)*arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SylphideMath::MatrixComplexD.swap_columns
-
-  call-seq:
-    swap_columns(unsigned int const & column1, unsigned int const & column2) -> MatrixComplexD
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_MatrixComplexD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  unsigned int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int temp2 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
-  int ecode3 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","swapColumns", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","swapColumns", 2, argv[0] ));
-  } 
-  temp2 = static_cast< unsigned int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swapColumns", 3, argv[1] ));
-  } 
-  temp3 = static_cast< unsigned int >(val3);
-  arg3 = &temp3;
-  raise_if_lt_zero_after_asval(*arg2);
-  raise_if_lt_zero_after_asval(*arg3);
-  {
-    try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &(arg1)->swapColumns((unsigned int const &)*arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
   Document-method: GPS_PVT::SylphideMath::MatrixComplexD.new
 
   call-seq:
@@ -20126,27 +20013,158 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SylphideMath::MatrixComplexD.swap_rows
+
+  call-seq:
+    swap_rows(unsigned int const & r1, unsigned int const & r2)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_MatrixComplexD_swap_rowsN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  unsigned int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","swap_rows", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swap_rows", 3, argv[0] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","swap_rows", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  {
+    try {
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__swap_rows(arg1,arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SylphideMath::MatrixComplexD.swap_columns
+
+  call-seq:
+    swap_columns(unsigned int const & c1, unsigned int const & c2)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_MatrixComplexD_swap_columnsN___(int argc, VALUE *argv, VALUE self) {
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  unsigned int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","swap_columns", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","swap_columns", 3, argv[0] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","swap_columns", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  raise_if_lt_zero_after_asval(*arg3);
+  raise_if_lt_zero_after_asval(*arg4);
+  {
+    try {
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__swap_columns(arg1,arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SylphideMath::MatrixComplexD.replace!
 
   call-seq:
-    replace!(matrix) -> MatrixComplexD
-    replace!(matrix) -> MatrixComplexD
-    replace!(replacer=nil) -> MatrixComplexD
-    replace! -> MatrixComplexD
-    replace!(serialized) -> MatrixComplexD
+    replace!(matrix)
+    replace!(matrix)
+    replace!(replacer=nil)
+    replace!
+    replace!(serialized)
 
 Replace all or a portion of the MatrixComplexD.
 */
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > *arg2 = 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -20156,17 +20174,17 @@ _wrap_MatrixComplexD_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 3, argv[0] )); 
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 2, argv[0])); 
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &","replace<(T,Array2D_Dense<(T)>,MatViewBase)>", 3, argv[0])); 
   }
-  arg2 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > * >(argp2);
+  arg3 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > * >(argp3);
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(arg1,(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &)*arg2);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatViewBase_Sg___SWIG_1(arg1,arg2,(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20184,13 +20202,14 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_replaceN_____SWIG_2(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > *arg2 = 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -20200,17 +20219,17 @@ _wrap_MatrixComplexD_replaceN_____SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 3, argv[0] )); 
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 2, argv[0])); 
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &","replace<(T,Array2D_Dense<(T)>,MatView_f)>", 3, argv[0])); 
   }
-  arg2 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > * >(argp2);
+  arg3 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > * >(argp3);
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(arg1,(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &)*arg2);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace_Sl_T_Sc_Array2D_Dense_Sl_T_Sg__Sc_MatView_f_Sg___SWIG_2(arg1,arg2,(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20228,11 +20247,12 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_replaceN_____SWIG_3(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  void *arg2 = (void *) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -20243,11 +20263,11 @@ _wrap_MatrixComplexD_replaceN_____SWIG_3(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
   {
-    arg2 = &argv[0];
+    arg3 = &argv[0];
   }
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(arg1,(void const *)arg2);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(arg1,arg2,(void const *)arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20265,10 +20285,11 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_replaceN_____SWIG_4(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
@@ -20280,7 +20301,7 @@ _wrap_MatrixComplexD_replaceN_____SWIG_4(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(arg1);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_3(arg1,arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20298,13 +20319,14 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_replaceN_____SWIG_5(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  Complex< double > *arg2 = (Complex< double > *) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  Complex< double > *arg3 = (Complex< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
   VALUE vresult = Qnil;
+  
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -20314,14 +20336,14 @@ _wrap_MatrixComplexD_replaceN_____SWIG_5(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *","replace", 1, self )); 
   }
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2,SWIGTYPE_p_ComplexT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Complex< double > const *","replace", 2, argv[0] )); 
+  res3 = SWIG_ConvertPtr(argv[0], &argp3,SWIGTYPE_p_ComplexT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Complex< double > const *","replace", 3, argv[0] )); 
   }
-  arg2 = reinterpret_cast< Complex< double > * >(argp2);
+  arg3 = reinterpret_cast< Complex< double > * >(argp3);
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_5(arg1,(Complex< double > const *)arg2);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__replace__SWIG_5(arg1,arg2,(Complex< double > const *)arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20418,11 +20440,11 @@ SWIGINTERN VALUE _wrap_MatrixComplexD_replaceN___(int nargs, VALUE *args, VALUE 
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "replace!", 
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t replace!(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &matrix)\n"
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t replace!(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &matrix)\n"
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t replace!(void const *replacer)\n"
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t replace!()\n"
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t & replace!(Complex< double > const *serialized)\n");
+    "    void replace!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const &matrix)\n"
+    "    void replace!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const &matrix)\n"
+    "    void replace!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, void const *replacer)\n"
+    "    void replace!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p)\n"
+    "    void replace!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, Complex< double > const *serialized)\n");
   
   return Qnil;
 }
@@ -20432,8 +20454,8 @@ fail:
   Document-method: GPS_PVT::SylphideMath::MatrixComplexD.map!
 
   call-seq:
-    map!(MatrixUtil::each_which_t const & each_which=MatrixUtil::EACH_ALL) -> MatrixComplexD
-    map! -> MatrixComplexD
+    map!(MatrixUtil::each_which_t const & each_which=MatrixUtil::EACH_ALL)
+    map!
 
 An instance method.
 
@@ -20441,18 +20463,19 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_mapN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  void (*arg2)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &) = (void (*)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &)) 0 ;
-  MatrixUtil::each_which_t *arg3 = 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  void (*arg3)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &) = (void (*)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &)) 0 ;
+  MatrixUtil::each_which_t *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   {
     if(!rb_block_given_p()){
       return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
     }
-    arg2 = matrix_each((const Complex< double > *)0);
+    arg3 = matrix_each((const Complex< double > *)0);
   }
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -20464,14 +20487,14 @@ _wrap_MatrixComplexD_mapN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
   {
     try{
-      arg3 = &const_cast<typename MatrixUtil::each_which_t &>(MatrixUtil::sym2each_which(argv[0]));
+      arg4 = &const_cast<typename MatrixUtil::each_which_t &>(MatrixUtil::sym2each_which(argv[0]));
     }catch(std::runtime_error &e){
       SWIG_exception(SWIG_TypeError, e.what());
     }
   }
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(arg1,arg2,(MatrixUtil::each_which_t const &)*arg3);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(arg1,arg2,arg3,(MatrixUtil::each_which_t const &)*arg4);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20489,17 +20512,18 @@ fail:
 SWIGINTERN VALUE
 _wrap_MatrixComplexD_mapN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *arg1 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) 0 ;
-  void (*arg2)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &) = (void (*)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &)) 0 ;
+  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *arg2 = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) 0 ;
+  void (*arg3)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &) = (void (*)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &)) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *result = 0 ;
   VALUE vresult = Qnil;
+  
   
   {
     if(!rb_block_given_p()){
       return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
     }
-    arg2 = matrix_each((const Complex< double > *)0);
+    arg3 = matrix_each((const Complex< double > *)0);
   }
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
@@ -20511,7 +20535,7 @@ _wrap_MatrixComplexD_mapN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Matrix< Complex< double >,Array2D_Dense< Complex< double > > > * >(argp1);
   {
     try {
-      result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(arg1,arg2);
+      Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__map_bang__SWIG_0(arg1,arg2,arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -20563,8 +20587,8 @@ SWIGINTERN VALUE _wrap_MatrixComplexD_mapN___(int nargs, VALUE *args, VALUE self
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "map!", 
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t map!(void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &), MatrixUtil::each_which_t const &each_which)\n"
-    "    Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t & map!(void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &))\n");
+    "    void map!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &), MatrixUtil::each_which_t const &each_which)\n"
+    "    void map!(Matrix< Complex< double >,Array2D_Dense< Complex< double > > >::self_t *self_p, void (*each_func)(Complex< double > const &,Complex< double > *,unsigned int const &,unsigned int const &))\n");
   
   return Qnil;
 }
@@ -21154,11 +21178,11 @@ SWIGEXPORT void Init_SylphideMath(void) {
   SWIG_TypeClientData(SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, (void *) &SwigClassMatrixD);
   rb_define_alloc_func(SwigClassMatrixD.klass, _wrap_MatrixD_allocate);
   rb_define_method(SwigClassMatrixD.klass, "initialize", VALUEFUNC(_wrap_new_MatrixD), -1);
-  rb_define_method(SwigClassMatrixD.klass, "swap_rows!", VALUEFUNC(_wrap_MatrixD_swap_rowsN___), -1);
-  rb_define_method(SwigClassMatrixD.klass, "swap_columns!", VALUEFUNC(_wrap_MatrixD_swap_columnsN___), -1);
   rb_define_method(SwigClassMatrixD.klass, "[]=", VALUEFUNC(_wrap_MatrixD___setitem__), -1);
   rb_define_singleton_method(SwigClassMatrixD.klass, "scalar", VALUEFUNC(_wrap_MatrixD_scalar), -1);
   rb_define_singleton_method(SwigClassMatrixD.klass, "I", VALUEFUNC(_wrap_MatrixD_I), -1);
+  rb_define_method(SwigClassMatrixD.klass, "swap_rows!", VALUEFUNC(_wrap_MatrixD_swap_rowsN___), -1);
+  rb_define_method(SwigClassMatrixD.klass, "swap_columns!", VALUEFUNC(_wrap_MatrixD_swap_columnsN___), -1);
   rb_define_method(SwigClassMatrixD.klass, "replace!", VALUEFUNC(_wrap_MatrixD_replaceN___), -1);
   rb_define_method(SwigClassMatrixD.klass, "map!", VALUEFUNC(_wrap_MatrixD_mapN___), -1);
   rb_define_alias(SwigClassMatrixD.klass, "collect!", "map!");
@@ -21288,11 +21312,11 @@ SWIGEXPORT void Init_SylphideMath(void) {
   SWIG_TypeClientData(SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, (void *) &SwigClassMatrixComplexD);
   rb_define_alloc_func(SwigClassMatrixComplexD.klass, _wrap_MatrixComplexD_allocate);
   rb_define_method(SwigClassMatrixComplexD.klass, "initialize", VALUEFUNC(_wrap_new_MatrixComplexD), -1);
-  rb_define_method(SwigClassMatrixComplexD.klass, "swap_rows!", VALUEFUNC(_wrap_MatrixComplexD_swap_rowsN___), -1);
-  rb_define_method(SwigClassMatrixComplexD.klass, "swap_columns!", VALUEFUNC(_wrap_MatrixComplexD_swap_columnsN___), -1);
   rb_define_method(SwigClassMatrixComplexD.klass, "[]=", VALUEFUNC(_wrap_MatrixComplexD___setitem__), -1);
   rb_define_singleton_method(SwigClassMatrixComplexD.klass, "scalar", VALUEFUNC(_wrap_MatrixComplexD_scalar), -1);
   rb_define_singleton_method(SwigClassMatrixComplexD.klass, "I", VALUEFUNC(_wrap_MatrixComplexD_I), -1);
+  rb_define_method(SwigClassMatrixComplexD.klass, "swap_rows!", VALUEFUNC(_wrap_MatrixComplexD_swap_rowsN___), -1);
+  rb_define_method(SwigClassMatrixComplexD.klass, "swap_columns!", VALUEFUNC(_wrap_MatrixComplexD_swap_columnsN___), -1);
   rb_define_method(SwigClassMatrixComplexD.klass, "replace!", VALUEFUNC(_wrap_MatrixComplexD_replaceN___), -1);
   rb_define_method(SwigClassMatrixComplexD.klass, "map!", VALUEFUNC(_wrap_MatrixComplexD_mapN___), -1);
   rb_define_alias(SwigClassMatrixComplexD.klass, "collect!", "map!");

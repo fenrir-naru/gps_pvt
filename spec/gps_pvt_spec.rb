@@ -253,6 +253,7 @@ __RINEX_OBS_TEXT__
       t_meas = GPS::Time::new(1849, 172413)
       expect(t_meas.to_a).to eq([1849, 172413])
       expect(t_meas.c_tm).to eq([2015, 6, 15, 23, 53, 33])
+      expect(GPS::Time::new(0, t_meas.serialize)).to eq(t_meas)
       
       sn.update_all_ephemeris(t_meas)
       
