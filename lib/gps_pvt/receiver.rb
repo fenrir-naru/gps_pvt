@@ -8,7 +8,7 @@ require_relative 'GPS'
 module GPS_PVT
 class Receiver
 
-  GPS::Time.define_method(:utc){
+  GPS::Time.send(:define_method, :utc){ # send as work around of old Ruby
     res = c_tm(GPS::Time::guess_leap_seconds(self))
     res[-1] += (seconds % 1)
     res
