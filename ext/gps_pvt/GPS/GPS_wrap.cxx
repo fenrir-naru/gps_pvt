@@ -2412,8 +2412,9 @@ struct GPS_User_PVT
   Matrix<FloatT, Array2D_Dense<FloatT> > G_enu() const {
     return proxy_t::linear_solver_t::rotate_G(base_t::G, base_t::user_position.ecef2enu());
   }
-  typename proxy_t::linear_solver_t linear_solver() const {
-    return typename proxy_t::linear_solver_t(base_t::G, base_t::W, base_t::delta_r);
+  typename proxy_t::linear_solver_t::partial_t linear_solver() const {
+    return typename proxy_t::linear_solver_t(base_t::G, base_t::W, base_t::delta_r)
+        .partial(used_satellites());
   }
   Matrix<FloatT, Array2D_Dense<FloatT> > C() const {
     return linear_solver().C();
@@ -2426,14 +2427,26 @@ struct GPS_User_PVT
     linear_solver().least_square(res);
     return res;
   }
+  Matrix<FloatT, Array2D_Dense<FloatT> > S_enu(
+      const Matrix<FloatT, Array2D_Dense<FloatT> > &s) const {
+    return proxy_t::linear_solver_t::rotate_S(s, base_t::user_position.ecef2enu());
+  }
   Matrix<FloatT, Array2D_Dense<FloatT> > S_enu() const {
-    return proxy_t::linear_solver_t::rotate_S(S(), base_t::user_position.ecef2enu());
+    return S_enu(S());
+  }
+  Matrix<FloatT, Array2D_Dense<FloatT> > slope_HV(
+      const Matrix<FloatT, Array2D_Dense<FloatT> > &s) const {
+    return linear_solver().slope_HV(s);
   }
   Matrix<FloatT, Array2D_Dense<FloatT> > slope_HV() const {
-    return linear_solver().slope_HV(S());
+    return slope_HV(S());
+  }
+  Matrix<FloatT, Array2D_Dense<FloatT> > slope_HV_enu(
+      const Matrix<FloatT, Array2D_Dense<FloatT> > &s) const {
+    return linear_solver().slope_HV(s, base_t::user_position.ecef2enu());
   }
   Matrix<FloatT, Array2D_Dense<FloatT> > slope_HV_enu() const {
-    return linear_solver().slope_HV(S(), base_t::user_position.ecef2enu());
+    return slope_HV_enu(S());
   }
   
   void fd(const typename base_t::detection_t **out) const {*out = &(base_t::FD);}
@@ -14001,13 +14014,58 @@ fail:
   Document-method: GPS_PVT::GPS::PVT.S_enu
 
   call-seq:
+    S_enu(MatrixD s) -> MatrixD
     S_enu -> MatrixD
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_PVT_S_enu(int argc, VALUE *argv, VALUE self) {
+_wrap_PVT_S_enu__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  Matrix< double,Array2D_Dense< double > > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  SwigValueWrapper< Matrix< double,Array2D_Dense< double > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","S_enu", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > const &","S_enu", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","S_enu", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
+  {
+    try {
+      result = ((GPS_User_PVT< double > const *)arg1)->S_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_PVT_S_enu__SWIG_1(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -14039,17 +14097,106 @@ fail:
 }
 
 
+SWIGINTERN VALUE _wrap_PVT_S_enu(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_PVT_S_enu__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PVT_S_enu__SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "PVT.S_enu", 
+    "    Matrix< double,Array2D_Dense< double > > PVT.S_enu(Matrix< double,Array2D_Dense< double > > const &s)\n"
+    "    Matrix< double,Array2D_Dense< double > > PVT.S_enu()\n");
+  
+  return Qnil;
+}
+
+
 /*
   Document-method: GPS_PVT::GPS::PVT.slope_HV
 
   call-seq:
+    slope_HV(MatrixD s) -> MatrixD
     slope_HV -> MatrixD
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_PVT_slope_HV(int argc, VALUE *argv, VALUE self) {
+_wrap_PVT_slope_HV__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  Matrix< double,Array2D_Dense< double > > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  SwigValueWrapper< Matrix< double,Array2D_Dense< double > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","slope_HV", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > const &","slope_HV", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","slope_HV", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
+  {
+    try {
+      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV((Matrix< double,Array2D_Dense< double > > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_PVT_slope_HV__SWIG_1(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -14081,17 +14228,106 @@ fail:
 }
 
 
+SWIGINTERN VALUE _wrap_PVT_slope_HV(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_PVT_slope_HV__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PVT_slope_HV__SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "PVT.slope_HV", 
+    "    Matrix< double,Array2D_Dense< double > > PVT.slope_HV(Matrix< double,Array2D_Dense< double > > const &s)\n"
+    "    Matrix< double,Array2D_Dense< double > > PVT.slope_HV()\n");
+  
+  return Qnil;
+}
+
+
 /*
   Document-method: GPS_PVT::GPS::PVT.slope_HV_enu
 
   call-seq:
+    slope_HV_enu(MatrixD s) -> MatrixD
     slope_HV_enu -> MatrixD
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_PVT_slope_HV_enu(int argc, VALUE *argv, VALUE self) {
+_wrap_PVT_slope_HV_enu__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  Matrix< double,Array2D_Dense< double > > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  SwigValueWrapper< Matrix< double,Array2D_Dense< double > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","slope_HV_enu", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "Matrix< double,Array2D_Dense< double > > const &","slope_HV_enu", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","slope_HV_enu", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
+  {
+    try {
+      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_PVT_slope_HV_enu__SWIG_1(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -14119,6 +14355,50 @@ _wrap_PVT_slope_HV_enu(int argc, VALUE *argv, VALUE self) {
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_PVT_slope_HV_enu(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_PVT_slope_HV_enu__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_User_PVTT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_PVT_slope_HV_enu__SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "PVT.slope_HV_enu", 
+    "    Matrix< double,Array2D_Dense< double > > PVT.slope_HV_enu(Matrix< double,Array2D_Dense< double > > const &s)\n"
+    "    Matrix< double,Array2D_Dense< double > > PVT.slope_HV_enu()\n");
+  
   return Qnil;
 }
 
