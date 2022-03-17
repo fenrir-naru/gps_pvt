@@ -1850,60 +1850,67 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_System_LLHT_double_WGS84_t swig_types[0]
 #define SWIGTYPE_System_XYZT_double_WGS84_t swig_types[1]
 #define SWIGTYPE_p_ComplexT_double_t swig_types[2]
-#define SWIGTYPE_p_GPS_EphemerisT_double_t swig_types[3]
-#define SWIGTYPE_p_GPS_Ionospheric_UTC_ParametersT_double_t swig_types[4]
-#define SWIGTYPE_p_GPS_MeasurementT_double_t swig_types[5]
-#define SWIGTYPE_p_GPS_SolverOptionsT_double_t swig_types[6]
-#define SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t swig_types[7]
-#define SWIGTYPE_p_GPS_SolverT_double_t swig_types[8]
-#define SWIGTYPE_p_GPS_Solver_GeneralOptionsT_double_t swig_types[9]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t swig_types[10]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters swig_types[11]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[12]
-#define SWIGTYPE_p_GPS_TimeT_double_t swig_types[13]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t swig_types[14]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[15]
-#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[16]
-#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[17]
-#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[18]
-#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[19]
-#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[20]
-#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[21]
-#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[22]
-#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[23]
-#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[24]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[25]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[26]
-#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[27]
-#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[28]
-#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[29]
-#define SWIGTYPE_p_available_satellites_t swig_types[30]
-#define SWIGTYPE_p_char swig_types[31]
-#define SWIGTYPE_p_double swig_types[32]
-#define SWIGTYPE_p_enu_t swig_types[33]
-#define SWIGTYPE_p_float_t swig_types[34]
-#define SWIGTYPE_p_gps_space_node_t swig_types[35]
-#define SWIGTYPE_p_gps_time_t swig_types[36]
-#define SWIGTYPE_p_int swig_types[37]
-#define SWIGTYPE_p_int_t swig_types[38]
-#define SWIGTYPE_p_llh_t swig_types[39]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[40]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[41]
-#define SWIGTYPE_p_range_correction_list_t swig_types[42]
-#define SWIGTYPE_p_s16_t swig_types[43]
-#define SWIGTYPE_p_s32_t swig_types[44]
-#define SWIGTYPE_p_s8_t swig_types[45]
-#define SWIGTYPE_p_satellites_t swig_types[46]
-#define SWIGTYPE_p_self_t swig_types[47]
-#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[48]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[49]
-#define SWIGTYPE_p_u16_t swig_types[50]
-#define SWIGTYPE_p_u32_t swig_types[51]
-#define SWIGTYPE_p_u8_t swig_types[52]
-#define SWIGTYPE_p_uint_t swig_types[53]
-#define SWIGTYPE_p_xyz_t swig_types[54]
-static swig_type_info *swig_types[56];
-static swig_module_info swig_module = {swig_types, 55, 0, 0, 0, 0};
+#define SWIGTYPE_p_DataParser swig_types[3]
+#define SWIGTYPE_p_GLONASS_EphemerisT_double_t swig_types[4]
+#define SWIGTYPE_p_GLONASS_SolverOptionsT_double_t swig_types[5]
+#define SWIGTYPE_p_GLONASS_SpaceNodeT_double_t swig_types[6]
+#define SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time swig_types[7]
+#define SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t swig_types[8]
+#define SWIGTYPE_p_GPS_EphemerisT_double_t swig_types[9]
+#define SWIGTYPE_p_GPS_Ionospheric_UTC_ParametersT_double_t swig_types[10]
+#define SWIGTYPE_p_GPS_MeasurementT_double_t swig_types[11]
+#define SWIGTYPE_p_GPS_SolverOptionsT_double_t swig_types[12]
+#define SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t swig_types[13]
+#define SWIGTYPE_p_GPS_SolverT_double_t swig_types[14]
+#define SWIGTYPE_p_GPS_Solver_GeneralOptionsT_double_t swig_types[15]
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t swig_types[16]
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters swig_types[17]
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[18]
+#define SWIGTYPE_p_GPS_TimeT_double_t swig_types[19]
+#define SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t swig_types[20]
+#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[21]
+#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[22]
+#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[23]
+#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[24]
+#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[25]
+#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[26]
+#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[27]
+#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[28]
+#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[29]
+#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[30]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[31]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[32]
+#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[33]
+#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[34]
+#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[35]
+#define SWIGTYPE_p_available_satellites_t swig_types[36]
+#define SWIGTYPE_p_char swig_types[37]
+#define SWIGTYPE_p_double swig_types[38]
+#define SWIGTYPE_p_enu_t swig_types[39]
+#define SWIGTYPE_p_eph_t swig_types[40]
+#define SWIGTYPE_p_float_t swig_types[41]
+#define SWIGTYPE_p_gps_space_node_t swig_types[42]
+#define SWIGTYPE_p_gps_time_t swig_types[43]
+#define SWIGTYPE_p_int swig_types[44]
+#define SWIGTYPE_p_int_t swig_types[45]
+#define SWIGTYPE_p_llh_t swig_types[46]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[47]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[48]
+#define SWIGTYPE_p_range_correction_list_t swig_types[49]
+#define SWIGTYPE_p_s16_t swig_types[50]
+#define SWIGTYPE_p_s32_t swig_types[51]
+#define SWIGTYPE_p_s8_t swig_types[52]
+#define SWIGTYPE_p_satellites_t swig_types[53]
+#define SWIGTYPE_p_self_t swig_types[54]
+#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[55]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[56]
+#define SWIGTYPE_p_u16_t swig_types[57]
+#define SWIGTYPE_p_u32_t swig_types[58]
+#define SWIGTYPE_p_u8_t swig_types[59]
+#define SWIGTYPE_p_uint_t swig_types[60]
+#define SWIGTYPE_p_xyz_t swig_types[61]
+static swig_type_info *swig_types[63];
+static swig_module_info swig_module = {swig_types, 62, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1943,12 +1950,14 @@ static VALUE mGPS;
 #include "navigation/GPS.h"
 #include "navigation/SBAS.h"
 #include "navigation/QZSS.h"
+#include "navigation/GLONASS.h"
 #include "navigation/RINEX.h"
 
 #include "navigation/GPS_Solver_Base.h"
 #include "navigation/GPS_Solver.h"
 #include "navigation/GPS_Solver_RAIM.h"
 #include "navigation/SBAS_Solver.h"
+#include "navigation/GLONASS_Solver.h"
 
 #if defined(__cplusplus) && (__cplusplus < 201103L)
 namespace std {
@@ -2364,6 +2373,31 @@ struct SBAS_Ephemeris : public SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephe
 
 
 template <class FloatT>
+struct GLONASS_Ephemeris 
+    : public GLONASS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris_with_GPS_Time {
+  typedef typename GLONASS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris_with_GPS_Time eph_t;
+  unsigned int super_frame, has_string;
+  typename eph_t::raw_t raw;
+  void invalidate() {
+    super_frame = 0;
+    has_string = 0;
+  }
+  bool is_consistent() const {
+    return has_string == 0x1F;
+  }
+  GLONASS_Ephemeris() : eph_t() {
+    invalidate();
+  }
+  GLONASS_Ephemeris(const eph_t &eph) 
+      : eph_t(eph),
+      super_frame(0), has_string(0), raw() {
+    raw = *this;
+    has_string = 0x1F;
+  }
+};
+
+
+template <class FloatT>
 struct GPS_User_PVT 
     : protected GPS_Solver_RAIM_LSR<FloatT,
       GPS_Solver_Base_Debug<FloatT, GPS_Solver_Base<FloatT> > >::user_pvt_t {
@@ -2521,6 +2555,19 @@ struct SBAS_SolverOptions
 
 
 template <class FloatT>
+struct GLONASS_SolverOptions 
+    : public GLONASS_SinglePositioning<FloatT>::options_t, 
+    GPS_SolverOptions_Common<FloatT> {
+  typedef typename GLONASS_SinglePositioning<FloatT>::options_t base_t;
+  void exclude(const int &prn){base_t::exclude_prn.set(prn);}
+  void include(const int &prn){base_t::exclude_prn.reset(prn);}
+  std::vector<int> excluded() const {return base_t::exclude_prn.excluded();}
+  GPS_Solver_GeneralOptions<FloatT> *cast_general(){return this;}
+  const GPS_Solver_GeneralOptions<FloatT> *cast_general() const {return this;}
+};
+
+
+template <class FloatT>
 struct GPS_RangeCorrector
     : public GPS_Solver_Base<FloatT>::range_corrector_t {
   VALUE callback;
@@ -2559,6 +2606,12 @@ struct GPS_Solver
     SBAS_SinglePositioning<FloatT> solver;
     sbas_t() : space_node(), options(), solver(space_node) {}
   } sbas;
+  struct glonass_t {
+    GLONASS_SpaceNode<FloatT> space_node;
+    GLONASS_SolverOptions<FloatT> options;
+    GLONASS_SinglePositioning<FloatT> solver;
+    glonass_t() : space_node(), options(), solver(space_node) {}
+  } glonass;
   VALUE hooks;
   typedef std::vector<GPS_RangeCorrector<FloatT> > user_correctors_t;
   user_correctors_t user_correctors;
@@ -2574,7 +2627,7 @@ struct GPS_Solver
   }
 
   GPS_Solver() : super_t(),
-      gps(), sbas(),
+      gps(), sbas(), glonass(),
       hooks(), user_correctors() {
 
     hooks = rb_hash_new();
@@ -2586,20 +2639,25 @@ struct GPS_Solver
     tropospheric.push_back(&gps.solver.tropospheric_simplified);
     gps.solver.ionospheric_correction
         = sbas.solver.ionospheric_correction
+        = glonass.solver.ionospheric_correction
         = ionospheric;
     gps.solver.tropospheric_correction
         = sbas.solver.tropospheric_correction
+        = glonass.solver.tropospheric_correction
         = tropospheric;
   }
   GPS_SpaceNode<FloatT> &gps_space_node() {return gps.space_node;}
   GPS_SolverOptions<FloatT> &gps_options() {return gps.options;}
   SBAS_SpaceNode<FloatT> &sbas_space_node() {return sbas.space_node;}
   SBAS_SolverOptions<FloatT> &sbas_options() {return sbas.options;}
+  GLONASS_SpaceNode<FloatT> &glonass_space_node() {return glonass.space_node;}
+  GLONASS_SolverOptions<FloatT> &glonass_options() {return glonass.options;}
   const base_t &select_solver(
       const typename base_t::prn_t &prn) const {
     if(prn > 0 && prn <= 32){return gps.solver;}
     if(prn >= 120 && prn <= 158){return sbas.solver;}
     if(prn > 192 && prn <= 202){return gps.solver;}
+    if(prn > 0x100 && prn <= (0x100 + 24)){return glonass.solver;}
     // call order: base_t::solve => this returned by select() 
     //     => relative_property() => select_solver()
     // For not supported satellite, call loop prevention is required.
@@ -2627,6 +2685,8 @@ struct GPS_Solver
     const_cast<gps_t &>(gps).solver.update_options(gps.options);
     const_cast<sbas_t &>(sbas).space_node.update_all_ephemeris(receiver_time);
     const_cast<sbas_t &>(sbas).solver.update_options(sbas.options);
+    const_cast<glonass_t &>(glonass).space_node.update_all_ephemeris(receiver_time);
+    const_cast<glonass_t &>(glonass).solver.update_options(glonass.options);
     return super_t::solve().user_pvt(measurement.items, receiver_time);
   }
   typedef 
@@ -2641,6 +2701,8 @@ struct GPS_Solver
       &gps.solver.tropospheric_correction,
       &sbas.solver.ionospheric_correction,
       &sbas.solver.tropospheric_correction,
+      &glonass.solver.ionospheric_correction,
+      &glonass.solver.tropospheric_correction,
     };
     for(std::size_t i(0); i < sizeof(root) / sizeof(root[0]); ++i){
       do{
@@ -3892,6 +3954,8 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
         ID2SYM(rb_intern("gps_tropospheric")),
         ID2SYM(rb_intern("sbas_ionospheric")),
         ID2SYM(rb_intern("sbas_tropospheric")),
+        ID2SYM(rb_intern("glonass_ionospheric")),
+        ID2SYM(rb_intern("glonass_tropospheric")),
       };
       static const VALUE k_opt(ID2SYM(rb_intern("options")));
       static const VALUE k_f_10_7(ID2SYM(rb_intern("f_10_7")));
@@ -4114,6 +4178,245 @@ SWIG_From_std_string  (const std::string& s)
   return SWIG_FromCharPtrAndSize(s.data(), s.size());
 }
 
+SWIGINTERN void GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(GLONASS_SpaceNode< double > *self,int const &prn,GLONASS_Ephemeris< double > const &eph,int const &priority_delta=1){
+    self->satellite(prn).register_ephemeris(eph, priority_delta);
+  }
+SWIGINTERN GLONASS_Ephemeris< double > GLONASS_SpaceNode_Sl_double_Sg__ephemeris(GLONASS_SpaceNode< double > const *self,int const &prn){
+    return GLONASS_Ephemeris<double>(
+        const_cast< GLONASS_SpaceNode<double> * >(self)->satellite(prn).ephemeris());
+  }
+SWIGINTERN int GLONASS_SpaceNode_Sl_double_Sg__read(GLONASS_SpaceNode< double > *self,char const *fname){
+    std::fstream fin(fname, std::ios::in | std::ios::binary);
+    typename RINEX_NAV_Reader<double>::space_node_list_t list = {NULL};
+    list.glonass = self;
+    return RINEX_NAV_Reader<double>::read_all(fin, list);
+  }
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_svid(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->svid = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_svid(GLONASS_Ephemeris< double > const *self){
+  return self->svid;
+}
+SWIGINTERN int GLONASS_Ephemeris_Sl_double_Sg__set_freq_ch(GLONASS_Ephemeris< double > *self,int const &v){
+  return self->freq_ch = v;
+}
+SWIGINTERN int const &GLONASS_Ephemeris_Sl_double_Sg__get_freq_ch(GLONASS_Ephemeris< double > const *self){
+  return self->freq_ch;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_t_k(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->t_k = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_t_k(GLONASS_Ephemeris< double > const *self){
+  return self->t_k;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_t_b(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->t_b = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_t_b(GLONASS_Ephemeris< double > const *self){
+  return self->t_b;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_M(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->M = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_M(GLONASS_Ephemeris< double > const *self){
+  return self->M;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_gamma_n(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->gamma_n = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_gamma_n(GLONASS_Ephemeris< double > const *self){
+  return self->gamma_n;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_n(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->tau_n = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_n(GLONASS_Ephemeris< double > const *self){
+  return self->tau_n;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->xn = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn(GLONASS_Ephemeris< double > const *self){
+  return self->xn;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn_dot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->xn_dot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn_dot(GLONASS_Ephemeris< double > const *self){
+  return self->xn_dot;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->xn_ddot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn_ddot(GLONASS_Ephemeris< double > const *self){
+  return self->xn_ddot;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->yn = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn(GLONASS_Ephemeris< double > const *self){
+  return self->yn;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn_dot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->yn_dot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn_dot(GLONASS_Ephemeris< double > const *self){
+  return self->yn_dot;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->yn_ddot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn_ddot(GLONASS_Ephemeris< double > const *self){
+  return self->yn_ddot;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->zn = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn(GLONASS_Ephemeris< double > const *self){
+  return self->zn;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn_dot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->zn_dot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn_dot(GLONASS_Ephemeris< double > const *self){
+  return self->zn_dot;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->zn_ddot = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn_ddot(GLONASS_Ephemeris< double > const *self){
+  return self->zn_ddot;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_B_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->B_n = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_B_n(GLONASS_Ephemeris< double > const *self){
+  return self->B_n;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_p(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->p = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_p(GLONASS_Ephemeris< double > const *self){
+  return self->p;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_N_T(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->N_T = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_N_T(GLONASS_Ephemeris< double > const *self){
+  return self->N_T;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_F_T(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->F_T = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_F_T(GLONASS_Ephemeris< double > const *self){
+  return self->F_T;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->n = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_n(GLONASS_Ephemeris< double > const *self){
+  return self->n;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_delta_tau_n(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->delta_tau_n = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_delta_tau_n(GLONASS_Ephemeris< double > const *self){
+  return self->delta_tau_n;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_E_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->E_n = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_E_n(GLONASS_Ephemeris< double > const *self){
+  return self->E_n;
+}
+SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_P1(GLONASS_Ephemeris< double > *self,unsigned int const &v){
+  return self->P1 = v;
+}
+SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_P1(GLONASS_Ephemeris< double > const *self){
+  return self->P1;
+}
+SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__set_P2(GLONASS_Ephemeris< double > *self,bool const &v){
+  return self->P2 = v;
+}
+SWIGINTERN bool const &GLONASS_Ephemeris_Sl_double_Sg__get_P2(GLONASS_Ephemeris< double > const *self){
+  return self->P2;
+}
+SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__set_P4(GLONASS_Ephemeris< double > *self,bool const &v){
+  return self->P4 = v;
+}
+SWIGINTERN bool const &GLONASS_Ephemeris_Sl_double_Sg__get_P4(GLONASS_Ephemeris< double > const *self){
+  return self->P4;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_c(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->tau_c = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_c(GLONASS_Ephemeris< double > const *self){
+  return self->tau_c;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_GPS(GLONASS_Ephemeris< double > *self,double const &v){
+  return self->tau_GPS = v;
+}
+SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_GPS(GLONASS_Ephemeris< double > const *self){
+  return self->tau_GPS;
+}
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__frequency_L1(GLONASS_Ephemeris< double > const *self){
+    return self->L1_frequency();
+  }
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__frequency_L2(GLONASS_Ephemeris< double > const *self){
+    return self->L2_frequency();
+  }
+SWIGINTERN GPS_Time< double > GLONASS_Ephemeris_Sl_double_Sg__base_time(GLONASS_Ephemeris< double > const *self){
+    return self->base_time();
+  }
+SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(GLONASS_Ephemeris< double > *self,unsigned int const buf[4],unsigned int const &leap_seconds=0){
+    typedef typename GLONASS_SpaceNode<double>
+        ::template BroadcastedMessage<unsigned int> parser_t;
+    unsigned int super_frame(buf[3] >> 16), frame(buf[3] & 0xF), string_no(parser_t::m(buf));
+    unsigned int has_string(self->has_string);
+    if((has_string > 0) && (self->super_frame != super_frame)){
+      has_string = 0; // clean up
+    }
+    self->super_frame = super_frame;
+    has_string |= (0x1 << (string_no - 1));
+    switch(string_no){
+      case 1: self->raw.template update_string1<0, 0>(buf); break;
+      case 2: self->raw.template update_string2<0, 0>(buf); break;
+      case 3: self->raw.template update_string3<0, 0>(buf); break;
+      case 4: self->raw.template update_string4<0, 0>(buf); break;
+      case 5: {
+        self->raw.template update_string5<0, 0>(buf);
+        if(frame == 4){
+          // TODO: require special care for 50th frame? @see Table 4.9 note (4)
+        }
+        break;
+      }
+    }
+    bool updated(false);
+    if((has_string == 0x1F) && (has_string != self->has_string)){
+      updated = true;
+      // All ephemeris and time info. in the same super frame has been acquired, 
+      // and this block is called once per one same super frame.
+      // Ephemeris_with_Time::raw_t =(cast)=> Ephemeris_with_Time => Ephemeris_with_GPS_Time
+      static_cast<GLONASS_Ephemeris<double>::eph_t &>(*self) 
+          = GLONASS_Ephemeris<double>::eph_t(self->raw);
+      self->t_b_gps += leap_seconds;
+    }
+    self->has_string = has_string;
+    return updated;
+  }
+SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t_arrival,double const &pseudo_range=0){
+    return self->clock_error(t_arrival, pseudo_range);
+  }
+SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GLONASS_Ephemeris< double > const *self,System_XYZ< double,WGS84 > &position,System_XYZ< double,WGS84 > &velocity,GPS_Time< double > const &t,double const &pseudo_range=0){
+    typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t res(
+        self->constellation(t, pseudo_range));
+    position = res.position;
+    velocity = res.velocity;
+  }
+SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__is_in_range(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t){
+    // "invalidate()" is used to make raw and converted data inconsistent.
+    return self->is_valid(t);
+  }
 SWIGINTERN void RINEX_Observation_Sl_double_Sg__read(char const *fname){
     std::fstream fin(fname, std::ios::in | std::ios::binary);
     struct reader_t : public RINEX_OBS_Reader<double> {
@@ -15804,6 +16107,90 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Solver.glonass_space_node
+
+  call-seq:
+    glonass_space_node -> SpaceNode_GLONASS
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Solver_glonass_space_node(int argc, VALUE *argv, VALUE self) {
+  GPS_Solver< double > *arg1 = (GPS_Solver< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GLONASS_SpaceNode< double > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","glonass_space_node", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
+  {
+    try {
+      result = (GLONASS_SpaceNode< double > *) &(arg1)->glonass_space_node();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Solver.glonass_options
+
+  call-seq:
+    glonass_options -> SolverOptions_GLONASS
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Solver_glonass_options(int argc, VALUE *argv, VALUE self) {
+  GPS_Solver< double > *arg1 = (GPS_Solver< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GLONASS_SolverOptions< double > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","glonass_options", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
+  {
+    try {
+      result = (GLONASS_SolverOptions< double > *) &(arg1)->glonass_options();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Solver.solve
 
   call-seq:
@@ -19119,6 +19506,4657 @@ free_SBAS_SolverOptions_Sl_double_Sg_(void *self) {
 }
 
 /*
+  Document-class: GPS_PVT::GPS::SpaceNode_GLONASS
+
+  Proxy of C++ GPS_PVT::GPS::SpaceNode_GLONASS class
+
+
+*/
+static swig_class SwigClassSpaceNode_GLONASS;
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.light_speed
+
+  call-seq:
+    light_speed -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.SpaceNode_GLONASS_light_speed
+
+  call-seq:
+    SpaceNode_GLONASS_light_speed -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_light_speed_get(VALUE self) {
+  VALUE _val;
+  
+  _val = SWIG_From_double(static_cast< double >(GLONASS_SpaceNode< double >::light_speed));
+  return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L1_frequency_base
+
+  call-seq:
+    L1_frequency_base -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.SpaceNode_GLONASS_L1_frequency_base
+
+  call-seq:
+    SpaceNode_GLONASS_L1_frequency_base -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L1_frequency_base_get(VALUE self) {
+  VALUE _val;
+  
+  _val = SWIG_From_double(static_cast< double >(GLONASS_SpaceNode< double >::L1_frequency_base));
+  return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L1_frequency_gap
+
+  call-seq:
+    L1_frequency_gap -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.SpaceNode_GLONASS_L1_frequency_gap
+
+  call-seq:
+    SpaceNode_GLONASS_L1_frequency_gap -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L1_frequency_gap_get(VALUE self) {
+  VALUE _val;
+  
+  _val = SWIG_From_double(static_cast< double >(GLONASS_SpaceNode< double >::L1_frequency_gap));
+  return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L2_frequency_base
+
+  call-seq:
+    L2_frequency_base -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.SpaceNode_GLONASS_L2_frequency_base
+
+  call-seq:
+    SpaceNode_GLONASS_L2_frequency_base -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L2_frequency_base_get(VALUE self) {
+  VALUE _val;
+  
+  _val = SWIG_From_double(static_cast< double >(GLONASS_SpaceNode< double >::L2_frequency_base));
+  return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L2_frequency_gap
+
+  call-seq:
+    L2_frequency_gap -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.SpaceNode_GLONASS_L2_frequency_gap
+
+  call-seq:
+    SpaceNode_GLONASS_L2_frequency_gap -> GLONASS_SpaceNode< double >::float_t const
+
+Get value of attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L2_frequency_gap_get(VALUE self) {
+  VALUE _val;
+  
+  _val = SWIG_From_double(static_cast< double >(GLONASS_SpaceNode< double >::L2_frequency_gap));
+  return _val;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L1_frequency
+
+  call-seq:
+    L1_frequency(GLONASS_SpaceNode< double >::int_t const & freq_ch) -> GLONASS_SpaceNode< double >::float_t
+
+A class method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L1_frequency(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double >::int_t *arg1 = 0 ;
+  GLONASS_SpaceNode< double >::int_t temp1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  GLONASS_SpaceNode< double >::float_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_int(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double >::int_t","GLONASS_SpaceNode<(double)>::L1_frequency", 1, argv[0] ));
+  } 
+  temp1 = static_cast< GLONASS_SpaceNode< double >::int_t >(val1);
+  arg1 = &temp1;
+  {
+    try {
+      result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L1_frequency((int const &)*arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.L2_frequency
+
+  call-seq:
+    L2_frequency(GLONASS_SpaceNode< double >::int_t const & freq_ch) -> GLONASS_SpaceNode< double >::float_t
+
+A class method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_L2_frequency(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double >::int_t *arg1 = 0 ;
+  GLONASS_SpaceNode< double >::int_t temp1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  GLONASS_SpaceNode< double >::float_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  ecode1 = SWIG_AsVal_int(argv[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double >::int_t","GLONASS_SpaceNode<(double)>::L2_frequency", 1, argv[0] ));
+  } 
+  temp1 = static_cast< GLONASS_SpaceNode< double >::int_t >(val1);
+  arg1 = &temp1;
+  {
+    try {
+      result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L2_frequency((int const &)*arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_SpaceNode_GLONASS_allocate(VALUE self)
+#else
+_wrap_SpaceNode_GLONASS_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_GLONASS_SpaceNodeT_double_t);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.new
+
+  call-seq:
+    SpaceNode_GLONASS.new
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_SpaceNode_GLONASS(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *result = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  {
+    try {
+      result = (GLONASS_SpaceNode< double > *)new GLONASS_SpaceNode< double >();
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN void
+free_GLONASS_SpaceNode_Sl_double_Sg_(void *self) {
+    GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *)self;
+    delete arg1;
+}
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.has_satellite
+
+  call-seq:
+    has_satellite(int const & prn) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_has_satellite(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > const *","has_satellite", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","has_satellite", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (bool)((GLONASS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.update_all_ephemeris
+
+  call-seq:
+    update_all_ephemeris(Time target_time)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_update_all_ephemeris(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  GPS_Time< GLONASS_SpaceNode< double >::float_t > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > *","update_all_ephemeris", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< GLONASS_SpaceNode< double >::float_t > const &","update_all_ephemeris", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< GLONASS_SpaceNode< double >::float_t > const &","update_all_ephemeris", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< GLONASS_SpaceNode< double >::float_t > * >(argp2);
+  {
+    try {
+      (arg1)->update_all_ephemeris((GPS_Time< GLONASS_SpaceNode< double >::float_t > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.register_ephemeris
+
+  call-seq:
+    register_ephemeris(int const & prn, Ephemeris_GLONASS eph, int const & priority_delta=1)
+    register_ephemeris(int const & prn, Ephemeris_GLONASS eph)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  int *arg2 = 0 ;
+  GLONASS_Ephemeris< double > *arg3 = 0 ;
+  int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  int temp4 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  
+  if ((argc < 3) || (argc > 3)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > *","register_ephemeris", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","register_ephemeris", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_GLONASS_EphemerisT_double_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const &","register_ephemeris", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GLONASS_Ephemeris< double > const &","register_ephemeris", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp3);
+  ecode4 = SWIG_AsVal_int(argv[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "int","register_ephemeris", 4, argv[2] ));
+  } 
+  temp4 = static_cast< int >(val4);
+  arg4 = &temp4;
+  {
+    try {
+      GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  int *arg2 = 0 ;
+  GLONASS_Ephemeris< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > *","register_ephemeris", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","register_ephemeris", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_GLONASS_EphemerisT_double_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const &","register_ephemeris", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GLONASS_Ephemeris< double > const &","register_ephemeris", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp3);
+  {
+    try {
+      GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_SpaceNode_GLONASS_register_ephemeris(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[5];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 5) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          {
+            int res = SWIG_AsVal_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_0(nargs, args, self);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 5, "register_ephemeris", 
+    "    void register_ephemeris(int const &prn, GLONASS_Ephemeris< double > const &eph, int const &priority_delta)\n"
+    "    void register_ephemeris(int const &prn, GLONASS_Ephemeris< double > const &eph)\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.ephemeris
+
+  call-seq:
+    ephemeris(int const & prn) -> Ephemeris_GLONASS
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_ephemeris(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  GLONASS_Ephemeris< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > const *","ephemeris", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","ephemeris", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = GLONASS_SpaceNode_Sl_double_Sg__ephemeris((GLONASS_SpaceNode< double > const *)arg1,(int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new GLONASS_Ephemeris< double >(static_cast< const GLONASS_Ephemeris< double >& >(result))), SWIGTYPE_p_GLONASS_EphemerisT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SpaceNode_GLONASS.read
+
+  call-seq:
+    read(char const * fname) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SpaceNode_GLONASS_read(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SpaceNode< double > *arg1 = (GLONASS_SpaceNode< double > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SpaceNode< double > *","read", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SpaceNode< double > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  {
+    try {
+      result = (int)GLONASS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return vresult;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return Qnil;
+}
+
+
+/*
+  Document-class: GPS_PVT::GPS::Ephemeris_GLONASS
+
+  Proxy of C++ GPS_PVT::GPS::Ephemeris_GLONASS class
+
+
+*/
+static swig_class SwigClassEphemeris_GLONASS;
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.super_frame
+
+  call-seq:
+    super_frame -> unsigned int
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.super_frame=
+
+  call-seq:
+    super_frame=(x) -> unsigned int
+
+Set new value for attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_super_frame_set(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","super_frame", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","super_frame", 2, argv[0] ));
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  if (arg1) (arg1)->super_frame = arg2;
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_super_frame_get(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","super_frame", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned int) ((arg1)->super_frame);
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.has_string
+
+  call-seq:
+    has_string -> unsigned int
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.has_string=
+
+  call-seq:
+    has_string=(x) -> unsigned int
+
+Set new value for attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_has_string_set(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","has_string", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","has_string", 2, argv[0] ));
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  if (arg1) (arg1)->has_string = arg2;
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_has_string_get(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","has_string", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned int) ((arg1)->has_string);
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.raw
+
+  call-seq:
+    raw -> GLONASS_Ephemeris< double >::eph_t::raw_t
+
+Get value of attribute.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.raw=
+
+  call-seq:
+    raw=(x) -> GLONASS_Ephemeris< double >::eph_t::raw_t
+
+Set new value for attribute.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_raw_set(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GLONASS_Ephemeris< double >::eph_t::raw_t *arg2 = (GLONASS_Ephemeris< double >::eph_t::raw_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","raw", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2,SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double >::eph_t::raw_t *","raw", 2, argv[0] )); 
+  }
+  arg2 = reinterpret_cast< GLONASS_Ephemeris< double >::eph_t::raw_t * >(argp2);
+  if (arg1) (arg1)->raw = *arg2;
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_raw_get(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GLONASS_Ephemeris< double >::eph_t::raw_t *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","raw", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (GLONASS_Ephemeris< double >::eph_t::raw_t *)& ((arg1)->raw);
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.invalidate
+
+  call-seq:
+    invalidate
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_invalidate(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","invalidate", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      (arg1)->invalidate();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.consistent?
+
+  call-seq:
+    consistent? -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_consistentq___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_consistent", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_consistent();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.new
+
+  call-seq:
+    Ephemeris_GLONASS.new
+    Ephemeris_GLONASS.new(GLONASS_Ephemeris< double >::eph_t const & eph)
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_Ephemeris_GLONASS__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *result = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  {
+    try {
+      result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >();
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_Ephemeris_GLONASS_allocate(VALUE self)
+#else
+_wrap_Ephemeris_GLONASS_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_GLONASS_EphemerisT_double_t);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+SWIGINTERN VALUE
+_wrap_new_Ephemeris_GLONASS__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double >::eph_t *arg1 = 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  GLONASS_Ephemeris< double > *result = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(argv[0], &argp1, SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time,  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double >::eph_t const &","GLONASS_Ephemeris<(double)>", 1, argv[0] )); 
+  }
+  if (!argp1) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GLONASS_Ephemeris< double >::eph_t const &","GLONASS_Ephemeris<(double)>", 1, argv[0])); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double >::eph_t * >(argp1);
+  {
+    try {
+      result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >((GLONASS_Ephemeris< double >::eph_t const &)*arg1);
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_new_Ephemeris_GLONASS(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[1];
+  int ii;
+  
+  argc = nargs;
+  if (argc > 1) SWIG_fail;
+  for (ii = 0; (ii < argc); ++ii) {
+    argv[ii] = args[ii];
+  }
+  if (argc == 0) {
+    return _wrap_new_Ephemeris_GLONASS__SWIG_0(nargs, args, self);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time, SWIG_POINTER_NO_NULL);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_Ephemeris_GLONASS__SWIG_1(nargs, args, self);
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 1, "Ephemeris_GLONASS.new", 
+    "    Ephemeris_GLONASS.new()\n"
+    "    Ephemeris_GLONASS.new(GLONASS_Ephemeris< double >::eph_t const &eph)\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.svid=
+
+  call-seq:
+    svid=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_svide___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_svid", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_svid", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.svid
+
+  call-seq:
+    svid -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_svid(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_svid", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_svid((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.freq_ch=
+
+  call-seq:
+    freq_ch=(int const & v) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_freq_che___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_freq_ch", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_freq_ch", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_freq_ch(arg1,(int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.freq_ch
+
+  call-seq:
+    freq_ch -> int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_freq_ch(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_freq_ch", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_freq_ch((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.t_k=
+
+  call-seq:
+    t_k=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_t_ke___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_t_k", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_t_k", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_k(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.t_k
+
+  call-seq:
+    t_k -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_t_k(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_t_k", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_k((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.t_b=
+
+  call-seq:
+    t_b=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_t_be___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_t_b", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_t_b", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_b(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.t_b
+
+  call-seq:
+    t_b -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_t_b(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_t_b", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_b((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.M=
+
+  call-seq:
+    M=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_Me___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_M", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_M", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_M(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.M
+
+  call-seq:
+    M -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_M(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_M", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_M((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.gamma_n=
+
+  call-seq:
+    gamma_n=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_gamma_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_gamma_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_gamma_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_gamma_n(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.gamma_n
+
+  call-seq:
+    gamma_n -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_gamma_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_gamma_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_gamma_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_n=
+
+  call-seq:
+    tau_n=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_tau_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_tau_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_n(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_n
+
+  call-seq:
+    tau_n -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn=
+
+  call-seq:
+    xn=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_xn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_xn", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn
+
+  call-seq:
+    xn -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xn(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn_dot=
+
+  call-seq:
+    xn_dot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xn_dote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_xn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_xn_dot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_dot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn_dot
+
+  call-seq:
+    xn_dot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xn_dot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_dot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn_ddot=
+
+  call-seq:
+    xn_ddot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xn_ddote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_xn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_xn_ddot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_ddot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.xn_ddot
+
+  call-seq:
+    xn_ddot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_xn_ddot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_ddot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn=
+
+  call-seq:
+    yn=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_yn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_yn", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn
+
+  call-seq:
+    yn -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yn(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn_dot=
+
+  call-seq:
+    yn_dot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yn_dote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_yn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_yn_dot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_dot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn_dot
+
+  call-seq:
+    yn_dot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yn_dot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_dot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn_ddot=
+
+  call-seq:
+    yn_ddot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yn_ddote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_yn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_yn_ddot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_ddot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.yn_ddot
+
+  call-seq:
+    yn_ddot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yn_ddot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_ddot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn=
+
+  call-seq:
+    zn=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_zn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_zn", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn
+
+  call-seq:
+    zn -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zn(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn_dot=
+
+  call-seq:
+    zn_dot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zn_dote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_zn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_zn_dot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_dot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn_dot
+
+  call-seq:
+    zn_dot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zn_dot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_dot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn_ddot=
+
+  call-seq:
+    zn_ddot=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zn_ddote___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_zn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_zn_ddot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_ddot(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.zn_ddot
+
+  call-seq:
+    zn_ddot -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_zn_ddot(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn_ddot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_ddot((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.B_n=
+
+  call-seq:
+    B_n=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_B_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_B_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_B_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_B_n(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.B_n
+
+  call-seq:
+    B_n -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_B_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_B_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_B_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.p=
+
+  call-seq:
+    p=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_pe___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_p", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_p", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_p(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.p
+
+  call-seq:
+    p -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_p(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_p", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_p((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.N_T=
+
+  call-seq:
+    N_T=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_N_Te___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_N_T", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_N_T", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_N_T(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.N_T
+
+  call-seq:
+    N_T -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_N_T(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_N_T", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_N_T((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.F_T=
+
+  call-seq:
+    F_T=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_F_Te___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_F_T", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_F_T", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_F_T(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.F_T
+
+  call-seq:
+    F_T -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_F_T(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_F_T", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_F_T((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.n=
+
+  call-seq:
+    n=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_n(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.n
+
+  call-seq:
+    n -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.delta_tau_n=
+
+  call-seq:
+    delta_tau_n=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_delta_tau_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_delta_tau_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_delta_tau_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_delta_tau_n(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.delta_tau_n
+
+  call-seq:
+    delta_tau_n -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_delta_tau_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_delta_tau_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_delta_tau_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.E_n=
+
+  call-seq:
+    E_n=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_E_ne___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_E_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_E_n", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_E_n(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.E_n
+
+  call-seq:
+    E_n -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_E_n(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_E_n", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_E_n((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P1=
+
+  call-seq:
+    P1=(unsigned int const & v) -> unsigned int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P1e___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_P1", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_P1", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_P1(arg1,(unsigned int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P1
+
+  call-seq:
+    P1 -> unsigned int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P1", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_P1((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P2=
+
+  call-seq:
+    P2=(bool const & v) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P2e___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  bool *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool temp2 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_P2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_bool(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "bool","set_P2", 2, argv[0] ));
+  } 
+  temp2 = static_cast< bool >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P2(arg1,(bool const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P2
+
+  call-seq:
+    P2 -> bool const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P2(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P2((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P4=
+
+  call-seq:
+    P4=(bool const & v) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P4e___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  bool *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool temp2 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_P4", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_bool(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "bool","set_P4", 2, argv[0] ));
+  } 
+  temp2 = static_cast< bool >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P4(arg1,(bool const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P4
+
+  call-seq:
+    P4 -> bool const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P4(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P4", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P4((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_c=
+
+  call-seq:
+    tau_c=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_ce___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_tau_c", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_tau_c", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_c(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_c
+
+  call-seq:
+    tau_c -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_c(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_c", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_c((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_GPS=
+
+  call-seq:
+    tau_GPS=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_GPSe___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_tau_GPS", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_tau_GPS", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_GPS(arg1,(double const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.tau_GPS
+
+  call-seq:
+    tau_GPS -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_tau_GPS(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_GPS", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_GPS((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.frequency_L1
+
+  call-seq:
+    frequency_L1 -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_frequency_L1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","frequency_L1", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L1((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.frequency_L2
+
+  call-seq:
+    frequency_L2 -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_frequency_L2(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","frequency_L2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L2((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.base_time
+
+  call-seq:
+    base_time -> Time
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_base_time(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Time< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","base_time", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = GLONASS_Ephemeris_Sl_double_Sg__base_time((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.parse
+
+  call-seq:
+    parse(unsigned int const [4] buf, unsigned int const & leap_seconds=0) -> bool
+    parse(unsigned int const [4] buf) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_parse__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2[4] ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","parse", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    if(!(RB_TYPE_P(argv[0], T_ARRAY) && (RARRAY_LEN(argv[0]) == 4))){
+      SWIG_exception(SWIG_TypeError, "array[4] is expected");
+    }
+    for(int i(0); i < 4; ++i){
+      if(!SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (RARRAY_AREF(argv[0], i), &temp2[i]))){
+        SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+      }
+    }
+    arg2 = temp2;
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","parse", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  {
+    try {
+      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2,(unsigned int const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_parse__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2[4] ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","parse", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    if(!(RB_TYPE_P(argv[0], T_ARRAY) && (RARRAY_LEN(argv[0]) == 4))){
+      SWIG_exception(SWIG_TypeError, "array[4] is expected");
+    }
+    for(int i(0); i < 4; ++i){
+      if(!SWIG_IsOK(SWIG_AsVal_unsigned_SS_int (RARRAY_AREF(argv[0], i), &temp2[i]))){
+        SWIG_exception(SWIG_TypeError, "unsigned int is expected");
+      }
+    }
+    arg2 = temp2;
+  }
+  {
+    try {
+      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_parse(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        _v = RB_TYPE_P(argv[1], T_ARRAY) ? 1 : 0;
+      }
+      if (_v) {
+        return _wrap_Ephemeris_GLONASS_parse__SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        _v = RB_TYPE_P(argv[1], T_ARRAY) ? 1 : 0;
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Ephemeris_GLONASS_parse__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "parse", 
+    "    bool parse(unsigned int const buf[4], unsigned int const &leap_seconds)\n"
+    "    bool parse(unsigned int const buf[4])\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.clock_error
+
+  call-seq:
+    clock_error(Time t_arrival, double const & pseudo_range=0) -> double
+    clock_error(Time t_arrival) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_clock_error__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  double *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  double temp3 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","clock_error", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","clock_error", 3, argv[1] ));
+  } 
+  temp3 = static_cast< double >(val3);
+  arg3 = &temp3;
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_clock_error__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","clock_error", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (double)GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_clock_error(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_Ephemeris_GLONASS_clock_error__SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_double(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Ephemeris_GLONASS_clock_error__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "clock_error", 
+    "    double clock_error(GPS_Time< double > const &t_arrival, double const &pseudo_range)\n"
+    "    double clock_error(GPS_Time< double > const &t_arrival)\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.constellation
+
+  call-seq:
+    constellation(Time t, double const & pseudo_range=0)
+    constellation(Time t)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  System_XYZ< double,WGS84 > *arg2 = 0 ;
+  System_XYZ< double,WGS84 > *arg3 = 0 ;
+  GPS_Time< double > *arg4 = 0 ;
+  double *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  System_XYZ< double,WGS84 > temp2 ;
+  System_XYZ< double,WGS84 > temp3 ;
+  void *argp4 ;
+  int res4 = 0 ;
+  double temp5 ;
+  double val5 ;
+  int ecode5 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  arg2 = &temp2;
+  
+  
+  arg3 = &temp3;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","constellation", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  }
+  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
+  ecode5 = SWIG_AsVal_double(argv[1], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
+  } 
+  temp5 = static_cast< double >(val5);
+  arg5 = &temp5;
+  {
+    try {
+      GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = rb_ary_new();
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+  }
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  System_XYZ< double,WGS84 > *arg2 = 0 ;
+  System_XYZ< double,WGS84 > *arg3 = 0 ;
+  GPS_Time< double > *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  System_XYZ< double,WGS84 > temp2 ;
+  System_XYZ< double,WGS84 > temp3 ;
+  void *argp4 ;
+  int res4 = 0 ;
+  VALUE vresult = Qnil;
+  
+  
+  arg2 = &temp2;
+  
+  
+  arg3 = &temp3;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","constellation", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  }
+  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
+  {
+    try {
+      GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = rb_ary_new();
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+  }
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_constellation(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_Ephemeris_GLONASS_constellation__SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_double(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Ephemeris_GLONASS_constellation__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "constellation", 
+    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range)\n"
+    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t)\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.in_range?
+
+  call-seq:
+    in_range?(Time t) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_in_rangeq___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_in_range", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_in_range", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_in_range", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__is_in_range((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN void
+free_GLONASS_Ephemeris_Sl_double_Sg_(void *self) {
+    GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *)self;
+    delete arg1;
+}
+
+/*
+  Document-class: GPS_PVT::GPS::SolverOptions_GLONASS < GPS::SolverOptionsCommon
+
+  Proxy of C++ GPS_PVT::GPS::SolverOptions_GLONASS class
+
+
+*/
+static swig_class SwigClassSolverOptions_GLONASS;
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions_GLONASS.exclude
+
+  call-seq:
+    exclude(int const & prn)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptions_GLONASS_exclude(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SolverOptions< double > *arg1 = (GLONASS_SolverOptions< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SolverOptions< double > *","exclude", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SolverOptions< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","exclude", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      (arg1)->exclude((int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions_GLONASS.include
+
+  call-seq:
+    include(int const & prn)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptions_GLONASS_include(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SolverOptions< double > *arg1 = (GLONASS_SolverOptions< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SolverOptions< double > *","include", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SolverOptions< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","include", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      (arg1)->include((int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions_GLONASS.excluded
+
+  call-seq:
+    excluded -> std::vector< int >
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptions_GLONASS_excluded(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SolverOptions< double > *arg1 = (GLONASS_SolverOptions< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::vector< int > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SolverOptions< double > const *","excluded", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_SolverOptions< double > * >(argp1);
+  {
+    try {
+      result = ((GLONASS_SolverOptions< double > const *)arg1)->excluded();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  {
+    vresult = rb_ary_new();
+    
+    for(std::vector< int >::const_iterator it((&result)->begin()), it_end((&result)->end());
+      it != it_end; ++it){
+      vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  (*it));
+    }
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_SolverOptions_GLONASS_allocate(VALUE self)
+#else
+_wrap_SolverOptions_GLONASS_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_GLONASS_SolverOptionsT_double_t);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions_GLONASS.new
+
+  call-seq:
+    SolverOptions_GLONASS.new
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_SolverOptions_GLONASS(int argc, VALUE *argv, VALUE self) {
+  GLONASS_SolverOptions< double > *result = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  {
+    try {
+      result = (GLONASS_SolverOptions< double > *)new GLONASS_SolverOptions< double >();
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN void
+free_GLONASS_SolverOptions_Sl_double_Sg_(void *self) {
+    GLONASS_SolverOptions< double > *arg1 = (GLONASS_SolverOptions< double > *)self;
+    delete arg1;
+}
+
+/*
   Document-class: GPS_PVT::GPS
 
   Proxy of C++ GPS_PVT::GPS class
@@ -19231,9 +24269,6 @@ free_RINEX_Observation_Sl_double_Sg_(void *self) {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_tTo_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *)  ((Matrix< double,Array2D_Dense< double > > *) x));
-}
 static void *_p_GPS_EphemerisT_double_tTo_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((GPS_SpaceNode< double >::SatelliteProperties::Ephemeris *)  ((GPS_Ephemeris< double > *) x));
 }
@@ -19243,15 +24278,30 @@ static void *_p_GPS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double
 static void *_p_SBAS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((GPS_SolverOptions_Common< double > *)  ((SBAS_SolverOptions< double > *) x));
 }
-static void *_p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *)  ((GPS_Ionospheric_UTC_Parameters< double > *) x));
+static void *_p_GLONASS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((GPS_SolverOptions_Common< double > *)  ((GLONASS_SolverOptions< double > *) x));
+}
+static void *_p_GLONASS_EphemerisT_double_tTo_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((GLONASS_SpaceNode< double >::SatelliteProperties::Ephemeris_with_GPS_Time *)  ((GLONASS_Ephemeris< double > *) x));
 }
 static void *_p_SBAS_EphemerisT_double_tTo_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris *)  ((SBAS_Ephemeris< double > *) x));
 }
+static void *_p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *)  ((GPS_Ionospheric_UTC_Parameters< double > *) x));
+}
+static void *_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_tTo_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *)  ((Matrix< double,Array2D_Dense< double > > *) x));
+}
 static swig_type_info _swigt__System_LLHT_double_WGS84_t = {"_System_LLHT_double_WGS84_t", "System_LLH< double,WGS84 >", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__System_XYZT_double_WGS84_t = {"_System_XYZT_double_WGS84_t", "System_XYZ< double,WGS84 >", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ComplexT_double_t = {"_p_ComplexT_double_t", "Complex< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DataParser = {"_p_DataParser", "DataParser *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GLONASS_EphemerisT_double_t = {"_p_GLONASS_EphemerisT_double_t", "GLONASS_Ephemeris< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GLONASS_SolverOptionsT_double_t = {"_p_GLONASS_SolverOptionsT_double_t", "GLONASS_SolverOptions< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GLONASS_SpaceNodeT_double_t = {"_p_GLONASS_SpaceNodeT_double_t", "GLONASS_SpaceNode< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time = {"_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time", "GLONASS_Ephemeris< double >::eph_t *|GLONASS_SpaceNode< double >::SatelliteProperties::Ephemeris_with_GPS_Time *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t = {"_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t", "GLONASS_Ephemeris< double >::eph_t::raw_t *|GLONASS_SpaceNode< double >::SatelliteProperties::Ephemeris_with_GPS_Time::raw_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_EphemerisT_double_t = {"_p_GPS_EphemerisT_double_t", "GPS_Ephemeris< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_Ionospheric_UTC_ParametersT_double_t = {"_p_GPS_Ionospheric_UTC_ParametersT_double_t", "GPS_Ionospheric_UTC_Parameters< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_MeasurementT_double_t = {"_p_GPS_MeasurementT_double_t", "GPS_Measurement< double > *", 0, 0, (void*)0, 0};
@@ -19262,7 +24312,7 @@ static swig_type_info _swigt__p_GPS_Solver_GeneralOptionsT_double_t = {"_p_GPS_S
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t = {"_p_GPS_SpaceNodeT_double_t", "GPS_SpaceNode< double >::self_t *|GPS_SpaceNode< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters = {"_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters", "GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris = {"_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris", "GPS_SpaceNode< double >::SatelliteProperties::Ephemeris *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_GPS_TimeT_double_t = {"_p_GPS_TimeT_double_t", "GPS_SpaceNode< double >::gps_time_t *|SBAS_SpaceNode< double >::gps_time_t *|GPS_Time< GPS_Time< double >::float_t > *|GPS_Time< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_GPS_TimeT_double_t = {"_p_GPS_TimeT_double_t", "GPS_SpaceNode< double >::gps_time_t *|SBAS_SpaceNode< double >::gps_time_t *|GPS_Time< GLONASS_SpaceNode< double >::float_t > *|GPS_Time< GPS_Time< double >::float_t > *|GPS_Time< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_TimeT_double_t__leap_second_event_t = {"_p_GPS_TimeT_double_t__leap_second_event_t", "GPS_Time< double >::leap_second_event_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_TimeT_double_t__leap_year_prop_res_t = {"_p_GPS_TimeT_double_t__leap_year_prop_res_t", "GPS_Time< double >::leap_year_prop_res_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_User_PVTT_double_t = {"_p_GPS_User_PVTT_double_t", "GPS_User_PVT< double > *", 0, 0, (void*)0, 0};
@@ -19283,6 +24333,7 @@ static swig_type_info _swigt__p_available_satellites_t = {"_p_available_satellit
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_enu_t = {"_p_enu_t", "enu_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_eph_t = {"_p_eph_t", "eph_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_float_t = {"_p_float_t", "float_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_gps_space_node_t = {"_p_gps_space_node_t", "gps_space_node_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_gps_time_t = {"_p_gps_time_t", "gps_time_t *", 0, 0, (void*)0, 0};
@@ -19309,6 +24360,12 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__System_LLHT_double_WGS84_t,
   &_swigt__System_XYZT_double_WGS84_t,
   &_swigt__p_ComplexT_double_t,
+  &_swigt__p_DataParser,
+  &_swigt__p_GLONASS_EphemerisT_double_t,
+  &_swigt__p_GLONASS_SolverOptionsT_double_t,
+  &_swigt__p_GLONASS_SpaceNodeT_double_t,
+  &_swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time,
+  &_swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t,
   &_swigt__p_GPS_EphemerisT_double_t,
   &_swigt__p_GPS_Ionospheric_UTC_ParametersT_double_t,
   &_swigt__p_GPS_MeasurementT_double_t,
@@ -19340,6 +24397,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_char,
   &_swigt__p_double,
   &_swigt__p_enu_t,
+  &_swigt__p_eph_t,
   &_swigt__p_float_t,
   &_swigt__p_gps_space_node_t,
   &_swigt__p_gps_time_t,
@@ -19366,11 +24424,17 @@ static swig_type_info *swig_type_initial[] = {
 static swig_cast_info _swigc__System_LLHT_double_WGS84_t[] = {  {&_swigt__System_LLHT_double_WGS84_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__System_XYZT_double_WGS84_t[] = {  {&_swigt__System_XYZT_double_WGS84_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ComplexT_double_t[] = {  {&_swigt__p_ComplexT_double_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DataParser[] = {  {&_swigt__p_DataParser, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GLONASS_EphemerisT_double_t[] = {  {&_swigt__p_GLONASS_EphemerisT_double_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GLONASS_SolverOptionsT_double_t[] = {  {&_swigt__p_GLONASS_SolverOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GLONASS_SpaceNodeT_double_t[] = {  {&_swigt__p_GLONASS_SpaceNodeT_double_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time[] = {  {&_swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time, 0, 0, 0},  {&_swigt__p_GLONASS_EphemerisT_double_t, _p_GLONASS_EphemerisT_double_tTo_p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t[] = {  {&_swigt__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_EphemerisT_double_t[] = {  {&_swigt__p_GPS_EphemerisT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_Ionospheric_UTC_ParametersT_double_t[] = {  {&_swigt__p_GPS_Ionospheric_UTC_ParametersT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_MeasurementT_double_t[] = {  {&_swigt__p_GPS_MeasurementT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SolverOptionsT_double_t[] = {  {&_swigt__p_GPS_SolverOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_GPS_SolverOptions_CommonT_double_t[] = {  {&_swigt__p_GPS_SolverOptions_CommonT_double_t, 0, 0, 0},  {&_swigt__p_GPS_SolverOptionsT_double_t, _p_GPS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},  {&_swigt__p_SBAS_SolverOptionsT_double_t, _p_SBAS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_GPS_SolverOptions_CommonT_double_t[] = {  {&_swigt__p_GPS_SolverOptions_CommonT_double_t, 0, 0, 0},  {&_swigt__p_GPS_SolverOptionsT_double_t, _p_GPS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},  {&_swigt__p_SBAS_SolverOptionsT_double_t, _p_SBAS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},  {&_swigt__p_GLONASS_SolverOptionsT_double_t, _p_GLONASS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SolverT_double_t[] = {  {&_swigt__p_GPS_SolverT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_Solver_GeneralOptionsT_double_t[] = {  {&_swigt__p_GPS_Solver_GeneralOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t[] = {  {&_swigt__p_GPS_SpaceNodeT_double_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -19397,6 +24461,7 @@ static swig_cast_info _swigc__p_available_satellites_t[] = {  {&_swigt__p_availa
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_enu_t[] = {  {&_swigt__p_enu_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_eph_t[] = {  {&_swigt__p_eph_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float_t[] = {  {&_swigt__p_float_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_gps_space_node_t[] = {  {&_swigt__p_gps_space_node_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_gps_time_t[] = {  {&_swigt__p_gps_time_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -19423,6 +24488,12 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__System_LLHT_double_WGS84_t,
   _swigc__System_XYZT_double_WGS84_t,
   _swigc__p_ComplexT_double_t,
+  _swigc__p_DataParser,
+  _swigc__p_GLONASS_EphemerisT_double_t,
+  _swigc__p_GLONASS_SolverOptionsT_double_t,
+  _swigc__p_GLONASS_SpaceNodeT_double_t,
+  _swigc__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time,
+  _swigc__p_GLONASS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris_with_GPS_Time__raw_t,
   _swigc__p_GPS_EphemerisT_double_t,
   _swigc__p_GPS_Ionospheric_UTC_ParametersT_double_t,
   _swigc__p_GPS_MeasurementT_double_t,
@@ -19454,6 +24525,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_char,
   _swigc__p_double,
   _swigc__p_enu_t,
+  _swigc__p_eph_t,
   _swigc__p_float_t,
   _swigc__p_gps_space_node_t,
   _swigc__p_gps_time_t,
@@ -20013,6 +25085,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassSolver.klass, "gps_options", VALUEFUNC(_wrap_Solver_gps_options), -1);
   rb_define_method(SwigClassSolver.klass, "sbas_space_node", VALUEFUNC(_wrap_Solver_sbas_space_node), -1);
   rb_define_method(SwigClassSolver.klass, "sbas_options", VALUEFUNC(_wrap_Solver_sbas_options), -1);
+  rb_define_method(SwigClassSolver.klass, "glonass_space_node", VALUEFUNC(_wrap_Solver_glonass_space_node), -1);
+  rb_define_method(SwigClassSolver.klass, "glonass_options", VALUEFUNC(_wrap_Solver_glonass_options), -1);
   rb_define_method(SwigClassSolver.klass, "solve", VALUEFUNC(_wrap_Solver_solve), -1);
   rb_define_method(SwigClassSolver.klass, "correction", VALUEFUNC(_wrap_Solver_correction), -1);
   rb_define_method(SwigClassSolver.klass, "correction=", VALUEFUNC(_wrap_Solver_correctione___), -1);
@@ -20108,6 +25182,116 @@ SWIGEXPORT void Init_GPS(void) {
   SwigClassSolverOptions_SBAS.mark = 0;
   SwigClassSolverOptions_SBAS.destroy = (void (*)(void *)) free_SBAS_SolverOptions_Sl_double_Sg_;
   SwigClassSolverOptions_SBAS.trackObjects = 0;
+  
+  SwigClassSpaceNode_GLONASS.klass = rb_define_class_under(mGPS, "SpaceNode_GLONASS", rb_cObject);
+  SWIG_TypeClientData(SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, (void *) &SwigClassSpaceNode_GLONASS);
+  rb_define_alloc_func(SwigClassSpaceNode_GLONASS.klass, _wrap_SpaceNode_GLONASS_allocate);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "initialize", VALUEFUNC(_wrap_new_SpaceNode_GLONASS), -1);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "light_speed", VALUEFUNC(_wrap_SpaceNode_GLONASS_light_speed_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L1_frequency_base", VALUEFUNC(_wrap_SpaceNode_GLONASS_L1_frequency_base_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L1_frequency_gap", VALUEFUNC(_wrap_SpaceNode_GLONASS_L1_frequency_gap_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L2_frequency_base", VALUEFUNC(_wrap_SpaceNode_GLONASS_L2_frequency_base_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L2_frequency_gap", VALUEFUNC(_wrap_SpaceNode_GLONASS_L2_frequency_gap_get), 0);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L1_frequency", VALUEFUNC(_wrap_SpaceNode_GLONASS_L1_frequency), -1);
+  rb_define_singleton_method(SwigClassSpaceNode_GLONASS.klass, "L2_frequency", VALUEFUNC(_wrap_SpaceNode_GLONASS_L2_frequency), -1);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "has_satellite", VALUEFUNC(_wrap_SpaceNode_GLONASS_has_satellite), -1);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "update_all_ephemeris", VALUEFUNC(_wrap_SpaceNode_GLONASS_update_all_ephemeris), -1);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "register_ephemeris", VALUEFUNC(_wrap_SpaceNode_GLONASS_register_ephemeris), -1);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "ephemeris", VALUEFUNC(_wrap_SpaceNode_GLONASS_ephemeris), -1);
+  rb_define_method(SwigClassSpaceNode_GLONASS.klass, "read", VALUEFUNC(_wrap_SpaceNode_GLONASS_read), -1);
+  SwigClassSpaceNode_GLONASS.mark = 0;
+  SwigClassSpaceNode_GLONASS.destroy = (void (*)(void *)) free_GLONASS_SpaceNode_Sl_double_Sg_;
+  SwigClassSpaceNode_GLONASS.trackObjects = 0;
+  
+  SwigClassEphemeris_GLONASS.klass = rb_define_class_under(mGPS, "Ephemeris_GLONASS", rb_cObject);
+  SWIG_TypeClientData(SWIGTYPE_p_GLONASS_EphemerisT_double_t, (void *) &SwigClassEphemeris_GLONASS);
+  rb_define_alloc_func(SwigClassEphemeris_GLONASS.klass, _wrap_Ephemeris_GLONASS_allocate);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "initialize", VALUEFUNC(_wrap_new_Ephemeris_GLONASS), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "super_frame=", VALUEFUNC(_wrap_Ephemeris_GLONASS_super_frame_set), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "super_frame", VALUEFUNC(_wrap_Ephemeris_GLONASS_super_frame_get), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "has_string=", VALUEFUNC(_wrap_Ephemeris_GLONASS_has_string_set), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "has_string", VALUEFUNC(_wrap_Ephemeris_GLONASS_has_string_get), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "raw=", VALUEFUNC(_wrap_Ephemeris_GLONASS_raw_set), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "raw", VALUEFUNC(_wrap_Ephemeris_GLONASS_raw_get), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "invalidate", VALUEFUNC(_wrap_Ephemeris_GLONASS_invalidate), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "consistent?", VALUEFUNC(_wrap_Ephemeris_GLONASS_consistentq___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_GLONASS_svide___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_GLONASS_svid), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "freq_ch=", VALUEFUNC(_wrap_Ephemeris_GLONASS_freq_che___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "freq_ch", VALUEFUNC(_wrap_Ephemeris_GLONASS_freq_ch), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "t_k=", VALUEFUNC(_wrap_Ephemeris_GLONASS_t_ke___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "t_k", VALUEFUNC(_wrap_Ephemeris_GLONASS_t_k), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "t_b=", VALUEFUNC(_wrap_Ephemeris_GLONASS_t_be___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "t_b", VALUEFUNC(_wrap_Ephemeris_GLONASS_t_b), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "M=", VALUEFUNC(_wrap_Ephemeris_GLONASS_Me___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "M", VALUEFUNC(_wrap_Ephemeris_GLONASS_M), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "gamma_n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_gamma_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "gamma_n", VALUEFUNC(_wrap_Ephemeris_GLONASS_gamma_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_n", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn=", VALUEFUNC(_wrap_Ephemeris_GLONASS_xne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn", VALUEFUNC(_wrap_Ephemeris_GLONASS_xn), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn_dot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_xn_dote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn_dot", VALUEFUNC(_wrap_Ephemeris_GLONASS_xn_dot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn_ddot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_xn_ddote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "xn_ddot", VALUEFUNC(_wrap_Ephemeris_GLONASS_xn_ddot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn=", VALUEFUNC(_wrap_Ephemeris_GLONASS_yne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn", VALUEFUNC(_wrap_Ephemeris_GLONASS_yn), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn_dot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_yn_dote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn_dot", VALUEFUNC(_wrap_Ephemeris_GLONASS_yn_dot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn_ddot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_yn_ddote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "yn_ddot", VALUEFUNC(_wrap_Ephemeris_GLONASS_yn_ddot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn=", VALUEFUNC(_wrap_Ephemeris_GLONASS_zne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn", VALUEFUNC(_wrap_Ephemeris_GLONASS_zn), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn_dot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_zn_dote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn_dot", VALUEFUNC(_wrap_Ephemeris_GLONASS_zn_dot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn_ddot=", VALUEFUNC(_wrap_Ephemeris_GLONASS_zn_ddote___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "zn_ddot", VALUEFUNC(_wrap_Ephemeris_GLONASS_zn_ddot), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "B_n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_B_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "B_n", VALUEFUNC(_wrap_Ephemeris_GLONASS_B_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "p=", VALUEFUNC(_wrap_Ephemeris_GLONASS_pe___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "p", VALUEFUNC(_wrap_Ephemeris_GLONASS_p), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "N_T=", VALUEFUNC(_wrap_Ephemeris_GLONASS_N_Te___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "N_T", VALUEFUNC(_wrap_Ephemeris_GLONASS_N_T), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "F_T=", VALUEFUNC(_wrap_Ephemeris_GLONASS_F_Te___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "F_T", VALUEFUNC(_wrap_Ephemeris_GLONASS_F_T), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "n", VALUEFUNC(_wrap_Ephemeris_GLONASS_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "delta_tau_n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_delta_tau_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "delta_tau_n", VALUEFUNC(_wrap_Ephemeris_GLONASS_delta_tau_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "E_n=", VALUEFUNC(_wrap_Ephemeris_GLONASS_E_ne___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "E_n", VALUEFUNC(_wrap_Ephemeris_GLONASS_E_n), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P1=", VALUEFUNC(_wrap_Ephemeris_GLONASS_P1e___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P1", VALUEFUNC(_wrap_Ephemeris_GLONASS_P1), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P2=", VALUEFUNC(_wrap_Ephemeris_GLONASS_P2e___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P2", VALUEFUNC(_wrap_Ephemeris_GLONASS_P2), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P4=", VALUEFUNC(_wrap_Ephemeris_GLONASS_P4e___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P4", VALUEFUNC(_wrap_Ephemeris_GLONASS_P4), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_c=", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_ce___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_c", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_c), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_GPS=", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_GPSe___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_GPS", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_GPS), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L1", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L1), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L2", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L2), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "base_time", VALUEFUNC(_wrap_Ephemeris_GLONASS_base_time), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "parse", VALUEFUNC(_wrap_Ephemeris_GLONASS_parse), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "clock_error", VALUEFUNC(_wrap_Ephemeris_GLONASS_clock_error), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "constellation", VALUEFUNC(_wrap_Ephemeris_GLONASS_constellation), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "in_range?", VALUEFUNC(_wrap_Ephemeris_GLONASS_in_rangeq___), -1);
+  SwigClassEphemeris_GLONASS.mark = 0;
+  SwigClassEphemeris_GLONASS.destroy = (void (*)(void *)) free_GLONASS_Ephemeris_Sl_double_Sg_;
+  SwigClassEphemeris_GLONASS.trackObjects = 0;
+  
+  SwigClassSolverOptions_GLONASS.klass = rb_define_class_under(mGPS, "SolverOptions_GLONASS", ((swig_class *) SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t->clientdata)->klass);
+  SWIG_TypeClientData(SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, (void *) &SwigClassSolverOptions_GLONASS);
+  rb_define_alloc_func(SwigClassSolverOptions_GLONASS.klass, _wrap_SolverOptions_GLONASS_allocate);
+  rb_define_method(SwigClassSolverOptions_GLONASS.klass, "initialize", VALUEFUNC(_wrap_new_SolverOptions_GLONASS), -1);
+  rb_define_method(SwigClassSolverOptions_GLONASS.klass, "exclude", VALUEFUNC(_wrap_SolverOptions_GLONASS_exclude), -1);
+  rb_define_method(SwigClassSolverOptions_GLONASS.klass, "include", VALUEFUNC(_wrap_SolverOptions_GLONASS_include), -1);
+  rb_define_method(SwigClassSolverOptions_GLONASS.klass, "excluded", VALUEFUNC(_wrap_SolverOptions_GLONASS_excluded), -1);
+  SwigClassSolverOptions_GLONASS.mark = 0;
+  SwigClassSolverOptions_GLONASS.destroy = (void (*)(void *)) free_GLONASS_SolverOptions_Sl_double_Sg_;
+  SwigClassSolverOptions_GLONASS.trackObjects = 0;
   
   SwigClassRINEX_Observation.klass = rb_define_class_under(mGPS, "RINEX_Observation", rb_cObject);
   SWIG_TypeClientData(SWIGTYPE_p_RINEX_ObservationT_double_t, (void *) &SwigClassRINEX_Observation);
