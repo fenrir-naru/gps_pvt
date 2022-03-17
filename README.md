@@ -38,9 +38,9 @@ The format of RINEX_or_UBX_file is automatically determined with its extention, 
     --rinex_obs=filename
     --ubx=filename
 
-From version 0.2.0, SBAS and QZSS are supported in addition to GPS. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. If you want to activate SBAS ranging, "--with=(SBAS PRN number, ex. 137)" option is used with gps_pvt executable like
+Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
-    $ gps_pvt --with=137 RINEX_or_UBX_file(s)
+    $ gps_pvt --with=137 --with=GLONASS RINEX_or_UBX_file(s)
 
 Additionally, the following command options *--key=value* are available.
 
