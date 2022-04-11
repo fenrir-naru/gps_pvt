@@ -4,6 +4,7 @@ Receiver class to be an top level interface to a user
 =end
 
 require_relative 'GPS'
+require_relative 'util'
 
 module GPS_PVT
 class Receiver
@@ -547,22 +548,24 @@ class Receiver
     $stderr.puts ", found packets are %s"%[ubx_kind.inspect]
   end
   
-  def parse_rinex_nav(fname)
+  def parse_rinex_nav(src)
+    fname = Util::get_txt(src)
     items = [
       @solver.gps_space_node,
       @solver.sbas_space_node,
       @solver.glonass_space_node,
     ].inject(0){|res, sn|
       loaded_items = sn.send(:read, fname)
-      raise "Format error! (Not RINEX) #{fname}" if loaded_items < 0
+      raise "Format error! (Not RINEX) #{src}" if loaded_items < 0
       res + loaded_items
     }
-    $stderr.puts "Read RINEX NAV file (%s): %d items."%[fname, items]
+    $stderr.puts "Read RINEX NAV file (%s): %d items."%[src, items]
   end
   
-  def parse_rinex_obs(fname, &b)
+  def parse_rinex_obs(src, &b)
+    fname = Util::get_txt(src)
     after_run = b || proc{|pvt| puts pvt.to_s if pvt}
-    $stderr.print "Reading RINEX observation file (%s)"%[fname]
+    $stderr.print "Reading RINEX observation file (%s)"%[src]
     types = nil
     glonass_freq = nil
     count = 0
