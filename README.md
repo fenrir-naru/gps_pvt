@@ -32,7 +32,7 @@ An attached executable is useful. After installation, type
 
     $ gps_pvt RINEX_or_UBX_file(s)
 
-The format of RINEX_or_UBX_file is automatically determined with its extention, such as .ubx will be treated as UBX format. If you want to specify the file format, instead of RINEX_or_UBX_file(s), use the following arguments:
+The format of RINEX_or_UBX_file is automatically determined with its extension, such as .ubx will be treated as UBX format. A gz compressed file can be specified directly, and URI such as https://... is also acceptable since version 0.5.0. If you want to specify the file format, instead of RINEX_or_UBX_file(s), use the following arguments:
 
     --rinex_nav=filename
     --rinex_obs=filename
@@ -50,6 +50,7 @@ Additionally, the following command options *--key=value* are available.
 | elevation_mask_deg | numeric | satellite elevation mask specified in degrees. *ex) --elevation_mask_deg=10* | v0.3.0 |
 | start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.3 |
 | end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.3 |
+| online_ephemeris | | automatically load ephemeris published online based on observation | v0.5.0 |
 
 ### For developer
 
