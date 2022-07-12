@@ -3918,6 +3918,49 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::Coordinate::XYZ.after
+
+  call-seq:
+    after(double const & delay_sec) -> XYZ
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_XYZ_after(int argc, VALUE *argv, VALUE self) {
+  System_XYZ< double,WGS84 > *arg1 = (System_XYZ< double,WGS84 > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  System_XYZ< double,WGS84 >::self_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_System_XYZT_double_WGS84_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 > const *","after", 1, self )); 
+  }
+  arg1 = reinterpret_cast< System_XYZ< double,WGS84 > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","after", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  result = ((System_XYZ< double,WGS84 > const *)arg1)->after((double const &)*arg2);
+  vresult = SWIG_NewPointerObj((new System_XYZ< double,WGS84 >::self_t(static_cast< const System_XYZ< double,WGS84 >::self_t& >(result))), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::Coordinate::XYZ.x=
 
   call-seq:
@@ -6549,6 +6592,7 @@ SWIGEXPORT void Init_Coordinate(void) {
   rb_define_singleton_method(SwigClassXYZ.klass, "b0", VALUEFUNC(_wrap_XYZ_b0_get), 0);
   rb_define_singleton_method(SwigClassXYZ.klass, "e0", VALUEFUNC(_wrap_XYZ_e0_get), 0);
   rb_define_method(SwigClassXYZ.klass, "llh", VALUEFUNC(_wrap_XYZ_llh), -1);
+  rb_define_method(SwigClassXYZ.klass, "after", VALUEFUNC(_wrap_XYZ_after), -1);
   rb_define_method(SwigClassXYZ.klass, "x=", VALUEFUNC(_wrap_XYZ_xe___), -1);
   rb_define_method(SwigClassXYZ.klass, "y=", VALUEFUNC(_wrap_XYZ_ye___), -1);
   rb_define_method(SwigClassXYZ.klass, "z=", VALUEFUNC(_wrap_XYZ_ze___), -1);

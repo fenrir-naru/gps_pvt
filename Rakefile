@@ -29,7 +29,9 @@ namespace :git do
           # same as #{repo}/.git/info/sparse-checkout
           "sparse-checkout set" + (<<-__SPARSE_PATTERNS__).lines.collect{|str| str.chomp.gsub(/^ */, ' ')}.join,
             /tool/param/
+            /tool/util/text_helper.h
             /tool/algorithm/integral.h
+            /tool/algorithm/interpolate.h
             /tool/navigation/GPS*
             /tool/navigation/SBAS*
             /tool/navigation/QZSS*
@@ -40,6 +42,8 @@ namespace :git do
             /tool/navigation/NTCM.h
             /tool/navigation/RINEX.h
             /tool/navigation/WGS84.h
+            /tool/navigation/SP3.h
+            /tool/navigation/ANTEX.h
             /tool/swig/SylphideMath.i
             /tool/swig/GPS.i
             /tool/swig/Coordinate.i
