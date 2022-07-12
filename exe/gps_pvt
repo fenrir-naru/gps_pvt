@@ -7,10 +7,11 @@ require 'uri'
 
 $stderr.puts <<__STRING__
 Usage: #{__FILE__} GPS_file1 GPS_file2 ...
-As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), and ubx(*.ubx) format are currently supported.
+As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), ubx(*.ubx), SP3(*.sp3), and ANTEX(*.atx) format are currently supported.
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
-If you want to specify its format manually, --rinex_(nav|obs)=file_name or --ubx=file_name are available.
+If you want to specify its format manually, command options like --rinex_nav=file_name are available.
+Other than --rinex_nav, --rinex_obs, --ubx, --sp3 or --antex are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" extension is recognized as a file compressed by zlib.
 Major URL such as http(s)://... is acceptable as an input file name. 
@@ -23,7 +24,7 @@ misc_options = {}
 files = ARGV.collect{|arg|
   next [arg, nil] unless arg =~ /^--([^=]+)=?/
   k, v = [$1.downcase.to_sym, $']
-  next [v, k] if [:rinex_nav, :rinex_obs, :ubx].include?(k) # file type
+  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :sp3, :antex].include?(k) # file type
   options << [$1.to_sym, $']
   nil
 }.compact
@@ -71,6 +72,8 @@ files.collect!{|fname, ftype|
   when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
   when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
   when /\.ubx$/; :ubx
+  when /\.sp3$/; :sp3
+  when /\.atx$/; :antex
   else
     raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}"
   end
@@ -138,7 +141,11 @@ puts rcv.header
 
 # parse RINEX NAV
 files.each{|fname, ftype|
-  rcv.parse_rinex_nav(fname) if ftype == :rinex_nav
+  case ftype
+  when :rinex_nav; rcv.parse_rinex_nav(fname)
+  when :sp3; rcv.attach_sp3(fname)
+  when :antex; rcv.attach_antex(fname)
+  end
 }
 
 # other files

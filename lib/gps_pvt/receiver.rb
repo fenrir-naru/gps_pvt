@@ -627,5 +627,29 @@ class Receiver
     }
     $stderr.puts ", %d epochs."%[count] 
   end
+  
+  def attach_sp3(src)
+    fname = Util::get_txt(src)
+    @sp3 ||= GPS::SP3::new
+    read_items = @sp3.read(fname)
+    raise "Format error! (Not SP3) #{src}" if read_items < 0
+    $stderr.puts "Read SP3 file (%s): %d items."%[src, read_items]
+    sats = @sp3.satellites
+    @sp3.class.constants.each{|sys|
+      next unless /^SYS_(?!SYSTEMS)(.*)/ =~ sys.to_s
+      idx, sys_name = [@sp3.class.const_get(sys), $1]
+      next unless sats[idx] > 0
+      next unless @sp3.push(@solver, idx)
+      $stderr.puts "Change ephemeris source of #{sys_name} to SP3" 
+    }
+  end
+  
+  def attach_antex(src)
+    fname = Util::get_txt(src)
+    raise "Specify SP3 before ANTEX application!" unless @sp3
+    applied_items = @sp3.apply_antex(fname)
+    raise "Format error! (Not ANTEX) #{src}" unless applied_items >= 0
+    $stderr.puts "SP3 correction with ANTEX file (%s): %d items have been processed."%[src, applied_items]
+  end
 end
 end
