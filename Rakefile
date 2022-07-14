@@ -12,9 +12,21 @@ Rake::ExtensionTask.new("gps_pvt") do |ext|
 end
 
 namespace :git do
+  task :version do
+    @git_version ||= proc{
+      res = Gem::Version::new(`git --version`.match(/\d+\.\d+\.\d+/)[0])
+      res.instance_eval{
+        cmp_orig = self.method(:<=>)
+        define_singleton_method(:<=>){|arg|
+          cmp_orig.call(arg.kind_of?(String) ? Gem::Version::new(arg) : arg)
+        }
+      }
+      res
+    }.call
+  end
   namespace :submodules do
     desc "Initialize git submodules"
-    task :init do
+    task :init => ["git:version"] do
       sh "git submodule init"
       # for sparse-checkout; @see https://stackoverflow.com/a/59521050/15992898
       `git config --file .gitmodules --name-only --get-regexp path`.lines.each{|str|
@@ -25,34 +37,37 @@ namespace :git do
       }
       {
         'ext/ninja-scan-light' => [
-          "sparse-checkout init", # same as "git -C #{repo} config core.sparseCheckout true"
+          # From git 2.37.0, cone mode, which denies part of pattern like .ignore, is its default.
+          # @see https://git-scm.com/docs/git-sparse-checkout/2.37.0#_internalscone_mode_handling
+          (@git_version < "2.37.0") ? "sparse-checkout init" : nil, # same as "git -C #{repo} config core.sparseCheckout true"
           # same as #{repo}/.git/info/sparse-checkout
-          "sparse-checkout set" + (<<-__SPARSE_PATTERNS__).lines.collect{|str| str.chomp.gsub(/^ */, ' ')}.join,
-            /tool/param/
-            /tool/util/text_helper.h
-            /tool/algorithm/integral.h
-            /tool/algorithm/interpolate.h
-            /tool/navigation/GPS*
-            /tool/navigation/SBAS*
-            /tool/navigation/QZSS*
-            /tool/navigation/GLONASS*
-            /tool/navigation/coordinate.h
-            /tool/navigation/EGM.h
-            /tool/navigation/MagneticField.h
-            /tool/navigation/NTCM.h
-            /tool/navigation/RINEX.h
-            /tool/navigation/WGS84.h
-            /tool/navigation/SP3.h
-            /tool/navigation/ANTEX.h
-            /tool/swig/SylphideMath.i
-            /tool/swig/GPS.i
-            /tool/swig/Coordinate.i
-            /tool/swig/makefile
-            /tool/swig/extconf.rb
-            /tool/swig/spec/GPS_spec.rb
-            /tool/swig/spec/SylphideMath_spec.rb
+          "sparse-checkout set #{'--no-cone' if @git_version >= "2.37.0"}" \
+              + (<<-__SPARSE_PATTERNS__).lines.collect{|str| str.chomp.gsub(/^ */, ' ')}.join,
+            tool/param/
+            tool/util/text_helper.h
+            tool/algorithm/integral.h
+            tool/algorithm/interpolate.h
+            tool/navigation/GPS*
+            tool/navigation/SBAS*
+            tool/navigation/QZSS*
+            tool/navigation/GLONASS*
+            tool/navigation/coordinate.h
+            tool/navigation/EGM.h
+            tool/navigation/MagneticField.h
+            tool/navigation/NTCM.h
+            tool/navigation/RINEX.h
+            tool/navigation/WGS84.h
+            tool/navigation/SP3.h
+            tool/navigation/ANTEX.h
+            tool/swig/SylphideMath.i
+            tool/swig/GPS.i
+            tool/swig/Coordinate.i
+            tool/swig/makefile
+            tool/swig/extconf.rb
+            tool/swig/spec/GPS_spec.rb
+            tool/swig/spec/SylphideMath_spec.rb
           __SPARSE_PATTERNS__
-        ]
+        ].compact
       }.each{|repo, commands|
         commands.each{|str| sh "git -C #{repo} #{str}"}
       }
