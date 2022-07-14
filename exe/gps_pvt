@@ -13,8 +13,8 @@ File format is automatically determined based on its extention described in abov
 If you want to specify its format manually, command options like --rinex_nav=file_name are available.
 Other than --rinex_nav, --rinex_obs, --ubx, --sp3 or --antex are supported. 
 Supported RINEX versions are 2 and 3.
-A file having additional ".gz" extension is recognized as a file compressed by zlib.
-Major URL such as http(s)://... is acceptable as an input file name. 
+A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
+Major URL such as http(s)://... or ftp://... is acceptable as an input file name. 
 __STRING__
 
 options = []
@@ -72,8 +72,8 @@ files.collect!{|fname, ftype|
   when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
   when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
   when /\.ubx$/; :ubx
-  when /\.sp3$/; :sp3
-  when /\.atx$/; :antex
+  when /\.sp3(?:\.Z)?$/; :sp3
+  when /\.atx(?:\.Z)?$/; :antex
   else
     raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}"
   end
