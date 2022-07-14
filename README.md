@@ -30,17 +30,21 @@ For Windows users, this gem requires Devkit because of native compilation.
 ### For user who just generate PVT solution
 An attached executable is useful. After installation, type
 
-    $ gps_pvt RINEX_or_UBX_file(s)
+    $ gps_pvt file_or_URI(s)
 
-The format of RINEX_or_UBX_file is automatically determined with its extension, such as .ubx will be treated as UBX format. A gz compressed file can be specified directly, and URI such as https://... is also acceptable since version 0.5.0. If you want to specify the file format, instead of RINEX_or_UBX_file(s), use the following arguments:
+The format of file is automatically determined with its extension, such as .ubx will be treated as UBX format. A compressed file of .gz or .Z can be specified directly (decompression is internally performed), and URI such as http(s)://... and ftp:// is also acceptable. If you want to specify the file format, instead of file_or_URI(s), use the following arguments:
 
-    --rinex_nav=filename
-    --rinex_obs=filename
-    --ubx=filename
+| specification | recoginized as |
+----|----
+| --rinex_nav=file_or_URI | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) navigation file |
+| --rinex_obs=file_or_URI | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) observation file |
+| --ubx=file_or_URI | [U-blox](https://www.u-blox.com/) dedicated format |
+| --sp3=file_or_URI | [Standard Product 3 Orbit Format](https://files.igs.org/pub/data/format/sp3c.txt) (supported gps_pvt version >= 0.6.0) |
+| --antex=file_or_URI | [Antenna Exchange Format](https://igs.org/wg/antenna#files) (supported gps_pvt version >= 0.6.0) |
 
 Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
-    $ gps_pvt --with=137 --with=GLONASS RINEX_or_UBX_file(s)
+    $ gps_pvt --with=137 --with=GLONASS file_or_URI(s)
 
 Additionally, the following command options *--key=value* are available.
 
@@ -50,7 +54,7 @@ Additionally, the following command options *--key=value* are available.
 | elevation_mask_deg | numeric | satellite elevation mask specified in degrees. *ex) --elevation_mask_deg=10* | v0.3.0 |
 | start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.3 |
 | end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.3 |
-| online_ephemeris | | automatically load ephemeris published online based on observation | v0.5.0 |
+| online_ephemeris | | based on observation, automatically load ephemeris which is previously broadcasted from satellite and currently published online | v0.5.0 |
 
 ### For developer
 
