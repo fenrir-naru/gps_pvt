@@ -2361,6 +2361,10 @@ struct GPS_Ephemeris : public GPS_SpaceNode<FloatT>::SatelliteProperties::Epheme
   GPS_Ephemeris(const typename GPS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris &eph) 
       : GPS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris(eph),
       iode_subframe3(eph.iode) {}
+  struct constellation_res_t {
+    System_XYZ<FloatT, WGS84> position, velocity;
+    FloatT clock_error, clock_error_dot;
+  };
 };
 
 
@@ -3737,11 +3741,12 @@ SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__parse(GPS_Ephemeris< double > *self,
         break;
     }
   }
-SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GPS_Ephemeris< double > const *self,System_XYZ< double,WGS84 > &position,System_XYZ< double,WGS84 > &velocity,GPS_Time< double > const &t,double const &pseudo_range=0,bool const &with_velocity=true){
-    typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t res(
-        self->constellation(t, pseudo_range, with_velocity));
-    position = res.position;
-    velocity = res.velocity;
+SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GPS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0){
+    typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t pv(
+        self->constellation(t_tx, dt_transit, true));
+    typename GPS_Ephemeris<double>::constellation_res_t res = {
+        pv.position, pv.velocity, self->clock_error(t_tx), self->clock_error_dot(t_tx)};
+    return res;
   }
 
     namespace swig {
@@ -4211,11 +4216,12 @@ SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_a_Gf1(SBAS_Ephemeris< double 
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf1(SBAS_Ephemeris< double > const *self){
   return self->a_Gf1;
 }
-SWIGINTERN void SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(SBAS_Ephemeris< double > const *self,System_XYZ< double,WGS84 > &position,System_XYZ< double,WGS84 > &velocity,GPS_Time< double > const &t,double const &pseudo_range=0,bool const &with_velocity=true){
-    typename SBAS_SpaceNode<double>::SatelliteProperties::constellation_t res(
-        self->constellation(t, pseudo_range, with_velocity));
-    position = res.position;
-    velocity = res.velocity;
+SWIGINTERN GPS_Ephemeris< double >::constellation_res_t SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(SBAS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0,bool const &with_velocity=true){
+    typename SBAS_SpaceNode<double>::SatelliteProperties::constellation_t pv(
+        self->constellation(t_tx, dt_transit, with_velocity));
+    typename GPS_Ephemeris<double>::constellation_res_t res = {
+        pv.position, pv.velocity, self->clock_error(t_tx), self->clock_error_dot(t_tx)};
+    return res;
   }
 SWIGINTERN void SBAS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(SBAS_SpaceNode< double > *self,int const &prn,SBAS_Ephemeris< double > const &eph,int const &priority_delta=1){
     self->satellite(prn).register_ephemeris(eph, priority_delta);
@@ -4473,14 +4479,12 @@ SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(GLONASS_Ephemeris<
     self->has_string = has_string;
     return updated;
   }
-SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t_arrival,double const &pseudo_range=0){
-    return self->clock_error(t_arrival, pseudo_range);
-  }
-SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GLONASS_Ephemeris< double > const *self,System_XYZ< double,WGS84 > &position,System_XYZ< double,WGS84 > &velocity,GPS_Time< double > const &t,double const &pseudo_range=0){
-    typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t res(
-        self->constellation(t, pseudo_range));
-    position = res.position;
-    velocity = res.velocity;
+SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0){
+    typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t pv(
+        self->constellation(t_tx, dt_transit));
+    typename GPS_Ephemeris<double>::constellation_res_t res = {
+        pv.position, pv.velocity, self->clock_error(t_tx), self->clock_error_dot()};
+    return res;
   }
 SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__is_in_range(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t){
     // "invalidate()" is used to make raw and converted data inconsistent.
@@ -13744,9 +13748,8 @@ fail:
   Document-method: GPS_PVT::GPS::Ephemeris.constellation
 
   call-seq:
-    constellation(Time t, double const & pseudo_range=0, bool const & with_velocity=True)
-    constellation(Time t, double const & pseudo_range=0)
-    constellation(Time t)
+    constellation(Time t_tx, double const & dt_transit=0) -> GPS_Ephemeris< double >::constellation_res_t
+    constellation(Time t_tx) -> GPS_Ephemeris< double >::constellation_res_t
 
 An instance method.
 
@@ -13754,62 +13757,43 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Ephemeris_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
   GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  double *arg5 = 0 ;
-  bool *arg6 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  double *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  double temp5 ;
-  double val5 ;
-  int ecode5 = 0 ;
-  bool temp6 ;
-  bool val6 ;
-  int ecode6 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  double temp3 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
   
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
-  
-  if ((argc < 3) || (argc > 3)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  ecode5 = SWIG_AsVal_double(argv[1], &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","constellation", 3, argv[1] ));
   } 
-  temp5 = static_cast< double >(val5);
-  arg5 = &temp5;
-  ecode6 = SWIG_AsVal_bool(argv[2], &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), Ruby_Format_TypeError( "", "bool","constellation", 6, argv[2] ));
-  } 
-  temp6 = static_cast< bool >(val6);
-  arg6 = &temp6;
+  temp3 = static_cast< double >(val3);
+  arg3 = &temp3;
   {
     try {
-      GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5,(bool const &)*arg6);
+      result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13817,12 +13801,17 @@ _wrap_Ephemeris_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -13833,91 +13822,13 @@ fail:
 SWIGINTERN VALUE
 _wrap_Ephemeris_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
   GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  double *arg5 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  double temp5 ;
-  double val5 ;
-  int ecode5 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","constellation", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
-  }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
-  }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  ecode5 = SWIG_AsVal_double(argv[1], &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
-  } 
-  temp5 = static_cast< double >(val5);
-  arg5 = &temp5;
-  {
-    try {
-      GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = rb_ary_new();
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_Ephemeris_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
-  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -13927,17 +13838,17 @@ _wrap_Ephemeris_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
   {
     try {
-      GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4);
+      result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -13945,12 +13856,17 @@ _wrap_Ephemeris_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -13960,12 +13876,12 @@ fail:
 
 SWIGINTERN VALUE _wrap_Ephemeris_constellation(int nargs, VALUE *args, VALUE self) {
   int argc;
-  VALUE argv[5];
+  VALUE argv[4];
   int ii;
   
   argc = nargs + 1;
   argv[0] = self;
-  if (argc > 5) SWIG_fail;
+  if (argc > 4) SWIG_fail;
   for (ii = 1; (ii < argc); ++ii) {
     argv[ii] = args[ii-1];
   }
@@ -13979,7 +13895,7 @@ SWIGINTERN VALUE _wrap_Ephemeris_constellation(int nargs, VALUE *args, VALUE sel
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_Ephemeris_constellation__SWIG_2(nargs, args, self);
+        return _wrap_Ephemeris_constellation__SWIG_1(nargs, args, self);
       }
     }
   }
@@ -13998,43 +13914,16 @@ SWIGINTERN VALUE _wrap_Ephemeris_constellation(int nargs, VALUE *args, VALUE sel
           _v = SWIG_CheckState(res);
         }
         if (_v) {
-          return _wrap_Ephemeris_constellation__SWIG_1(nargs, args, self);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_EphemerisT_double_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_bool(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_Ephemeris_constellation__SWIG_0(nargs, args, self);
-          }
+          return _wrap_Ephemeris_constellation__SWIG_0(nargs, args, self);
         }
       }
     }
   }
   
 fail:
-  Ruby_Format_OverloadedError( argc, 5, "constellation", 
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range, bool const &with_velocity)\n"
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range)\n"
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t)\n");
+  Ruby_Format_OverloadedError( argc, 4, "constellation", 
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx, double const &dt_transit)\n"
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx)\n");
   
   return Qnil;
 }
@@ -18735,9 +18624,9 @@ fail:
   Document-method: GPS_PVT::GPS::Ephemeris_SBAS.constellation
 
   call-seq:
-    constellation(Time t, double const & pseudo_range=0, bool const & with_velocity=True)
-    constellation(Time t, double const & pseudo_range=0)
-    constellation(Time t)
+    constellation(Time t_tx, double const & dt_transit=0, bool const & with_velocity=True) -> GPS_Ephemeris< double >::constellation_res_t
+    constellation(Time t_tx, double const & dt_transit=0) -> GPS_Ephemeris< double >::constellation_res_t
+    constellation(Time t_tx) -> GPS_Ephemeris< double >::constellation_res_t
 
 An instance method.
 
@@ -18745,30 +18634,21 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Ephemeris_SBAS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
   SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  double *arg5 = 0 ;
-  bool *arg6 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  double *arg3 = 0 ;
+  bool *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  double temp5 ;
-  double val5 ;
-  int ecode5 = 0 ;
-  bool temp6 ;
-  bool val6 ;
-  int ecode6 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  double temp3 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  bool temp4 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 3) || (argc > 3)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
@@ -18778,29 +18658,29 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  ecode5 = SWIG_AsVal_double(argv[1], &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","constellation", 3, argv[1] ));
   } 
-  temp5 = static_cast< double >(val5);
-  arg5 = &temp5;
-  ecode6 = SWIG_AsVal_bool(argv[2], &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), Ruby_Format_TypeError( "", "bool","constellation", 6, argv[2] ));
+  temp3 = static_cast< double >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_bool(argv[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "bool","constellation", 4, argv[2] ));
   } 
-  temp6 = static_cast< bool >(val6);
-  arg6 = &temp6;
+  temp4 = static_cast< bool >(val4);
+  arg4 = &temp4;
   {
     try {
-      SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5,(bool const &)*arg6);
+      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3,(bool const &)*arg4);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -18808,12 +18688,17 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -18824,26 +18709,17 @@ fail:
 SWIGINTERN VALUE
 _wrap_Ephemeris_SBAS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
   SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  double *arg5 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  double *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  double temp5 ;
-  double val5 ;
-  int ecode5 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  double temp3 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
@@ -18853,23 +18729,23 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  ecode5 = SWIG_AsVal_double(argv[1], &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","constellation", 3, argv[1] ));
   } 
-  temp5 = static_cast< double >(val5);
-  arg5 = &temp5;
+  temp3 = static_cast< double >(val3);
+  arg3 = &temp3;
   {
     try {
-      SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5);
+      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -18877,12 +18753,17 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -18893,22 +18774,13 @@ fail:
 SWIGINTERN VALUE
 _wrap_Ephemeris_SBAS_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
   SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -18918,17 +18790,17 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
   {
     try {
-      SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4);
+      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -18936,12 +18808,17 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -19023,9 +18900,9 @@ SWIGINTERN VALUE _wrap_Ephemeris_SBAS_constellation(int nargs, VALUE *args, VALU
   
 fail:
   Ruby_Format_OverloadedError( argc, 5, "constellation", 
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range, bool const &with_velocity)\n"
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range)\n"
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t)\n");
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx, double const &dt_transit, bool const &with_velocity)\n"
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx, double const &dt_transit)\n"
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx)\n");
   
   return Qnil;
 }
@@ -24385,17 +24262,17 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.clock_error
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.constellation
 
   call-seq:
-    clock_error(Time t_arrival, double const & pseudo_range=0) -> double
-    clock_error(Time t_arrival) -> double
+    constellation(Time t_tx, double const & dt_transit=0) -> GPS_Ephemeris< double >::constellation_res_t
+    constellation(Time t_tx) -> GPS_Ephemeris< double >::constellation_res_t
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Ephemeris_GLONASS_clock_error__SWIG_0(int argc, VALUE *argv, VALUE self) {
+_wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
   GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
   GPS_Time< double > *arg2 = 0 ;
   double *arg3 = 0 ;
@@ -24406,180 +24283,8 @@ _wrap_Ephemeris_GLONASS_clock_error__SWIG_0(int argc, VALUE *argv, VALUE self) {
   double temp3 ;
   double val3 ;
   int ecode3 = 0 ;
-  double result;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  if ((argc < 2) || (argc > 2)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","clock_error", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error", 2, argv[0] )); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 2, argv[0])); 
-  }
-  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  ecode3 = SWIG_AsVal_double(argv[1], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","clock_error", 3, argv[1] ));
-  } 
-  temp3 = static_cast< double >(val3);
-  arg3 = &temp3;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_From_double(static_cast< double >(result));
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_Ephemeris_GLONASS_clock_error__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
-  GPS_Time< double > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  double result;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","clock_error", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error", 2, argv[0] )); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 2, argv[0])); 
-  }
-  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__clock_error__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_From_double(static_cast< double >(result));
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_clock_error(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[4];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 4) SWIG_fail;
-  for (ii = 1; (ii < argc); ++ii) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_Ephemeris_GLONASS_clock_error__SWIG_1(nargs, args, self);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_NO_NULL);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_double(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_Ephemeris_GLONASS_clock_error__SWIG_0(nargs, args, self);
-        }
-      }
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 4, "clock_error", 
-    "    double clock_error(GPS_Time< double > const &t_arrival, double const &pseudo_range)\n"
-    "    double clock_error(GPS_Time< double > const &t_arrival)\n");
-  
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.constellation
-
-  call-seq:
-    constellation(Time t, double const & pseudo_range=0)
-    constellation(Time t)
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
-  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
-  double *arg5 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
-  double temp5 ;
-  double val5 ;
-  int ecode5 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
@@ -24589,23 +24294,23 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self)
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  ecode5 = SWIG_AsVal_double(argv[1], &val5);
-  if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "double","constellation", 5, argv[1] ));
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  ecode3 = SWIG_AsVal_double(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "double","constellation", 3, argv[1] ));
   } 
-  temp5 = static_cast< double >(val5);
-  arg5 = &temp5;
+  temp3 = static_cast< double >(val3);
+  arg3 = &temp3;
   {
     try {
-      GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4,(double const &)*arg5);
+      result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -24613,12 +24318,17 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self)
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -24629,22 +24339,13 @@ fail:
 SWIGINTERN VALUE
 _wrap_Ephemeris_GLONASS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
   GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
-  System_XYZ< double,WGS84 > *arg2 = 0 ;
-  System_XYZ< double,WGS84 > *arg3 = 0 ;
-  GPS_Time< double > *arg4 = 0 ;
+  GPS_Time< double > *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > temp2 ;
-  System_XYZ< double,WGS84 > temp3 ;
-  void *argp4 ;
-  int res4 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  GPS_Ephemeris< double >::constellation_res_t result;
   VALUE vresult = Qnil;
-  
-  
-  arg2 = &temp2;
-  
-  
-  arg3 = &temp3;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -24654,17 +24355,17 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self)
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","constellation", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  res4 = SWIG_ConvertPtr(argv[0], &argp4, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 4, argv[0] )); 
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","constellation", 2, argv[0] )); 
   }
-  if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 4, argv[0])); 
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
-  arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
   {
     try {
-      GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,*arg2,*arg3,(GPS_Time< double > const &)*arg4);
+      result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -24672,12 +24373,17 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self)
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = rb_ary_new();
   {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg2)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(*arg3)), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->velocity)), 
+        SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
+    
+    ;
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error));
+    vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->clock_error_dot));
   }
   return vresult;
 fail:
@@ -24733,8 +24439,8 @@ SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_constellation(int nargs, VALUE *args, V
   
 fail:
   Ruby_Format_OverloadedError( argc, 4, "constellation", 
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t, double const &pseudo_range)\n"
-    "    void constellation(System_XYZ< double,WGS84 > &position, System_XYZ< double,WGS84 > &velocity, GPS_Time< double > const &t)\n");
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx, double const &dt_transit)\n"
+    "    GPS_Ephemeris< double >::constellation_res_t constellation(GPS_Time< double > const &t_tx)\n");
   
   return Qnil;
 }
@@ -26836,7 +26542,6 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L2", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L2), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "base_time", VALUEFUNC(_wrap_Ephemeris_GLONASS_base_time), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "parse", VALUEFUNC(_wrap_Ephemeris_GLONASS_parse), -1);
-  rb_define_method(SwigClassEphemeris_GLONASS.klass, "clock_error", VALUEFUNC(_wrap_Ephemeris_GLONASS_clock_error), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "constellation", VALUEFUNC(_wrap_Ephemeris_GLONASS_constellation), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "in_range?", VALUEFUNC(_wrap_Ephemeris_GLONASS_in_rangeq___), -1);
   SwigClassEphemeris_GLONASS.mark = 0;
