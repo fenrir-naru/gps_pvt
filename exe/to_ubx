@@ -1,0 +1,147 @@
+#!/usr/bin/env ruby
+
+require 'gps_pvt'
+require 'uri'
+require 'gps_pvt/ubx'
+
+# Convert file(s) to ubx format
+# TODO currently only RINEX observation file is supported.
+
+$stderr.puts <<__STRING__
+Usage: #{__FILE__} GPS_file ... > as_you_like.ubx
+As GPS_file, only rinex_obs(*.YYo) is currently supported.
+(YY = last two digit of year)
+File format is automatically determined based on its extention described in above parentheses.
+If you want to specify its format manually, command options like --rinex_obs=file_name are available.
+Supported RINEX versions are 2 and 3.
+RXM-RAWX and RXM-SFRBX are included in output UBX if corresponding file(s) is given. 
+A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
+Major URL such as http(s)://... or ftp://... is acceptable as an input file name. 
+__STRING__
+
+options = []
+misc_options = {}
+
+# check options and file format
+files = ARGV.collect{|arg|
+  next [arg, nil] unless arg =~ /^--([^=]+)=?/
+  k, v = [$1.downcase.to_sym, $']
+  next [v, k] if [:rinex_nav, :rinex_obs].include?(k) # file type
+  options << [$1.to_sym, $']
+  nil
+}.compact
+
+# Check file existence and extension
+files.collect!{|fname, ftype|
+  ftype ||= case fname
+  when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
+  when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
+  else
+    raise "Format cannot be guessed, use --(format, ex. rinex_obs)=#{fname}"
+  end
+  fname = proc{
+    next fname if File::exist?(fname)
+    if uri = URI::parse(fname) and !uri.instance_of?(URI::Generic) then
+      next uri
+    end
+    raise "File not found: #{fname}"
+  }.call
+  [fname, ftype]
+}
+
+rcv = GPS_PVT::Receiver::new(options)
+
+obs = []
+rcv.define_singleton_method(:run){|meas, t_meas, *args|
+  obs << [t_meas, meas]
+}
+
+# parse RINEX NAV
+files.each{|fname, ftype|
+  case ftype
+  when :rinex_nav; rcv.parse_rinex_nav(fname)
+  end
+}
+
+# other files
+files.each{|fname, ftype|
+  case ftype
+  when :rinex_obs; rcv.parse_rinex_obs(fname){}
+  end
+}
+
+glonass_freq_ch = proc{
+  freq0, delta = [:L1_frequency_base, :L1_frequency_gap].collect{|k|
+    GPS_PVT::GPS::SpaceNode_GLONASS.send(k)
+  }
+  proc{|freq| ((freq - freq0) / delta).to_i}
+}.call
+
+obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
+obs.each{|t_meas, meas| # Convert to RXM-RAWX
+  meas = meas.to_hash
+  ubx = [0xB5, 0x62, 0x02, 0x15, 0, 0]
+  ubx += [t_meas.seconds, t_meas.week].pack("Ev").unpack("C*")
+  ubx += [0] * 6
+  meas_ubx = meas.collect{|sat, items|
+    res = [0] * 32
+    setter = proc{|value, offset, len, str, pre_proc|
+      array = case value
+      when Array; value
+      when Symbol
+        [items[GPS_PVT::GPS::Measurement.const_get(value)]]
+      else
+        next nil
+      end
+      pre_proc.call(array) if pre_proc
+      next if array.empty?
+      array = array.pack(str).unpack("C*") if str
+      res[offset - 16, len] = array
+    }
+    sys, svid = case sat
+    when 1..32 # GPS
+      [0, sat]
+    when 120..158 # SBAS
+      [1, sat]
+    when 193..202 # QZSS
+      [5, sat]
+    when (0x100 + 1)..(0x100 + 32) # GLONASS
+      setter.call(:L1_FREQUENCY,
+          39, 1, nil, proc{|v| v.replace(v[0] ? glonass_freq_ch.call(v[0]) : [7])})
+      [6, sat - 0x100]
+    else
+      next nil # TODO Galileo, Beidou, ...
+    end
+    setter.call([sys, svid], 36, 2)
+    
+    trk_stat = 0
+    setter.call(:L1_PSEUDORANGE,
+        16, 8, "E", proc{|v| v[0] ? (trk_stat |= 0x1) : v.clear})
+    setter.call(:L1_PSEUDORANGE_SIGMA,
+        43, 1, nil, proc{|v|
+          b = (Math::log2(v[0] / 1E-2).to_i & 0xF) rescue 0x8
+          v.replace((trk_stat & 0x1 == 0x1) ? [b] : [])
+        })
+    setter.call(:L1_DOPPLER, 32, 4, "e")
+    setter.call(:L1_DOPPLER_SIGMA,
+        45, 1, nil, proc{|v| v.replace(v[0] ? [Math::log2(v[0] / 2E-3).to_i & 0xF] : [0x8])})
+    setter.call(:L1_CARRIER_PHASE,
+        24, 8, "E", proc{|v| v[0] ? (trk_stat |= 0x2) : v.clear})
+    setter.call(:L1_CARRIER_PHASE_SIGMA,
+        44, 1, nil, proc{|v|
+          b = ((v[0] / 0.004).to_i & 0xF) rescue 0x8
+          v.replace((trk_stat & 0x2 == 0x2) ? [b] : [])
+        })
+    setter.call(:L1_SIGNAL_STRENGTH_dBHz,
+        42, 1, nil, proc{|v| v.replace(v[0] ? [v[0].to_i] : [])})
+    setter.call(:L1_LOCK_SEC,
+        40, 2, "v", proc{|v| v.replace(v[0] ? [(v[0] / 1E-3).to_i] : [])})
+    setter.call([trk_stat], 46, 1)
+
+    res
+  }.compact
+  ubx[6 + 11] = meas_ubx.size
+  ubx += meas_ubx.flatten(1)
+  ubx += [0, 0]
+  print GPS_PVT::UBX::update(ubx).pack("C*")
+}
