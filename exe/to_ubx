@@ -20,7 +20,9 @@ Major URL such as http(s)://... or ftp://... is acceptable as an input file name
 __STRING__
 
 options = []
-misc_options = {}
+misc_options = {
+  :ubx_rawx => false
+}
 
 # check options and file format
 files = ARGV.collect{|arg|
@@ -49,6 +51,16 @@ files.collect!{|fname, ftype|
   [fname, ftype]
 }
 
+options.reject!{|opt|
+  case opt[0]
+  when :ubx_rawx
+    misc_options[opt[0]] = opt[1]
+    true
+  else
+    false
+  end
+}
+
 rcv = GPS_PVT::Receiver::new(options)
 
 obs = []
@@ -70,6 +82,8 @@ files.each{|fname, ftype|
   end
 }
 
+obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
+
 glonass_freq_ch = proc{
   freq0, delta = [:L1_frequency_base, :L1_frequency_gap].collect{|k|
     GPS_PVT::GPS::SpaceNode_GLONASS.send(k)
@@ -77,8 +91,57 @@ glonass_freq_ch = proc{
   proc{|freq| ((freq - freq0) / delta).to_i}
 }.call
 
-obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
-obs.each{|t_meas, meas| # Convert to RXM-RAWX
+gen_raw = proc{|t_meas, meas| # Convert to RXM-RAW(0x10)
+  meas = meas.to_hash
+  ubx = [0xB5, 0x62, 0x02, 0x10, 0, 0]
+  ubx += [(t_meas.seconds * 1E3).to_i, t_meas.week].pack("Vv").unpack("C*")
+  ubx += [0] * 2
+  meas_ubx = meas.collect{|sat, items|
+    res = [0] * 24
+    setter = proc{|value, offset, len, str, pre_proc|
+      array = case value
+      when Array; value
+      when Symbol
+        [items[GPS_PVT::GPS::Measurement.const_get(value)]]
+      else
+        next nil
+      end
+      pre_proc.call(array) if pre_proc
+      next if array.empty?
+      array = array.pack(str).unpack("C*") if str
+      res[offset - 8, len] = array
+    }
+    svid = case sat
+    when 1..32, 120..158, 193..202 # GPS, SBAS, QZSS
+      sat
+    when (0x100 + 1)..(0x100 + 32) # GLONASS
+      sat - 0x100 + 64 # => 65..96
+    else
+      next nil # TODO Galileo, Beidou, ...
+    end
+    
+    qi = 6
+    setter.call(:L1_CARRIER_PHASE,
+        8, 8, "E", proc{|v| next if v[0]; qi = 4; v.clear})
+    setter.call(:L1_PSEUDORANGE,
+        16, 8, "E", proc{|v| next if v[0]; qi = 0; v.clear})
+    setter.call(:L1_DOPPLER,
+        24, 4, "e", proc{|v| next if v[0]; qi = 0; v.clear})
+    setter.call([svid, qi], 28, 2)
+    setter.call(:L1_SIGNAL_STRENGTH_dBHz,
+        30, 1, nil, proc{|v| v.replace(v[0] ? [v[0].to_i] : [])})
+    setter.call(:L1_LOCK_SEC,
+        31, 1, nil, proc{|v| v.replace(v[0] ? [(v[0] < 0) ? 1 : 0] : [0])})
+
+    res
+  }.compact
+  ubx[6 + 6] = meas_ubx.size
+  ubx += meas_ubx.flatten(1)
+  ubx += [0, 0]
+  GPS_PVT::UBX::update(ubx).pack("C*")
+}
+
+gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
   meas = meas.to_hash
   ubx = [0xB5, 0x62, 0x02, 0x15, 0, 0]
   ubx += [t_meas.seconds, t_meas.week].pack("Ev").unpack("C*")
@@ -143,5 +206,8 @@ obs.each{|t_meas, meas| # Convert to RXM-RAWX
   ubx[6 + 11] = meas_ubx.size
   ubx += meas_ubx.flatten(1)
   ubx += [0, 0]
-  print GPS_PVT::UBX::update(ubx).pack("C*")
+  GPS_PVT::UBX::update(ubx).pack("C*")
 }
+
+gen = misc_options[:ubx_rawx] ? gen_rawx : gen_raw
+obs.each{|*item| print gen.call(*item)}
