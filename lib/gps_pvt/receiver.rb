@@ -410,7 +410,7 @@ class Receiver
               @solver.sbas_space_node.ionospheric_grid_points(prn)].each{|str|
             $stderr.puts str
           } if @debug[:SBAS_IGP] 
-        end
+        end if t_meas
       when :GLONASS
         next unless eph = eph_glonass_list[prn]
         leap_sec = @solver.gps_space_node.is_valid_utc ? 
