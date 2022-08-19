@@ -210,4 +210,5 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
 }
 
 gen = misc_options[:ubx_rawx] ? gen_rawx : gen_raw
+STDOUT.binmode
 obs.each{|*item| print gen.call(*item)}
