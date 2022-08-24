@@ -24,7 +24,7 @@ misc_options = {}
 files = ARGV.collect{|arg|
   next [arg, nil] unless arg =~ /^--([^=]+)=?/
   k, v = [$1.downcase.to_sym, $']
-  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :sp3, :antex].include?(k) # file type
+  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :sp3, :antex, :rinex_clk].include?(k) # file type
   options << [$1.to_sym, $']
   nil
 }.compact
@@ -74,6 +74,7 @@ files.collect!{|fname, ftype|
   when /\.ubx$/; :ubx
   when /\.sp3(?:\.Z)?$/; :sp3
   when /\.atx(?:\.Z)?$/; :antex
+  when /\.clk$/; :rinex_clk
   else
     raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}"
   end
@@ -145,6 +146,7 @@ files.each{|fname, ftype|
   when :rinex_nav; rcv.parse_rinex_nav(fname)
   when :sp3; rcv.attach_sp3(fname)
   when :antex; rcv.attach_antex(fname)
+  when :rinex_clk; rcv.attach_rinex_clk(fname)
   end
 }
 

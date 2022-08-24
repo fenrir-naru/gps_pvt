@@ -651,5 +651,21 @@ class Receiver
     raise "Format error! (Not ANTEX) #{src}" unless applied_items >= 0
     $stderr.puts "SP3 correction with ANTEX file (%s): %d items have been processed."%[src, applied_items]
   end
+  
+  def attach_rinex_clk(src)
+    fname = Util::get_txt(src)
+    @clk ||= GPS::RINEX_Clock::new
+    read_items = @clk.read(fname)
+    raise "Format error! (Not RINEX clock) #{src}" if read_items < 0
+    $stderr.puts "Read RINEX clock file (%s): %d items."%[src, read_items]
+    sats = @clk.satellites
+    @clk.class.constants.each{|sys|
+      next unless /^SYS_(?!SYSTEMS)(.*)/ =~ sys.to_s
+      idx, sys_name = [@clk.class.const_get(sys), $1]
+      next unless sats[idx] > 0
+      next unless @clk.push(@solver, idx)
+      $stderr.puts "Change clock error source of #{sys_name} to RINEX clock" 
+    }
+  end
 end
 end
