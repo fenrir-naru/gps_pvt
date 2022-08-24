@@ -41,6 +41,7 @@ The format of file is automatically determined with its extension, such as .ubx 
 | --ubx=file_or_URI | [U-blox](https://www.u-blox.com/) dedicated format |
 | --sp3=file_or_URI | [Standard Product 3 Orbit Format](https://files.igs.org/pub/data/format/sp3c.txt) (supported gps_pvt version >= 0.6.0) |
 | --antex=file_or_URI | [Antenna Exchange Format](https://igs.org/wg/antenna#files) (supported gps_pvt version >= 0.6.0) |
+| --rinex_clk=file_or_URI | [RINEX clock](https://files.igs.org/pub/data/format/rinex_clock304.txt) file  (supported gps_pvt version >= 0.7.0) |
 
 Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
