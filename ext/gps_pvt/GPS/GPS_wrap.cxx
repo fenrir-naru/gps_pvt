@@ -1875,43 +1875,47 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_MatrixViewBaseT_t swig_types[25]
 #define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[26]
 #define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[27]
-#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[28]
-#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[29]
-#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[30]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[31]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[32]
-#define SWIGTYPE_p_SP3T_double_t swig_types[33]
-#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[34]
-#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[35]
-#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[36]
-#define SWIGTYPE_p_available_satellites_t swig_types[37]
-#define SWIGTYPE_p_char swig_types[38]
-#define SWIGTYPE_p_double swig_types[39]
-#define SWIGTYPE_p_enu_t swig_types[40]
-#define SWIGTYPE_p_eph_t swig_types[41]
-#define SWIGTYPE_p_float_t swig_types[42]
-#define SWIGTYPE_p_gps_space_node_t swig_types[43]
-#define SWIGTYPE_p_gps_time_t swig_types[44]
-#define SWIGTYPE_p_int swig_types[45]
-#define SWIGTYPE_p_int_t swig_types[46]
-#define SWIGTYPE_p_llh_t swig_types[47]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[48]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[49]
-#define SWIGTYPE_p_range_correction_list_t swig_types[50]
-#define SWIGTYPE_p_s16_t swig_types[51]
-#define SWIGTYPE_p_s32_t swig_types[52]
-#define SWIGTYPE_p_s8_t swig_types[53]
-#define SWIGTYPE_p_satellites_t swig_types[54]
-#define SWIGTYPE_p_self_t swig_types[55]
-#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[56]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[57]
-#define SWIGTYPE_p_u16_t swig_types[58]
-#define SWIGTYPE_p_u32_t swig_types[59]
-#define SWIGTYPE_p_u8_t swig_types[60]
-#define SWIGTYPE_p_uint_t swig_types[61]
-#define SWIGTYPE_p_xyz_t swig_types[62]
-static swig_type_info *swig_types[64];
-static swig_module_info swig_module = {swig_types, 63, 0, 0, 0, 0};
+#define SWIGTYPE_p_PushableData swig_types[28]
+#define SWIGTYPE_p_RINEX_ClockT_double_t swig_types[29]
+#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[30]
+#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[31]
+#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[32]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[33]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[34]
+#define SWIGTYPE_p_SP3T_double_t swig_types[35]
+#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[36]
+#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[37]
+#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[38]
+#define SWIGTYPE_p_available_satellites_t swig_types[39]
+#define SWIGTYPE_p_char swig_types[40]
+#define SWIGTYPE_p_double swig_types[41]
+#define SWIGTYPE_p_enu_t swig_types[42]
+#define SWIGTYPE_p_eph_t swig_types[43]
+#define SWIGTYPE_p_float_t swig_types[44]
+#define SWIGTYPE_p_gps_space_node_t swig_types[45]
+#define SWIGTYPE_p_gps_time_t swig_types[46]
+#define SWIGTYPE_p_int swig_types[47]
+#define SWIGTYPE_p_int_t swig_types[48]
+#define SWIGTYPE_p_llh_t swig_types[49]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[50]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[51]
+#define SWIGTYPE_p_p_double swig_types[52]
+#define SWIGTYPE_p_range_correction_list_t swig_types[53]
+#define SWIGTYPE_p_s16_t swig_types[54]
+#define SWIGTYPE_p_s32_t swig_types[55]
+#define SWIGTYPE_p_s8_t swig_types[56]
+#define SWIGTYPE_p_satellites_t swig_types[57]
+#define SWIGTYPE_p_self_t swig_types[58]
+#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[59]
+#define SWIGTYPE_p_super_t swig_types[60]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[61]
+#define SWIGTYPE_p_u16_t swig_types[62]
+#define SWIGTYPE_p_u32_t swig_types[63]
+#define SWIGTYPE_p_u8_t swig_types[64]
+#define SWIGTYPE_p_uint_t swig_types[65]
+#define SWIGTYPE_p_xyz_t swig_types[66]
+static swig_type_info *swig_types[68];
+static swig_module_info swig_module = {swig_types, 67, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1953,6 +1957,7 @@ static VALUE mGPS;
 #include "navigation/QZSS.h"
 #include "navigation/GLONASS.h"
 #include "navigation/RINEX.h"
+#include "navigation/RINEX_Clock.h"
 #include "navigation/SP3.h"
 #include "navigation/ANTEX.h"
 
@@ -2530,6 +2535,7 @@ struct GPS_Measurement {
 
 template <class FloatT>
 struct GPS_SolverOptions_Common {
+  virtual ~GPS_SolverOptions_Common() {}
   virtual GPS_Solver_GeneralOptions<FloatT> *cast_general() = 0;
   virtual const GPS_Solver_GeneralOptions<FloatT> *cast_general() const = 0;
 };
@@ -2836,12 +2842,7 @@ template <class FloatT>
 struct RINEX_Observation {};
 
 
-template <class FloatT>
-struct SP3 : public SP3_Product<FloatT> {
-  int read(const char *fname) {
-    std::fstream fin(fname, std::ios::in | std::ios::binary);
-    return SP3_Reader<FloatT>::read_all(fin, *this);
-  }
+struct PushableData {
   enum system_t {
     SYS_GPS,
     SYS_SBAS,
@@ -2851,20 +2852,21 @@ struct SP3 : public SP3_Product<FloatT> {
     SYS_BEIDOU,
     SYS_SYSTEMS,
   };
-  bool push(GPS_Solver<FloatT> &solver, const system_t &sys) const {
+  template <class DataT, class FloatT>
+  static bool push(DataT &data, GPS_Solver<FloatT> &solver, const system_t &sys){
     switch(sys){
       case SYS_GPS:
-        return SP3_Product<FloatT>::push(
-            solver.gps.ephemeris_proxy.gps, SP3_Product<FloatT>::SYSTEM_GPS);
+        return data.push(
+            solver.gps.ephemeris_proxy.gps, DataT::SYSTEM_GPS);
       case SYS_SBAS:
-        return SP3_Product<FloatT>::push(
-            solver.sbas.solver.satellites, SP3_Product<FloatT>::SYSTEM_SBAS);
+        return data.push(
+            solver.sbas.solver.satellites, DataT::SYSTEM_SBAS);
       case SYS_QZSS:
-        return SP3_Product<FloatT>::push(
-            solver.gps.ephemeris_proxy.qzss, SP3_Product<FloatT>::SYSTEM_QZSS);
+        return data.push(
+            solver.gps.ephemeris_proxy.qzss, DataT::SYSTEM_QZSS);
       case SYS_GLONASS:
-        return SP3_Product<FloatT>::push(
-            solver.glonass.solver.satellites, SP3_Product<FloatT>::SYSTEM_GLONASS);
+        return data.push(
+            solver.glonass.solver.satellites, DataT::SYSTEM_GLONASS);
       case SYS_GALILEO:
       case SYS_BEIDOU:
       default:
@@ -2872,7 +2874,8 @@ struct SP3 : public SP3_Product<FloatT> {
     }
     return false;
   }
-  bool push(GPS_Solver<FloatT> &solver) const {
+  template <class DataT, class FloatT>
+  static bool push(DataT &data, GPS_Solver<FloatT> &solver){
     system_t target[] = {
       SYS_GPS,
       SYS_SBAS,
@@ -2882,9 +2885,27 @@ struct SP3 : public SP3_Product<FloatT> {
       //SYS_BEIDOU,
     };
     for(std::size_t i(0); i < sizeof(target) / sizeof(target[0]); ++i){
-      if(!push(solver, target[i])){return false;}
+      if(!push(data, solver, target[i])){return false;}
     }
     return true;
+  }
+};
+
+
+template <class FloatT>
+struct SP3 : public SP3_Product<FloatT>, PushableData {
+  int read(const char *fname) {
+    std::fstream fin(fname, std::ios::in | std::ios::binary);
+    return SP3_Reader<FloatT>::read_all(fin, *this);
+  }
+  typename SP3_Product<FloatT>::satellite_count_t satellites() const {
+    return SP3_Product<FloatT>::satellite_count();
+  }
+  bool push(GPS_Solver<FloatT> &solver, const PushableData::system_t &sys) const {
+    return PushableData::push((SP3_Product<FloatT> &)*this, solver, sys);
+  }
+  bool push(GPS_Solver<FloatT> &solver) const {
+    return PushableData::push((SP3_Product<FloatT> &)*this, solver);
   }
   System_XYZ<FloatT, WGS84> position(
       const int &sat_id, const GPS_Time<FloatT> &t) const {
@@ -2908,6 +2929,35 @@ struct SP3 : public SP3_Product<FloatT> {
     int read_items(ANTEX_Reader<FloatT>::read_all(fin, antex));
     if(read_items < 0){return read_items;}
     return antex.move_to_antenna_position(*this);
+  }
+};
+
+
+template <class FloatT>
+struct RINEX_Clock : public RINEX_CLK<FloatT>::satellites_t, PushableData {
+  typedef typename RINEX_CLK<FloatT>::satellites_t super_t;
+  int read(const char *fname) {
+    std::fstream fin(fname, std::ios::in | std::ios::binary);
+    return RINEX_CLK_Reader<FloatT>::read_all(fin, *this);
+  }
+  typename RINEX_CLK<FloatT>::satellites_t::count_t satellites() const {
+    return RINEX_CLK<FloatT>::satellites_t::count();
+  }
+  bool push(GPS_Solver<FloatT> &solver, const PushableData::system_t &sys) const {
+    return PushableData::push((typename RINEX_CLK<FloatT>::satellites_t &)*this, solver, sys);
+  }
+  bool push(GPS_Solver<FloatT> &solver) const {
+    return PushableData::push((typename RINEX_CLK<FloatT>::satellites_t &)*this, solver);
+  }
+  FloatT clock_error(const int &sat_id, const GPS_Time<FloatT> &t) const {
+    typename super_t::buf_t::const_iterator it(this->buf.find(sat_id));
+    if(it == this->buf.end()){return super_t::sat_t::unavailable().clock_error(t);}
+    return it->second.clock_error(t);
+  }
+  FloatT clock_error_dot(const int &sat_id, const GPS_Time<FloatT> &t) const {
+    typename super_t::buf_t::const_iterator it(this->buf.find(sat_id));
+    if(it == this->buf.end()){return super_t::sat_t::unavailable().clock_error(t);}
+    return it->second.clock_error_dot(t);
   }
 };
 
@@ -3448,21 +3498,13 @@ SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_alpha(GPS_Ionos
       self->alpha[i] = values[i];
     } 
   }
-SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha(GPS_Ionospheric_UTC_Parameters< double > const *self,double values[4]){
-    for(int i(0); i < 4; ++i){
-      values[i] = self->alpha[i];
-    }
-  }
+SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha(GPS_Ionospheric_UTC_Parameters< double > const *self,double const *values[4]){*values = self->alpha;}
 SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_beta(GPS_Ionospheric_UTC_Parameters< double > *self,double const values[4]){
     for(int i(0); i < 4; ++i){
       self->beta[i] = values[i];
     }
   }
-SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta(GPS_Ionospheric_UTC_Parameters< double > const *self,double values[4]){
-    for(int i(0); i < 4; ++i){
-      values[i] = self->beta[i];
-    }
-  }
+SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta(GPS_Ionospheric_UTC_Parameters< double > const *self,double const *values[4]){*values = self->beta;}
 SWIGINTERN double GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A1(GPS_Ionospheric_UTC_Parameters< double > *self,double const &v){
   return self->A1 = v;
 }
@@ -3980,7 +4022,10 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
       if(!res.is_available()){
         static const VALUE key(ID2SYM(rb_intern("relative_property")));
         VALUE hook(rb_hash_lookup(hooks, key));
-        if(!NIL_P(hook)){res.impl = this;}
+        if(!NIL_P(hook)){
+          if(!res.impl_xyz){res.impl_xyz = this;}
+          if(!res.impl_t){res.impl_t = this;}
+        }
       }
 
       return res;
@@ -4578,15 +4623,6 @@ SWIGINTERN void RINEX_Observation_Sl_double_Sg__read(char const *fname){
 
     }
   }
-SWIGINTERN void SP3_Sl_double_Sg__satellites(SP3< double > const *self,int count[SP3< double >::SYS_SYSTEMS]){
-    typename SP3_Product<double>::satellite_count_t x(self->satellite_count());
-    count[SP3<double>::SYS_GPS] = x.gps;
-    count[SP3<double>::SYS_SBAS] = x.sbas;
-    count[SP3<double>::SYS_QZSS] = x.qzss;
-    count[SP3<double>::SYS_GLONASS] = x.glonass;
-    count[SP3<double>::SYS_GALILEO] = x.galileo;
-    count[SP3<double>::SYS_BEIDOU] = x.beidou;
-  }
 static swig_class SwigClassGC_VALUE;
 
 /*
@@ -4642,6 +4678,132 @@ fail:
   return Qnil;
 }
 
+
+/*
+  Document-class: GPS_PVT::GPS::PushableData
+
+  Proxy of C++ GPS_PVT::GPS::PushableData class
+
+
+*/
+static swig_class SwigClassPushableData;
+
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_GPS
+
+  call-seq:
+    SYS_GPS -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_SBAS
+
+  call-seq:
+    SYS_SBAS -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_QZSS
+
+  call-seq:
+    SYS_QZSS -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_GLONASS
+
+  call-seq:
+    SYS_GLONASS -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_GALILEO
+
+  call-seq:
+    SYS_GALILEO -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_BEIDOU
+
+  call-seq:
+    SYS_BEIDOU -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS::system_t.SYS_SYSTEMS
+
+  call-seq:
+    SYS_SYSTEMS -> int
+
+A class method.
+
+*/
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_PushableData_allocate(VALUE self)
+#else
+_wrap_PushableData_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_PushableData);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::PushableData.new
+
+  call-seq:
+    PushableData.new
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_PushableData(int argc, VALUE *argv, VALUE self) {
+  PushableData *result = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  {
+    try {
+      result = (PushableData *)new PushableData();
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN void
+free_PushableData(void *self) {
+    PushableData *arg1 = (PushableData *)self;
+    delete arg1;
+}
 
 /*
   Document-class: GPS_PVT::GPS::Time
@@ -9708,7 +9870,6 @@ _wrap_Ionospheric_UTC_Parameters_alphae___(int argc, VALUE *argv, VALUE self) {
   void *argp1 = 0 ;
   int res1 = 0 ;
   double temp2[4] ;
-  VALUE vresult = Qnil;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -9739,12 +9900,7 @@ _wrap_Ionospheric_UTC_Parameters_alphae___(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  {
-    for(int i(0); i < 4; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from(arg2[i]));
-    }
-  }
-  return vresult;
+  return Qnil;
 fail:
   return Qnil;
 }
@@ -9762,15 +9918,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Ionospheric_UTC_Parameters_alpha(int argc, VALUE *argv, VALUE self) {
   GPS_Ionospheric_UTC_Parameters< double > *arg1 = (GPS_Ionospheric_UTC_Parameters< double > *) 0 ;
-  double *arg2 ;
+  double **arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  double temp2[4] ;
+  double *temp2 ;
   VALUE vresult = Qnil;
   
-  
-  arg2 = temp2;
-  
+  arg2 = &temp2;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -9781,7 +9935,7 @@ _wrap_Ionospheric_UTC_Parameters_alpha(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
   {
     try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,arg2);
+      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -9791,7 +9945,7 @@ _wrap_Ionospheric_UTC_Parameters_alpha(int argc, VALUE *argv, VALUE self) {
   }
   {
     for(int i(0); i < 4; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from(arg2[i]));
+      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((*arg2)[i]));
     }
   }
   return vresult;
@@ -9816,7 +9970,6 @@ _wrap_Ionospheric_UTC_Parameters_betae___(int argc, VALUE *argv, VALUE self) {
   void *argp1 = 0 ;
   int res1 = 0 ;
   double temp2[4] ;
-  VALUE vresult = Qnil;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
@@ -9847,12 +10000,7 @@ _wrap_Ionospheric_UTC_Parameters_betae___(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  {
-    for(int i(0); i < 4; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from(arg2[i]));
-    }
-  }
-  return vresult;
+  return Qnil;
 fail:
   return Qnil;
 }
@@ -9870,15 +10018,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Ionospheric_UTC_Parameters_beta(int argc, VALUE *argv, VALUE self) {
   GPS_Ionospheric_UTC_Parameters< double > *arg1 = (GPS_Ionospheric_UTC_Parameters< double > *) 0 ;
-  double *arg2 ;
+  double **arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  double temp2[4] ;
+  double *temp2 ;
   VALUE vresult = Qnil;
   
-  
-  arg2 = temp2;
-  
+  arg2 = &temp2;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -9889,7 +10035,7 @@ _wrap_Ionospheric_UTC_Parameters_beta(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
   {
     try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,arg2);
+      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -9899,7 +10045,7 @@ _wrap_Ionospheric_UTC_Parameters_beta(int argc, VALUE *argv, VALUE self) {
   }
   {
     for(int i(0); i < 4; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from(arg2[i]));
+      vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((*arg2)[i]));
     }
   }
   return vresult;
@@ -16071,6 +16217,12 @@ free_GPS_Measurement_Sl_double_Sg_(void *self) {
 */
 static swig_class SwigClassSolverOptionsCommon;
 
+SWIGINTERN void
+free_GPS_SolverOptions_Common_Sl_double_Sg_(void *self) {
+    GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *)self;
+    delete arg1;
+}
+
 /*
   Document-method: GPS_PVT::GPS::SolverOptionsCommon.cast_general
 
@@ -16373,12 +16525,6 @@ fail:
   return Qnil;
 }
 
-
-SWIGINTERN void
-free_GPS_SolverOptions_Common_Sl_double_Sg_(void *self) {
-    GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *)self;
-    delete arg1;
-}
 
 /*
   Document-class: GPS_PVT::GPS::SolverOptions < GPS::SolverOptionsCommon
@@ -24889,68 +25035,54 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::GPS::system_t.SYS_GPS
+  Document-method: GPS_PVT::GPS::SP3.satellites
 
   call-seq:
-    SYS_GPS -> int
+    satellites -> SP3_Product< double >::satellite_count_t
 
-A class method.
-
-*/
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_SBAS
-
-  call-seq:
-    SYS_SBAS -> int
-
-A class method.
+An instance method.
 
 */
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_QZSS
+SWIGINTERN VALUE
+_wrap_SP3_satellites(int argc, VALUE *argv, VALUE self) {
+  SP3< double > *arg1 = (SP3< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SP3_Product< double >::satellite_count_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SP3T_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SP3< double > const *","satellites", 1, self )); 
+  }
+  arg1 = reinterpret_cast< SP3< double > * >(argp1);
+  {
+    try {
+      result = ((SP3< double > const *)arg1)->satellites();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->gps));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->sbas));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->qzss));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->glonass));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->galileo));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->beidou));
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
 
-  call-seq:
-    SYS_QZSS -> int
 
-A class method.
-
-*/
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_GLONASS
-
-  call-seq:
-    SYS_GLONASS -> int
-
-A class method.
-
-*/
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_GALILEO
-
-  call-seq:
-    SYS_GALILEO -> int
-
-A class method.
-
-*/
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_BEIDOU
-
-  call-seq:
-    SYS_BEIDOU -> int
-
-A class method.
-
-*/
-/*
-  Document-method: GPS_PVT::GPS::system_t.SYS_SYSTEMS
-
-  call-seq:
-    SYS_SYSTEMS -> int
-
-A class method.
-
-*/
 /*
   Document-method: GPS_PVT::GPS::SP3.push
 
@@ -24964,14 +25096,14 @@ SWIGINTERN VALUE
 _wrap_SP3_push__SWIG_0(int argc, VALUE *argv, VALUE self) {
   SP3< double > *arg1 = (SP3< double > *) 0 ;
   GPS_Solver< double > *arg2 = 0 ;
-  SP3< double >::system_t *arg3 = 0 ;
+  PushableData::system_t *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
   int val3 ;
   int ecode3 ;
-  SP3< double >::system_t temp3 ;
+  PushableData::system_t temp3 ;
   bool result;
   VALUE vresult = Qnil;
   
@@ -24993,14 +25125,14 @@ _wrap_SP3_push__SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg2 = reinterpret_cast< GPS_Solver< double > * >(argp2);
   ecode3 = SWIG_AsVal_int (argv[1], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "SP3< double >::system_t const &","push", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "PushableData::system_t const &","push", 3, argv[1] ));
   } else {
-    temp3 = static_cast< SP3< double >::system_t >(val3);
+    temp3 = static_cast< PushableData::system_t >(val3);
     arg3 = &temp3;
   }
   {
     try {
-      result = (bool)((SP3< double > const *)arg1)->push(*arg2,(SP3< double >::system_t const &)*arg3);
+      result = (bool)((SP3< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -25107,7 +25239,7 @@ SWIGINTERN VALUE _wrap_SP3_push(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 4, "SP3.push", 
-    "    bool SP3.push(GPS_Solver< double > &solver, SP3< double >::system_t const &sys)\n"
+    "    bool SP3.push(GPS_Solver< double > &solver, PushableData::system_t const &sys)\n"
     "    bool SP3.push(GPS_Solver< double > &solver)\n");
   
   return Qnil;
@@ -25419,54 +25551,6 @@ fail:
 }
 
 
-/*
-  Document-method: GPS_PVT::GPS::SP3.satellites
-
-  call-seq:
-    satellites
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_SP3_satellites(int argc, VALUE *argv, VALUE self) {
-  SP3< double > *arg1 = (SP3< double > *) 0 ;
-  int *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2[SP3< double >::SYS_SYSTEMS] ;
-  VALUE vresult = Qnil;
-  
-  arg2 = temp2;
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SP3T_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SP3< double > const *","satellites", 1, self )); 
-  }
-  arg1 = reinterpret_cast< SP3< double > * >(argp1);
-  {
-    try {
-      SP3_Sl_double_Sg__satellites((SP3< double > const *)arg1,arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  {
-    for(int i(0); i < SP3< double >::SYS_SYSTEMS; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  (arg2[i]));
-    }
-  }
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
 SWIGINTERN VALUE
 #ifdef HAVE_RB_DEFINE_ALLOC_FUNC
 _wrap_SP3_allocate(VALUE self)
@@ -25521,6 +25605,461 @@ free_SP3_Sl_double_Sg_(void *self) {
     delete arg1;
 }
 
+/*
+  Document-class: GPS_PVT::GPS
+
+  Proxy of C++ GPS_PVT::GPS class
+
+
+
+*/
+static swig_class SwigClassRINEX_Clock;
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.read
+
+  call-seq:
+    read(char const * fname) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_read(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > *","read", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  {
+    try {
+      result = (int)(arg1)->read((char const *)arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return vresult;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.satellites
+
+  call-seq:
+    satellites -> RINEX_CLK< double >::satellites_t::count_t
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_satellites(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  RINEX_CLK< double >::satellites_t::count_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","satellites", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  {
+    try {
+      result = ((RINEX_Clock< double > const *)arg1)->satellites();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  {
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->gps));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->sbas));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->qzss));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->glonass));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->galileo));
+    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->beidou));
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.push
+
+  call-seq:
+    push(solver, sys) -> bool
+    push(solver) -> bool
+
+Add an element at the end of the RINEX_Clock.
+*/
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_push__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  GPS_Solver< double > *arg2 = 0 ;
+  PushableData::system_t *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int val3 ;
+  int ecode3 ;
+  PushableData::system_t temp3 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","push", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_SolverT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Solver< double > &","push", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Solver< double > &","push", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Solver< double > * >(argp2);
+  ecode3 = SWIG_AsVal_int (argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "PushableData::system_t const &","push", 3, argv[1] ));
+  } else {
+    temp3 = static_cast< PushableData::system_t >(val3);
+    arg3 = &temp3;
+  }
+  {
+    try {
+      result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_push__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  GPS_Solver< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","push", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_SolverT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Solver< double > &","push", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Solver< double > &","push", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Solver< double > * >(argp2);
+  {
+    try {
+      result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_RINEX_Clock_push(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RINEX_ClockT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_SolverT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_RINEX_Clock_push__SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RINEX_ClockT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_GPS_SolverT_double_t, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_RINEX_Clock_push__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "RINEX_Clock.push", 
+    "    bool RINEX_Clock.push(GPS_Solver< double > &solver, PushableData::system_t const &sys)\n"
+    "    bool RINEX_Clock.push(GPS_Solver< double > &solver)\n");
+  
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.clock_error
+
+  call-seq:
+    clock_error(int const & sat_id, Time t) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_clock_error(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  int *arg2 = 0 ;
+  GPS_Time< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","clock_error", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","clock_error", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
+  {
+    try {
+      result = (double)((RINEX_Clock< double > const *)arg1)->clock_error((int const &)*arg2,(GPS_Time< double > const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.clock_error_dot
+
+  call-seq:
+    clock_error_dot(int const & sat_id, Time t) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_RINEX_Clock_clock_error_dot(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *) 0 ;
+  int *arg2 = 0 ;
+  GPS_Time< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_RINEX_ClockT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","clock_error_dot", 1, self )); 
+  }
+  arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","clock_error_dot", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "GPS_Time< double > const &","clock_error_dot", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error_dot", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
+  {
+    try {
+      result = (double)((RINEX_Clock< double > const *)arg1)->clock_error_dot((int const &)*arg2,(GPS_Time< double > const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
+_wrap_RINEX_Clock_allocate(VALUE self)
+#else
+_wrap_RINEX_Clock_allocate(int argc, VALUE *argv, VALUE self)
+#endif
+{
+  VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_RINEX_ClockT_double_t);
+#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
+  rb_obj_call_init(vresult, argc, argv);
+#endif
+  return vresult;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::RINEX_Clock.new
+
+  call-seq:
+    RINEX_Clock.new
+
+Class constructor.
+
+*/
+SWIGINTERN VALUE
+_wrap_new_RINEX_Clock(int argc, VALUE *argv, VALUE self) {
+  RINEX_Clock< double > *result = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  {
+    try {
+      result = (RINEX_Clock< double > *)new RINEX_Clock< double >();
+      DATA_PTR(self) = result;
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return self;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN void
+free_RINEX_Clock_Sl_double_Sg_(void *self) {
+    RINEX_Clock< double > *arg1 = (RINEX_Clock< double > *)self;
+    delete arg1;
+}
+
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
@@ -25544,6 +26083,12 @@ static void *_p_SBAS_EphemerisT_double_tTo_p_SBAS_SpaceNodeT_double_t__Satellite
 }
 static void *_p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *)  ((GPS_Ionospheric_UTC_Parameters< double > *) x));
+}
+static void *_p_SP3T_double_tTo_p_PushableData(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((PushableData *)  ((SP3< double > *) x));
+}
+static void *_p_RINEX_ClockT_double_tTo_p_PushableData(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((PushableData *)  ((RINEX_Clock< double > *) x));
 }
 static void *_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_tTo_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *)  ((Matrix< double,Array2D_Dense< double > > *) x));
@@ -25576,6 +26121,8 @@ static swig_type_info _swigt__p_MatrixT_double_Array2D_DenseT_double_t_MatrixVie
 static swig_type_info _swigt__p_MatrixViewBaseT_t = {"_p_MatrixViewBaseT_t", "MatrixViewBase< > *|MatViewBase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t = {"_p_MatrixViewFilterT_MatrixViewBaseT_t_t", "MatrixViewFilter< MatrixViewBase< > > *|MatView_f *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t = {"_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t", "Matrix_Frozen< double,Array2D_Dense< double > > *|Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_PushableData = {"_p_PushableData", "PushableData *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_RINEX_ClockT_double_t = {"_p_RINEX_ClockT_double_t", "RINEX_Clock< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RINEX_ObservationT_double_t = {"_p_RINEX_ObservationT_double_t", "RINEX_Observation< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SBAS_EphemerisT_double_t = {"_p_SBAS_EphemerisT_double_t", "SBAS_Ephemeris< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SBAS_SolverOptionsT_double_t = {"_p_SBAS_SolverOptionsT_double_t", "SBAS_SolverOptions< double > *", 0, 0, (void*)0, 0};
@@ -25598,6 +26145,7 @@ static swig_type_info _swigt__p_int_t = {"_p_int_t", "int_t *", 0, 0, (void*)0, 
 static swig_type_info _swigt__p_llh_t = {"_p_llh_t", "llh_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t = {"_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t", "GPS_User_PVT< double >::base_t::detection_t **|GPS_Solver_RAIM_LSR< double,GPS_Solver_Base_Debug< double,GPS_Solver_Base< double > > >::user_pvt_t::detection_t **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t = {"_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t", "GPS_User_PVT< double >::base_t::exclusion_t **|GPS_Solver_RAIM_LSR< double,GPS_Solver_Base_Debug< double,GPS_Solver_Base< double > > >::user_pvt_t::exclusion_t **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_double = {"_p_p_double", "double **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_range_correction_list_t = {"_p_range_correction_list_t", "range_correction_list_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_s16_t = {"_p_s16_t", "s16_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_s32_t = {"_p_s32_t", "s32_t *", 0, 0, (void*)0, 0};
@@ -25605,6 +26153,7 @@ static swig_type_info _swigt__p_s8_t = {"_p_s8_t", "s8_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_satellites_t = {"_p_satellites_t", "satellites_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_self_t = {"_p_self_t", "self_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t = {"_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t", "SBAS_SpaceNode< double >::available_satellites_t *|std::vector< std::pair< int,SBAS_SpaceNode< double >::Satellite const * > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_super_t = {"_p_super_t", "super_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__GC_VALUE = {"_p_swig__GC_VALUE", "swig::GC_VALUE *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_u16_t = {"_p_u16_t", "u16_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_u32_t = {"_p_u32_t", "u32_t *", 0, 0, (void*)0, 0};
@@ -25641,6 +26190,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_MatrixViewBaseT_t,
   &_swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t,
   &_swigt__p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,
+  &_swigt__p_PushableData,
+  &_swigt__p_RINEX_ClockT_double_t,
   &_swigt__p_RINEX_ObservationT_double_t,
   &_swigt__p_SBAS_EphemerisT_double_t,
   &_swigt__p_SBAS_SolverOptionsT_double_t,
@@ -25663,6 +26214,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_llh_t,
   &_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t,
   &_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t,
+  &_swigt__p_p_double,
   &_swigt__p_range_correction_list_t,
   &_swigt__p_s16_t,
   &_swigt__p_s32_t,
@@ -25670,6 +26222,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_satellites_t,
   &_swigt__p_self_t,
   &_swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t,
+  &_swigt__p_super_t,
   &_swigt__p_swig__GC_VALUE,
   &_swigt__p_u16_t,
   &_swigt__p_u32_t,
@@ -25706,6 +26259,8 @@ static swig_cast_info _swigc__p_MatrixT_double_Array2D_DenseT_double_t_MatrixVie
 static swig_cast_info _swigc__p_MatrixViewBaseT_t[] = {  {&_swigt__p_MatrixViewBaseT_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MatrixViewFilterT_MatrixViewBaseT_t_t[] = {  {&_swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t[] = {  {&_swigt__p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0, 0, 0},  {&_swigt__p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, _p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_tTo_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_PushableData[] = {  {&_swigt__p_SP3T_double_t, _p_SP3T_double_tTo_p_PushableData, 0, 0},  {&_swigt__p_RINEX_ClockT_double_t, _p_RINEX_ClockT_double_tTo_p_PushableData, 0, 0},  {&_swigt__p_PushableData, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_RINEX_ClockT_double_t[] = {  {&_swigt__p_RINEX_ClockT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RINEX_ObservationT_double_t[] = {  {&_swigt__p_RINEX_ObservationT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SBAS_EphemerisT_double_t[] = {  {&_swigt__p_SBAS_EphemerisT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SBAS_SolverOptionsT_double_t[] = {  {&_swigt__p_SBAS_SolverOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -25728,6 +26283,7 @@ static swig_cast_info _swigc__p_int_t[] = {  {&_swigt__p_int_t, 0, 0, 0},{0, 0, 
 static swig_cast_info _swigc__p_llh_t[] = {  {&_swigt__p_llh_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t[] = {  {&_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t[] = {  {&_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_double[] = {  {&_swigt__p_p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_range_correction_list_t[] = {  {&_swigt__p_range_correction_list_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_s16_t[] = {  {&_swigt__p_s16_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_s32_t[] = {  {&_swigt__p_s32_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -25735,6 +26291,7 @@ static swig_cast_info _swigc__p_s8_t[] = {  {&_swigt__p_s8_t, 0, 0, 0},{0, 0, 0,
 static swig_cast_info _swigc__p_satellites_t[] = {  {&_swigt__p_satellites_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_self_t[] = {  {&_swigt__p_self_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t[] = {  {&_swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_super_t[] = {  {&_swigt__p_super_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__GC_VALUE[] = {  {&_swigt__p_swig__GC_VALUE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_u16_t[] = {  {&_swigt__p_u16_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_u32_t[] = {  {&_swigt__p_u32_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -25771,6 +26328,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_MatrixViewBaseT_t,
   _swigc__p_MatrixViewFilterT_MatrixViewBaseT_t_t,
   _swigc__p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,
+  _swigc__p_PushableData,
+  _swigc__p_RINEX_ClockT_double_t,
   _swigc__p_RINEX_ObservationT_double_t,
   _swigc__p_SBAS_EphemerisT_double_t,
   _swigc__p_SBAS_SolverOptionsT_double_t,
@@ -25793,6 +26352,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_llh_t,
   _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t,
   _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t,
+  _swigc__p_p_double,
   _swigc__p_range_correction_list_t,
   _swigc__p_s16_t,
   _swigc__p_s32_t,
@@ -25800,6 +26360,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_satellites_t,
   _swigc__p_self_t,
   _swigc__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t,
+  _swigc__p_super_t,
   _swigc__p_swig__GC_VALUE,
   _swigc__p_u16_t,
   _swigc__p_u32_t,
@@ -26075,6 +26636,21 @@ SWIGEXPORT void Init_GPS(void) {
   rb_require("gps_pvt/SylphideMath");
   rb_require("gps_pvt/Coordinate");
   rb_define_const(mGPS, "GPS_SC2RAD", SWIG_From_double(static_cast< double >(3.1415926535898)));
+  
+  SwigClassPushableData.klass = rb_define_class_under(mGPS, "PushableData", rb_cObject);
+  SWIG_TypeClientData(SWIGTYPE_p_PushableData, (void *) &SwigClassPushableData);
+  rb_define_alloc_func(SwigClassPushableData.klass, _wrap_PushableData_allocate);
+  rb_define_method(SwigClassPushableData.klass, "initialize", VALUEFUNC(_wrap_new_PushableData), -1);
+  rb_define_const(SwigClassPushableData.klass, "SYS_GPS", SWIG_From_int(static_cast< int >(PushableData::SYS_GPS)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_SBAS", SWIG_From_int(static_cast< int >(PushableData::SYS_SBAS)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_QZSS", SWIG_From_int(static_cast< int >(PushableData::SYS_QZSS)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_GLONASS", SWIG_From_int(static_cast< int >(PushableData::SYS_GLONASS)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_GALILEO", SWIG_From_int(static_cast< int >(PushableData::SYS_GALILEO)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_BEIDOU", SWIG_From_int(static_cast< int >(PushableData::SYS_BEIDOU)));
+  rb_define_const(SwigClassPushableData.klass, "SYS_SYSTEMS", SWIG_From_int(static_cast< int >(PushableData::SYS_SYSTEMS)));
+  SwigClassPushableData.mark = 0;
+  SwigClassPushableData.destroy = (void (*)(void *)) free_PushableData;
+  SwigClassPushableData.trackObjects = 0;
   
   SwigClassTime.klass = rb_define_class_under(mGPS, "Time", rb_cObject);
   SWIG_TypeClientData(SWIGTYPE_p_GPS_TimeT_double_t, (void *) &SwigClassTime);
@@ -26568,27 +27144,33 @@ SWIGEXPORT void Init_GPS(void) {
   SwigClassRINEX_Observation.destroy = (void (*)(void *)) free_RINEX_Observation_Sl_double_Sg_;
   SwigClassRINEX_Observation.trackObjects = 0;
   
-  SwigClassSP3.klass = rb_define_class_under(mGPS, "SP3", rb_cObject);
+  SwigClassSP3.klass = rb_define_class_under(mGPS, "SP3", ((swig_class *) SWIGTYPE_p_PushableData->clientdata)->klass);
   SWIG_TypeClientData(SWIGTYPE_p_SP3T_double_t, (void *) &SwigClassSP3);
   rb_define_alloc_func(SwigClassSP3.klass, _wrap_SP3_allocate);
   rb_define_method(SwigClassSP3.klass, "initialize", VALUEFUNC(_wrap_new_SP3), -1);
   rb_define_method(SwigClassSP3.klass, "read", VALUEFUNC(_wrap_SP3_read), -1);
-  rb_define_const(SwigClassSP3.klass, "SYS_GPS", SWIG_From_int(static_cast< int >(SP3< double >::SYS_GPS)));
-  rb_define_const(SwigClassSP3.klass, "SYS_SBAS", SWIG_From_int(static_cast< int >(SP3< double >::SYS_SBAS)));
-  rb_define_const(SwigClassSP3.klass, "SYS_QZSS", SWIG_From_int(static_cast< int >(SP3< double >::SYS_QZSS)));
-  rb_define_const(SwigClassSP3.klass, "SYS_GLONASS", SWIG_From_int(static_cast< int >(SP3< double >::SYS_GLONASS)));
-  rb_define_const(SwigClassSP3.klass, "SYS_GALILEO", SWIG_From_int(static_cast< int >(SP3< double >::SYS_GALILEO)));
-  rb_define_const(SwigClassSP3.klass, "SYS_BEIDOU", SWIG_From_int(static_cast< int >(SP3< double >::SYS_BEIDOU)));
-  rb_define_const(SwigClassSP3.klass, "SYS_SYSTEMS", SWIG_From_int(static_cast< int >(SP3< double >::SYS_SYSTEMS)));
+  rb_define_method(SwigClassSP3.klass, "satellites", VALUEFUNC(_wrap_SP3_satellites), -1);
   rb_define_method(SwigClassSP3.klass, "push", VALUEFUNC(_wrap_SP3_push), -1);
   rb_define_method(SwigClassSP3.klass, "position", VALUEFUNC(_wrap_SP3_position), -1);
   rb_define_method(SwigClassSP3.klass, "velocity", VALUEFUNC(_wrap_SP3_velocity), -1);
   rb_define_method(SwigClassSP3.klass, "clock_error", VALUEFUNC(_wrap_SP3_clock_error), -1);
   rb_define_method(SwigClassSP3.klass, "clock_error_dot", VALUEFUNC(_wrap_SP3_clock_error_dot), -1);
   rb_define_method(SwigClassSP3.klass, "apply_antex", VALUEFUNC(_wrap_SP3_apply_antex), -1);
-  rb_define_method(SwigClassSP3.klass, "satellites", VALUEFUNC(_wrap_SP3_satellites), -1);
   SwigClassSP3.mark = 0;
   SwigClassSP3.destroy = (void (*)(void *)) free_SP3_Sl_double_Sg_;
   SwigClassSP3.trackObjects = 0;
+  
+  SwigClassRINEX_Clock.klass = rb_define_class_under(mGPS, "RINEX_Clock", ((swig_class *) SWIGTYPE_p_PushableData->clientdata)->klass);
+  SWIG_TypeClientData(SWIGTYPE_p_RINEX_ClockT_double_t, (void *) &SwigClassRINEX_Clock);
+  rb_define_alloc_func(SwigClassRINEX_Clock.klass, _wrap_RINEX_Clock_allocate);
+  rb_define_method(SwigClassRINEX_Clock.klass, "initialize", VALUEFUNC(_wrap_new_RINEX_Clock), -1);
+  rb_define_method(SwigClassRINEX_Clock.klass, "read", VALUEFUNC(_wrap_RINEX_Clock_read), -1);
+  rb_define_method(SwigClassRINEX_Clock.klass, "satellites", VALUEFUNC(_wrap_RINEX_Clock_satellites), -1);
+  rb_define_method(SwigClassRINEX_Clock.klass, "push", VALUEFUNC(_wrap_RINEX_Clock_push), -1);
+  rb_define_method(SwigClassRINEX_Clock.klass, "clock_error", VALUEFUNC(_wrap_RINEX_Clock_clock_error), -1);
+  rb_define_method(SwigClassRINEX_Clock.klass, "clock_error_dot", VALUEFUNC(_wrap_RINEX_Clock_clock_error_dot), -1);
+  SwigClassRINEX_Clock.mark = 0;
+  SwigClassRINEX_Clock.destroy = (void (*)(void *)) free_RINEX_Clock_Sl_double_Sg_;
+  SwigClassRINEX_Clock.trackObjects = 0;
 }
 

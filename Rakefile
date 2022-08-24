@@ -56,6 +56,7 @@ namespace :git do
             tool/navigation/MagneticField.h
             tool/navigation/NTCM.h
             tool/navigation/RINEX.h
+            tool/navigation/RINEX_Clock.h
             tool/navigation/WGS84.h
             tool/navigation/SP3.h
             tool/navigation/ANTEX.h
