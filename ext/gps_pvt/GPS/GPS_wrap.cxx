@@ -4171,6 +4171,19 @@ SWIGINTERN VALUE GPS_Solver_Sl_double_Sg__get_correction(GPS_Solver< double > co
 SWIGINTERN VALUE GPS_Solver_Sl_double_Sg__set_correction(GPS_Solver< double > *self,VALUE hash){
     return self->update_correction(true, hash);
   }
+SWIGINTERN GPS_Solver< double >::super_t::options_t GPS_Solver_Sl_double_Sg__get_options(GPS_Solver< double > const *self){
+    return self->available_options();
+  }
+SWIGINTERN GPS_Solver< double >::super_t::options_t GPS_Solver_Sl_double_Sg__set_options(GPS_Solver< double > *self,VALUE obj){
+    GPS_Solver<double>::super_t::options_t opt(self->available_options());
+
+    if(!RB_TYPE_P(obj, T_HASH)){SWIG_exception(SWIG_TypeError, "Hash is expected");}
+    SWIG_AsVal_bool (
+        rb_hash_lookup(obj, ID2SYM(rb_intern("skip_exclusion"))),
+        &opt.skip_exclusion);
+
+    return self->update_options(opt);
+  }
 SWIGINTERN unsigned int SBAS_Ephemeris_Sl_double_Sg__set_svid(SBAS_Ephemeris< double > *self,unsigned int const &v){
   return self->svid = v;
 }
@@ -17225,6 +17238,100 @@ fail:
 }
 
 
+/*
+  Document-method: GPS_PVT::GPS::Solver.options
+
+  call-seq:
+    options -> GPS_Solver< double >::super_t::options_t
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Solver_options(int argc, VALUE *argv, VALUE self) {
+  GPS_Solver< double > *arg1 = (GPS_Solver< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Solver< double >::super_t::options_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > const *","get_options", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
+  {
+    try {
+      result = GPS_Solver_Sl_double_Sg__get_options((GPS_Solver< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  {
+    VALUE res(rb_hash_new());
+    rb_hash_aset(res, ID2SYM(rb_intern("skip_exclusion")), SWIG_From_bool  ((&result)->skip_exclusion));
+    vresult = res;
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Solver.options=
+
+  call-seq:
+    options=(VALUE obj) -> GPS_Solver< double >::super_t::options_t
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Solver_optionse___(int argc, VALUE *argv, VALUE self) {
+  GPS_Solver< double > *arg1 = (GPS_Solver< double > *) 0 ;
+  VALUE arg2 = (VALUE) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Solver< double >::super_t::options_t result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","set_options", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
+  arg2 = argv[0];
+  {
+    try {
+      result = GPS_Solver_Sl_double_Sg__set_options(arg1,arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  {
+    VALUE res(rb_hash_new());
+    rb_hash_aset(res, ID2SYM(rb_intern("skip_exclusion")), SWIG_From_bool  ((&result)->skip_exclusion));
+    vresult = res;
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
 SWIGINTERN void
 free_GPS_Solver_Sl_double_Sg_(void *self) {
     GPS_Solver< double > *arg1 = (GPS_Solver< double > *)self;
@@ -26933,6 +27040,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassSolver.klass, "solve", VALUEFUNC(_wrap_Solver_solve), -1);
   rb_define_method(SwigClassSolver.klass, "correction", VALUEFUNC(_wrap_Solver_correction), -1);
   rb_define_method(SwigClassSolver.klass, "correction=", VALUEFUNC(_wrap_Solver_correctione___), -1);
+  rb_define_method(SwigClassSolver.klass, "options", VALUEFUNC(_wrap_Solver_options), -1);
+  rb_define_method(SwigClassSolver.klass, "options=", VALUEFUNC(_wrap_Solver_optionse___), -1);
   SwigClassSolver.mark = (void (*)(void *)) GPS_Solver<double>::mark;
   SwigClassSolver.destroy = (void (*)(void *)) free_GPS_Solver_Sl_double_Sg_;
   SwigClassSolver.trackObjects = 0;
