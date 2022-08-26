@@ -11,7 +11,7 @@ As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), ubx(*.ubx)
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
 If you want to specify its format manually, command options like --rinex_nav=file_name are available.
-Other than --rinex_nav, --rinex_obs, --ubx, --sp3 or --antex are supported. 
+Other than --rinex_nav, --rinex_obs, -rinex_clk, --ubx, --sp3 or --antex are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
 Major URL such as http(s)://... or ftp://... is acceptable as an input file name. 
