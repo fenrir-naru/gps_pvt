@@ -113,7 +113,7 @@ receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_
   # rcv_e, t_arv, usr_pos, usr_vel are temporary solution of 
   # receiver clock error [m], time of arrival [s], user position and velocity in ECEF, respectively.
   
-  weight = 1 # same as default; identical weight for each visible satellite
+  weight = 1 # quick example: identical weight for each visible satellite
   # or weight based on elevation, for example:
   # elv = GPS_PVT::Coordinate::ENU::relative_rel(GPS_PVT::Coordinate::XYZ::new(*los_neg), usr_pos).elevation
   # weight = (Math::sin(elv)/0.8)**2

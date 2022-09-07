@@ -150,10 +150,6 @@ class Receiver
 
   def initialize(options = {})
     @solver = GPS::Solver::new
-    @solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
-      rel_prop[0] = 1 if rel_prop[0] > 0 # weight = 1
-      rel_prop
-    }
     @solver.options = {
       :skip_exclusion => true, # default is to skip fault exclusion calculation
     }
@@ -180,7 +176,7 @@ class Receiver
         next true
       when :weight
         case v.to_sym
-        when :elevation # (same as underneath C++ library)
+        when :elevation # (same as underneath C++ library except for ignoring broadcasted/calculated URA)
           @solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
             if rel_prop[0] > 0 then
               elv = Coordinate::ENU::relative_rel(
@@ -190,7 +186,11 @@ class Receiver
             rel_prop
           }
           next true
-        when :identical # same as default
+        when :identical # treat each satellite range having same accuracy
+          @solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
+            rel_prop[0] = 1 if rel_prop[0] > 0 # weight = 1
+            rel_prop
+          }
           next true
         end
       when :elevation_mask_deg
