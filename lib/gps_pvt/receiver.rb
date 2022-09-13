@@ -3,7 +3,7 @@ Receiver class to be an top level interface to a user
 (The origin is ninja-scan-light/tool/misc/receiver_debug.rb)
 =end
 
-require_relative 'GPS'
+require 'gps_pvt/GPS' # in case GPS.so is generated under ext/gps_pvt
 require_relative 'util'
 
 module GPS_PVT
