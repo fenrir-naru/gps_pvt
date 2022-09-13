@@ -14,7 +14,7 @@ If you want to specify its format manually, command options like --rinex_nav=fil
 Other than --rinex_nav, --rinex_obs, -rinex_clk, --ubx, --sp3 or --antex are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
-Major URL such as http(s)://... or ftp://... is acceptable as an input file name. 
+Major URL such as http(s)://... or ftp://..., and serial port (COMn for Windows, /dev/tty* for *NIX) is acceptable as an input file name.
 __STRING__
 
 options = []
@@ -66,37 +66,6 @@ options.reject!{|opt|
   end
 }
 
-proc{
-  # port[:baudrate], baudrate default is 115200
-  Serial.class_eval{
-    const_set(:SPEC, 
-        if RubySerial::ON_WINDOWS then
-          %r{^(?:\\\\.\\)?(COM\d+)(?::(\d+))?$}
-        elsif RubySerial::ON_LINUX then
-          %r{^(/dev/tty[^:]+)(?::(\d+))?$}
-        else
-          nil
-        end)
-  }
-  Serial.class_eval{
-    read_orig = instance_method(:read)
-    define_method(:read){|len|
-      buf = ''
-      f = read_orig.bind(self)
-      buf += f.call(len - buf.size) while buf.size < len
-      buf
-    }
-    def eof?; false; end
-  }
-  Kernel.instance_eval{
-    open_orig = method(:open)
-    define_method(:open){|*args, &b|
-      return open_orig.call(*args, &b) unless Serial::SPEC =~ args[0]
-      Serial::new($1, $2 ? $2.to_i : 115200)
-    }
-  }
-}.call if require 'rubyserial'
-
 # Check file existence and extension
 files.collect!{|fname, ftype|
   ftype ||= case fname
@@ -111,10 +80,10 @@ files.collect!{|fname, ftype|
   end
   fname = proc{
     next fname if File::exist?(fname)
+    next fname if ((fname =~ Serial::SPEC) rescue false)
     if uri = URI::parse(fname) and !uri.instance_of?(URI::Generic) then
       next uri
     end
-    next fname if ((fname =~ Serial::SPEC) rescue false)
     raise "File not found: #{fname}"
   }.call
   [fname, ftype]

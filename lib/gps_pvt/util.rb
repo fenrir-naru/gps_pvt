@@ -2,6 +2,37 @@ require 'open-uri'
 require 'tempfile'
 require 'uri'
 
+proc{
+  # port[:baudrate], baudrate default is 115200
+  Serial.class_eval{
+    const_set(:SPEC, 
+        if RubySerial::ON_WINDOWS then
+          %r{^(?:\\\\.\\)?(COM\d+)(?::(\d+))?$}
+        elsif RubySerial::ON_LINUX then
+          %r{^(/dev/tty[^:]+)(?::(\d+))?$}
+        else
+          nil
+        end)
+  }
+  Serial.class_eval{
+    read_orig = instance_method(:read)
+    define_method(:read){|len|
+      buf = ''
+      f = read_orig.bind(self)
+      buf += f.call(len - buf.size) while buf.size < len
+      buf
+    }
+    def eof?; false; end
+  }
+  Kernel.instance_eval{
+    open_orig = method(:open)
+    define_method(:open){|*args, &b|
+      return open_orig.call(*args, &b) unless Serial::SPEC =~ args[0]
+      Serial::new($1, $2 ? $2.to_i : 115200)
+    }
+  }
+}.call if require 'rubyserial'
+
 module GPS_PVT
 module Util
   class << self
