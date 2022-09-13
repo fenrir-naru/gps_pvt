@@ -1,4 +1,3 @@
-require 'open-uri'
 require 'tempfile'
 require 'uri'
 
@@ -32,6 +31,8 @@ proc{
     }
   }
 }.call if require 'rubyserial'
+
+require 'open-uri'
 
 module GPS_PVT
 module Util
