@@ -32,7 +32,7 @@ An attached executable is useful. After installation, type
 
     $ gps_pvt file_or_URI(s)
 
-The format of file is automatically determined with its extension, such as .ubx will be treated as UBX format. A compressed file of .gz or .Z can be specified directly (decompression is internally performed), and URI such as http(s)://... and ftp:// is also acceptable. If you want to specify the file format, instead of file_or_URI(s), use the following arguments:
+The format of file is automatically determined with its extension, such as .ubx will be treated as UBX format. A compressed file of .gz or .Z can be specified directly (decompression is internally performed). URI such as http(s)://... and ftp://, and serial port (COMn for Windows and /dev/tty* for *NIX, version >= 0.8.0) are also acceptable. If you want to specify the file format, instead of file_or_URI(s), use the following arguments:
 
 | specification | recoginized as |
 ----|----
