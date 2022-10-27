@@ -45,6 +45,7 @@ namespace :git do
               + (<<-__SPARSE_PATTERNS__).lines.collect{|str| str.chomp.gsub(/^ */, ' ')}.join,
             tool/param/
             tool/util/text_helper.h
+            tool/util/bit_counter.h
             tool/algorithm/integral.h
             tool/algorithm/interpolate.h
             tool/navigation/GPS*
