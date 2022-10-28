@@ -92,23 +92,7 @@ files.collect!{|fname, ftype|
 rcv = GPS_PVT::Receiver::new(options)
 
 proc{|src|
-  next unless src
-  loader = proc{|t_meas|
-    utc = Time::utc(*t_meas.c_tm)
-    y, yday = [:year, :yday].collect{|f| utc.send(f)}
-    uri = URI::parse(
-        "ftp://gssc.esa.int/gnss/data/daily/" + 
-          "%04d/brdc/BRDC00IGS_R_%04d%03d0000_01D_MN.rnx.gz"%[y, y, yday])
-    rcv.parse_rinex_nav(uri)
-    uri
-  }
-  run_orig = rcv.method(:run)
-  eph_list = {}
-  rcv.define_singleton_method(:run){|meas, t_meas, *args|
-    w_d = [t_meas.week, (t_meas.seconds.to_i / 86400)]
-    eph_list[w_d] ||= loader.call(t_meas)
-    run_orig.call(meas, t_meas, *args)
-  }
+  rcv.attach_online_ephemeris(src) if src
 }.call(misc_options[:online_ephemeris])
 
 proc{

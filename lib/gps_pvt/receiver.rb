@@ -696,3 +696,5 @@ class Receiver
   end
 end
 end
+
+require_relative 'receiver/extension'
