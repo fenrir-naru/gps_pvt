@@ -4,6 +4,31 @@ Receiver extension
 
 module GPS_PVT
 class Receiver
+  
+  # shortcut to access ephemeris registered in receiver 
+  def ephemeris(t, sys, prn)
+    eph = case sys
+    when :GPS, :QZSS
+      critical{
+        @solver.gps_space_node.update_all_ephemeris(t)
+        @solver.gps_space_node.ephemeris(prn)
+      }
+    when :SBAS
+      critical{
+        @solver.sbas_space_node.update_all_ephemeris(t)
+        @solver.sbas_space_node.ephemeris(prn)
+      }
+    when :GLONASS
+      critical{
+        @solver.glonass_space_node.update_all_ephemeris(t)
+        @solver.glonass_space_node.ephemeris(prn)
+      }
+    else
+      return nil
+    end
+    return (eph.valid?(t) ? eph : nil)
+  end
+
   def attach_online_ephemeris(uri_template = nil)
     if (!uri_template) || (uri_template =~ /^\s*$/) then
       uri_template = "ftp://gssc.esa.int/gnss/data/daily/%Y/brdc/BRDC00IGS_R_%Y%j0000_01D_MN.rnx.gz"
