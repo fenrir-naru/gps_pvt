@@ -2361,6 +2361,11 @@ struct GPS_Ephemeris : public GPS_SpaceNode<FloatT>::SatelliteProperties::Epheme
         || (this->iode != this->iode_subframe3)
         || ((this->iodc & 0xFF) != this->iode));
   }
+  bool is_valid(const GPS_Time<FloatT> &t) const {
+    return is_consistent() && GPS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris::is_valid(t);
+  }
+  GPS_Time<FloatT> t_clock() const {return GPS_Time<FloatT>(this->WN, this->t_oc);}
+  GPS_Time<FloatT> t_ephemeris() const {return GPS_Time<FloatT>(this->WN, this->t_oe);}
   GPS_Ephemeris() : GPS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris() {
     invalidate();
   }
@@ -2382,6 +2387,10 @@ struct SBAS_Ephemeris : public SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephe
   SBAS_Ephemeris() : SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris() {}
   SBAS_Ephemeris(const typename SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris &eph) 
       : SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris(eph) {}
+  bool is_valid(const GPS_Time<FloatT> &t) const {
+    return SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris::is_valid(t);
+  }
+  GPS_Time<FloatT> t_applicable() const {return GPS_Time<FloatT>(this->WN, this->t_0);}
 };
 
 
@@ -2397,6 +2406,9 @@ struct GLONASS_Ephemeris
   }
   bool is_consistent() const {
     return has_string == 0x1F;
+  }
+  bool is_valid(const GPS_Time<FloatT> &t) const {
+    return is_consistent() && eph_t::is_valid(t);
   }
   GLONASS_Ephemeris() : eph_t() {
     invalidate();
@@ -11228,6 +11240,143 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris.valid?
+
+  call-seq:
+    valid?(Time t) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_validq___(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","is_valid", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_valid", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (bool)((GPS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris.t_clock
+
+  call-seq:
+    t_clock -> Time
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_t_clock(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Time< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","t_clock", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = ((GPS_Ephemeris< double > const *)arg1)->t_clock();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris.t_ephemeris
+
+  call-seq:
+    t_ephemeris -> Time
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_t_ephemeris(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Time< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","t_ephemeris", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = ((GPS_Ephemeris< double > const *)arg1)->t_ephemeris();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris.new
 
   call-seq:
@@ -17936,6 +18085,101 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris_SBAS.valid?
+
+  call-seq:
+    valid?(Time t) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_SBAS_validq___(int argc, VALUE *argv, VALUE self) {
+  SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SBAS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","is_valid", 1, self )); 
+  }
+  arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_valid", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (bool)((SBAS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_SBAS.t_applicable
+
+  call-seq:
+    t_applicable -> Time
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_SBAS_t_applicable(int argc, VALUE *argv, VALUE self) {
+  SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GPS_Time< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SBAS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","t_applicable", 1, self )); 
+  }
+  arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = ((SBAS_Ephemeris< double > const *)arg1)->t_applicable();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris_SBAS.svid=
 
   call-seq:
@@ -22078,6 +22322,59 @@ _wrap_Ephemeris_GLONASS_consistentq___(int argc, VALUE *argv, VALUE self) {
   {
     try {
       result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_consistent();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.valid?
+
+  call-seq:
+    valid?(Time t) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_validq___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_valid", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_valid", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -27596,6 +27893,9 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris.klass, "iode_subframe3", VALUEFUNC(_wrap_Ephemeris_iode_subframe3_get), -1);
   rb_define_method(SwigClassEphemeris.klass, "invalidate", VALUEFUNC(_wrap_Ephemeris_invalidate), -1);
   rb_define_method(SwigClassEphemeris.klass, "consistent?", VALUEFUNC(_wrap_Ephemeris_consistentq___), -1);
+  rb_define_method(SwigClassEphemeris.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_validq___), -1);
+  rb_define_method(SwigClassEphemeris.klass, "t_clock", VALUEFUNC(_wrap_Ephemeris_t_clock), -1);
+  rb_define_method(SwigClassEphemeris.klass, "t_ephemeris", VALUEFUNC(_wrap_Ephemeris_t_ephemeris), -1);
   rb_define_method(SwigClassEphemeris.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_svide___), -1);
   rb_define_method(SwigClassEphemeris.klass, "svid", VALUEFUNC(_wrap_Ephemeris_svid), -1);
   rb_define_method(SwigClassEphemeris.klass, "WN=", VALUEFUNC(_wrap_Ephemeris_WNe___), -1);
@@ -27779,6 +28079,8 @@ SWIGEXPORT void Init_GPS(void) {
   SWIG_TypeClientData(SWIGTYPE_p_SBAS_EphemerisT_double_t, (void *) &SwigClassEphemeris_SBAS);
   rb_define_alloc_func(SwigClassEphemeris_SBAS.klass, _wrap_Ephemeris_SBAS_allocate);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "initialize", VALUEFUNC(_wrap_new_Ephemeris_SBAS), -1);
+  rb_define_method(SwigClassEphemeris_SBAS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_SBAS_validq___), -1);
+  rb_define_method(SwigClassEphemeris_SBAS.klass, "t_applicable", VALUEFUNC(_wrap_Ephemeris_SBAS_t_applicable), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_SBAS_svide___), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_SBAS_svid), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "WN=", VALUEFUNC(_wrap_Ephemeris_SBAS_WNe___), -1);
@@ -27897,6 +28199,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "raw", VALUEFUNC(_wrap_Ephemeris_GLONASS_raw_get), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "invalidate", VALUEFUNC(_wrap_Ephemeris_GLONASS_invalidate), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "consistent?", VALUEFUNC(_wrap_Ephemeris_GLONASS_consistentq___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_GLONASS_validq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_GLONASS_svide___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_GLONASS_svid), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "freq_ch=", VALUEFUNC(_wrap_Ephemeris_GLONASS_freq_che___), -1);
