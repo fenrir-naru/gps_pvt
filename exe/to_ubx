@@ -53,7 +53,7 @@ files.collect!{|fname, ftype|
 
 options.reject!{|opt|
   case opt[0]
-  when :ubx_rawx
+  when :ubx_rawx, :online_ephemeris
     misc_options[opt[0]] = opt[1]
     true
   else
@@ -67,6 +67,10 @@ obs = []
 rcv.define_singleton_method(:run){|meas, t_meas, *args|
   obs << [t_meas, meas]
 }
+
+proc{|src|
+  rcv.attach_online_ephemeris(src) if src
+}.call(misc_options[:online_ephemeris])
 
 # parse RINEX NAV
 files.each{|fname, ftype|
