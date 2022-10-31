@@ -3578,12 +3578,12 @@ SWIGINTERN GPS_Ionospheric_UTC_Parameters< double > GPS_Ionospheric_UTC_Paramete
     (typename GPS_SpaceNode<double>::Ionospheric_UTC_Parameters &)res = raw;
     return res;
   }
-SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__dump(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int buf[10],GPS_Time< double > const &t){
+SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__dump(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int buf_brdc[10],GPS_Time< double > const &t){
     typedef typename GPS_SpaceNode<double>
         ::BroadcastedMessage<unsigned int, 30> dump_t;
-    dump_t::how_set(buf, t);
+    dump_t::how_set(buf_brdc, t);
     GPS_SpaceNode<double>::Ionospheric_UTC_Parameters::raw_t raw;
-    (raw = *self).dump<2, 0>(buf);
+    (raw = *self).dump<2, 0>(buf_brdc);
   }
 SWIGINTERN unsigned int GPS_Ephemeris_Sl_double_Sg__set_svid(GPS_Ephemeris< double > *self,unsigned int const &v){
   return self->svid = v;
@@ -3803,12 +3803,12 @@ SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__parse(GPS_Ephemeris< double > *self,
         break;
     }
   }
-SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__dump(GPS_Ephemeris< double > *self,unsigned int sf1[10],unsigned int sf2[10],unsigned int sf3[10],GPS_Time< double > const &t){
+SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__dump(GPS_Ephemeris< double > *self,unsigned int buf_sf1[10],unsigned int buf_sf2[10],unsigned int buf_sf3[10],GPS_Time< double > const &t){
     typedef typename GPS_SpaceNode<double>
         ::BroadcastedMessage<unsigned int, 30> dump_t;
     GPS_SpaceNode<double>::SatelliteProperties::Ephemeris::raw_t raw;
     raw = *self;
-    unsigned int *buf[10] = {sf1, sf2, sf3};
+    unsigned int *buf[10] = {buf_sf1, buf_sf2, buf_sf3};
     for(int i(0); i < 3; ++i){
       dump_t::how_set(buf[i], t);
       raw.dump<2, 0>(buf[i], i + 1);
@@ -3841,10 +3841,10 @@ SWIGINTERN int GPS_Ephemeris_Sl_double_Sg__parse_almanac(GPS_Ephemeris< double >
     *self = (GPS_SpaceNode<double>::SatelliteProperties::Ephemeris)(almanac = raw);
     return self->svid;
   }
-SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(GPS_Ephemeris< double > *self,unsigned int buf[10],GPS_Time< double > const &t,unsigned int const &qzss_subframe=0){
+SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(GPS_Ephemeris< double > *self,unsigned int buf_brdc[10],GPS_Time< double > const &t,unsigned int const &qzss_subframe=0){
     typedef typename GPS_SpaceNode<double>
         ::BroadcastedMessage<unsigned int, 30> dump_t;
-    dump_t::how_set(buf, t);
+    dump_t::how_set(buf_brdc, t);
     typedef GPS_SpaceNode<double>::SatelliteProperties::Almanac almanac_t;
     almanac_t almanac;
     almanac_t::raw_t raw;
@@ -3853,10 +3853,10 @@ SWIGINTERN void GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(GPS_Ephemeris< 
       case 4:
       case 5:
         reinterpret_cast<QZSS_SpaceNode<double>::SatelliteProperties::Almanac::raw_t &>(raw)
-            .dump<2, 0>(buf, qzss_subframe);
+            .dump<2, 0>(buf_brdc, qzss_subframe);
         break;
       default:
-        raw.dump<2, 0>(buf);
+        raw.dump<2, 0>(buf_brdc);
     }
   }
 SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GPS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0){
@@ -4356,11 +4356,11 @@ SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_a_Gf1(SBAS_Ephemeris< double 
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf1(SBAS_Ephemeris< double > const *self){
   return self->a_Gf1;
 }
-SWIGINTERN void SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(SBAS_Ephemeris< double > *self,unsigned int buf[10],unsigned int const &preamble_idx=0){
-    SBAS_SpaceNode<double>::DataBlock::preamble_set2(buf, preamble_idx);
+SWIGINTERN void SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(SBAS_Ephemeris< double > *self,unsigned int buf_brdc[8],unsigned int const &preamble_idx=0){
+    SBAS_SpaceNode<double>::DataBlock::preamble_set2(buf_brdc, preamble_idx);
     SBAS_SpaceNode<double>::SatelliteProperties::Ephemeris::raw_t raw;
-    (raw = *self).dump(buf);
-    SBAS_SpaceNode<double>::DataBlock::parity_set(buf);
+    (raw = *self).dump(buf_brdc);
+    SBAS_SpaceNode<double>::DataBlock::parity_set(buf_brdc);
   }
 SWIGINTERN GPS_Ephemeris< double >::constellation_res_t SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(SBAS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0,bool const &with_velocity=true){
     typename SBAS_SpaceNode<double>::SatelliteProperties::constellation_t pv(
@@ -4625,14 +4625,14 @@ SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(GLONASS_Ephemeris<
     self->has_string = has_string;
     return updated;
   }
-SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__dump(GLONASS_Ephemeris< double > *self,unsigned int str1[3],unsigned int str2[3],unsigned int str3[3],unsigned int str4[3],unsigned int str5[3],GPS_Time< double > const &t){
+SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__dump(GLONASS_Ephemeris< double > *self,unsigned int buf_str1[3],unsigned int buf_str2[3],unsigned int buf_str3[3],unsigned int buf_str4[3],unsigned int buf_str5[3],GPS_Time< double > const &t){
     typename GLONASS_Ephemeris<double>::eph_t::raw_t raw;
     raw = *self;
-    unsigned int *buf[4] = {str1, str2, str3, str4};
+    unsigned int *buf[4] = {buf_str1, buf_str2, buf_str3, buf_str4};
     for(int i(0); i < 4; ++i){
       raw.GLONASS_Ephemeris<double>::Ephemeris::raw_t::dump<0, 0>(buf[i], i + 1);
     }
-    raw.GLONASS_Ephemeris<double>::TimeProperties::raw_t::dump<0, 0>(str5);
+    raw.GLONASS_Ephemeris<double>::TimeProperties::raw_t::dump<0, 0>(buf_str5);
   }
 SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t_tx,double const &dt_transit=0){
     typename GPS_SpaceNode<double>::SatelliteProperties::constellation_t pv(
@@ -14180,11 +14180,6 @@ _wrap_Ephemeris_parse(int argc, VALUE *argv, VALUE self) {
     }
   }
   vresult = rb_ary_new();
-  {
-    for(int i(0); i < 10; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
-    }
-  }
   if (SWIG_IsTmpObj(res3)) {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int((*arg3)));
   } else {
@@ -14334,11 +14329,6 @@ _wrap_Ephemeris_parse_almanac(int argc, VALUE *argv, VALUE self) {
     }
   }
   vresult = SWIG_From_int(static_cast< int >(result));
-  {
-    for(int i(0); i < 10; ++i){
-      vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
-    }
-  }
   return vresult;
 fail:
   return Qnil;
@@ -14517,8 +14507,8 @@ SWIGINTERN VALUE _wrap_Ephemeris_dump_almanac(int nargs, VALUE *args, VALUE self
   
 fail:
   Ruby_Format_OverloadedError( argc, 4, "dump_almanac", 
-    "    void dump_almanac(unsigned int buf[10], GPS_Time< double > const &t, unsigned int const &qzss_subframe)\n"
-    "    void dump_almanac(unsigned int buf[10], GPS_Time< double > const &t)\n");
+    "    void dump_almanac(unsigned int buf_brdc[10], GPS_Time< double > const &t, unsigned int const &qzss_subframe)\n"
+    "    void dump_almanac(unsigned int buf_brdc[10], GPS_Time< double > const &t)\n");
   
   return Qnil;
 }
@@ -19606,7 +19596,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_0(int argc, VALUE *argv, VALUE self) {
   unsigned int *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  unsigned int temp2[10] = {
+  unsigned int temp2[8] = {
     0
   } ;
   unsigned int temp3 ;
@@ -19640,7 +19630,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_0(int argc, VALUE *argv, VALUE self) {
     }
   }
   {
-    for(int i(0); i < 10; ++i){
+    for(int i(0); i < 8; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
     }
   }
@@ -19656,7 +19646,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_1(int argc, VALUE *argv, VALUE self) {
   unsigned int *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  unsigned int temp2[10] = {
+  unsigned int temp2[8] = {
     0
   } ;
   VALUE vresult = Qnil;
@@ -19681,7 +19671,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_1(int argc, VALUE *argv, VALUE self) {
     }
   }
   {
-    for(int i(0); i < 10; ++i){
+    for(int i(0); i < 8; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
     }
   }
@@ -19729,8 +19719,8 @@ SWIGINTERN VALUE _wrap_Ephemeris_SBAS_dump(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "dump", 
-    "    void dump(unsigned int buf[10], unsigned int const &preamble_idx)\n"
-    "    void dump(unsigned int buf[10])\n");
+    "    void dump(unsigned int buf_brdc[8], unsigned int const &preamble_idx)\n"
+    "    void dump(unsigned int buf_brdc[8])\n");
   
   return Qnil;
 }
