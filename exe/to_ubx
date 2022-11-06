@@ -21,7 +21,9 @@ __STRING__
 
 options = []
 misc_options = {
-  :ubx_rawx => false
+  :broadcast_data => false,
+  :ubx_rawx => false,
+  :eph_interval => 60 * 5,
 }
 
 # check options and file format
@@ -53,7 +55,7 @@ files.collect!{|fname, ftype|
 
 options.reject!{|opt|
   case opt[0]
-  when :ubx_rawx, :online_ephemeris
+  when :ubx_rawx, :online_ephemeris, :broadcast_data, :eph_interval
     misc_options[opt[0]] = opt[1]
     true
   else
@@ -88,6 +90,89 @@ files.each{|fname, ftype|
 
 obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
 
+gen_sfrb, gen_sfrbx = proc{
+  cache = {}
+  sfrb_tmpl = [0xB5, 0x62, 0x02, 0x11, 0, 0]
+  sfrb_tmpl += [0, 0] # ch, id
+  sfrbx_tmpl = [0xB5, 0x62, 0x02, 0x13, 0, 0]
+  sfrbx_tmpl += [0, 0, 0, 0, 0, 0, 2, 0] # version = 2
+  iono_utc = rcv.solver.gps_space_node.iono_utc.instance_eval{
+    f_orig = method(:dump)
+    define_singleton_method(:dump){|t_meas|
+      rcv.solver.gps_space_node.is_valid_iono_utc ? f_orig.call(t_meas) : []
+    }
+    self
+  }
+  [proc{|t_meas, meas| # Convert to RXM-SFRB(0x11)
+    meas.collect{|sat, items|
+      t_prv, eph, ch = cache.include?(sat) ? cache[sat] : []
+      next nil if t_prv && (t_meas - t_prv < misc_options[:eph_interval])
+      sfrb = sfrb_tmpl.clone
+      sfrb[6] = (ch ||= (cache.size % 0x100))
+      sfrb[7] = sat
+      res = case sat
+      when 1..32 # GPS
+        next nil unless (eph = rcv.ephemeris(t_meas, :GPS, sat))
+        (eph.dump(t_meas) + iono_utc.dump(t_meas)).each_slice(10).collect{|subframe|
+          ubx = sfrb + subframe.collect{|word|
+            word >> 6
+          }.pack("V*").unpack("C*") + [0, 0]
+          GPS_PVT::UBX::update(ubx)
+        }
+      when 120..158 # SBAS
+        next nil unless (eph = rcv.ephemeris(t_meas, :SBAS, sat))
+        ubx = sfrb + proc{|msg|
+            msg[7] >>= 6
+            msg
+          }.call(eph.dump + [0, 0]).pack("V*").unpack("C*") + [0, 0]
+        GPS_PVT::UBX::update(ubx)
+      else
+        next nil
+      end
+      cache[sat] = [t_meas, eph, ch]
+      res
+    }.compact.flatten.pack("C*")
+  },
+  proc{|t_meas, meas| # Convert to RXM-SFRBX(0x13)
+    meas.collect{|sat, items|
+      t_prv, eph, ch = cache.include?(sat) ? cache[sat] : []
+      next nil if t_prv && (t_meas - t_prv < misc_options[:eph_interval])
+      sfrbx = sfrbx_tmpl.clone
+      
+      res = case sat
+      when 1..32, 193..202 # GPS, QZSS
+        sys = sat <= 32 ? :GPS : :QZSS
+        next nil unless (eph = rcv.ephemeris(t_meas, sys, sat))
+        sfrbx[6..7] = [GPS_PVT::UBX::GNSS_ID[sys], sys == :QZSS ? (sat - 192) : sat] # sys, id
+        sfrbx[10] = 10 # words
+        sfrbx[11] = (ch ||= (cache.size % 0x100)) # ch
+        (eph.dump(t_meas) + iono_utc.dump(t_meas)).each_slice(10).collect{|subframe|
+          GPS_PVT::UBX::update(sfrbx + subframe.pack("V*").unpack("C*") + [0, 0])
+        }
+      when 120..158 # SBAS
+        next nil unless (eph = rcv.ephemeris(t_meas, :SBAS, sat))
+        sfrbx[6..7] = [GPS_PVT::UBX::GNSS_ID[:SBAS], sat] # sys, id
+        sfrbx[10] = 8 # words
+        sfrbx[11] = (ch ||= (cache.size % 0x100)) # ch
+        GPS_PVT::UBX::update(sfrbx + eph.dump.pack("V*").unpack("C*") + [0, 0])
+      when (0x100 + 1)..(0x100 + 32) # GLONASS
+        svid = sat - 0x100
+        next nil unless (eph = rcv.ephemeris(t_meas, :GLONASS, svid))
+        sfrbx[6..7] = [GPS_PVT::UBX::GNSS_ID[:GLONASS], svid] # sys, id
+        sfrbx[10] = 4 # words
+        sfrbx[11] = (ch ||= (cache.size % 0x100)) # ch
+        eph.dump(t_meas).each_slice(3).collect{|str|
+          GPS_PVT::UBX::update(sfrbx + (str + [0]).pack("V*").unpack("C*") + [0, 0])
+        }
+      else
+        next nil
+      end
+      cache[sat] = [t_meas, eph, ch]
+      res
+    }.compact.flatten.pack("C*")
+  }]
+}.call
+
 glonass_freq_ch = proc{
   freq0, delta = [:L1_frequency_base, :L1_frequency_gap].collect{|k|
     GPS_PVT::GPS::SpaceNode_GLONASS.send(k)
@@ -96,7 +181,6 @@ glonass_freq_ch = proc{
 }.call
 
 gen_raw = proc{|t_meas, meas| # Convert to RXM-RAW(0x10)
-  meas = meas.to_hash
   ubx = [0xB5, 0x62, 0x02, 0x10, 0, 0]
   ubx += [(t_meas.seconds * 1E3).to_i, t_meas.week].pack("Vv").unpack("C*")
   ubx += [0] * 2
@@ -146,7 +230,6 @@ gen_raw = proc{|t_meas, meas| # Convert to RXM-RAW(0x10)
 }
 
 gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
-  meas = meas.to_hash
   ubx = [0xB5, 0x62, 0x02, 0x15, 0, 0]
   ubx += [t_meas.seconds, t_meas.week].pack("Ev").unpack("C*")
   ubx += [0] * 6
@@ -174,7 +257,7 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
       [5, sat]
     when (0x100 + 1)..(0x100 + 32) # GLONASS
       setter.call(:L1_FREQUENCY,
-          39, 1, nil, proc{|v| v.replace(v[0] ? glonass_freq_ch.call(v[0]) : [7])})
+          39, 1, nil, proc{|v| v.replace([(v[0] ? glonass_freq_ch.call(v[0]) : 0) + 7])} )
       [6, sat - 0x100]
     else
       next nil # TODO Galileo, Beidou, ...
@@ -189,7 +272,7 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
           b = (Math::log2(v[0] / 1E-2).to_i & 0xF) rescue 0x8
           v.replace((trk_stat & 0x1 == 0x1) ? [b] : [])
         })
-    setter.call(:L1_DOPPLER, 32, 4, "e")
+    setter.call(:L1_DOPPLER, 32, 4, "e") rescue next nil
     setter.call(:L1_DOPPLER_SIGMA,
         45, 1, nil, proc{|v| v.replace(v[0] ? [Math::log2(v[0] / 2E-3).to_i & 0xF] : [0x8])})
     setter.call(:L1_CARRIER_PHASE,
@@ -213,6 +296,11 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
   GPS_PVT::UBX::update(ubx).pack("C*")
 }
 
-gen = misc_options[:ubx_rawx] ? gen_rawx : gen_raw
+gen_list = []
+gen_list << (misc_options[:ubx_rawx] ? gen_sfrbx : gen_sfrb) if misc_options[:broadcast_data]
+gen_list << (misc_options[:ubx_rawx] ? gen_rawx : gen_raw)
 STDOUT.binmode
-obs.each{|*item| print gen.call(*item)}
+obs.each{|t_meas, meas|
+  meas2 = meas.to_hash
+  gen_list.each{|gen| print gen.call(t_meas, meas2)}
+}
