@@ -90,6 +90,9 @@ files.each{|fname, ftype|
 
 obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
 
+# Add dummy before actual first observation in order to notify time to solver
+obs.unshift([obs[0][0] - 1, GPS_PVT::GPS::Measurement::new])
+
 gen_sfrb, gen_sfrbx = proc{
   cache = {}
   sfrb_tmpl = [0xB5, 0x62, 0x02, 0x11, 0, 0]
