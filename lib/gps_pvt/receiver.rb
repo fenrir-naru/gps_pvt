@@ -523,6 +523,8 @@ class Receiver
             v
           }
           sys, svid = gnss_serial.call(*loader.call(36, 2).reverse)
+          # sigID check to restrict signal to L1 if version(>0); @see UBX-18010854
+          next if (packet[6 + 13] != 0) && (loader.call(38, 1, "C") != 0)
           case sys
           when :GPS, :SBAS, :QZSS;
           when :GLONASS
