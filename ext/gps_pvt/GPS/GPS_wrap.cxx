@@ -1862,61 +1862,60 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_GPS_SolverOptionsT_double_t swig_types[12]
 #define SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t swig_types[13]
 #define SWIGTYPE_p_GPS_SolverT_double_t swig_types[14]
-#define SWIGTYPE_p_GPS_Solver_GeneralOptionsT_double_t swig_types[15]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t swig_types[16]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters swig_types[17]
-#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[18]
-#define SWIGTYPE_p_GPS_TimeT_double_t swig_types[19]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t swig_types[20]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[21]
-#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[22]
-#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[23]
-#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[24]
-#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[25]
-#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[26]
-#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[27]
-#define SWIGTYPE_p_PushableData swig_types[28]
-#define SWIGTYPE_p_RINEX_ClockT_double_t swig_types[29]
-#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[30]
-#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[31]
-#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[32]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[33]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[34]
-#define SWIGTYPE_p_SP3T_double_t swig_types[35]
-#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[36]
-#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[37]
-#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[38]
-#define SWIGTYPE_p_available_satellites_t swig_types[39]
-#define SWIGTYPE_p_char swig_types[40]
-#define SWIGTYPE_p_double swig_types[41]
-#define SWIGTYPE_p_enu_t swig_types[42]
-#define SWIGTYPE_p_eph_t swig_types[43]
-#define SWIGTYPE_p_float_t swig_types[44]
-#define SWIGTYPE_p_gps_space_node_t swig_types[45]
-#define SWIGTYPE_p_gps_time_t swig_types[46]
-#define SWIGTYPE_p_int swig_types[47]
-#define SWIGTYPE_p_int_t swig_types[48]
-#define SWIGTYPE_p_llh_t swig_types[49]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[50]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[51]
-#define SWIGTYPE_p_p_double swig_types[52]
-#define SWIGTYPE_p_range_correction_list_t swig_types[53]
-#define SWIGTYPE_p_s16_t swig_types[54]
-#define SWIGTYPE_p_s32_t swig_types[55]
-#define SWIGTYPE_p_s8_t swig_types[56]
-#define SWIGTYPE_p_satellites_t swig_types[57]
-#define SWIGTYPE_p_self_t swig_types[58]
-#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[59]
-#define SWIGTYPE_p_super_t swig_types[60]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[61]
-#define SWIGTYPE_p_u16_t swig_types[62]
-#define SWIGTYPE_p_u32_t swig_types[63]
-#define SWIGTYPE_p_u8_t swig_types[64]
-#define SWIGTYPE_p_uint_t swig_types[65]
-#define SWIGTYPE_p_unsigned_int swig_types[66]
-#define SWIGTYPE_p_xyz_t swig_types[67]
-static swig_type_info *swig_types[69];
-static swig_module_info swig_module = {swig_types, 68, 0, 0, 0, 0};
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t swig_types[15]
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters swig_types[16]
+#define SWIGTYPE_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[17]
+#define SWIGTYPE_p_GPS_TimeT_double_t swig_types[18]
+#define SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t swig_types[19]
+#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[20]
+#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[21]
+#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[22]
+#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[23]
+#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[24]
+#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[25]
+#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[26]
+#define SWIGTYPE_p_PushableData swig_types[27]
+#define SWIGTYPE_p_RINEX_ClockT_double_t swig_types[28]
+#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[29]
+#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[30]
+#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[31]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[32]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[33]
+#define SWIGTYPE_p_SP3T_double_t swig_types[34]
+#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[35]
+#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[36]
+#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[37]
+#define SWIGTYPE_p_available_satellites_t swig_types[38]
+#define SWIGTYPE_p_char swig_types[39]
+#define SWIGTYPE_p_double swig_types[40]
+#define SWIGTYPE_p_enu_t swig_types[41]
+#define SWIGTYPE_p_eph_t swig_types[42]
+#define SWIGTYPE_p_float_t swig_types[43]
+#define SWIGTYPE_p_gps_space_node_t swig_types[44]
+#define SWIGTYPE_p_gps_time_t swig_types[45]
+#define SWIGTYPE_p_int swig_types[46]
+#define SWIGTYPE_p_int_t swig_types[47]
+#define SWIGTYPE_p_llh_t swig_types[48]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[49]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[50]
+#define SWIGTYPE_p_p_double swig_types[51]
+#define SWIGTYPE_p_range_correction_list_t swig_types[52]
+#define SWIGTYPE_p_s16_t swig_types[53]
+#define SWIGTYPE_p_s32_t swig_types[54]
+#define SWIGTYPE_p_s8_t swig_types[55]
+#define SWIGTYPE_p_satellites_t swig_types[56]
+#define SWIGTYPE_p_self_t swig_types[57]
+#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[58]
+#define SWIGTYPE_p_super_t swig_types[59]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[60]
+#define SWIGTYPE_p_u16_t swig_types[61]
+#define SWIGTYPE_p_u32_t swig_types[62]
+#define SWIGTYPE_p_u8_t swig_types[63]
+#define SWIGTYPE_p_uint_t swig_types[64]
+#define SWIGTYPE_p_unsigned_int swig_types[65]
+#define SWIGTYPE_p_xyz_t swig_types[66]
+static swig_type_info *swig_types[68];
+static swig_module_info swig_module = {swig_types, 67, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1965,6 +1964,7 @@ static VALUE mGPS;
 #include "navigation/GPS_Solver_Base.h"
 #include "navigation/GPS_Solver.h"
 #include "navigation/GPS_Solver_RAIM.h"
+#include "navigation/GPS_Solver_MultiFrequency.h"
 #include "navigation/SBAS_Solver.h"
 #include "navigation/GLONASS_Solver.h"
 
@@ -2538,6 +2538,16 @@ struct GPS_Measurement {
     L1_SIGNAL_STRENGTH_dBHz,
     L1_LOCK_SEC,
     L1_FREQUENCY,
+
+
+    L2CM_PSEUDORANGE, L2CL_PSEUDORANGE, L2CM_PSEUDORANGE_SIGMA, L2CL_PSEUDORANGE_SIGMA,
+    L2CM_CARRIER_PHASE, L2CL_CARRIER_PHASE, L2CM_CARRIER_PHASE_SIGMA, L2CL_CARRIER_PHASE_SIGMA,
+    L2CM_DOPPLER, L2CL_DOPPLER, L2CM_DOPPLER_SIGMA, L2CL_DOPPLER_SIGMA,
+    L2CM_RANGE_RATE, L2CL_RANGE_RATE, L2CM_RANGE_RATE_SIGMA, L2CL_RANGE_RATE_SIGMA,
+    L2CM_SIGNAL_STRENGTH_dBHz, L2CL_SIGNAL_STRENGTH_dBHz,
+    L2CM_LOCK_SEC, L2CL_LOCK_SEC,
+
+
     ITEMS_PREDEFINED,
   };
   void add(const int &prn, const int &key, const FloatT &value){
@@ -2556,12 +2566,14 @@ struct GPS_SolverOptions_Common {
 
 template <class FloatT>
 struct GPS_SolverOptions 
-    : public GPS_SinglePositioning<FloatT>::options_t, 
+    : public GPS_Solver_MultiFrequency<GPS_SinglePositioning<FloatT> >::options_t, 
     GPS_SolverOptions_Common<FloatT> {
-  typedef typename GPS_SinglePositioning<FloatT>::options_t base_t;
+  typedef typename GPS_Solver_MultiFrequency<GPS_SinglePositioning<FloatT> >::options_t base_t;
   void exclude(const int &prn){base_t::exclude_prn.set(prn);}
   void include(const int &prn){base_t::exclude_prn.reset(prn);}
   std::vector<int> excluded() const {return base_t::exclude_prn.excluded();}
+  bool get_exclude_L2C() {return base_t::exclude_L2C;}
+  bool set_exclude_L2C(const bool &b) {return base_t::exclude_L2C = b;}
   GPS_Solver_GeneralOptions<FloatT> *cast_general(){return this;}
   const GPS_Solver_GeneralOptions<FloatT> *cast_general() const {return this;}
 };
@@ -2617,7 +2629,8 @@ template <class BaseT, class HookT>
 struct HookableSolver : public BaseT {
   typedef BaseT base_t;
   HookT *hook;
-  HookableSolver(const BaseT &base) : BaseT(base), hook(NULL) {}
+  template <class ArgT>
+  HookableSolver(const ArgT &);
   virtual typename base_t::relative_property_t relative_property(
       const typename base_t::prn_t &prn,
       const typename base_t::measurement_t::mapped_type &measurement,
@@ -2659,7 +2672,9 @@ struct GPS_Solver
   struct gps_t {
     GPS_SpaceNode<FloatT> space_node;
     GPS_SolverOptions<FloatT> options;
-    HookableSolver<GPS_SinglePositioning<FloatT>, GPS_Solver<FloatT> > solver;
+    HookableSolver<
+        GPS_Solver_MultiFrequency<GPS_SinglePositioning<FloatT> >,
+        GPS_Solver<FloatT> > solver;
     struct ephemeris_proxy_t {
       struct item_t {
         const void *impl;
@@ -2681,19 +2696,21 @@ struct GPS_Solver
         solver.satellites.impl_select = forward;
       }
     } ephemeris_proxy;
-    gps_t() : space_node(), options(), solver(GPS_SinglePositioning<FloatT>(space_node)), ephemeris_proxy(solver) {}
+    gps_t() : space_node(), options(), solver(space_node), ephemeris_proxy(solver) {
+      options.exclude_L2C = true;
+    }
   } gps;
   struct sbas_t {
     SBAS_SpaceNode<FloatT> space_node;
     SBAS_SolverOptions<FloatT> options;
     HookableSolver<SBAS_SinglePositioning<FloatT>, GPS_Solver<FloatT> > solver;
-    sbas_t() : space_node(), options(), solver(SBAS_SinglePositioning<FloatT>(space_node)) {}
+    sbas_t() : space_node(), options(), solver(space_node) {}
   } sbas;
   struct glonass_t {
     GLONASS_SpaceNode<FloatT> space_node;
     GLONASS_SolverOptions<FloatT> options;
     HookableSolver<GLONASS_SinglePositioning<FloatT>, GPS_Solver<FloatT> > solver;
-    glonass_t() : space_node(), options(), solver(GLONASS_SinglePositioning<FloatT>(space_node)) {}
+    glonass_t() : space_node(), options(), solver(space_node) {}
   } glonass;
   VALUE hooks;
   typedef std::vector<GPS_RangeCorrector<FloatT> > user_correctors_t;
@@ -4057,6 +4074,20 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
   return self->cast_general()->residual_mask;
 }
 
+    template <> template <>
+    HookableSolver<
+          GPS_Solver_MultiFrequency<GPS_SinglePositioning<double> >,
+          GPS_Solver<double> >
+        ::HookableSolver<GPS_SpaceNode<double> >(const GPS_SpaceNode<double> &sn)
+          : GPS_Solver_MultiFrequency<GPS_SinglePositioning<double> >(sn), hook(NULL) {}
+    template <> template <>
+    HookableSolver<SBAS_SinglePositioning<double>, GPS_Solver<double> >
+        ::HookableSolver<SBAS_SpaceNode<double> >(const SBAS_SpaceNode<double> &sn)
+          : SBAS_SinglePositioning<double>(sn), hook(NULL) {}
+    template <> template <>
+    HookableSolver<GLONASS_SinglePositioning<double>, GPS_Solver<double> >
+        ::HookableSolver<GLONASS_SpaceNode<double> >(const GLONASS_SpaceNode<double> &sn)
+          : GLONASS_SinglePositioning<double>(sn), hook(NULL) {}
     template <>
     GPS_Solver<double>::base_t::relative_property_t
         GPS_Solver<double>::relative_property(
@@ -16604,6 +16635,186 @@ A class method.
 
 */
 /*
+  Document-method: GPS_PVT::GPS.L2CM_PSEUDORANGE
+
+  call-seq:
+    L2CM_PSEUDORANGE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_PSEUDORANGE
+
+  call-seq:
+    L2CL_PSEUDORANGE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_PSEUDORANGE_SIGMA
+
+  call-seq:
+    L2CM_PSEUDORANGE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_PSEUDORANGE_SIGMA
+
+  call-seq:
+    L2CL_PSEUDORANGE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_CARRIER_PHASE
+
+  call-seq:
+    L2CM_CARRIER_PHASE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_CARRIER_PHASE
+
+  call-seq:
+    L2CL_CARRIER_PHASE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_CARRIER_PHASE_SIGMA
+
+  call-seq:
+    L2CM_CARRIER_PHASE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_CARRIER_PHASE_SIGMA
+
+  call-seq:
+    L2CL_CARRIER_PHASE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_DOPPLER
+
+  call-seq:
+    L2CM_DOPPLER -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_DOPPLER
+
+  call-seq:
+    L2CL_DOPPLER -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_DOPPLER_SIGMA
+
+  call-seq:
+    L2CM_DOPPLER_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_DOPPLER_SIGMA
+
+  call-seq:
+    L2CL_DOPPLER_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_RANGE_RATE
+
+  call-seq:
+    L2CM_RANGE_RATE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_RANGE_RATE
+
+  call-seq:
+    L2CL_RANGE_RATE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_RANGE_RATE_SIGMA
+
+  call-seq:
+    L2CM_RANGE_RATE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_RANGE_RATE_SIGMA
+
+  call-seq:
+    L2CL_RANGE_RATE_SIGMA -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_SIGNAL_STRENGTH_dBHz
+
+  call-seq:
+    L2CM_SIGNAL_STRENGTH_dBHz -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_SIGNAL_STRENGTH_dBHz
+
+  call-seq:
+    L2CL_SIGNAL_STRENGTH_dBHz -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_LOCK_SEC
+
+  call-seq:
+    L2CM_LOCK_SEC -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_LOCK_SEC
+
+  call-seq:
+    L2CL_LOCK_SEC -> int
+
+A class method.
+
+*/
+/*
   Document-method: GPS_PVT::GPS.ITEMS_PREDEFINED
 
   call-seq:
@@ -16899,121 +17110,6 @@ free_GPS_SolverOptions_Common_Sl_double_Sg_(void *self) {
     GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *)self;
     delete arg1;
 }
-
-/*
-  Document-method: GPS_PVT::GPS::SolverOptionsCommon.cast_general
-
-  call-seq:
-    cast_general -> GPS_Solver_GeneralOptions< double > *
-    cast_general -> GPS_Solver_GeneralOptions< double > const
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_SolverOptionsCommon_cast_general__SWIG_0(int argc, VALUE *argv, VALUE self) {
-  GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  GPS_Solver_GeneralOptions< double > *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > *","cast_general", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Solver_GeneralOptions< double > *)(arg1)->cast_general();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_Solver_GeneralOptionsT_double_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE
-_wrap_SolverOptionsCommon_cast_general__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  GPS_Solver_GeneralOptions< double > *result = 0 ;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > const *","cast_general", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Solver_GeneralOptions< double > *)((GPS_SolverOptions_Common< double > const *)arg1)->cast_general();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_Solver_GeneralOptionsT_double_t, 0 |  0 );
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_SolverOptionsCommon_cast_general(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[2];
-  int ii;
-  
-  argc = nargs + 1;
-  argv[0] = self;
-  if (argc > 2) SWIG_fail;
-  for (ii = 1; (ii < argc); ++ii) {
-    argv[ii] = args[ii-1];
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SolverOptionsCommon_cast_general__SWIG_0(nargs, args, self);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SolverOptionsCommon_cast_general__SWIG_1(nargs, args, self);
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 2, "SolverOptionsCommon.cast_general", 
-    "    GPS_Solver_GeneralOptions< double > SolverOptionsCommon.cast_general()\n"
-    "    GPS_Solver_GeneralOptions< double > const * SolverOptionsCommon.cast_general()\n");
-  
-  return Qnil;
-}
-
 
 /*
   Document-method: GPS_PVT::GPS::SolverOptionsCommon.elevation_mask=
@@ -17353,6 +17449,100 @@ _wrap_SolverOptions_excluded(int argc, VALUE *argv, VALUE self) {
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  (*it));
     }
   }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions.exclude_L2C?
+
+  call-seq:
+    exclude_L2C? -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptions_exclude_L2Cq___(int argc, VALUE *argv, VALUE self) {
+  GPS_SolverOptions< double > *arg1 = (GPS_SolverOptions< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptionsT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions< double > *","get_exclude_L2C", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_SolverOptions< double > * >(argp1);
+  {
+    try {
+      result = (bool)(arg1)->get_exclude_L2C();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptions.exclude_L2C=
+
+  call-seq:
+    exclude_L2C=(bool const & b) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptions_exclude_L2Ce___(int argc, VALUE *argv, VALUE self) {
+  GPS_SolverOptions< double > *arg1 = (GPS_SolverOptions< double > *) 0 ;
+  bool *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool temp2 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptionsT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions< double > *","set_exclude_L2C", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_SolverOptions< double > * >(argp1);
+  ecode2 = SWIG_AsVal_bool(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "bool","set_exclude_L2C", 2, argv[0] ));
+  } 
+  temp2 = static_cast< bool >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (bool)(arg1)->set_exclude_L2C((bool const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
   return Qnil;
@@ -27276,7 +27466,6 @@ static swig_type_info _swigt__p_GPS_MeasurementT_double_t = {"_p_GPS_Measurement
 static swig_type_info _swigt__p_GPS_SolverOptionsT_double_t = {"_p_GPS_SolverOptionsT_double_t", "GPS_SolverOptions< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SolverOptions_CommonT_double_t = {"_p_GPS_SolverOptions_CommonT_double_t", "GPS_SolverOptions_Common< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SolverT_double_t = {"_p_GPS_SolverT_double_t", "GPS_Solver< double > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_GPS_Solver_GeneralOptionsT_double_t = {"_p_GPS_Solver_GeneralOptionsT_double_t", "GPS_Solver_GeneralOptions< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t = {"_p_GPS_SpaceNodeT_double_t", "GPS_SpaceNode< double >::self_t *|GPS_SpaceNode< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters = {"_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters", "GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris = {"_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris", "GPS_SpaceNode< double >::SatelliteProperties::Ephemeris *", 0, 0, (void*)0, 0};
@@ -27346,7 +27535,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_GPS_SolverOptionsT_double_t,
   &_swigt__p_GPS_SolverOptions_CommonT_double_t,
   &_swigt__p_GPS_SolverT_double_t,
-  &_swigt__p_GPS_Solver_GeneralOptionsT_double_t,
   &_swigt__p_GPS_SpaceNodeT_double_t,
   &_swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters,
   &_swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris,
@@ -27416,7 +27604,6 @@ static swig_cast_info _swigc__p_GPS_MeasurementT_double_t[] = {  {&_swigt__p_GPS
 static swig_cast_info _swigc__p_GPS_SolverOptionsT_double_t[] = {  {&_swigt__p_GPS_SolverOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SolverOptions_CommonT_double_t[] = {  {&_swigt__p_GPS_SolverOptions_CommonT_double_t, 0, 0, 0},  {&_swigt__p_GPS_SolverOptionsT_double_t, _p_GPS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},  {&_swigt__p_SBAS_SolverOptionsT_double_t, _p_SBAS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},  {&_swigt__p_GLONASS_SolverOptionsT_double_t, _p_GLONASS_SolverOptionsT_double_tTo_p_GPS_SolverOptions_CommonT_double_t, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SolverT_double_t[] = {  {&_swigt__p_GPS_SolverT_double_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_GPS_Solver_GeneralOptionsT_double_t[] = {  {&_swigt__p_GPS_Solver_GeneralOptionsT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t[] = {  {&_swigt__p_GPS_SpaceNodeT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters[] = {  {&_swigt__p_GPS_Ionospheric_UTC_ParametersT_double_t, _p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters, 0, 0},  {&_swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris[] = {  {&_swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris, 0, 0, 0},  {&_swigt__p_GPS_EphemerisT_double_t, _p_GPS_EphemerisT_double_tTo_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris, 0, 0},{0, 0, 0, 0}};
@@ -27486,7 +27673,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_GPS_SolverOptionsT_double_t,
   _swigc__p_GPS_SolverOptions_CommonT_double_t,
   _swigc__p_GPS_SolverT_double_t,
-  _swigc__p_GPS_Solver_GeneralOptionsT_double_t,
   _swigc__p_GPS_SpaceNodeT_double_t,
   _swigc__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters,
   _swigc__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris,
@@ -28067,6 +28253,26 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_const(SwigClassMeasurement.klass, "L1_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_SIGNAL_STRENGTH_dBHz)));
   rb_define_const(SwigClassMeasurement.klass, "L1_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_LOCK_SEC)));
   rb_define_const(SwigClassMeasurement.klass, "L1_FREQUENCY", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_FREQUENCY)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_PSEUDORANGE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_PSEUDORANGE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_PSEUDORANGE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_PSEUDORANGE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_PSEUDORANGE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_PSEUDORANGE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_PSEUDORANGE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_PSEUDORANGE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_CARRIER_PHASE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_CARRIER_PHASE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_CARRIER_PHASE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_CARRIER_PHASE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_CARRIER_PHASE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_CARRIER_PHASE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_CARRIER_PHASE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_CARRIER_PHASE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_DOPPLER", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_DOPPLER)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_DOPPLER", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_DOPPLER)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_DOPPLER_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_DOPPLER_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_DOPPLER_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_DOPPLER_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_RANGE_RATE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_RANGE_RATE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_RANGE_RATE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_RANGE_RATE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_RANGE_RATE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_RANGE_RATE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_RANGE_RATE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_RANGE_RATE_SIGMA)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_SIGNAL_STRENGTH_dBHz)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_SIGNAL_STRENGTH_dBHz)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_LOCK_SEC)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_LOCK_SEC)));
   rb_define_const(SwigClassMeasurement.klass, "ITEMS_PREDEFINED", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::ITEMS_PREDEFINED)));
   rb_define_method(SwigClassMeasurement.klass, "add", VALUEFUNC(_wrap_Measurement_add), -1);
   rb_define_method(SwigClassMeasurement.klass, "each", VALUEFUNC(_wrap_Measurement_each), -1);
@@ -28078,7 +28284,6 @@ SWIGEXPORT void Init_GPS(void) {
   SwigClassSolverOptionsCommon.klass = rb_define_class_under(mGPS, "SolverOptionsCommon", rb_cObject);
   SWIG_TypeClientData(SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, (void *) &SwigClassSolverOptionsCommon);
   rb_undef_alloc_func(SwigClassSolverOptionsCommon.klass);
-  rb_define_method(SwigClassSolverOptionsCommon.klass, "cast_general", VALUEFUNC(_wrap_SolverOptionsCommon_cast_general), -1);
   rb_define_method(SwigClassSolverOptionsCommon.klass, "elevation_mask=", VALUEFUNC(_wrap_SolverOptionsCommon_elevation_maske___), -1);
   rb_define_method(SwigClassSolverOptionsCommon.klass, "elevation_mask", VALUEFUNC(_wrap_SolverOptionsCommon_elevation_mask), -1);
   rb_define_method(SwigClassSolverOptionsCommon.klass, "residual_mask=", VALUEFUNC(_wrap_SolverOptionsCommon_residual_maske___), -1);
@@ -28094,6 +28299,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassSolverOptions.klass, "exclude", VALUEFUNC(_wrap_SolverOptions_exclude), -1);
   rb_define_method(SwigClassSolverOptions.klass, "include", VALUEFUNC(_wrap_SolverOptions_include), -1);
   rb_define_method(SwigClassSolverOptions.klass, "excluded", VALUEFUNC(_wrap_SolverOptions_excluded), -1);
+  rb_define_method(SwigClassSolverOptions.klass, "exclude_L2C?", VALUEFUNC(_wrap_SolverOptions_exclude_L2Cq___), -1);
+  rb_define_method(SwigClassSolverOptions.klass, "exclude_L2C=", VALUEFUNC(_wrap_SolverOptions_exclude_L2Ce___), -1);
   SwigClassSolverOptions.mark = 0;
   SwigClassSolverOptions.destroy = (void (*)(void *)) free_GPS_SolverOptions_Sl_double_Sg_;
   SwigClassSolverOptions.trackObjects = 0;
