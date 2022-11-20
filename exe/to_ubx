@@ -74,6 +74,17 @@ proc{|src|
   rcv.attach_online_ephemeris(src) if src
 }.call(misc_options[:online_ephemeris])
 
+proc{
+  cache = nil
+  rcv.define_singleton_method(:leap_seconds){|t_meas|
+    cache ||= if self.solver.gps_space_node.is_valid_utc then
+      self.solver.gps_space_node.iono_utc.delta_t_LS
+    else
+      t_meas.leap_seconds
+    end
+  }
+}.call
+
 # parse RINEX NAV
 files.each{|fname, ftype|
   case ftype
@@ -310,6 +321,12 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
       # TODO Galileo, Beidou, ...
     end
   }.compact
+  
+  proc{|ls| # leap seconds
+    next unless ls
+    ubx[6 + 10] = ls
+    ubx[6 + 12] |= 0x01
+  }.call(rcv.leap_seconds(t_meas))
   ubx[6 + 11] = meas_ubx.size
   ubx[6 + 13] = 1 # version
   ubx += meas_ubx.flatten
