@@ -236,13 +236,14 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
   ubx = [0xB5, 0x62, 0x02, 0x15, 0, 0]
   ubx += [t_meas.seconds, t_meas.week].pack("Ev").unpack("C*")
   ubx += [0] * 6
-  meas_ubx = meas.collect{|sat, items|
+  gen_packet = proc{|sys, svid, sig, items|
     res = [0] * 32
     setter = proc{|value, offset, len, str, pre_proc|
       array = case value
       when Array; value
       when Symbol
-        [items[GPS_PVT::GPS::Measurement.const_get(value)]]
+        k = [sig, value].join('_').to_sym
+        [items[GPS_PVT::GPS::Measurement.const_get(k)]]
       else
         next nil
       end
@@ -251,50 +252,67 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
       array = array.pack(str).unpack("C*") if str
       res[offset - 16, len] = array
     }
-    sys, svid = case sat
-    when 1..32 # GPS
-      [0, sat]
-    when 120..158 # SBAS
-      [1, sat]
-    when 193..202 # QZSS
-      [5, sat]
-    when (0x100 + 1)..(0x100 + 32) # GLONASS
-      setter.call(:L1_FREQUENCY,
-          39, 1, nil, proc{|v| v.replace([(v[0] ? glonass_freq_ch.call(v[0]) : 0) + 7])} )
-      [6, sat - 0x100]
-    else
-      next nil # TODO Galileo, Beidou, ...
-    end
-    setter.call([sys, svid], 36, 2)
     
+    setter.call([sys, svid], 36, 2)
+
     trk_stat = 0
-    setter.call(:L1_PSEUDORANGE,
+    setter.call(:PSEUDORANGE,
         16, 8, "E", proc{|v| v[0] ? (trk_stat |= 0x1) : v.clear})
-    setter.call(:L1_PSEUDORANGE_SIGMA,
+    setter.call(:PSEUDORANGE_SIGMA,
         43, 1, nil, proc{|v|
           b = (Math::log2(v[0] / 1E-2).to_i & 0xF) rescue 0x8
           v.replace((trk_stat & 0x1 == 0x1) ? [b] : [])
         })
-    setter.call(:L1_DOPPLER, 32, 4, "e") rescue next nil
-    setter.call(:L1_DOPPLER_SIGMA,
+    setter.call(:DOPPLER, 32, 4, "e") rescue next nil
+    setter.call(:DOPPLER_SIGMA,
         45, 1, nil, proc{|v| v.replace(v[0] ? [Math::log2(v[0] / 2E-3).to_i & 0xF] : [0x8])})
-    setter.call(:L1_CARRIER_PHASE,
+    setter.call(:CARRIER_PHASE,
         24, 8, "E", proc{|v| v[0] ? (trk_stat |= 0x2) : v.clear})
-    setter.call(:L1_CARRIER_PHASE_SIGMA,
+    setter.call(:CARRIER_PHASE_SIGMA,
         44, 1, nil, proc{|v|
           b = ((v[0] / 0.004).to_i & 0xF) rescue 0x8
           v.replace((trk_stat & 0x2 == 0x2) ? [b] : [])
         })
-    setter.call(:L1_SIGNAL_STRENGTH_dBHz,
+    setter.call(:SIGNAL_STRENGTH_dBHz,
         42, 1, nil, proc{|v| v.replace(v[0] ? [v[0].to_i] : [])})
-    setter.call(:L1_LOCK_SEC,
+    setter.call(:LOCK_SEC,
         40, 2, "v", proc{|v| v.replace(v[0] ? [(v[0] / 1E-3).to_i] : [])})
     setter.call([trk_stat], 46, 1)
+    res.define_singleton_method(:set, &setter)
 
     res
+  }
+  meas_ubx = meas.inject([]){|packets, (sat, items)|
+    case sat
+    when 1..32 # GPS
+      packets << gen_packet.call(0, sat, :L1, items)
+      packets += {:L2CL => 3, :L2CM => 4}.collect{|sig, sigid|
+        next nil unless packet = gen_packet.call(0, sat, sig, items)
+        packet[38 - 16] = sigid
+        packet
+      }
+    when 120..158 # SBAS
+      packets << gen_packet.call(1, sat, :L1, items)
+    when 193..202 # QZSS
+      packets << gen_packet.call(5, sat, :L1, items)
+      packets += {:L2CL => 5, :L2CM => 4}.collect{|sig, sigid|
+        next nil unless packet = gen_packet.call(5, sat, sig, items)
+        packet[38 - 16] = sigid
+        packet
+      }
+    when (0x100 + 1)..(0x100 + 32) # GLONASS
+      packet = gen_packet.call(6, sat - 0x100, :L1, items)
+      packet.set(:FREQUENCY,
+          39, 1, nil,
+          proc{|v| v.replace([(v[0] ? glonass_freq_ch.call(v[0]) : 0) + 7])} ) if packet
+      packets << packet
+    else
+      # TODO Galileo, Beidou, ...
+    end
   }.compact
   ubx[6 + 11] = meas_ubx.size
-  ubx += meas_ubx.flatten(1)
+  ubx[6 + 13] = 1 # version
+  ubx += meas_ubx.flatten
   ubx += [0, 0]
   GPS_PVT::UBX::update(ubx).pack("C*")
 }
