@@ -27,7 +27,7 @@ For Windows users, this gem requires Devkit because of native compilation.
 
 ## Usage
 
-### For user who just generate PVT solution
+### For user who just wants to generate PVT solution
 An attached executable is useful. After installation, type
 
     $ gps_pvt file_or_URI(s)
@@ -36,12 +36,12 @@ The format of file is automatically determined with its extension, such as .ubx 
 
 | specification | recoginized as |
 ----|----
-| --rinex_nav=file_or_URI | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) navigation file |
-| --rinex_obs=file_or_URI | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) observation file |
-| --ubx=file_or_URI | [U-blox](https://www.u-blox.com/) dedicated format |
+| <a name=opt_rinex_nav>--rinex_nav=file_or_URI</a> | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) navigation file |
+| <a name=opt_rinex_obs>--rinex_obs=file_or_URI</a> | [RINEX](https://www.igs.org/wg/rinex/#documents-formats) observation file |
+| <a name=opt_ubx>--ubx=file_or_URI</a> | [U-blox](https://www.u-blox.com/) dedicated format |
 | --sp3=file_or_URI | [Standard Product 3 Orbit Format](https://files.igs.org/pub/data/format/sp3c.txt) (supported gps_pvt version >= 0.6.0) |
 | --antex=file_or_URI | [Antenna Exchange Format](https://igs.org/wg/antenna#files) (supported gps_pvt version >= 0.6.0) |
-| --rinex_clk=file_or_URI | [RINEX clock](https://files.igs.org/pub/data/format/rinex_clock304.txt) file  (supported gps_pvt version >= 0.7.0) |
+| --rinex_clk=file_or_URI | [RINEX clock](https://files.igs.org/pub/data/format/rinex_clock304.txt) file (supported gps_pvt version >= 0.7.0) |
 
 Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
@@ -49,13 +49,13 @@ Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since versi
 
 Additionally, the following command options *--key=value* are available.
 
-| key | value | comment | version |
+| key | value | comment | since |
 ----|----|----|----
 | base_station | 3 \* (numeric+coordinate) | base position used for relative ENU position calculation. XYZ, NEU formats are acceptable. *ex1) --base_station=0X,0Y,0Z*, *ex2) --base_station=12.34N,56.789E,0U* | v0.1.7 |
 | elevation_mask_deg | numeric | satellite elevation mask specified in degrees. *ex) --elevation_mask_deg=10* | v0.3.0 |
 | start_time | time string | start time to perform solution. GPS, UTC and other formats are supported. *ex1) --start_time=1234:5678* represents 5678 seconds in 1234 GPS week, *ex2) --start_time="2000-01-01 00:00:00 UTC"* is in UTC format. | v0.3.3 |
 | end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.3 |
-| online_ephemeris | | based on observation, automatically load ephemeris which is previously broadcasted from satellite and currently published online | v0.5.0 |
+| <a name=opt_online_ephemeris>online_ephemeris</a> | URL string | based on observation, ephemeris which is previously broadcasted from satellite and currently published online will automatically be loaded. If value is not given, the default source "ftp://gssc.esa.int/gnss/data/daily/%Y/brdc/BRDC00IGS_R_%Y%j0000_01D_MN.rnx.gz" is used. The value string is converted with [strftime](https://docs.ruby-lang.org/en/master/strftime_formatting_rdoc.html) before actual use. | v0.8.1 |
 
 ### For developer
 
@@ -147,6 +147,21 @@ receiver.solver.correction = { # provide by using a Hash
   }
 }
 ```
+
+## Additional utilities
+
+### [to_ubx](exe/to_ubx)
+
+Utility to convert observation into u-blox ubx format and dump standard input. After installation of gps_pvt, to type
+
+    $ to_ubx file_or_URI(s) (options) > out.ubx
+
+saves resultant into out.ubx by using redirection. The shared options with gps_pvt executable are [rinex_obs](#opt_rinex_obs), [rinex_nav](#opt_rinex_nav), [ubx](#opt_ubx), and [online_ephemeris](#opt_online_ephemeris). In addition, the following options are available.
+
+| key | value | comment | since |
+----|----|----|----
+| ubx_rawx |  | Change output packet types to UBX-RAWX from its default UBX-RAW. | v0.8.1 |
+| broadcast_data |  | In addition to observation, ephemeris is inserted by using UBX-SFRB packets. If ubx_rawx option is specified, UBX-SFRBX is used instead of UBX-SFRB. | v0.8.1 |
 
 ## Development
 
