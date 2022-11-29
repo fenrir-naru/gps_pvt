@@ -36,7 +36,11 @@ class Receiver
     loader = proc{|t_meas|
       utc = Time::utc(*t_meas.c_tm)
       uri = URI::parse(utc.strftime(uri_template))
-      self.parse_rinex_nav(uri)
+      begin
+        self.parse_rinex_nav(uri)
+      rescue Net::FTPError, Net::HTTPExceptions => e
+        $stderr.puts "Skip to read due to %s (%s)"%[e.inspect.gsub(/[\r\n]/, ' '), uri]
+      end
       uri
     }
     run_orig = self.method(:run)
