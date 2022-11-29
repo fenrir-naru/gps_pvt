@@ -56,8 +56,11 @@ files.collect!{|fname, ftype|
 
 options.reject!{|opt|
   case opt[0]
-  when :ubx_rawx, :online_ephemeris, :broadcast_data, :eph_interval
+  when :ubx_rawx, :broadcast_data, :eph_interval
     misc_options[opt[0]] = opt[1]
+    true
+  when :online_ephemeris
+    (misc_options[opt[0]] ||= []) << opt[1]
     true
   else
     false
