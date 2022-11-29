@@ -1866,56 +1866,55 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters swig_types[16]
 #define SWIGTYPE_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[17]
 #define SWIGTYPE_p_GPS_TimeT_double_t swig_types[18]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t swig_types[19]
-#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[20]
-#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[21]
-#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[22]
-#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[23]
-#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[24]
-#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[25]
-#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[26]
-#define SWIGTYPE_p_PushableData swig_types[27]
-#define SWIGTYPE_p_RINEX_ClockT_double_t swig_types[28]
-#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[29]
-#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[30]
-#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[31]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[32]
-#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[33]
-#define SWIGTYPE_p_SP3T_double_t swig_types[34]
-#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[35]
-#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[36]
-#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[37]
-#define SWIGTYPE_p_available_satellites_t swig_types[38]
-#define SWIGTYPE_p_char swig_types[39]
-#define SWIGTYPE_p_double swig_types[40]
-#define SWIGTYPE_p_enu_t swig_types[41]
-#define SWIGTYPE_p_eph_t swig_types[42]
-#define SWIGTYPE_p_float_t swig_types[43]
-#define SWIGTYPE_p_gps_space_node_t swig_types[44]
-#define SWIGTYPE_p_gps_time_t swig_types[45]
-#define SWIGTYPE_p_int swig_types[46]
-#define SWIGTYPE_p_int_t swig_types[47]
-#define SWIGTYPE_p_llh_t swig_types[48]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[49]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[50]
-#define SWIGTYPE_p_p_double swig_types[51]
-#define SWIGTYPE_p_range_correction_list_t swig_types[52]
-#define SWIGTYPE_p_s16_t swig_types[53]
-#define SWIGTYPE_p_s32_t swig_types[54]
-#define SWIGTYPE_p_s8_t swig_types[55]
-#define SWIGTYPE_p_satellites_t swig_types[56]
-#define SWIGTYPE_p_self_t swig_types[57]
-#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[58]
-#define SWIGTYPE_p_super_t swig_types[59]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[60]
-#define SWIGTYPE_p_u16_t swig_types[61]
-#define SWIGTYPE_p_u32_t swig_types[62]
-#define SWIGTYPE_p_u8_t swig_types[63]
-#define SWIGTYPE_p_uint_t swig_types[64]
-#define SWIGTYPE_p_unsigned_int swig_types[65]
-#define SWIGTYPE_p_xyz_t swig_types[66]
-static swig_type_info *swig_types[68];
-static swig_module_info swig_module = {swig_types, 67, 0, 0, 0, 0};
+#define SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t swig_types[19]
+#define SWIGTYPE_p_GPS_User_PVTT_double_t swig_types[20]
+#define SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t swig_types[21]
+#define SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[22]
+#define SWIGTYPE_p_MatrixViewBaseT_t swig_types[23]
+#define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[24]
+#define SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t swig_types[25]
+#define SWIGTYPE_p_PushableData swig_types[26]
+#define SWIGTYPE_p_RINEX_ClockT_double_t swig_types[27]
+#define SWIGTYPE_p_RINEX_ObservationT_double_t swig_types[28]
+#define SWIGTYPE_p_SBAS_EphemerisT_double_t swig_types[29]
+#define SWIGTYPE_p_SBAS_SolverOptionsT_double_t swig_types[30]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t swig_types[31]
+#define SWIGTYPE_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris swig_types[32]
+#define SWIGTYPE_p_SP3T_double_t swig_types[33]
+#define SWIGTYPE_p_System_ENUT_double_WGS84_t swig_types[34]
+#define SWIGTYPE_p_System_LLHT_double_WGS84_t swig_types[35]
+#define SWIGTYPE_p_System_XYZT_double_WGS84_t swig_types[36]
+#define SWIGTYPE_p_available_satellites_t swig_types[37]
+#define SWIGTYPE_p_char swig_types[38]
+#define SWIGTYPE_p_double swig_types[39]
+#define SWIGTYPE_p_enu_t swig_types[40]
+#define SWIGTYPE_p_eph_t swig_types[41]
+#define SWIGTYPE_p_float_t swig_types[42]
+#define SWIGTYPE_p_gps_space_node_t swig_types[43]
+#define SWIGTYPE_p_gps_time_t swig_types[44]
+#define SWIGTYPE_p_int swig_types[45]
+#define SWIGTYPE_p_int_t swig_types[46]
+#define SWIGTYPE_p_llh_t swig_types[47]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[48]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[49]
+#define SWIGTYPE_p_p_double swig_types[50]
+#define SWIGTYPE_p_range_correction_list_t swig_types[51]
+#define SWIGTYPE_p_s16_t swig_types[52]
+#define SWIGTYPE_p_s32_t swig_types[53]
+#define SWIGTYPE_p_s8_t swig_types[54]
+#define SWIGTYPE_p_satellites_t swig_types[55]
+#define SWIGTYPE_p_self_t swig_types[56]
+#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[57]
+#define SWIGTYPE_p_super_t swig_types[58]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[59]
+#define SWIGTYPE_p_u16_t swig_types[60]
+#define SWIGTYPE_p_u32_t swig_types[61]
+#define SWIGTYPE_p_u8_t swig_types[62]
+#define SWIGTYPE_p_uint_t swig_types[63]
+#define SWIGTYPE_p_unsigned_int swig_types[64]
+#define SWIGTYPE_p_xyz_t swig_types[65]
+static swig_type_info *swig_types[67];
+static swig_module_info swig_module = {swig_types, 66, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -6654,7 +6653,16 @@ SWIGINTERN VALUE
 _wrap_Time_leap_second_events_get(VALUE self) {
   VALUE _val;
   
-  _val = SWIG_NewPointerObj(SWIG_as_voidptr(GPS_Time< double >::leap_second_events), SWIGTYPE_p_GPS_TimeT_double_t__leap_second_event_t,  0 );
+  {
+    _val = rb_ary_new2(sizeof(GPS_Time< double >::leap_second_events) / sizeof(GPS_Time< double >::leap_second_events[0]));
+    for(std::size_t i(0); i < sizeof(GPS_Time< double >::leap_second_events) / sizeof(GPS_Time< double >::leap_second_events[0]); ++i){
+      rb_ary_push(_val,
+        rb_ary_new3(3,
+          SWIG_From_int  (GPS_Time< double >::leap_second_events[i].corrected.week),
+          swig::from(GPS_Time< double >::leap_second_events[i].corrected.seconds),
+          SWIG_From_int  (GPS_Time< double >::leap_second_events[i].leap_seconds)));
+    }
+  }
   return _val;
 }
 
@@ -27470,7 +27478,6 @@ static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t = {"_p_GPS_SpaceNodeT_do
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters = {"_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters", "GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris = {"_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris", "GPS_SpaceNode< double >::SatelliteProperties::Ephemeris *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_TimeT_double_t = {"_p_GPS_TimeT_double_t", "GPS_SpaceNode< double >::gps_time_t *|SBAS_SpaceNode< double >::gps_time_t *|GPS_Time< GLONASS_SpaceNode< double >::float_t > *|GPS_Time< GPS_Time< double >::float_t > *|GPS_Time< double > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_GPS_TimeT_double_t__leap_second_event_t = {"_p_GPS_TimeT_double_t__leap_second_event_t", "GPS_Time< double >::leap_second_event_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_TimeT_double_t__leap_year_prop_res_t = {"_p_GPS_TimeT_double_t__leap_year_prop_res_t", "GPS_Time< double >::leap_year_prop_res_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GPS_User_PVTT_double_t = {"_p_GPS_User_PVTT_double_t", "GPS_User_PVT< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t = {"_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t", "Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *|Matrix< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > *", 0, 0, (void*)0, 0};
@@ -27539,7 +27546,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters,
   &_swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris,
   &_swigt__p_GPS_TimeT_double_t,
-  &_swigt__p_GPS_TimeT_double_t__leap_second_event_t,
   &_swigt__p_GPS_TimeT_double_t__leap_year_prop_res_t,
   &_swigt__p_GPS_User_PVTT_double_t,
   &_swigt__p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t,
@@ -27608,7 +27614,6 @@ static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t[] = {  {&_swigt__p_GPS_S
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters[] = {  {&_swigt__p_GPS_Ionospheric_UTC_ParametersT_double_t, _p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters, 0, 0},  {&_swigt__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris[] = {  {&_swigt__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris, 0, 0, 0},  {&_swigt__p_GPS_EphemerisT_double_t, _p_GPS_EphemerisT_double_tTo_p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_TimeT_double_t[] = {  {&_swigt__p_GPS_TimeT_double_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_GPS_TimeT_double_t__leap_second_event_t[] = {  {&_swigt__p_GPS_TimeT_double_t__leap_second_event_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_TimeT_double_t__leap_year_prop_res_t[] = {  {&_swigt__p_GPS_TimeT_double_t__leap_year_prop_res_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GPS_User_PVTT_double_t[] = {  {&_swigt__p_GPS_User_PVTT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t[] = {  {&_swigt__p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -27677,7 +27682,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters,
   _swigc__p_GPS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris,
   _swigc__p_GPS_TimeT_double_t,
-  _swigc__p_GPS_TimeT_double_t__leap_second_event_t,
   _swigc__p_GPS_TimeT_double_t__leap_year_prop_res_t,
   _swigc__p_GPS_User_PVTT_double_t,
   _swigc__p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t,
