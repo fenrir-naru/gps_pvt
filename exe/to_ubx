@@ -106,8 +106,30 @@ files.each{|fname, ftype|
 
 obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
 
-# Add dummy before actual first observation in order to notify time to solver
-obs.unshift([obs[0][0] - 1, GPS_PVT::GPS::Measurement::new])
+# Time packet for solution of leap seconds
+gen_gpstime = proc{
+  tmpl = [0xB5, 0x62, 0x01, 0x20, 16, 0]
+  gpst = GPS_PVT::GPS::Time
+  t_next = gpst::new(*gpst::leap_second_events.find{|wn, sec, leap| leap == 1}[0..1])
+  proc{|t_meas, meas|
+    next nil if t_meas < t_next
+    t_next = t_meas + 60 # 1 min. interval
+    ubx = tmpl.clone
+    t_sec = t_meas.seconds
+    t_msec = (t_sec * 1E3).round
+    t_nsec = ((t_sec * 1E3 - t_msec) * 1E6).round
+    leap = rcv.leap_seconds(t_meas)
+    ubx += [
+      t_msec, # ITOW  ms  GPS Millisecond time of Week
+      t_nsec, # Frac  ns  Nanoseconds remainder of rounded ms above, range -500000 .. 500000
+      t_meas.week, # week  -  GPS week (GPS time)
+      leap || 0, # LeapS  s  Leap Seconds (GPS-UTC)
+      leap ? 0x07 : 0x03, # validity bit field (0x01=ToW, 0x02=WN, 0x04=UTC)
+      10000, # TAcc  ns  Time Accuracy Estimate
+    ].pack("Vl<vcCV").unpack("C*")
+    GPS_PVT::UBX::update(ubx + [0, 0]).pack("C*")
+  }
+}.call
 
 gen_sfrb, gen_sfrbx = proc{
   cache = {}
@@ -340,6 +362,7 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
 }
 
 gen_list = []
+gen_list << gen_gpstime unless misc_options[:ubx_rawx]
 gen_list << (misc_options[:ubx_rawx] ? gen_sfrbx : gen_sfrb) if misc_options[:broadcast_data]
 gen_list << (misc_options[:ubx_rawx] ? gen_rawx : gen_raw)
 STDOUT.binmode
