@@ -40,6 +40,7 @@ files.collect!{|fname, ftype|
   ftype ||= case fname
   when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
   when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
+  when /\.ubx$/; :ubx
   else
     raise "Format cannot be guessed, use --(format, ex. rinex_obs)=#{fname}"
   end
@@ -95,6 +96,7 @@ files.each{|fname, ftype|
 # other files
 files.each{|fname, ftype|
   case ftype
+  when :ubx; rcv.parse_ubx(fname){}
   when :rinex_obs; rcv.parse_rinex_obs(fname){}
   end
 }
