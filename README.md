@@ -2,14 +2,18 @@
 
 GPS_PVT is a Ruby GPS (Global positioning system) PVT (position, velocity and time) solver. It accepts RINEX NAV and OBS files in addition to u-blox ubx format. Its significant features are easy to use with highly flexibility to customize internal solver behavior such as weight for each available satellite.
 
-The PVT solution is obtained with a stand alone positioning (i.e. neither differential nor kinematic) with application of least square to each snapshot. Its main internal codes are derived from ones of [ninja-scan-light](https://github.com/fenrir-naru/ninja-scan-light) having capability to calculate tightly-coupled GNSS/INS integrated solution. These codes are written by C++, and wrapped by [SWIG](http://www.swig.org/).
+The PVT solution is obtained with a stand alone positioning (i.e. neither differential nor kinematic) with application of least square to each snapshot. Its main internal codes are derived from ones of [ninja-scan-light](https://github.com/fenrir-naru/ninja-scan-light) having capability to calculate tightly-coupled GNSS/INS integrated solution. These codes are written in C++, and wrapped by [SWIG](http://www.swig.org/).
 
 [![Gem Version](https://badge.fury.io/rb/gps_pvt.svg)](https://badge.fury.io/rb/gps_pvt)
 [![Ruby](https://github.com/fenrir-naru/gps_pvt/actions/workflows/main.yml/badge.svg)](https://github.com/fenrir-naru/gps_pvt/actions/workflows/main.yml)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install it yourself as:
+
+    $ gem install gps_pvt
+
+Or add this line to your Ruby application's Gemfile:
 
 ```ruby
 gem 'gps_pvt'
@@ -19,11 +23,7 @@ And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install gps_pvt
-
-For Windows users, this gem requires Devkit because of native compilation.
+For Windows users, this gem requires Devkit because of compilation of native shared library.
 
 ## Usage
 
@@ -57,7 +57,7 @@ Additionally, the following command options *--key=value* are available.
 | end_time | time string | end time to perform solution. Its format is the same as start_time. | v0.3.3 |
 | <a name=opt_online_ephemeris>online_ephemeris</a> | URL string | based on observation, ephemeris which is previously broadcasted from satellite and currently published online will automatically be loaded. If value is not given, the default source "ftp://gssc.esa.int/gnss/data/daily/%Y/brdc/BRDC00IGS_R_%Y%j0000_01D_MN.rnx.gz" is used. The value string is converted with [strftime](https://docs.ruby-lang.org/en/master/strftime_formatting_rdoc.html) before actual use. | v0.8.1 |
 
-### For developer
+### For advanced user
 
 This library will be used like:
 
@@ -136,14 +136,14 @@ receiver.solver.correction = { # provide by using a Hash
 
 # Dynamic customization of weight for each epoch
 (class << receiver; self; end).instance_eval{ # do before parse_XXX
-  alias_method(:run_orig, :run)
+  run_orig = instance_method(:run)
   define_method(:run){|meas, t_meas, &b|
     meas # observation, same as the 2nd argument of parse_XXX
     receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
       # Do something based on meas, t_meas.
       rel_prop
     }
-    run_orig(meas, t_meas, &b)
+    run_orig.bind(self).call(meas, t_meas, &b)
   }
 }
 ```
