@@ -33,6 +33,7 @@ proc{
 }.call if require 'rubyserial'
 
 require 'open-uri'
+require_relative 'ntrip'
 
 module GPS_PVT
 module Util
