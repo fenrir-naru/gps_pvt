@@ -11,13 +11,13 @@ class Ntrip < Net::HTTP
     orig = singleton_method(:read_new)
     define_singleton_method(:read_new){|sock|
       # handle Ntrip(rev1), which does not comply with HTTP
-      begin
+      unless @@mtx.owned? then
         @@mtx.synchronize{orig.call(sock)}
-      rescue ThreadError
+      else
         @@mtx.unlock
         str = sock.readline
         case str
-        when /\A(?:HTTP(?:\/(\d+\.\d+))?|(\S+))\s+(\d\d\d)(?:\s+(.*))?\z/in
+        when /\A(?:(?:HTTP(?:\/(\d+\.\d+))?|([^\d\s]+))\s+)?(\d\d\d)(?:\s+(.*))?\z/in
           res = response_class($3).new($1 || '1.1', $3, $2 || $4)
           each_response_header(sock){|k,v|
             res.add_field k, v
@@ -30,11 +30,13 @@ class Ntrip < Net::HTTP
     }
   }
   def transport_request(*args, &b)
+    @@mtx.lock
     begin
-      @@mtx.lock
-      super(*args, &b)
+      super
+    rescue
+      raise
     ensure
-      @@mtx.unlock if @@mtx.locked?
+      @@mtx.unlock if @@mtx.owned?
     end
   end
   
