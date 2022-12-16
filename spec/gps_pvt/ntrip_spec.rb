@@ -93,7 +93,7 @@ RSpec::describe GPS_PVT::Ntrip do
       params_list.each{|params|
         $stderr.puts "Connecting #{params} ..."
         params[0].kind_of?(Symbol) ?
-            Kernel::send(*params, &b) :
+            (RUBY_VERSION >= "2.5.0" ? URI : Kernel)::send(*params, &b) :
             params[0].send(*params[1..-1], &b)
       }
     end

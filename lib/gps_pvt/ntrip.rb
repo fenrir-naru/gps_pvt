@@ -106,7 +106,7 @@ OpenURI.class_eval{
           } rescue nil)
       options['Ntrip-Version'] ||= "Ntrip/%3.1f"%[options.delete(:version)] if options[:version]
       options['User-Agent'] ||= options[:user_agent]
-      options.compact!
+      options.select!{|k, v| v} #compact! Ruby >= 2.4.0
       true
     else
       check_options_orig.call(options)

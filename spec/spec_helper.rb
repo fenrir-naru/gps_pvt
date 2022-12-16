@@ -20,3 +20,8 @@ module Enumerable
     init
   end
 end if RUBY_VERSION < "2.4.0"
+
+class Hash
+  def compact; select{|k, v| v}; end
+  def compact!; select!{|k, v| v}; end
+end if RUBY_VERSION < "2.4.0"
