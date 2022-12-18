@@ -54,8 +54,7 @@ module Util
     end
     def get_txt(fname_or_uri)
       is_uri = fname_or_uri.kind_of?(URI)
-      ((is_uri && (RUBY_VERSION >= "2.5.0")) ? URI : Kernel) \
-          .send(:open, fname_or_uri){|src|
+      (is_uri ? URI : Kernel).send(:open, fname_or_uri){|src|
         compressed = proc{
           case src.content_type
           when /gzip/; next :gz

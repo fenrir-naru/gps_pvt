@@ -19,9 +19,9 @@ module Enumerable
     b ? each{|v| init += b.call(v)} : each{|v| init += v}
     init
   end
-end if RUBY_VERSION < "2.4.0"
+end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
 
 class Hash
   def compact; select{|k, v| v}; end
   def compact!; select!{|k, v| v}; end
-end if RUBY_VERSION < "2.4.0"
+end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
