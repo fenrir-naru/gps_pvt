@@ -59,8 +59,10 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "rubyserial"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "matrix" if GPS_PVT::version_compare(RUBY_VERSION, "3.1") >= 0
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
