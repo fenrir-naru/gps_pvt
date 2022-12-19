@@ -6,15 +6,13 @@ require_relative 'version'
 
 module GPS_PVT
 class Ntrip < Net::HTTP
-  @@mtx = Mutex::new
   Net::HTTPResponse.class_eval{
     orig = singleton_method(:read_new)
     define_singleton_method(:read_new){|sock|
       # handle Ntrip(rev1), which does not comply with HTTP
-      unless @@mtx.owned? then
-        @@mtx.synchronize{orig.call(sock)}
+      unless sock.respond_to?(:ntrip) then
+        orig.call(sock)
       else
-        @@mtx.unlock
         str = sock.readline
         case str
         when /\A(?:(?:HTTP(?:\/(\d+\.\d+))?|([^\d\s]+))\s+)?(\d\d\d)(?:\s+(.*))?\z/in
@@ -29,15 +27,9 @@ class Ntrip < Net::HTTP
       end
     }
   }
-  def transport_request(*args, &b)
-    @@mtx.lock
-    begin
-      super
-    rescue
-      raise
-    ensure
-      @@mtx.unlock if @@mtx.owned?
-    end
+  def on_connect
+    super
+    @socket.define_singleton_method(:ntrip){true}
   end
   
   SOURCE_TBL_ITEMS = {
@@ -138,6 +130,7 @@ OpenURI.class_eval{
           begin
             ntrip.get_data(mnt_pt, options){|data| w << data}
           rescue Errno::EPIPE;
+          rescue; raise
           ensure; w.close
           end
         }
