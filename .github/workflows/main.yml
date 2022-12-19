@@ -24,6 +24,6 @@ jobs:
         bundler-cache: true
     - name: Run the default task
       run: bundle exec rake
-      env:
-        NTRIP_CASTER: "rtk2go.com:2101"
-        NTRIP_AUTH: "test@example.com:none"
+#      env:
+#        NTRIP_CASTER: "rtk2go.com:2101"
+#        NTRIP_AUTH: "test@example.com:none"
