@@ -44,6 +44,20 @@ class Ntrip < Net::HTTP
         :type, :identifier, :operator, :authentication, :fee,
         :web_net, :web_str, :web_reg],
   }
+  module MountPoints
+    [:select, :reject, :merge, :clone, :dup].each{|f|
+      define_method(f){|*args, &b| super(*args, &b).extend(MountPoints)}
+    }
+    D2R = Math::PI / 180
+    def near_from(lat_deg, lng_deg)
+      require 'gps_pvt/Coordinate'
+      llh0 = Coordinate::LLH::new(D2R * lat_deg, D2R * lng_deg, 0)
+      collect{|pt, prop|
+        llh = Coordinate::LLH::new(*([:latitude, :longitude].collect{|k| D2R * prop[k].to_f} + [0]))
+        [llh0.xyz.dist(llh.xyz), prop]
+      }.sort{|a, b| a[0] <=> b[0]} # return [distance, property]
+    end
+  end
   def Ntrip.parse_source_table(str)
     res = {}
     str.lines.each{|line|
@@ -55,11 +69,11 @@ class Ntrip < Net::HTTP
       entry[:misc] = values[(keys.size)..-1] if values.size > keys.size
       (res[type] ||= []) << entry
     }
-    res.define_singleton_method(:mount_points){
+    res.define_singleton_method(:mount_points, lambda{
       Hash[*((self[:STR] || []).collect{|entry|
         [entry[:mountpoint], entry]
-      }.flatten(1))]
-    }
+      }.flatten(1))].extend(MountPoints)
+    })
     res
   end
   def generate_request(path, header)
