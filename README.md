@@ -150,11 +150,11 @@ receiver.solver.correction = { # provide by using a Hash
 
 ## Additional utilities
 
-### [to_ubx](exe/to_ubx)
+### [gps2ubx](exe/gps2ubx) <sub>(formerly [to_ubx](../../tree/v0.8.4/exe/to_ubx))</sub>
 
 Utility to convert observation into u-blox ubx format and dump standard input. After installation of gps_pvt, to type
 
-    $ to_ubx file_or_URI(s) (options) > out.ubx
+    $ gps2ubx file_or_URI(s) (options) > out.ubx
 
 saves resultant into out.ubx by using redirection. The shared options with gps_pvt executable are [rinex_obs](#opt_rinex_obs), [rinex_nav](#opt_rinex_nav), [ubx](#opt_ubx), and [online_ephemeris](#opt_online_ephemeris). In addition, the following options are available.
 
