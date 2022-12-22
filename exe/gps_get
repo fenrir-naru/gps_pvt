@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+
+require 'gps_pvt/util'
+require 'uri'
+
+$stderr.puts <<__STRING__
+Usage: #{__FILE__} file_or_URI(s) ...
+This utility outputs GNSS data specified with file_or_URI(s).
+A file_or_URI having additional ".gz" or ".Z" extension is recognized as a compressed file, and the decompression is performed before output.
+In addition to a local file, major URIs such as http(s)://..., ftp://..., and ntrip:// are supported.
+Serial port (COMn for Windows, /dev/tty* for *NIX) is also acceptable as an input file name.
+__STRING__
+
+options = []
+
+files = ARGV.collect{|arg|
+  next arg unless arg =~ /^--([^=]+)=?/
+  k, v = [$1.downcase.to_sym, $']
+  options << [$1.to_sym, $']
+  nil
+}.compact
+
+spec2io = proc{
+  io_pool = {}
+  proc{|spec, mode_r|
+    mode_r = true if (mode_r == nil)
+    next (io_pool[spec] ||= open(spec)) if Serial::SPEC =~ spec # serial port
+    if (uri = (URI::parse(spec) rescue nil)) and !uri.instance_of?(URI::Generic) then # URI
+      if mode_r then
+        case uri
+        when URI::Ntrip; next URI::open(uri)
+        else; next GPS_PVT::Util::get_txt(uri)
+        end
+      end
+      raise "Unknown URI: #{spec}"
+    end
+    if mode_r then # file
+      next STDIN if spec == '-'
+      next open(GPS_PVT::Util::get_txt(spec), 'r') if File::exist?(spec)
+      raise "File not found: #{spec}"
+    else
+      next STDOUT if spec == '-'
+      open(spec, 'a+')
+    end
+  }
+}.call
+
+STDIN.binmode
+STDOUT.binmode
+dst, io_dst = proc{|spec| [spec, spec2io.call(spec, false)]}.call('-')
+
+options.reject!{|k, v|
+  case k
+  when :out
+    dst, io_dst = [v, spec2io.call(v, false)]
+    next true
+  end
+  false
+}
+raise "Unknown option: #{options.first}" unless options.empty?
+
+$stderr.puts "out: #{{'-' => '(stdout)'}[dst] || dst}"
+threads = files.collect{|src|
+  $stderr.puts "in: #{{'-' => '(stdin)'}[src] || src}"
+  io_src = spec2io.call(src)
+  Thread.start{
+    io_dst.write(io_src.read(128)) until io_src.eof?
+  }
+}
+threads.each{|t| t.join}
