@@ -163,6 +163,18 @@ saves resultant into out.ubx by using redirection. The shared options with gps_p
 | ubx_rawx |  | Change output packet types to UBX-RAWX from its default UBX-RAW. | v0.8.1 |
 | broadcast_data |  | In addition to observation, ephemeris is inserted by using UBX-SFRB packets. If ubx_rawx option is specified, UBX-SFRBX is used instead of UBX-SFRB. | v0.8.1 |
 
+### [gps_get](exe/gps_get)
+
+Utility to get and dump GPS files. After installation of gps_pvt, to type
+
+    $ gps_get file_or_URI(s) (options) > output_file
+
+saves data into output_file by using redirection. http(s), ftp, and ntrip can be used as scheme of URI. Serial port is also supported. Note that compressed data is automatically decompressed before output. The following options are available.
+
+| key | value | comment | since |
+----|----|----|----
+| out | file | Change output target from the standard output. In addition to file, serial port is supported. | v0.8.5 |
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake` to build library and run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
