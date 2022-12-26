@@ -30,5 +30,7 @@ RSpec::describe GPS_PVT::RTCM3 do
         12 => 39755214643}.each{|i, v|
       expect(df_list[i]).to eq(v)
     }
+    expect(GPS_PVT::RTCM3::new(
+        StringIO::new(test_data[0].pack('C*'))).read_packet.message_number).to eq(1005)
   end
 end

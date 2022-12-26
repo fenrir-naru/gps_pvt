@@ -11,6 +11,11 @@ class RTCM3
   def RTCM3.checksum(packet, range = 0..-4)
     GPS_PVT::Util::CRC24Q::checksum(packet[range])
   end
+  module Packet
+    def message_number
+      Util::BitOp::extract(self, [12], 24).first
+    end
+  end
   def read_packet
     while !@io.eof?
       if @buf.size < 6 then
@@ -41,7 +46,7 @@ class RTCM3
       packet = @buf[0..(len + 5)]
       @buf = @buf[(len + 6)..-1]
       
-      return packet
+      return packet.extend(Packet)
     end
     return nil
   end
