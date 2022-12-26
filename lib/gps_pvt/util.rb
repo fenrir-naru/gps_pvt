@@ -89,5 +89,21 @@ module Util
       }
     end
   end
+  module CRC24Q
+    POLY = 0x1864CFB
+    TABLE = 0x100.times.collect{|i|
+      res = i << 16
+      8.times{
+        res <<= 1
+        res ^= POLY if (res & 0x1000000) > 0
+      }
+      res
+    }
+    def CRC24Q.checksum(bytes)
+      bytes.inject(0){|crc, byte|
+        ((crc << 8) & 0xFFFF00) ^ TABLE[byte ^ ((crc >> 16) & 0xFF)]
+      }
+    end
+  end
 end
 end
