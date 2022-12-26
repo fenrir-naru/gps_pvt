@@ -22,5 +22,13 @@ RSpec::describe GPS_PVT::RTCM3 do
     [(checksum >> 16), (checksum >> 8) & 0xFF, (checksum & 0xFF)].zip(test_data[0][-3..-1]).each{|a, b|
       expect(a).to eq(b)
     }
+    df_list = GPS_PVT::Util::BitOp.extract(
+        test_data[0], [12, 12, 6, 1, 1, 1, 1, 38, 1, 1, 38, 2, 38], 24)
+    {0 => 1005, 1 => 2003,
+        7 => 11141045999,
+        10 => -48507297108 + (137438953472*2),
+        12 => 39755214643}.each{|i, v|
+      expect(df_list[i]).to eq(v)
+    }
   end
 end

@@ -105,5 +105,20 @@ module Util
       }
     end
   end
+  module BitOp
+    MASK = (1..8).collect{|i| (1 << i) - 1}.reverse
+    def BitOp.extract(src_bytes, bits_list, offset = 0)
+      res = []
+      bits_list.inject(offset.divmod(8) + [offset]){|(qM, rM, skip), bits|
+        qL, rL = (skip += bits).divmod(8)
+        v = src_bytes[qM] & MASK[rM]
+        src_bytes[(qM+1)..(qL-1)].each{|b| v = (v << 8) | b}
+        v = ((v << 8) | src_bytes[qL]) >> (8 - rL) if rL > 0
+        res << v
+        [qL, rL, skip]
+      }
+      res
+    end
+  end
 end
 end
