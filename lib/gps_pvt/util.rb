@@ -112,9 +112,11 @@ module Util
       bits_list.inject(offset.divmod(8) + [offset]){|(qM, rM, skip), bits|
         qL, rL = (skip += bits).divmod(8)
         v = src_bytes[qM] & MASK[rM]
-        src_bytes[(qM+1)..(qL-1)].each{|b| v = (v << 8) | b}
-        v = ((v << 8) | src_bytes[qL]) >> (8 - rL) if rL > 0
-        res << v
+        res << if rL > 0 then
+          src_bytes[(qM+1)..qL].inject(v){|v2, b| (v2 << 8) | b} >> (8 - rL)
+        else
+          src_bytes[(qM+1)..(qL-1)].inject(v){|v2, b| (v2 << 8) | b}
+        end
         [qL, rL, skip]
       }
       res

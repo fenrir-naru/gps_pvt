@@ -15,6 +15,48 @@ class RTCM3
     def message_number
       Util::BitOp::extract(self, [12], 24).first
     end
+    DataFrame = proc{
+      unum = proc{|n, sf|
+        [n, proc{|v| sf.kind_of?(Rational) ? (v * sf).to_f : (v * sf)}]
+      }
+      num = proc{|n, sf|
+        [n, proc{|v| 
+          v -= (1 << n) if v >= (1 << (n - 1))
+          v *= sf if sf
+          v = v.to_f if sf.kind_of?(Rational)
+          v
+        }]
+      }
+      df = {
+        1 => [1],
+        2 => [12],
+        3 => [12],
+        21 => [6],
+        22 => [1],
+        23 => [1],
+        24 => [1],
+        25 => num.call(38, Rational(1, 10000)),
+        141 => [1],
+        142 => [1],
+        364 => [2],
+      }
+      df[27] = df[26] = df[25]
+      df
+    }.call
+    MessageType = Hash[*({
+      1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, 1, 26, 364, 27],
+    }.collect{|mt, df_list|
+      [mt, Hash[*([:bits, :op].collect.with_index{|k, i|
+        [k, df_list.collect{|df| DataFrame[df][i]}]
+      }.flatten(1))].merge({:df => df_list})]
+    }.flatten(1))]
+    def parse
+      return nil unless (mt = MessageType[message_number])
+      # return [[value, df], ...]
+      Util::BitOp.extract(self, mt[:bits], 24).zip(mt[:op]).collect{|v, op|
+        op ? op.call(v) : v
+      }.zip(mt[:df])
+    end
   end
   def read_packet
     while !@io.eof?
