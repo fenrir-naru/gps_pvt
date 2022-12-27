@@ -43,6 +43,10 @@ RSpec::describe GPS_PVT::RTCM3 do
   it "knows sufficient structure of messages" do
     GPS_PVT::RTCM3::Packet::MessageType.each{|mt, prop|
       expect(prop[:bits].all?).to eq(true)
+      expect(prop[:bits_total]).to eq({
+        1005 => 152,
+        1077 => 169,
+      }[mt])
     }
   end
 end
