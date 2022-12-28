@@ -44,13 +44,16 @@ class RTCM3
         1 => proc{|n| [n]},
         2 => [12],
         3 => [12],
+        4 => [30],
         21 => [6],
         22 => [1],
         23 => [1],
         24 => [1],
         25 => num_gen.call(38, Rational(1, 10000)),
+        34 => [27],
         141 => [1],
         142 => [1],
+        248 => [30],
         364 => [2],
         393 => [1],
         394 => idx_list_gen.call(64, 1),
@@ -71,6 +74,7 @@ class RTCM3
         409 => [3],
         411 => [2],
         412 => [2],
+        416 => [3],
         417 => [1],
         418 => [3],
         420 => [1],
@@ -93,7 +97,9 @@ class RTCM3
     }.call
     MessageType = Hash[*({
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
-      1077 => [2, 3, [:uint, 30], 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
+      1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
+      1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
+      1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
     }.collect{|mt, df_list| [mt, DataFrame.generate_prop(df_list)]}.flatten(1))]
     def parse
       msg_num = message_number
@@ -108,7 +114,8 @@ class RTCM3
       }
       add_proc.call(mt)
       case msg_num
-      when 1077
+      when 1077, 1087, 1097
+        # 1077(GPS), 1087(GLONASS), 1097(GALILEO)
         nsat, nsig = [-2, -1].collect{|i| values[i].size}
         offset = 24 + mt[:bits_total]
         df396 = DataFrame.generate_prop([[396, values[-2], values[-1]]])
