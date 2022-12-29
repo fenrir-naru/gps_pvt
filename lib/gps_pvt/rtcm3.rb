@@ -41,21 +41,21 @@ class RTCM3
         } }]
       }
       df = { # {df_num => [bits, post_process] or generator_proc, ...}
-        1 => proc{|n| [n]},
-        2 => [12],
-        3 => [12],
-        4 => [30],
-        21 => [6],
-        22 => [1],
-        23 => [1],
-        24 => [1],
+        1 => proc{|n| n},
+        2 => 12,
+        3 => 12,
+        4 => 30,
+        21 => 6,
+        22 => 1,
+        23 => 1,
+        24 => 1,
         25 => num_gen.call(38, Rational(1, 10000)),
-        34 => [27],
-        141 => [1],
-        142 => [1],
-        248 => [30],
-        364 => [2],
-        393 => [1],
+        34 => 27,
+        141 => 1,
+        142 => 1,
+        248 => 30,
+        364 => 2,
+        393 => 1,
         394 => idx_list_gen.call(64, 1),
         395 => idx_list_gen.call(32, 1),
         396 => proc{|df394, df395|
@@ -63,22 +63,22 @@ class RTCM3
           idx_list = idx_list_gen.call(x_list.size)[1]
           [x_list.size, proc{|v| x_list.values_at(*idx_list.call(v))}]
         },
-        397 => [8],
+        397 => 8,
         398 => unum_gen.call(10, Rational(1, 1 << 10)),
         399 => num_gen.call(14),
         404 => num_gen.call(15, Rational(1, 10000)),
         405 => num_gen.call(20, Rational(1, 1 << 29)),
         406 => num_gen.call(24, Rational(1, 1 << 31)),
-        407 => [10],
+        407 => 10,
         408 => unum_gen.call(10, Rational(1, 1 << 4)),
-        409 => [3],
-        411 => [2],
-        412 => [2],
-        416 => [3],
-        417 => [1],
-        418 => [3],
-        420 => [1],
-        :uint => proc{|n| [n]},
+        409 => 3,
+        411 => 2,
+        412 => 2,
+        416 => 3,
+        417 => 1,
+        418 => 3,
+        420 => 1,
+        :uint => proc{|n| n},
       }
       df[27] = df[26] = df[25]
       df.define_singleton_method(:generate_prop){|idx_list|
@@ -87,7 +87,7 @@ class RTCM3
             case prop = self[idx]
             when Proc; prop = prop.call(*args)
             end
-            prop[i]
+            [prop].flatten(1)[i]
           }]
         }.flatten(1))].merge({:df => idx_list})
         hash[:bits_total] = hash[:bits].inject{|a, b| a + b}
