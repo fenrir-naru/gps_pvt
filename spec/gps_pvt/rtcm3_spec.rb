@@ -45,6 +45,8 @@ RSpec::describe GPS_PVT::RTCM3 do
       expect(prop[:bits].all?).to eq(true)
       expect(prop[:bits_total]).to eq({
         1005 => 152,
+        1019 => 488,
+        1020 => 360 - 7,
         1077 => 169,
         1087 => 169,
         1097 => 169,

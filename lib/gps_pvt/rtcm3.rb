@@ -31,6 +31,13 @@ class RTCM3
             proc{|v| v -= lim2 if v >= lim; (sf * v).to_f} :
             proc{|v| v -= lim2 if v >= lim; sf * v}]
       }
+      num_sign_gen = proc{|n, sf|
+        lim = 1 << (n - 1)
+        sf ||= 1
+        [n, sf.kind_of?(Rational) ?
+            proc{|v| v = lim - v if v >= lim; (sf * v).to_f} :
+            proc{|v| v = lim - v if v >= lim; sf * v}]
+      }
       idx_list_gen = proc{|n, start|
         start ||= 0
         idx_list = (start...(start+n)).to_a.reverse
@@ -40,17 +47,77 @@ class RTCM3
           res
         } }]
       }
+      sc2rad = 3.1415926535898
       df = { # {df_num => [bits, post_process] or generator_proc, ...}
         1 => proc{|n| n},
         2 => 12,
         3 => 12,
         4 => 30,
+        9 => 6,
         21 => 6,
         22 => 1,
         23 => 1,
         24 => 1,
         25 => num_gen.call(38, Rational(1, 10000)),
         34 => 27,
+        38 => 6,
+        40 => 5,
+        71 => 8,
+        76 => 10,
+        77 => 4,
+        78 => 2,
+        79 => num_gen.call(14, Rational(sc2rad, 1 << 43)),
+        81 => unum_gen.call(16, 1 << 4),
+        82 => num_gen.call(8, Rational(1, 1 << 55)),
+        83 => num_gen.call(16, Rational(1, 1 << 43)),
+        84 => num_gen.call(22, Rational(1, 1 << 31)),
+        85 => 10,
+        86 => num_gen.call(16, Rational(1, 1 << 5)),
+        87 => num_gen.call(16, Rational(sc2rad, 1 << 43)),
+        88 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
+        89 => num_gen.call(16, Rational(1, 1 << 29)),
+        90 => unum_gen.call(32, Rational(1, 1 << 33)),
+        91 => num_gen.call(16, Rational(1, 1 << 29)),
+        92 => unum_gen.call(32, Rational(1, 1 << 19)),
+        93 => unum_gen.call(16, 1 << 4),
+        94 => num_gen.call(16, Rational(1, 1 << 29)),
+        95 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
+        96 => num_gen.call(16, Rational(1, 1 << 29)),
+        97 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
+        98 => num_gen.call(16, Rational(1, 1 << 5)),
+        99 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
+        100 => num_gen.call(24, Rational(sc2rad, 1 << 43)),
+        101 => num_gen.call(8, Rational(1, 1 << 31)),
+        102 => 6,
+        103 => 1,
+        104 => 1,
+        105 => 1,
+        106 => 2,
+        107 => [12, proc{|v| [v >> 7, (v & 0x7E) >> 1, (v & 0x1) > 0 ? 30 : 0]}],
+        108 => 1,
+        109 => 1,
+        110 => unum_gen.call(7, 15 * 60),
+        111 => num_sign_gen.call(24, Rational(1000, 1 << 20)),
+        112 => num_sign_gen.call(27, Rational(1000, 1 << 11)),
+        113 => num_sign_gen.call(5, Rational(1000, 1 << 30)),
+        120 => 1,
+        121 => num_sign_gen.call(11, Rational(1, 1 << 40)),
+        122 => 2,
+        123 => 1,
+        124 => num_sign_gen.call(22, Rational(1, 1 << 30)),
+        125 => num_sign_gen.call(5, Rational(1, 1 << 30)),
+        126 => 5,
+        127 => 1,
+        128 => 4,
+        129 => 11,
+        130 => 2,
+        131 => 1,
+        132 => 11,
+        133 => num_sign_gen.call(32, Rational(1, 1 << 31)),
+        134 => 5,
+        135 => num_sign_gen.call(22, Rational(1, 1 << 30)),
+        136 => 1,
+        137 => 1,
         141 => 1,
         142 => 1,
         248 => 30,
@@ -81,6 +148,9 @@ class RTCM3
         :uint => proc{|n| n},
       }
       df[27] = df[26] = df[25]
+      df[117] = df[114] = df[111]
+      df[118] = df[115] = df[112]
+      df[119] = df[116] = df[113]
       df.define_singleton_method(:generate_prop){|idx_list|
         hash = Hash[*([:bits, :op].collect.with_index{|k, i|
           [k, idx_list.collect{|idx, *args|
@@ -97,6 +167,8 @@ class RTCM3
     }.call
     MessageType = Hash[*({
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
+      1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
+      1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
       1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
       1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
