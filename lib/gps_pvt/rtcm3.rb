@@ -173,11 +173,36 @@ class RTCM3
       1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
     }.collect{|mt, df_list| [mt, DataFrame.generate_prop(df_list)]}.flatten(1))]
+    module MSM7
+      SPEED_OF_LIGHT = 299_792_458
+      def ranges
+        idx_sat = self.find_index{|v| v[1] == 394}
+        sats = self[idx_sat][0]
+        nsat = sats.size
+        cells = self[idx_sat + 2][0] # DF396
+        ncell = cells.size
+        offset = idx_sat + 3
+        range_rough = self[offset, nsat] # DF397
+        range_rough2 = self[offset + (nsat * 2), nsat] # DF398
+        delta_rough = self[offset + (nsat * 3), nsat] # DF399
+        range_fine = self[offset + (nsat * 4), ncell] # DF405
+        phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF406
+        delta_fine = self[offset + (nsat * 4) + (ncell * 5), ncell] # DF404
+        Hash[*([:pseudo_range, :phase_range, :phase_range_rate, :sat_sig].zip(
+            cells.collect.with_index{|(sat, sig), i|
+              i2 = sats.find_index(sat)
+              rough_ms = range_rough2[i2][0] + range_rough[i2][0]
+              [(range_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
+                  (phase_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
+                  delta_fine[i][0] + delta_rough[i2][0]]
+            }.transpose + [cells]).flatten(1))]
+      end
+    end
     def parse
       msg_num = message_number
       return nil unless (mt = MessageType[msg_num])
       # return [[value, df], ...]
-      values, df_list = [[], []]
+      values, df_list, attributes = [[], [], []]
       add_proc = proc{|target, offset|
         values += decode(target[:bits], offset).zip(target[:op]).collect{|v, op|
           op ? op.call(v) : v
@@ -188,6 +213,7 @@ class RTCM3
       case msg_num
       when 1077, 1087, 1097
         # 1077(GPS), 1087(GLONASS), 1097(GALILEO)
+        attributes << MSM7
         nsat, nsig = [-2, -1].collect{|i| values[i].size}
         offset = 24 + mt[:bits_total]
         df396 = DataFrame.generate_prop([[396, values[-2], values[-1]]])
@@ -202,7 +228,8 @@ class RTCM3
             ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
         add_proc.call(msm7_sig, offset)
       end
-      values.zip(df_list)
+      res = values.zip(df_list)
+      attributes.empty? ? res : res.extend(*attributes)
     end
   end
   def read_packet
