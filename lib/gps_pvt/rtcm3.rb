@@ -64,7 +64,12 @@ class RTCM3
         40 => 5,
         71 => 8,
         76 => 10,
-        77 => 4,
+        77 => proc{
+          idx2meter = [
+              2.40, 3.40, 4.85, 6.85, 9.65, 13.65, 24.00, 48.00,
+              96.00, 192.00, 384.00, 768.00, 1536.00, 3072.00, 6144.00]
+          [4, proc{|v| (v >= idx2meter.size) ? (idx2meter[-1] * 2) : idx2meter[v]}]
+        }.call,
         78 => 2,
         79 => num_gen.call(14, Rational(sc2rad, 1 << 43)),
         81 => unum_gen.call(16, 1 << 4),
@@ -173,6 +178,46 @@ class RTCM3
       1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
     }.collect{|mt, df_list| [mt, DataFrame.generate_prop(df_list)]}.flatten(1))]
+    module GPS_Ephemeris
+      def params
+        # TODO WN is truncated to 0-1023
+        res = Hash[*({:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
+            :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
+            :M0 => 14, :c_uc => 15, :e => 16, :c_us => 17, :sqrt_A => 18, :t_oe => 19, :c_ic => 20,
+            :Omega0 => 21, :c_is => 22, :i0 => 23, :c_rc => 24, :omega => 25, :dot_Omega0 => 26,
+            :t_GD => 27, :SV_health => 28}.collect{|k, i|
+          [k, self[i][0]]
+        }.flatten(1))]
+        res[:fit_interval] = ((self[29] == 0) ? 4 : case res[:fit_iodc] 
+          when 240..247; 8
+          when 248..255, 496; 14
+          when 497..503; 26
+          when 504..510; 50
+          when 511, 752..756; 74
+          when 757..763; 98
+          when 764..767, 1088..1010; 122
+          when 1011..1020; 146
+          else; 6
+        end) * 60 * 60
+        res
+      end
+    end
+    module GLONASS_Ephemeris
+      def params
+        # TODO insufficient: :n => ?(String4); extra: :P3
+        # TODO generate time with t_b, N_T, NA, N_4
+        # TODO GPS.i is required to modify to generate EPhemeris_with_GPS_Time 
+        Hash[*({:svid => 1, :freq_ch => 2, :P1 => 5, :t_k => 6, :B_n => 7, :P2 => 8, :t_b => 9,
+            :xn_dot => 10, :xn => 11, :xn_ddot => 12,
+            :yn_dot => 13, :yn => 14, :yn_ddot => 15,
+            :zn_dot => 16, :zn => 17, :zn_ddot => 18,
+            :P3 => 19, :gamma_n => 20, :p => 21, :tau_n => 23, :delta_tau_n => 24, :E_n => 25,
+            :P4 => 26, :F_T => 27, :N_T => 28, :M => 29, :NA => 31, :tau_c => 32, :N_4 => 33,
+            :tau_GPS => 34}.collect{|k, i|
+          [k, self[i][0]]
+        }.flatten(1))]
+      end
+    end
     module MSM7
       SPEED_OF_LIGHT = 299_792_458
       def ranges
@@ -211,6 +256,10 @@ class RTCM3
       }
       add_proc.call(mt)
       case msg_num
+      when 1019
+        attributes << GPS_Ephemeris
+      when 1020
+        attributes << GLONASS_Ephemeris
       when 1077, 1087, 1097
         # 1077(GPS), 1087(GLONASS), 1097(GALILEO)
         attributes << MSM7
