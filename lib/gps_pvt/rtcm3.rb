@@ -247,10 +247,10 @@ class RTCM3
         Hash[*([:pseudo_range, :phase_range, :phase_range_rate, :sat_sig].zip(
             cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
-              rough_ms = range_rough2[i2][0] + range_rough[i2][0]
-              [(range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT,
-                  (phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT,
-                  (delta_fine[i][0] || 0) + delta_rough[i2][0]]
+            rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
+              [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
+                  (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
+                  ((delta_fine[i][0] + delta_rough[i2][0]) rescue nil)]
             }.transpose + [cells]).flatten(1))]
       end
     end
