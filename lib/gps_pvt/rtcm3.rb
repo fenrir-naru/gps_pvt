@@ -134,7 +134,7 @@ class RTCM3
         394 => idx_list_gen.call(64, 1),
         395 => idx_list_gen.call(32, 1),
         396 => proc{|df394, df395|
-          x_list = df395.product(df394).collect{|sig_prn| sig_prn.reverse}
+          x_list = df394.product(df395)
           idx_list = idx_list_gen.call(x_list.size)[1]
           [x_list.size, proc{|v| x_list.values_at(*idx_list.call(v))}]
         },
