@@ -20,23 +20,26 @@ class RTCM3
     end
     DataFrame = proc{
       unum_gen = proc{|n, sf|
-        sf ||= 1
+        next [n, proc{|v| v}] unless sf
         [n, sf.kind_of?(Rational) ? proc{|v| (sf * v).to_f} : proc{|v| sf * v}]
       }
       num_gen = proc{|n, sf|
         lim = 1 << (n - 1)
         lim2 = lim << 1
-        sf ||= 1
+        next [n, proc{|v| v >= lim ? v - lim2 : v}] unless sf
         [n, sf.kind_of?(Rational) ?
             proc{|v| v -= lim2 if v >= lim; (sf * v).to_f} :
             proc{|v| v -= lim2 if v >= lim; sf * v}]
       }
       num_sign_gen = proc{|n, sf|
         lim = 1 << (n - 1)
-        sf ||= 1
+        next [n, proc{|v| v >= lim ? lim - v : v}] unless sf
         [n, sf.kind_of?(Rational) ?
             proc{|v| v = lim - v if v >= lim; (sf * v).to_f} :
             proc{|v| v = lim - v if v >= lim; sf * v}]
+      }
+      invalidate = proc{|orig, err|
+        [orig[0], proc{|v| v == err ? nil : orig[1].call(v)}]
       }
       idx_list_gen = proc{|n, start|
         start ||= 0
@@ -135,12 +138,12 @@ class RTCM3
           idx_list = idx_list_gen.call(x_list.size)[1]
           [x_list.size, proc{|v| x_list.values_at(*idx_list.call(v))}]
         },
-        397 => 8,
+        397 => invalidate.call(unum_gen.call(8), 0xFF),
         398 => unum_gen.call(10, Rational(1, 1 << 10)),
-        399 => num_gen.call(14),
-        404 => num_gen.call(15, Rational(1, 10000)),
-        405 => num_gen.call(20, Rational(1, 1 << 29)),
-        406 => num_gen.call(24, Rational(1, 1 << 31)),
+        399 => invalidate.call(num_gen.call(14), 0x2000),
+        404 => invalidate.call(num_gen.call(15, Rational(1, 10000)), 0x4000),
+        405 => invalidate.call(num_gen.call(20, Rational(1, 1 << 29)), 0x80000),
+        406 => invalidate.call(num_gen.call(24, Rational(1, 1 << 31)), 0x800000),
         407 => 10,
         408 => unum_gen.call(10, Rational(1, 1 << 4)),
         409 => 3,
@@ -218,6 +221,11 @@ class RTCM3
         }.flatten(1))]
       end
     end
+    module MSM_Header
+      def more_data?
+        self.find{|v| v[1] == 393}[0] == 1
+      end
+    end
     module MSM7
       SPEED_OF_LIGHT = 299_792_458
       def ranges
@@ -239,7 +247,7 @@ class RTCM3
               rough_ms = range_rough2[i2][0] + range_rough[i2][0]
               [(range_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
                   (phase_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
-                  delta_fine[i][0] + delta_rough[i2][0]]
+                  (delta_fine[i][0] || 0) + delta_rough[i2][0]]
             }.transpose + [cells]).flatten(1))]
       end
     end
@@ -277,6 +285,7 @@ class RTCM3
             ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
         add_proc.call(msm7_sig, offset)
       end
+      attributes << MSM_Header if (1070..1229).include?(msg_num)
       res = values.zip(df_list)
       attributes.empty? ? res : res.extend(*attributes)
     end
