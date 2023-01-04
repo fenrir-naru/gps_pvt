@@ -55,14 +55,14 @@ class RTCM3
         1 => proc{|n| n},
         2 => 12,
         3 => 12,
-        4 => 30,
+        4 => unum_gen.call(30, Rational(1, 1000)), # [sec]
         9 => 6,
         21 => 6,
         22 => 1,
         23 => 1,
         24 => 1,
-        25 => num_gen.call(38, Rational(1, 10000)),
-        34 => 27,
+        25 => num_gen.call(38, Rational(1, 10000)), # [m]
+        34 => unum_gen.call(27, Rational(1, 1000)), # [sec]
         38 => 6,
         40 => 5,
         71 => 8,
@@ -72,58 +72,61 @@ class RTCM3
               2.40, 3.40, 4.85, 6.85, 9.65, 13.65, 24.00, 48.00,
               96.00, 192.00, 384.00, 768.00, 1536.00, 3072.00, 6144.00]
           [4, proc{|v| (v >= idx2meter.size) ? (idx2meter[-1] * 2) : idx2meter[v]}]
-        }.call,
+        }.call, # [m]
         78 => 2,
-        79 => num_gen.call(14, Rational(sc2rad, 1 << 43)),
-        81 => unum_gen.call(16, 1 << 4),
-        82 => num_gen.call(8, Rational(1, 1 << 55)),
-        83 => num_gen.call(16, Rational(1, 1 << 43)),
-        84 => num_gen.call(22, Rational(1, 1 << 31)),
+        79 => num_gen.call(14, Rational(sc2rad, 1 << 43)), # [rad/s]
+        81 => unum_gen.call(16, 1 << 4), # [sec]
+        82 => num_gen.call(8, Rational(1, 1 << 55)), # [s/s^2]
+        83 => num_gen.call(16, Rational(1, 1 << 43)), # [s/s]
+        84 => num_gen.call(22, Rational(1, 1 << 31)), # [sec]
         85 => 10,
-        86 => num_gen.call(16, Rational(1, 1 << 5)),
-        87 => num_gen.call(16, Rational(sc2rad, 1 << 43)),
-        88 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
-        89 => num_gen.call(16, Rational(1, 1 << 29)),
+        86 => num_gen.call(16, Rational(1, 1 << 5)), # [m]
+        87 => num_gen.call(16, Rational(sc2rad, 1 << 43)), # [rad/s]
+        88 => num_gen.call(32, Rational(sc2rad, 1 << 31)), # [rad/s]
+        89 => num_gen.call(16, Rational(1, 1 << 29)), # [rad]
         90 => unum_gen.call(32, Rational(1, 1 << 33)),
-        91 => num_gen.call(16, Rational(1, 1 << 29)),
-        92 => unum_gen.call(32, Rational(1, 1 << 19)),
-        93 => unum_gen.call(16, 1 << 4),
-        94 => num_gen.call(16, Rational(1, 1 << 29)),
-        95 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
-        96 => num_gen.call(16, Rational(1, 1 << 29)),
-        97 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
-        98 => num_gen.call(16, Rational(1, 1 << 5)),
-        99 => num_gen.call(32, Rational(sc2rad, 1 << 31)),
-        100 => num_gen.call(24, Rational(sc2rad, 1 << 43)),
-        101 => num_gen.call(8, Rational(1, 1 << 31)),
+        91 => num_gen.call(16, Rational(1, 1 << 29)), # [rad]
+        92 => unum_gen.call(32, Rational(1, 1 << 19)), # [m^1/2]
+        93 => unum_gen.call(16, 1 << 4), # [sec]
+        94 => num_gen.call(16, Rational(1, 1 << 29)), # [rad]
+        95 => num_gen.call(32, Rational(sc2rad, 1 << 31)), # [rad/s]
+        96 => num_gen.call(16, Rational(1, 1 << 29)), # [rad]
+        97 => num_gen.call(32, Rational(sc2rad, 1 << 31)), # [rad/s]
+        98 => num_gen.call(16, Rational(1, 1 << 5)), # [m]
+        99 => num_gen.call(32, Rational(sc2rad, 1 << 31)), # [rad]
+        100 => num_gen.call(24, Rational(sc2rad, 1 << 43)), # [rad/s]
+        101 => num_gen.call(8, Rational(1, 1 << 31)), # [sec]
         102 => 6,
         103 => 1,
         104 => 1,
         105 => 1,
         106 => 2,
-        107 => [12, proc{|v| [v >> 7, (v & 0x7E) >> 1, (v & 0x1) > 0 ? 30 : 0]}],
+        107 => [12, proc{|v|
+          hh, mm, ss = [v >> 7, (v & 0x7E) >> 1, (v & 0x1) > 0 ? 30 : 0]
+          hh * 3600 + mm * 60 + ss # [sec]
+        }],
         108 => 1,
         109 => 1,
-        110 => unum_gen.call(7, 15 * 60),
-        111 => num_sign_gen.call(24, Rational(1000, 1 << 20)),
-        112 => num_sign_gen.call(27, Rational(1000, 1 << 11)),
-        113 => num_sign_gen.call(5, Rational(1000, 1 << 30)),
+        110 => unum_gen.call(7, 15 * 60), # [sec]
+        111 => num_sign_gen.call(24, Rational(1000, 1 << 20)), # [m/s]
+        112 => num_sign_gen.call(27, Rational(1000, 1 << 11)), # [m]
+        113 => num_sign_gen.call(5, Rational(1000, 1 << 30)), # [m/s^2]
         120 => 1,
         121 => num_sign_gen.call(11, Rational(1, 1 << 40)),
         122 => 2,
         123 => 1,
-        124 => num_sign_gen.call(22, Rational(1, 1 << 30)),
-        125 => num_sign_gen.call(5, Rational(1, 1 << 30)),
-        126 => 5,
+        124 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec]
+        125 => num_sign_gen.call(5, Rational(1, 1 << 30)), # [sec]
+        126 => 5, # [day]
         127 => 1,
         128 => 4,
-        129 => 11,
+        129 => 11, # [day]
         130 => 2,
         131 => 1,
-        132 => 11,
-        133 => num_sign_gen.call(32, Rational(1, 1 << 31)),
-        134 => 5,
-        135 => num_sign_gen.call(22, Rational(1, 1 << 30)),
+        132 => 11, # [day]
+        133 => num_sign_gen.call(32, Rational(1, 1 << 31)), # [sec]
+        134 => 5, # [4year]
+        135 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec]
         136 => 1,
         137 => 1,
         141 => 1,
@@ -138,14 +141,14 @@ class RTCM3
           idx_list = idx_list_gen.call(x_list.size)[1]
           [x_list.size, proc{|v| x_list.values_at(*idx_list.call(v))}]
         },
-        397 => invalidate.call(unum_gen.call(8), 0xFF),
-        398 => unum_gen.call(10, Rational(1, 1 << 10)),
-        399 => invalidate.call(num_gen.call(14), 0x2000),
-        404 => invalidate.call(num_gen.call(15, Rational(1, 10000)), 0x4000),
-        405 => invalidate.call(num_gen.call(20, Rational(1, 1 << 29)), 0x80000),
-        406 => invalidate.call(num_gen.call(24, Rational(1, 1 << 31)), 0x800000),
+        397 => invalidate.call(unum_gen.call(8, Rational(1, 1000)), 0xFF), # [sec]
+        398 => unum_gen.call(10, Rational(1, 1000 << 10)), # [sec]
+        399 => invalidate.call(num_gen.call(14), 0x2000), # [m/s]
+        404 => invalidate.call(num_gen.call(15, Rational(1, 10000)), 0x4000), # [m/s]
+        405 => invalidate.call(num_gen.call(20, Rational(1, 1000 << 29)), 0x80000), # [sec]
+        406 => invalidate.call(num_gen.call(24, Rational(1, 1000 << 31)), 0x800000), # [sec]
         407 => 10,
-        408 => unum_gen.call(10, Rational(1, 1 << 4)),
+        408 => unum_gen.call(10, Rational(1, 1 << 4)), # [dB-Hz]
         409 => 3,
         411 => 2,
         412 => 2,
@@ -245,8 +248,8 @@ class RTCM3
             cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
               rough_ms = range_rough2[i2][0] + range_rough[i2][0]
-              [(range_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
-                  (phase_fine[i][0] + rough_ms) * 1E-3 * SPEED_OF_LIGHT,
+              [(range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT,
+                  (phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT,
                   (delta_fine[i][0] || 0) + delta_rough[i2][0]]
             }.transpose + [cells]).flatten(1))]
       end
