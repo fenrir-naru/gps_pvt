@@ -2418,6 +2418,14 @@ struct GLONASS_Ephemeris
     raw = *this;
     has_string = 0x1F;
   }
+  GLONASS_Ephemeris &rehash(const int &deltaT = 0) {
+    typedef typename GLONASS_SpaceNode<FloatT>::SatelliteProperties prop_t;
+    return *this = GLONASS_Ephemeris(eph_t(
+        typename prop_t::Ephemeris_with_Time(
+          (typename prop_t::Ephemeris)(*this),
+          (typename GLONASS_SpaceNode<FloatT>::TimeProperties)(*this)),
+        deltaT));
+  }
 };
 
 
@@ -3590,49 +3598,49 @@ SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_beta(GPS_Ionosp
   }
 SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta(GPS_Ionospheric_UTC_Parameters< double > const *self,double const *values[4]){*values = self->beta;}
 SWIGINTERN double GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A1(GPS_Ionospheric_UTC_Parameters< double > *self,double const &v){
-  return self->A1 = v;
+  return self->A1= v;
 }
 SWIGINTERN double const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A1(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->A1;
 }
 SWIGINTERN double GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A0(GPS_Ionospheric_UTC_Parameters< double > *self,double const &v){
-  return self->A0 = v;
+  return self->A0= v;
 }
 SWIGINTERN double const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A0(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->A0;
 }
 SWIGINTERN unsigned int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_t_ot(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int const &v){
-  return self->t_ot = v;
+  return self->t_ot= v;
 }
 SWIGINTERN unsigned int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_t_ot(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->t_ot;
 }
 SWIGINTERN unsigned int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_t(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int const &v){
-  return self->WN_t = v;
+  return self->WN_t= v;
 }
 SWIGINTERN unsigned int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_t(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->WN_t;
 }
 SWIGINTERN int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LS(GPS_Ionospheric_UTC_Parameters< double > *self,int const &v){
-  return self->delta_t_LS = v;
+  return self->delta_t_LS= v;
 }
 SWIGINTERN int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LS(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->delta_t_LS;
 }
 SWIGINTERN unsigned int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_LSF(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int const &v){
-  return self->WN_LSF = v;
+  return self->WN_LSF= v;
 }
 SWIGINTERN unsigned int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_LSF(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->WN_LSF;
 }
 SWIGINTERN unsigned int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_DN(GPS_Ionospheric_UTC_Parameters< double > *self,unsigned int const &v){
-  return self->DN = v;
+  return self->DN= v;
 }
 SWIGINTERN unsigned int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_DN(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->DN;
 }
 SWIGINTERN int GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LSF(GPS_Ionospheric_UTC_Parameters< double > *self,int const &v){
-  return self->delta_t_LSF = v;
+  return self->delta_t_LSF= v;
 }
 SWIGINTERN int const &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LSF(GPS_Ionospheric_UTC_Parameters< double > const *self){
   return self->delta_t_LSF;
@@ -3657,169 +3665,169 @@ SWIGINTERN void GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__dump(GPS_Ionospheri
     (raw = *self).dump<2, 0>(buf_brdc);
   }
 SWIGINTERN unsigned int GPS_Ephemeris_Sl_double_Sg__set_svid(GPS_Ephemeris< double > *self,unsigned int const &v){
-  return self->svid = v;
+  return self->svid= v;
 }
 SWIGINTERN unsigned int const &GPS_Ephemeris_Sl_double_Sg__get_svid(GPS_Ephemeris< double > const *self){
   return self->svid;
 }
 SWIGINTERN unsigned int GPS_Ephemeris_Sl_double_Sg__set_WN(GPS_Ephemeris< double > *self,unsigned int const &v){
-  return self->WN = v;
+  return self->WN= v;
 }
 SWIGINTERN unsigned int const &GPS_Ephemeris_Sl_double_Sg__get_WN(GPS_Ephemeris< double > const *self){
   return self->WN;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_URA(GPS_Ephemeris< double > *self,double const &v){
-  return self->URA = v;
+  return self->URA= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_URA(GPS_Ephemeris< double > const *self){
   return self->URA;
 }
 SWIGINTERN unsigned int GPS_Ephemeris_Sl_double_Sg__set_SV_health(GPS_Ephemeris< double > *self,unsigned int const &v){
-  return self->SV_health = v;
+  return self->SV_health= v;
 }
 SWIGINTERN unsigned int const &GPS_Ephemeris_Sl_double_Sg__get_SV_health(GPS_Ephemeris< double > const *self){
   return self->SV_health;
 }
 SWIGINTERN int GPS_Ephemeris_Sl_double_Sg__set_iodc(GPS_Ephemeris< double > *self,int const &v){
-  return self->iodc = v;
+  return self->iodc= v;
 }
 SWIGINTERN int const &GPS_Ephemeris_Sl_double_Sg__get_iodc(GPS_Ephemeris< double > const *self){
   return self->iodc;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_t_GD(GPS_Ephemeris< double > *self,double const &v){
-  return self->t_GD = v;
+  return self->t_GD= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_t_GD(GPS_Ephemeris< double > const *self){
   return self->t_GD;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_t_oc(GPS_Ephemeris< double > *self,double const &v){
-  return self->t_oc = v;
+  return self->t_oc= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_t_oc(GPS_Ephemeris< double > const *self){
   return self->t_oc;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_a_f2(GPS_Ephemeris< double > *self,double const &v){
-  return self->a_f2 = v;
+  return self->a_f2= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_a_f2(GPS_Ephemeris< double > const *self){
   return self->a_f2;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_a_f1(GPS_Ephemeris< double > *self,double const &v){
-  return self->a_f1 = v;
+  return self->a_f1= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_a_f1(GPS_Ephemeris< double > const *self){
   return self->a_f1;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_a_f0(GPS_Ephemeris< double > *self,double const &v){
-  return self->a_f0 = v;
+  return self->a_f0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_a_f0(GPS_Ephemeris< double > const *self){
   return self->a_f0;
 }
 SWIGINTERN int GPS_Ephemeris_Sl_double_Sg__set_iode(GPS_Ephemeris< double > *self,int const &v){
-  return self->iode = v;
+  return self->iode= v;
 }
 SWIGINTERN int const &GPS_Ephemeris_Sl_double_Sg__get_iode(GPS_Ephemeris< double > const *self){
   return self->iode;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_rs(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_rs = v;
+  return self->c_rs= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_rs(GPS_Ephemeris< double > const *self){
   return self->c_rs;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_delta_n(GPS_Ephemeris< double > *self,double const &v){
-  return self->delta_n = v;
+  return self->delta_n= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_delta_n(GPS_Ephemeris< double > const *self){
   return self->delta_n;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_M0(GPS_Ephemeris< double > *self,double const &v){
-  return self->M0 = v;
+  return self->M0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_M0(GPS_Ephemeris< double > const *self){
   return self->M0;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_uc(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_uc = v;
+  return self->c_uc= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_uc(GPS_Ephemeris< double > const *self){
   return self->c_uc;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_e(GPS_Ephemeris< double > *self,double const &v){
-  return self->e = v;
+  return self->e= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_e(GPS_Ephemeris< double > const *self){
   return self->e;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_us(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_us = v;
+  return self->c_us= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_us(GPS_Ephemeris< double > const *self){
   return self->c_us;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_sqrt_A(GPS_Ephemeris< double > *self,double const &v){
-  return self->sqrt_A = v;
+  return self->sqrt_A= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_sqrt_A(GPS_Ephemeris< double > const *self){
   return self->sqrt_A;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_t_oe(GPS_Ephemeris< double > *self,double const &v){
-  return self->t_oe = v;
+  return self->t_oe= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_t_oe(GPS_Ephemeris< double > const *self){
   return self->t_oe;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_fit_interval(GPS_Ephemeris< double > *self,double const &v){
-  return self->fit_interval = v;
+  return self->fit_interval= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_fit_interval(GPS_Ephemeris< double > const *self){
   return self->fit_interval;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_ic(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_ic = v;
+  return self->c_ic= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_ic(GPS_Ephemeris< double > const *self){
   return self->c_ic;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_Omega0(GPS_Ephemeris< double > *self,double const &v){
-  return self->Omega0 = v;
+  return self->Omega0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_Omega0(GPS_Ephemeris< double > const *self){
   return self->Omega0;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_is(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_is = v;
+  return self->c_is= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_is(GPS_Ephemeris< double > const *self){
   return self->c_is;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_i0(GPS_Ephemeris< double > *self,double const &v){
-  return self->i0 = v;
+  return self->i0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_i0(GPS_Ephemeris< double > const *self){
   return self->i0;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_c_rc(GPS_Ephemeris< double > *self,double const &v){
-  return self->c_rc = v;
+  return self->c_rc= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_c_rc(GPS_Ephemeris< double > const *self){
   return self->c_rc;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_omega(GPS_Ephemeris< double > *self,double const &v){
-  return self->omega = v;
+  return self->omega= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_omega(GPS_Ephemeris< double > const *self){
   return self->omega;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_dot_Omega0(GPS_Ephemeris< double > *self,double const &v){
-  return self->dot_Omega0 = v;
+  return self->dot_Omega0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_dot_Omega0(GPS_Ephemeris< double > const *self){
   return self->dot_Omega0;
 }
 SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_dot_i0(GPS_Ephemeris< double > *self,double const &v){
-  return self->dot_i0 = v;
+  return self->dot_i0= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_dot_i0(GPS_Ephemeris< double > const *self){
   return self->dot_i0;
@@ -4061,13 +4069,13 @@ SWIGINTERN VALUE GPS_Measurement_Sl_double_Sg__to_hash(GPS_Measurement< double >
     return res;
   }
 SWIGINTERN double GPS_SolverOptions_Common_Sl_double_Sg__set_elevation_mask(GPS_SolverOptions_Common< double > *self,double const &v){
-  return self->cast_general()->elevation_mask = v;
+  return self->cast_general()->elevation_mask= v;
 }
 SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_elevation_mask(GPS_SolverOptions_Common< double > const *self){
   return self->cast_general()->elevation_mask;
 }
 SWIGINTERN double GPS_SolverOptions_Common_Sl_double_Sg__set_residual_mask(GPS_SolverOptions_Common< double > *self,double const &v){
-  return self->cast_general()->residual_mask = v;
+  return self->cast_general()->residual_mask= v;
 }
 SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mask(GPS_SolverOptions_Common< double > const *self){
   return self->cast_general()->residual_mask;
@@ -4350,91 +4358,91 @@ SWIGINTERN GPS_Solver< double >::super_t::options_t GPS_Solver_Sl_double_Sg__set
     return self->update_options(opt);
   }
 SWIGINTERN unsigned int SBAS_Ephemeris_Sl_double_Sg__set_svid(SBAS_Ephemeris< double > *self,unsigned int const &v){
-  return self->svid = v;
+  return self->svid= v;
 }
 SWIGINTERN unsigned int const &SBAS_Ephemeris_Sl_double_Sg__get_svid(SBAS_Ephemeris< double > const *self){
   return self->svid;
 }
 SWIGINTERN unsigned int SBAS_Ephemeris_Sl_double_Sg__set_WN(SBAS_Ephemeris< double > *self,unsigned int const &v){
-  return self->WN = v;
+  return self->WN= v;
 }
 SWIGINTERN unsigned int const &SBAS_Ephemeris_Sl_double_Sg__get_WN(SBAS_Ephemeris< double > const *self){
   return self->WN;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_t_0(SBAS_Ephemeris< double > *self,double const &v){
-  return self->t_0 = v;
+  return self->t_0= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_t_0(SBAS_Ephemeris< double > const *self){
   return self->t_0;
 }
 SWIGINTERN int SBAS_Ephemeris_Sl_double_Sg__set_URA(SBAS_Ephemeris< double > *self,int const &v){
-  return self->URA = v;
+  return self->URA= v;
 }
 SWIGINTERN int const &SBAS_Ephemeris_Sl_double_Sg__get_URA(SBAS_Ephemeris< double > const *self){
   return self->URA;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_x(SBAS_Ephemeris< double > *self,double const &v){
-  return self->x = v;
+  return self->x= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_x(SBAS_Ephemeris< double > const *self){
   return self->x;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_y(SBAS_Ephemeris< double > *self,double const &v){
-  return self->y = v;
+  return self->y= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_y(SBAS_Ephemeris< double > const *self){
   return self->y;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_z(SBAS_Ephemeris< double > *self,double const &v){
-  return self->z = v;
+  return self->z= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_z(SBAS_Ephemeris< double > const *self){
   return self->z;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_dx(SBAS_Ephemeris< double > *self,double const &v){
-  return self->dx = v;
+  return self->dx= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_dx(SBAS_Ephemeris< double > const *self){
   return self->dx;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_dy(SBAS_Ephemeris< double > *self,double const &v){
-  return self->dy = v;
+  return self->dy= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_dy(SBAS_Ephemeris< double > const *self){
   return self->dy;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_dz(SBAS_Ephemeris< double > *self,double const &v){
-  return self->dz = v;
+  return self->dz= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_dz(SBAS_Ephemeris< double > const *self){
   return self->dz;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_ddx(SBAS_Ephemeris< double > *self,double const &v){
-  return self->ddx = v;
+  return self->ddx= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_ddx(SBAS_Ephemeris< double > const *self){
   return self->ddx;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_ddy(SBAS_Ephemeris< double > *self,double const &v){
-  return self->ddy = v;
+  return self->ddy= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_ddy(SBAS_Ephemeris< double > const *self){
   return self->ddy;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_ddz(SBAS_Ephemeris< double > *self,double const &v){
-  return self->ddz = v;
+  return self->ddz= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_ddz(SBAS_Ephemeris< double > const *self){
   return self->ddz;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_a_Gf0(SBAS_Ephemeris< double > *self,double const &v){
-  return self->a_Gf0 = v;
+  return self->a_Gf0= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf0(SBAS_Ephemeris< double > const *self){
   return self->a_Gf0;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_a_Gf1(SBAS_Ephemeris< double > *self,double const &v){
-  return self->a_Gf1 = v;
+  return self->a_Gf1= v;
 }
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf1(SBAS_Ephemeris< double > const *self){
   return self->a_Gf1;
@@ -4496,173 +4504,188 @@ SWIGINTERN int GLONASS_SpaceNode_Sl_double_Sg__read(GLONASS_SpaceNode< double > 
     return RINEX_NAV_Reader<double>::read_all(fin, list);
   }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_svid(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->svid = v;
+  return self->svid= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_svid(GLONASS_Ephemeris< double > const *self){
   return self->svid;
 }
 SWIGINTERN int GLONASS_Ephemeris_Sl_double_Sg__set_freq_ch(GLONASS_Ephemeris< double > *self,int const &v){
-  return self->freq_ch = v;
+  return self->freq_ch= v;
 }
 SWIGINTERN int const &GLONASS_Ephemeris_Sl_double_Sg__get_freq_ch(GLONASS_Ephemeris< double > const *self){
   return self->freq_ch;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_t_k(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->t_k = v;
+  return self->t_k= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_t_k(GLONASS_Ephemeris< double > const *self){
   return self->t_k;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_t_b(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->t_b = v;
+  return self->t_b= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_t_b(GLONASS_Ephemeris< double > const *self){
   return self->t_b;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_M(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->M = v;
+  return self->M= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_M(GLONASS_Ephemeris< double > const *self){
   return self->M;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_gamma_n(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->gamma_n = v;
+  return self->gamma_n= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_gamma_n(GLONASS_Ephemeris< double > const *self){
   return self->gamma_n;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_n(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->tau_n = v;
+  return self->tau_n= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_n(GLONASS_Ephemeris< double > const *self){
   return self->tau_n;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->xn = v;
+  return self->xn= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn(GLONASS_Ephemeris< double > const *self){
   return self->xn;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn_dot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->xn_dot = v;
+  return self->xn_dot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn_dot(GLONASS_Ephemeris< double > const *self){
   return self->xn_dot;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_xn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->xn_ddot = v;
+  return self->xn_ddot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_xn_ddot(GLONASS_Ephemeris< double > const *self){
   return self->xn_ddot;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->yn = v;
+  return self->yn= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn(GLONASS_Ephemeris< double > const *self){
   return self->yn;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn_dot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->yn_dot = v;
+  return self->yn_dot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn_dot(GLONASS_Ephemeris< double > const *self){
   return self->yn_dot;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_yn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->yn_ddot = v;
+  return self->yn_ddot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_yn_ddot(GLONASS_Ephemeris< double > const *self){
   return self->yn_ddot;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->zn = v;
+  return self->zn= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn(GLONASS_Ephemeris< double > const *self){
   return self->zn;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn_dot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->zn_dot = v;
+  return self->zn_dot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn_dot(GLONASS_Ephemeris< double > const *self){
   return self->zn_dot;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_zn_ddot(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->zn_ddot = v;
+  return self->zn_ddot= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_zn_ddot(GLONASS_Ephemeris< double > const *self){
   return self->zn_ddot;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_B_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->B_n = v;
+  return self->B_n= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_B_n(GLONASS_Ephemeris< double > const *self){
   return self->B_n;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_p(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->p = v;
+  return self->p= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_p(GLONASS_Ephemeris< double > const *self){
   return self->p;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_N_T(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->N_T = v;
+  return self->N_T= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_N_T(GLONASS_Ephemeris< double > const *self){
   return self->N_T;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_F_T(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->F_T = v;
+  return self->F_T= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_F_T(GLONASS_Ephemeris< double > const *self){
   return self->F_T;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->n = v;
+  return self->n= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_n(GLONASS_Ephemeris< double > const *self){
   return self->n;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_delta_tau_n(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->delta_tau_n = v;
+  return self->delta_tau_n= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_delta_tau_n(GLONASS_Ephemeris< double > const *self){
   return self->delta_tau_n;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_E_n(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->E_n = v;
+  return self->E_n= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_E_n(GLONASS_Ephemeris< double > const *self){
   return self->E_n;
 }
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_P1(GLONASS_Ephemeris< double > *self,unsigned int const &v){
-  return self->P1 = v;
+  return self->P1= v;
 }
 SWIGINTERN unsigned int const &GLONASS_Ephemeris_Sl_double_Sg__get_P1(GLONASS_Ephemeris< double > const *self){
   return self->P1;
 }
 SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__set_P2(GLONASS_Ephemeris< double > *self,bool const &v){
-  return self->P2 = v;
+  return self->P2= v;
 }
 SWIGINTERN bool const &GLONASS_Ephemeris_Sl_double_Sg__get_P2(GLONASS_Ephemeris< double > const *self){
   return self->P2;
 }
 SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__set_P4(GLONASS_Ephemeris< double > *self,bool const &v){
-  return self->P4 = v;
+  return self->P4= v;
 }
 SWIGINTERN bool const &GLONASS_Ephemeris_Sl_double_Sg__get_P4(GLONASS_Ephemeris< double > const *self){
   return self->P4;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_c(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->tau_c = v;
+  return self->tau_c= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_c(GLONASS_Ephemeris< double > const *self){
   return self->tau_c;
 }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__set_tau_GPS(GLONASS_Ephemeris< double > *self,double const &v){
-  return self->tau_GPS = v;
+  return self->tau_GPS= v;
 }
 SWIGINTERN double const &GLONASS_Ephemeris_Sl_double_Sg__get_tau_GPS(GLONASS_Ephemeris< double > const *self){
   return self->tau_GPS;
 }
+SWIGINTERN int GLONASS_Ephemeris_Sl_double_Sg__set_year(GLONASS_Ephemeris< double > *self,int const &v){
+  return self->date.year= v;
+}
+SWIGINTERN int const &GLONASS_Ephemeris_Sl_double_Sg__get_year(GLONASS_Ephemeris< double > const *self){
+  return self->date.year;
+}
+SWIGINTERN int GLONASS_Ephemeris_Sl_double_Sg__set_day_of_year(GLONASS_Ephemeris< double > *self,int const &v){
+  return self->date.day_of_year= v;
+}
+SWIGINTERN int const &GLONASS_Ephemeris_Sl_double_Sg__get_day_of_year(GLONASS_Ephemeris< double > const *self){
+  return self->date.day_of_year;
+}
+SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date(GLONASS_Ephemeris< double > *self,unsigned int const &N_4,unsigned int const &NA){
+    self->date = GLONASS_SpaceNode<double>::TimeProperties::raw_t::raw2date(N_4, NA);
+  }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__frequency_L1(GLONASS_Ephemeris< double > const *self){
     return self->L1_frequency();
   }
@@ -22747,6 +22770,137 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.rehash
+
+  call-seq:
+    rehash(int const & deltaT=0) -> Ephemeris_GLONASS
+    rehash -> Ephemeris_GLONASS
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_rehash__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  GLONASS_Ephemeris< double > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","rehash", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","rehash", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash((int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_rehash__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  GLONASS_Ephemeris< double > *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","rehash", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash();
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_rehash(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_Ephemeris_GLONASS_rehash__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_Ephemeris_GLONASS_rehash__SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "Ephemeris_GLONASS.rehash", 
+    "    GLONASS_Ephemeris< double > Ephemeris_GLONASS.rehash(int const &deltaT)\n"
+    "    GLONASS_Ephemeris< double > & Ephemeris_GLONASS.rehash()\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.svid=
 
   call-seq:
@@ -25373,6 +25527,253 @@ _wrap_Ephemeris_GLONASS_tau_GPS(int argc, VALUE *argv, VALUE self) {
   }
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.year=
+
+  call-seq:
+    year=(int const & v) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_yeare___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_year", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_year", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_year(arg1,(int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.year
+
+  call-seq:
+    year -> int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_year(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_year", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_year((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.day_of_year=
+
+  call-seq:
+    day_of_year=(int const & v) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_day_of_yeare___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_day_of_year", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_day_of_year", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    try {
+      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_day_of_year(arg1,(int const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.day_of_year
+
+  call-seq:
+    day_of_year -> int const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_day_of_year(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_day_of_year", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    try {
+      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_day_of_year((GLONASS_Ephemeris< double > const *)arg1);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_int(static_cast< int >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.set_date
+
+  call-seq:
+    set_date(unsigned int const & N_4, unsigned int const & NA)
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_set_date(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_date", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","set_date", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","set_date", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  {
+    try {
+      GLONASS_Ephemeris_Sl_double_Sg__set_date(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
 fail:
   return Qnil;
 }
@@ -28454,6 +28855,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "invalidate", VALUEFUNC(_wrap_Ephemeris_GLONASS_invalidate), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "consistent?", VALUEFUNC(_wrap_Ephemeris_GLONASS_consistentq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_GLONASS_validq___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "rehash", VALUEFUNC(_wrap_Ephemeris_GLONASS_rehash), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_GLONASS_svide___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_GLONASS_svid), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "freq_ch=", VALUEFUNC(_wrap_Ephemeris_GLONASS_freq_che___), -1);
@@ -28510,6 +28912,11 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_c", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_c), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_GPS=", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_GPSe___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "tau_GPS", VALUEFUNC(_wrap_Ephemeris_GLONASS_tau_GPS), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "year=", VALUEFUNC(_wrap_Ephemeris_GLONASS_yeare___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "year", VALUEFUNC(_wrap_Ephemeris_GLONASS_year), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "day_of_year=", VALUEFUNC(_wrap_Ephemeris_GLONASS_day_of_yeare___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "day_of_year", VALUEFUNC(_wrap_Ephemeris_GLONASS_day_of_year), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "set_date", VALUEFUNC(_wrap_Ephemeris_GLONASS_set_date), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L1", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L1), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L2", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L2), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "base_time", VALUEFUNC(_wrap_Ephemeris_GLONASS_base_time), -1);

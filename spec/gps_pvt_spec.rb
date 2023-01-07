@@ -869,6 +869,8 @@ __RINEX_CLK_TEXT__
           solver.gps_options.include(prn)
         }
       }
+      expect(solver.gps_options.elevation_mask).to eq(0)
+      expect(solver.gps_options.residual_mask).to be > 0
     end
     
     it 'can be modified through hooks' do
