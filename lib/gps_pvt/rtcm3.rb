@@ -100,7 +100,7 @@ class RTCM3
         103 => 1,
         104 => 1,
         105 => 1,
-        106 => 2,
+        106 => [2, proc{|v| [0, 30, 45, 60][v] * 60}], # [s]
         107 => [12, proc{|v|
           hh, mm, ss = [v >> 7, (v & 0x7E) >> 1, (v & 0x1) > 0 ? 30 : 0]
           hh * 3600 + mm * 60 + ss # [sec]
@@ -113,21 +113,23 @@ class RTCM3
         113 => num_sign_gen.call(5, Rational(1000, 1 << 30)), # [m/s^2]
         120 => 1,
         121 => num_sign_gen.call(11, Rational(1, 1 << 40)),
-        122 => 2,
-        123 => 1,
+        122 => 2, # (M)
+        123 => 1, # (M)
         124 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec]
-        125 => num_sign_gen.call(5, Rational(1, 1 << 30)), # [sec]
+        125 => num_sign_gen.call(5, Rational(1, 1 << 30)), # [sec], (M)
         126 => 5, # [day]
-        127 => 1,
-        128 => 4,
+        127 => 1, # (M)
+        128 => [4, proc{|v|
+          [1, 2, 2.5, 4, 5, 7, 10, 12, 14, 16, 32, 64, 128, 256, 512, 1024][v]
+        }], # [m] (M)
         129 => 11, # [day]
-        130 => 2,
+        130 => 2, # 1 => GLONASS-M, (M) fields are active 
         131 => 1,
         132 => 11, # [day]
         133 => num_sign_gen.call(32, Rational(1, 1 << 31)), # [sec]
-        134 => 5, # [4year]
-        135 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec]
-        136 => 1,
+        134 => 5, # [4year], (M)
+        135 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec], (M)
+        136 => 1, # (M)
         137 => 1,
         141 => 1,
         142 => 1,
@@ -212,16 +214,18 @@ class RTCM3
       def params
         # TODO insufficient: :n => ?(String4); extra: :P3
         # TODO generate time with t_b, N_T, NA, N_4
-        # TODO GPS.i is required to modify to generate EPhemeris_with_GPS_Time 
-        Hash[*({:svid => 1, :freq_ch => 2, :P1 => 5, :t_k => 6, :B_n => 7, :P2 => 8, :t_b => 9,
+        # TODO GPS.i is required to modify to generate EPhemeris_with_GPS_Time
+        k_i =  {:svid => 1, :freq_ch => 2, :P1 => 5, :t_k => 6, :B_n => 7, :P2 => 8, :t_b => 9,
             :xn_dot => 10, :xn => 11, :xn_ddot => 12,
             :yn_dot => 13, :yn => 14, :yn_ddot => 15,
             :zn_dot => 16, :zn => 17, :zn_ddot => 18,
             :P3 => 19, :gamma_n => 20, :p => 21, :tau_n => 23, :delta_tau_n => 24, :E_n => 25,
-            :P4 => 26, :F_T => 27, :N_T => 28, :M => 29, :NA => 31, :tau_c => 32, :N_4 => 33,
-            :tau_GPS => 34}.collect{|k, i|
-          [k, self[i][0]]
-        }.flatten(1))]
+            :P4 => 26, :F_T => 27, :N_T => 28, :M => 29}
+        k_i.merge!({:NA => 31, :tau_c => 32, :N_4 => 33, :tau_GPS => 34}) if self[30][0] == 1 # check DF131
+        k_i.reject!{|k, i|
+          [:p, :tau_n, :delta_tau_n, :P4, :F_T, :N_T, :N_4, :tau_GPS].include?(k)
+        } if self[29][0] != 1 # check DF130 
+        Hash[*(k_i.collect{|k, i| [k, self[i][0]]}.flatten(1))]
       end
     end
     module MSM_Header
