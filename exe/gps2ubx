@@ -16,7 +16,8 @@ If you want to specify its format manually, command options like --rinex_obs=fil
 Supported RINEX versions are 2 and 3.
 RXM-RAWX and RXM-SFRBX are included in output UBX if corresponding file(s) is given. 
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
-Major URL such as http(s)://... or ftp://... is acceptable as an input file name. 
+Major URL such as http(s)://... or ftp://... is acceptable as an input file name.
+Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported, and its format is automatically detected. 
 __STRING__
 
 options = []

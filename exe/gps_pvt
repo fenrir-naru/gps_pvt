@@ -11,11 +11,11 @@ As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), ubx(*.ubx)
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
 If you want to specify its format manually, command options like --rinex_nav=file_name are available.
-Other than --rinex_nav, --rinex_obs, -rinex_clk, --ubx, --sp3 or --antex are supported. 
+Other than --rinex_nav, --rinex_obs, --rinex_clk, --ubx, --sp3 or --antex are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
 Major URI such as http(s)://... or ftp://..., and serial port (COMn for Windows, /dev/tty* for *NIX) is acceptable as an input file name.
-Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported.
+Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported, and its format is automatically detected.
 __STRING__
 
 options = []
