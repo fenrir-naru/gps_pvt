@@ -88,8 +88,8 @@ class Ntrip < Net::HTTP
     }
     req
   end
-  def get_source_table(header = {})
-    Ntrip.parse_source_table(request(generate_request('/', header)).read_body)
+  def get_source_table(header = {}, &b)
+    (b || proc{|str| Ntrip.parse_source_table(str)}).call(request(generate_request('/', header)).read_body)
   end
   def get_data(mount_point, header = {}, &b)
     request(generate_request("/#{mount_point}", header)){|res|
@@ -129,10 +129,16 @@ OpenURI.class_eval{
   def OpenURI.open_ntrip(buf, target, proxy, options) # :nodoc:
     GPS_PVT::Ntrip.start(target.host, target.port){|ntrip|
       # get source table
-      tbl = ntrip.get_source_table(options)
+      tbl = ntrip.get_source_table(options){|str| str}
+      if target.root? then
+        buf << tbl
+        buf.io.rewind
+        next
+      end
+      tbl = GPS_PVT::Ntrip::parse_source_table(tbl)
       
       # check mount point
-      mnt_pt = target.path.sub(%r|^/|, '')
+      mnt_pt = target.mount_point
       prop = tbl.mount_points[mnt_pt]
       raise Net::ProtocolError::new("Mount point(#{mnt_pt}) not found") unless prop
       
@@ -154,10 +160,23 @@ OpenURI.class_eval{
 }
 module URI
   class Ntrip < HTTP
+    def root
+      res = self.clone
+      res.path = '/'
+      res
+    end
+    def root?; self.path == '/'; end
+    def mount_point
+      self.path.sub(%r|^/|, '')
+    end
+
     def buffer_open(buf, proxy, options)
       OpenURI.open_ntrip(buf, self, proxy, options)
     end
     include OpenURI::OpenRead
+    def read_source_table(options = {})
+      GPS_PVT::Ntrip::parse_source_table(self.root.read(options))
+    end
   end
   if respond_to?(:register_scheme) then
     register_scheme('NTRIP', Ntrip)
