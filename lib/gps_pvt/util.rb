@@ -36,6 +36,16 @@ proc{
 require 'open-uri'
 require_relative 'ntrip'
 
+class URI::Ntrip
+  def read_format(options = {})
+    pnt_list = self.read_source_table(options).mount_points
+    case pnt_list[self.mount_point][:format]
+    when /u-?b(?:lo)?x/i; :ubx
+    else; nil
+    end
+  end
+end
+
 module GPS_PVT
 module Util
   class << self

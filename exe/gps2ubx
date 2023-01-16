@@ -41,16 +41,16 @@ files.collect!{|fname, ftype|
   when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
   when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
   when /\.ubx$/; :ubx
-  else
-    raise "Format cannot be guessed, use --(format, ex. rinex_obs)=#{fname}"
   end
   fname = proc{
     next fname if File::exist?(fname)
     if uri = URI::parse(fname) and !uri.instance_of?(URI::Generic) then
+      ftype ||= uri.read_format if uri.instance_of?(URI::Ntrip)
       next uri
     end
     raise "File not found: #{fname}"
   }.call
+  raise "Format cannot be guessed, use --(format, ex. rinex_obs)=#{fname}" unless ftype
   [fname, ftype]
 }
 

@@ -76,17 +76,17 @@ files.collect!{|fname, ftype|
   when /\.sp3(?:\.Z)?$/; :sp3
   when /\.atx(?:\.Z)?$/; :antex
   when /\.clk$/; :rinex_clk
-  else
-    raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}"
   end
   fname = proc{
     next fname if File::exist?(fname)
     next fname if ((fname =~ Serial::SPEC) rescue false)
     if uri = URI::parse(fname) and !uri.instance_of?(URI::Generic) then
+      ftype ||= uri.read_format if uri.instance_of?(URI::Ntrip)
       next uri
     end
     raise "File not found: #{fname}"
   }.call
+  raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}" unless ftype
   [fname, ftype]
 }
 
