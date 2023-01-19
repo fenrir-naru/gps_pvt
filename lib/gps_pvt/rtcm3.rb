@@ -158,12 +158,19 @@ class RTCM3
         417 => 1,
         418 => 3,
         420 => 1,
+        429 => 4,
         :uint => proc{|n| n},
       }
       df[27] = df[26] = df[25]
       df[117] = df[114] = df[111]
       df[118] = df[115] = df[112]
       df[119] = df[116] = df[113]
+      {430..433 => 81..84, 434 => 71, 435..449 => 86..100, 450 => 79, 451 => 78,
+          452 => 76, 453 => 77, 454 => 102, 455 => 101, 456 => 85, 457 => 137}.each{|dst, src|
+        # QZSS ephemeris => GPS
+        src = (src.to_a rescue [src]).flatten
+        (dst.to_a rescue ([dst] * src.size)).flatten.zip(src).each{|i, j| df[i] = df[j]}
+      }
       df.define_singleton_method(:generate_prop){|idx_list|
         hash = Hash[*([:bits, :op].collect.with_index{|k, i|
           [k, idx_list.collect{|idx, *args|
@@ -182,21 +189,22 @@ class RTCM3
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
+      1044 => [2, (429..457).to_a].flatten, # 485 bits
       1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
       1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
+      1117 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
     }.collect{|mt, df_list| [mt, DataFrame.generate_prop(df_list)]}.flatten(1))]
     module GPS_Ephemeris
+      KEY2IDX = {:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
+          :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
+          :M0 => 14, :c_uc => 15, :e => 16, :c_us => 17, :sqrt_A => 18, :t_oe => 19, :c_ic => 20,
+          :Omega0 => 21, :c_is => 22, :i0 => 23, :c_rc => 24, :omega => 25, :dot_Omega0 => 26,
+          :t_GD => 27, :SV_health => 28}
       def params
         # TODO WN is truncated to 0-1023
-        res = Hash[*({:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
-            :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
-            :M0 => 14, :c_uc => 15, :e => 16, :c_us => 17, :sqrt_A => 18, :t_oe => 19, :c_ic => 20,
-            :Omega0 => 21, :c_is => 22, :i0 => 23, :c_rc => 24, :omega => 25, :dot_Omega0 => 26,
-            :t_GD => 27, :SV_health => 28}.collect{|k, i|
-          [k, self[i][0]]
-        }.flatten(1))]
-        res[:fit_interval] = ((self[29] == 0) ? 4 : case res[:fit_iodc] 
+        res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
+        res[:fit_interval] = ((self[29] == 0) ? 4 : case res[:iodc] 
           when 240..247; 8
           when 248..255, 496; 14
           when 497..503; 26
@@ -226,6 +234,20 @@ class RTCM3
           [:p, :tau_n, :delta_tau_n, :P4, :F_T, :N_T, :N_4, :tau_GPS].include?(k)
         } if self[29][0] != 1 # check DF130 
         Hash[*(k_i.collect{|k, i| [k, self[i][0]]}.flatten(1))]
+      end
+    end
+    module QZSS_Ephemeris
+      KEY2IDX = {:svid => 1, :t_oc => 2, :a_f2 => 3, :a_f1 => 4, :a_f0 => 5,
+          :iode => 6, :c_rs => 7, :delta_n => 8, :M0 => 9, :c_uc => 10, :e => 11,
+          :c_us => 12, :sqrt_A => 13, :t_oe => 14, :c_ic => 15, :Omega0 => 16,
+          :c_is => 17, :i0 => 18, :c_rc => 19, :omega => 20, :dot_Omega0 => 21,
+          :dot_i0 => 22, :WN => 24, :URA => 25, :SV_health => 26,
+          :t_GD => 27, :iodc => 28}
+      def params
+        # TODO PRN = svid + 192, WN is truncated to 0-1023
+        res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
+        res[:fit_interval] = (self[29] == 0) ? 2 * 60 * 60 : nil # TODO how to treat fit_interval > 2 hrs
+        res
       end
     end
     module MSM_Header
@@ -275,8 +297,10 @@ class RTCM3
         attributes << GPS_Ephemeris
       when 1020
         attributes << GLONASS_Ephemeris
-      when 1077, 1087, 1097
-        # 1077(GPS), 1087(GLONASS), 1097(GALILEO)
+      when 1044
+        attributes << QZSS_Ephemeris
+      when 1077, 1087, 1097, 1117
+        # 1077(GPS), 1087(GLONASS), 1097(GALILEO), 1117(QZSS)
         attributes << MSM7
         nsat, nsig = [-2, -1].collect{|i| values[i].size}
         offset = 24 + mt[:bits_total]
