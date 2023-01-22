@@ -230,10 +230,15 @@ class RTCM3
             :P3 => 19, :gamma_n => 20, :p => 21, :tau_n => 23, :delta_tau_n => 24, :E_n => 25,
             :P4 => 26, :F_T => 27, :N_T => 28, :M => 29}
         k_i.merge!({:NA => 31, :tau_c => 32, :N_4 => 33, :tau_GPS => 34}) if self[30][0] == 1 # check DF131
-        k_i.reject!{|k, i|
-          [:p, :tau_n, :delta_tau_n, :P4, :F_T, :N_T, :N_4, :tau_GPS].include?(k)
-        } if self[29][0] != 1 # check DF130 
-        Hash[*(k_i.collect{|k, i| [k, self[i][0]]}.flatten(1))]
+        res = Hash[*(k_i.collect{|k, i| [k, self[i][0]]}.flatten(1))]
+        res.reject!{|k, v|
+          case k
+          when :N_T; v == 0
+          when :p, :delta_tau_n, :P4, :F_T, :N_4, :tau_GPS; true # TODO sometimes delta_tau_n is valid?
+          else; false
+          end
+        } if (res[:M] != 1) # check DF130
+        res
       end
     end
     module QZSS_Ephemeris
