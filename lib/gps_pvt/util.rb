@@ -26,7 +26,7 @@ proc{
   module Kernel
     open_orig = instance_method(:open)
     define_method(:open){|*args, &b|
-      return open_orig.bind(self).call(*args, &b) unless Serial::SPEC =~ args[0]
+      return open_orig.bind(self).call(*args, &b) unless ((!args[0].kind_of?(URI)) && (Serial::SPEC =~ args[0]))
       Serial::new($1, $2 ? $2.to_i : 115200)
     }
     module_function(:open)
