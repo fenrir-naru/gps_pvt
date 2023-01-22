@@ -4085,15 +4085,15 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
     HookableSolver<
           GPS_Solver_MultiFrequency<GPS_SinglePositioning<double> >,
           GPS_Solver<double> >
-        ::HookableSolver<GPS_SpaceNode<double> >(const GPS_SpaceNode<double> &sn)
+        ::HookableSolver/*<GPS_SpaceNode<double> >*/(const GPS_SpaceNode<double> &sn) // to avoid out-of-line constructor error
           : GPS_Solver_MultiFrequency<GPS_SinglePositioning<double> >(sn), hook(NULL) {}
     template <> template <>
     HookableSolver<SBAS_SinglePositioning<double>, GPS_Solver<double> >
-        ::HookableSolver<SBAS_SpaceNode<double> >(const SBAS_SpaceNode<double> &sn)
+        ::HookableSolver/*<SBAS_SpaceNode<double> >*/(const SBAS_SpaceNode<double> &sn)
           : SBAS_SinglePositioning<double>(sn), hook(NULL) {}
     template <> template <>
     HookableSolver<GLONASS_SinglePositioning<double>, GPS_Solver<double> >
-        ::HookableSolver<GLONASS_SpaceNode<double> >(const GLONASS_SpaceNode<double> &sn)
+        ::HookableSolver/*<GLONASS_SpaceNode<double> >*/(const GLONASS_SpaceNode<double> &sn)
           : GLONASS_SinglePositioning<double>(sn), hook(NULL) {}
     template <>
     GPS_Solver<double>::base_t::relative_property_t
@@ -4683,8 +4683,11 @@ SWIGINTERN int GLONASS_Ephemeris_Sl_double_Sg__set_day_of_year(GLONASS_Ephemeris
 SWIGINTERN int const &GLONASS_Ephemeris_Sl_double_Sg__get_day_of_year(GLONASS_Ephemeris< double > const *self){
   return self->date.day_of_year;
 }
-SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date(GLONASS_Ephemeris< double > *self,unsigned int const &N_4,unsigned int const &NA){
+SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_0(GLONASS_Ephemeris< double > *self,unsigned int const &N_4,unsigned int const &NA){
     self->date = GLONASS_SpaceNode<double>::TimeProperties::raw_t::raw2date(N_4, NA);
+  }
+SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_1(GLONASS_Ephemeris< double > *self,std::tm const &t){
+    self->date = GLONASS_SpaceNode<double>::TimeProperties::date_t::from_c_tm(t);
   }
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__frequency_L1(GLONASS_Ephemeris< double > const *self){
     return self->L1_frequency();
@@ -25725,12 +25728,13 @@ fail:
 
   call-seq:
     set_date(unsigned int const & N_4, unsigned int const & NA)
+    set_date(std::tm const & t)
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Ephemeris_GLONASS_set_date(int argc, VALUE *argv, VALUE self) {
+_wrap_Ephemeris_GLONASS_set_date__SWIG_0(int argc, VALUE *argv, VALUE self) {
   GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
   unsigned int *arg2 = 0 ;
   unsigned int *arg3 = 0 ;
@@ -25765,7 +25769,7 @@ _wrap_Ephemeris_GLONASS_set_date(int argc, VALUE *argv, VALUE self) {
   arg3 = &temp3;
   {
     try {
-      GLONASS_Ephemeris_Sl_double_Sg__set_date(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+      GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_0(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -25775,6 +25779,126 @@ _wrap_Ephemeris_GLONASS_set_date(int argc, VALUE *argv, VALUE self) {
   }
   return Qnil;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_set_date__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  std::tm *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::tm temp2 = {
+    0
+  } ;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_date", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  {
+    arg2 = &temp2;
+    int *dst[] = {
+      &(temp2.tm_year),
+      &(temp2.tm_mon),
+      &(temp2.tm_mday),
+      &(temp2.tm_hour),
+      &(temp2.tm_min),
+      &(temp2.tm_sec),
+    };
+    int i_max(sizeof(dst) / sizeof(dst[0]));
+    if(i_max > RARRAY_LEN(argv[0])){
+      i_max = RARRAY_LEN(argv[0]);
+    }
+    for(int i(0); i < i_max; ++i){
+      VALUE obj = rb_ary_entry(argv[0], i);
+      int v;
+      if(SWIG_IsOK(SWIG_AsVal_int (obj, &v))){
+        if(dst[i] == &(temp2.tm_year)){
+          *dst[i] = v - 1900;
+        }else if(dst[i] == &(temp2.tm_mon)){
+          *dst[i] = v - 1;
+        }else{
+          *dst[i] = v;
+        }
+      }else{
+        SWIG_exception(SWIG_TypeError, "int is expected");
+      }
+    }
+  }
+  {
+    try {
+      GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_1(arg1,(std::tm const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_set_date(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        _v = (TYPE(argv[1]) == T_ARRAY) ? 1 : 0;
+      }
+      if (_v) {
+        return _wrap_Ephemeris_GLONASS_set_date__SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Ephemeris_GLONASS_set_date__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "set_date", 
+    "    void set_date(unsigned int const &N_4, unsigned int const &NA)\n"
+    "    void set_date(std::tm const &t)\n");
+  
   return Qnil;
 }
 

@@ -9,7 +9,7 @@ require 'gps_pvt/ubx'
 
 $stderr.puts <<__STRING__
 Usage: #{__FILE__} GPS_file ... > as_you_like.ubx
-As GPS_file, only rinex_obs(*.YYo) is currently supported.
+As GPS_file, rinex_obs(*.YYo) and rtcm3 stream are supported.
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
 If you want to specify its format manually, command options like --rinex_obs=file_name are available.
@@ -102,6 +102,7 @@ files.each{|fname, ftype|
   case ftype
   when :ubx; rcv.parse_ubx(fname){}
   when :rinex_obs; rcv.parse_rinex_obs(fname){}
+  when :rtcm3; rcv.parse_rtcm3(fname){}
   end
 }
 

@@ -41,6 +41,7 @@ class URI::Ntrip
     pnt_list = self.read_source_table(options).mount_points
     case pnt_list[self.mount_point][:format]
     when /u-?b(?:lo)?x/i; :ubx
+    when /RTCM 3/i; :rtcm3
     else; nil
     end
   end
@@ -87,6 +88,39 @@ module Util
           dst.path
         }
       }
+    end
+  end
+  module CRC24Q
+    POLY = 0x1864CFB
+    TABLE = 0x100.times.collect{|i|
+      res = i << 16
+      8.times{
+        res <<= 1
+        res ^= POLY if (res & 0x1000000) > 0
+      }
+      res
+    }
+    def CRC24Q.checksum(bytes)
+      bytes.inject(0){|crc, byte|
+        ((crc << 8) & 0xFFFF00) ^ TABLE[byte ^ ((crc >> 16) & 0xFF)]
+      }
+    end
+  end
+  module BitOp
+    MASK = (1..8).collect{|i| (1 << i) - 1}.reverse
+    def BitOp.extract(src_bytes, bits_list, offset = 0)
+      res = []
+      bits_list.inject(offset.divmod(8) + [offset]){|(qM, rM, skip), bits|
+        qL, rL = (skip += bits).divmod(8)
+        v = src_bytes[qM] & MASK[rM]
+        res << if rL > 0 then
+          src_bytes[(qM+1)..qL].inject(v){|v2, b| (v2 << 8) | b} >> (8 - rL)
+        else
+          src_bytes[(qM+1)..(qL-1)].inject(v){|v2, b| (v2 << 8) | b}
+        end
+        [qL, rL, skip]
+      }
+      res
     end
   end
 end

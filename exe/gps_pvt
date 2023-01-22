@@ -11,7 +11,7 @@ As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), ubx(*.ubx)
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
 If you want to specify its format manually, command options like --rinex_nav=file_name are available.
-Other than --rinex_nav, --rinex_obs, --rinex_clk, --ubx, --sp3 or --antex are supported. 
+Other than --rinex_nav, --rinex_obs, --rinex_clk, --ubx, --sp3, --antex or --rtcm3 are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
 Major URI such as http(s)://... or ftp://..., and serial port (COMn for Windows, /dev/tty* for *NIX) is acceptable as an input file name.
@@ -25,7 +25,7 @@ misc_options = {}
 files = ARGV.collect{|arg|
   next [arg, nil] unless arg =~ /^--([^=]+)=?/
   k, v = [$1.downcase.to_sym, $']
-  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :sp3, :antex, :rinex_clk].include?(k) # file type
+  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :sp3, :antex, :rinex_clk, :rtcm3].include?(k) # file type
   options << [$1.to_sym, $']
   nil
 }.compact
@@ -141,5 +141,6 @@ files.each{|fname, ftype|
   case ftype
   when :ubx; rcv.parse_ubx(fname)
   when :rinex_obs; rcv.parse_rinex_obs(fname)
+  when :rtcm3; rcv.parse_rtcm3(fname)
   end
 }
