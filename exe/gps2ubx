@@ -31,7 +31,7 @@ misc_options = {
 files = ARGV.collect{|arg|
   next [arg, nil] unless arg =~ /^--([^=]+)=?/
   k, v = [$1.downcase.to_sym, $']
-  next [v, k] if [:rinex_nav, :rinex_obs].include?(k) # file type
+  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :rtcm3].include?(k) # file type
   options << [$1.to_sym, $']
   nil
 }.compact
