@@ -137,10 +137,11 @@ files.each{|fname, ftype|
 }
 
 # other files
-files.each{|fname, ftype|
+files.collect{|fname, ftype|
   case ftype
-  when :ubx; rcv.parse_ubx(fname)
-  when :rinex_obs; rcv.parse_rinex_obs(fname)
-  when :rtcm3; rcv.parse_rtcm3(fname)
+  when :ubx; Thread::new{rcv.parse_ubx(fname)}
+  when :rinex_obs; Thread::new{rcv.parse_rinex_obs(fname)}
+  when :rtcm3; Thread::new{rcv.parse_rtcm3(fname)}
+  else; nil
   end
-}
+}.compact.each{|th| th.join}
