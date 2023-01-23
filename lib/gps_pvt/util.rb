@@ -41,7 +41,7 @@ class URI::Ntrip
     pnt_list = self.read_source_table(options).mount_points
     case pnt_list[self.mount_point][:format]
     when /u-?b(?:lo)?x/i; :ubx
-    when /RTCM 3/i; :rtcm3
+    when /RTCM ?3/i; :rtcm3
     else; nil
     end
   end
