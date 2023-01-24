@@ -70,7 +70,7 @@ options.reject!{|opt|
 
 rcv = GPS_PVT::Receiver::new(options)
 
-obs = []
+obs = Queue::new
 rcv.define_singleton_method(:run){|meas, t_meas, *args|
   obs << [t_meas, meas]
 }
@@ -98,15 +98,23 @@ files.each{|fname, ftype|
 }
 
 # other files
-files.each{|fname, ftype|
-  case ftype
-  when :ubx; rcv.parse_ubx(fname){}
-  when :rinex_obs; rcv.parse_rinex_obs(fname){}
-  when :rtcm3; rcv.parse_rtcm3(fname){}
+threads = files.collect{|fname, ftype|
+  task = case ftype
+  when :ubx; proc{rcv.parse_ubx(fname){}}
+  when :rinex_obs; proc{rcv.parse_rinex_obs(fname){}}
+  when :rtcm3; proc{rcv.parse_rtcm3(fname){}}
   end
-}
+  case fname
+  when URI::Ntrip; Thread::new(&task)
+  else; task.call; nil
+  end
+}.compact
 
-obs.sort!{|a, b| a[0] <=> b[0]} # Sort by measurement time
+obs = proc{
+  tmp = []
+  tmp << obs.pop until obs.empty?
+  tmp
+}.call.sort!{|a, b| b[0] <=> a[0]} if threads.empty? # Sort by measurement time
 
 # Time packet for solution of leap seconds
 gen_gpstime = proc{
@@ -368,7 +376,18 @@ gen_list << gen_gpstime unless misc_options[:ubx_rawx]
 gen_list << (misc_options[:ubx_rawx] ? gen_sfrbx : gen_sfrb) if misc_options[:broadcast_data]
 gen_list << (misc_options[:ubx_rawx] ? gen_rawx : gen_raw)
 STDOUT.binmode
-obs.each{|t_meas, meas|
-  meas2 = meas.to_hash
-  gen_list.each{|gen| print gen.call(t_meas, meas2)}
+
+task_dump = proc{
+  until obs.empty? do
+    t_meas, meas = obs.pop
+    meas2 = meas.to_hash
+    gen_list.each{|gen| print gen.call(t_meas, meas2)}
+  end
 }
+if threads.empty? then
+  task_dump.call
+else
+  (threads << Thread::new{loop{
+    task_dump.call
+  }}).each{|th| th.join}
+end
