@@ -460,7 +460,7 @@ class Receiver
     $stderr.print "Reading UBX file (%s) "%[ubx_fname]
     require_relative 'ubx'
   
-    ubx = UBX::new(open(ubx_fname))  
+    ubx = UBX::new(Util::open(ubx_fname))
     ubx_kind = Hash::new(0)
     
     after_run = b || proc{|pvt| puts pvt.to_s if pvt}

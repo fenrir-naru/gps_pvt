@@ -23,14 +23,6 @@ proc{
     }
     def eof?; false; end
   }
-  module Kernel
-    open_orig = instance_method(:open)
-    define_method(:open){|*args, &b|
-      return open_orig.bind(self).call(*args, &b) unless ((!args[0].kind_of?(URI)) && (Serial::SPEC =~ args[0]))
-      Serial::new($1, $2 ? $2.to_i : 115200)
-    }
-    module_function(:open)
-  end
 }.call if require 'rubyserial'
 
 require 'open-uri'
@@ -50,6 +42,24 @@ end
 module GPS_PVT
 module Util
   class << self
+    def special_stream?(spec)
+      ['-', (Serial::SPEC rescue nil)].compact.any?{|v| v === spec}
+    end
+    def open(*args, &b)
+      return args[0].open(*args[1..-1], &b) if args[0].respond_to?(:open)
+      case args[0].to_str
+      when (Serial::SPEC rescue nil)
+        return ((@serial_ports ||= {})[$1] ||= Serial::new($1, $2 ? $2.to_i : 115200))
+      when '-'
+        if (/^[wa]/ === args[1]) \
+            || (args[1].kind_of?(Integer) && ((File::Constants::WRONLY & args[1]) > 0)) then
+          return STDOUT
+        else
+          return STDIN
+        end
+      end rescue nil
+      super
+    end
     def inflate(src, type = :gz)
       case type
       when :gz
@@ -66,7 +76,7 @@ module Util
     end
     def get_txt(fname_or_uri)
       is_uri = fname_or_uri.kind_of?(URI)
-      (is_uri ? URI : Kernel).send(:open, fname_or_uri){|src|
+      open(fname_or_uri){|src|
         compressed = proc{
           case src.content_type
           when /gzip/; next :gz

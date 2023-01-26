@@ -20,30 +20,21 @@ files = ARGV.collect{|arg|
   nil
 }.compact
 
-spec2io = proc{
-  io_pool = {}
-  proc{|spec, mode_r|
-    mode_r = true if (mode_r == nil)
-    next (io_pool[spec] ||= open(spec)) if Serial::SPEC =~ spec # serial port
-    if (uri = (URI::parse(spec) rescue nil)) and !uri.instance_of?(URI::Generic) then # URI
-      if mode_r then
-        case uri
-        when URI::Ntrip; next URI::open(uri)
-        else; next GPS_PVT::Util::get_txt(uri)
-        end
-      end
-      raise "Unknown URI: #{spec}"
-    end
-    if mode_r then # file
-      next STDIN if spec == '-'
-      next open(GPS_PVT::Util::get_txt(spec), 'r') if File::exist?(spec)
-      raise "File not found: #{spec}"
-    else
-      next STDOUT if spec == '-'
-      open(spec, 'a+')
-    end
-  }
-}.call
+spec2io = proc{|spec, mode_r|
+  mode_r = ((nil == mode_r) || mode_r)
+  is_stream = false
+  if (!(uri = URI::parse(spec)).instance_of?(URI::Generic) rescue false) then
+    spec = uri
+    is_stream = true if uri.kind_of?(URI::Ntrip)
+  else
+    is_stream = GPS_PVT::Util::special_stream?(spec)
+  end
+  if is_stream || (!mode_r) then
+    GPS_PVT::Util::open(spec, mode_r ? 'r' : 'a+')
+  else
+    open(GPS_PVT::Util::get_txt(spec), 'r')
+  end
+}
 
 STDIN.binmode
 STDOUT.binmode

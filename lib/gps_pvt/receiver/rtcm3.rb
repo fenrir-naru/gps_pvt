@@ -7,7 +7,7 @@ class Receiver
   def parse_rtcm3(src, opt = {}, &b)
     $stderr.print "Reading RTCM3 stream (%s) "%[src]
     require_relative '../rtcm3'
-    src_io = open(src)
+    src_io = Util::open(src)
     rtcm3 = GPS_PVT::RTCM3::new(src_io)
     ref_time = case (ref_time = opt[:ref_time])
     when GPS::Time; 
