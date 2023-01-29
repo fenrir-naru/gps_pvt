@@ -2406,6 +2406,10 @@ struct GLONASS_Ephemeris
   bool is_consistent() const {
     return has_string == 0x1F;
   }
+  bool is_in_range(const GPS_Time<FloatT> &t) const {
+    // "invalidate()" is used to make raw and converted data inconsistent.
+    return eph_t::is_valid(t);
+  }
   bool is_valid(const GPS_Time<FloatT> &t) const {
     return is_consistent() && eph_t::is_valid(t);
   }
@@ -4749,10 +4753,6 @@ SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GLONASS_Ephemeris_Sl_dou
     typename GPS_Ephemeris<double>::constellation_res_t res = {
         pv.position, pv.velocity, self->clock_error(t_tx), self->clock_error_dot()};
     return res;
-  }
-SWIGINTERN bool GLONASS_Ephemeris_Sl_double_Sg__is_in_range(GLONASS_Ephemeris< double > const *self,GPS_Time< double > const &t){
-    // "invalidate()" is used to make raw and converted data inconsistent.
-    return self->is_valid(t);
   }
 SWIGINTERN void RINEX_Observation_Sl_double_Sg__read(char const *fname){
     std::fstream fin(fname, std::ios::in | std::ios::binary);
@@ -22604,6 +22604,59 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.in_range?
+
+  call-seq:
+    in_range?(Time t) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_in_rangeq___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  GPS_Time< double > *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_in_range", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_in_range", 2, argv[0] )); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_in_range", 2, argv[0])); 
+  }
+  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
+  {
+    try {
+      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_in_range((GPS_Time< double > const &)*arg2);
+    } catch (const native_exception &e) {
+      e.regenerate();
+      SWIG_fail;
+    } catch (const std::exception& e) {
+      SWIG_exception_fail(SWIG_RuntimeError, e.what());
+    }
+  }
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.valid?
 
   call-seq:
@@ -26483,59 +26536,6 @@ fail:
 }
 
 
-/*
-  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.in_range?
-
-  call-seq:
-    in_range?(Time t) -> bool
-
-An instance method.
-
-*/
-SWIGINTERN VALUE
-_wrap_Ephemeris_GLONASS_in_rangeq___(int argc, VALUE *argv, VALUE self) {
-  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
-  GPS_Time< double > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  bool result;
-  VALUE vresult = Qnil;
-  
-  if ((argc < 1) || (argc > 1)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_in_range", 1, self )); 
-  }
-  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_GPS_TimeT_double_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "GPS_Time< double > const &","is_in_range", 2, argv[0] )); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_in_range", 2, argv[0])); 
-  }
-  arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__is_in_range((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_From_bool(static_cast< bool >(result));
-  return vresult;
-fail:
-  return Qnil;
-}
-
-
 SWIGINTERN void
 free_GLONASS_Ephemeris_Sl_double_Sg_(void *self) {
     GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *)self;
@@ -28978,6 +28978,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "raw", VALUEFUNC(_wrap_Ephemeris_GLONASS_raw_get), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "invalidate", VALUEFUNC(_wrap_Ephemeris_GLONASS_invalidate), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "consistent?", VALUEFUNC(_wrap_Ephemeris_GLONASS_consistentq___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "in_range?", VALUEFUNC(_wrap_Ephemeris_GLONASS_in_rangeq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_GLONASS_validq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "rehash", VALUEFUNC(_wrap_Ephemeris_GLONASS_rehash), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_GLONASS_svide___), -1);
@@ -29047,7 +29048,6 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "parse", VALUEFUNC(_wrap_Ephemeris_GLONASS_parse), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "dump", VALUEFUNC(_wrap_Ephemeris_GLONASS_dump), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "constellation", VALUEFUNC(_wrap_Ephemeris_GLONASS_constellation), -1);
-  rb_define_method(SwigClassEphemeris_GLONASS.klass, "in_range?", VALUEFUNC(_wrap_Ephemeris_GLONASS_in_rangeq___), -1);
   SwigClassEphemeris_GLONASS.mark = 0;
   SwigClassEphemeris_GLONASS.destroy = (void (*)(void *)) free_GLONASS_Ephemeris_Sl_double_Sg_;
   SwigClassEphemeris_GLONASS.trackObjects = 0;
