@@ -149,12 +149,12 @@ class RTCM3
         400 => invalidate.call(num_gen.call(15, Rational(1, 1000 << 24)), 0x4000), # [sec],
         401 => invalidate.call(num_gen.call(22, Rational(1, 1000 << 29)), 0x200000), # [sec],
         402 => 4,
-        403 => 6, # [dB-Hz],
+        403 => invalidate.call(unum_gen.call(6), 0), # [dB-Hz],
         404 => invalidate.call(num_gen.call(15, Rational(1, 10000)), 0x4000), # [m/s]
         405 => invalidate.call(num_gen.call(20, Rational(1, 1000 << 29)), 0x80000), # [sec]
         406 => invalidate.call(num_gen.call(24, Rational(1, 1000 << 31)), 0x800000), # [sec]
         407 => 10,
-        408 => unum_gen.call(10, Rational(1, 1 << 4)), # [dB-Hz]
+        408 => invalidate.call(unum_gen.call(10, Rational(1, 1 << 4)), 0), # [dB-Hz]
         409 => 3,
         411 => 2,
         412 => 2,
@@ -292,12 +292,14 @@ class RTCM3
         range_rough2 = self[offset + (nsat * 1), nsat] # DF398
         range_fine = self[offset + (nsat * 2), ncell] # DF400
         phase_fine = self[offset + (nsat * 2) + (ncell * 1), ncell] # DF401
-        Hash[*([:sat_sig, :pseudo_range, :phase_range].zip(
+        cn = self[offset + (nsat * 2) + (ncell * 4), ncell] # DF403
+        Hash[*([:sat_sig, :pseudo_range, :phase_range, :cn].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
               rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
               [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
-                  (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil)]
+                  (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
+                  cn[i][0]]
             }.transpose).flatten(1))]
       end
     end
@@ -311,14 +313,16 @@ class RTCM3
         delta_rough = self[offset + (nsat * 3), nsat] # DF399
         range_fine = self[offset + (nsat * 4), ncell] # DF405
         phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF406
+        cn = self[offset + (nsat * 4) + (ncell * 4), ncell] # DF403
         delta_fine = self[offset + (nsat * 4) + (ncell * 5), ncell] # DF404
-        Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate].zip(
+        Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
               rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
               [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
-                  ((delta_fine[i][0] + delta_rough[i2][0]) rescue nil)]
+                  ((delta_fine[i][0] + delta_rough[i2][0]) rescue nil),
+                  cn[i][0]]
             }.transpose).flatten(1))]
       end
     end

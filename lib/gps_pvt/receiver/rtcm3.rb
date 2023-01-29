@@ -85,9 +85,9 @@ class Receiver
         end
         meas[msg_num] = meas_ = []
         item_size = ranges[:sat_sig].size
-        [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate].collect{|k|
+        [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].collect{|k|
           ranges[k] || ([nil] * item_size)
-        }.transpose.each{|(svid, sig), pr, cpr, dr|
+        }.transpose.each{|(svid, sig), pr, cpr, dr, cn|
           prefix, len = sig_list[sig]
           next unless prefix
           if svid_offset > 0 then
@@ -98,6 +98,7 @@ class Receiver
           meas_ << [svid, "#{prefix}_PSEUDORANGE".to_sym, pr] if pr
           meas_ << [svid, "#{prefix}_RANGE_RATE".to_sym, dr] if dr
           meas_ << [svid, "#{prefix}_CARRIER_PHASE".to_sym, cpr / len] if cpr
+          meas_ << [svid, "#{prefix}_SIGNAL_STRENGTH_dBHz".to_sym, cn] if cn
         }
       else
         #p({msg_num => parsed})
