@@ -19,7 +19,8 @@ class Receiver
     end
     leap_sec = ref_time.leap_seconds
     after_run = b || proc{|pvt| puts pvt.to_s if pvt}
-    t_meas, meas = [nil, GPS::Measurement::new]
+    t_meas, meas = [nil, {}]
+    # meas := {msg_num => [[], ...]} due to duplicated observation such as 1074 and 1077
     dt_threshold = GPS::Time::Seconds_week / 2
 
     while packet = rtcm3.read_packet
@@ -55,10 +56,10 @@ class Receiver
         critical{
           @solver.glonass_space_node.register_ephemeris(eph.svid, eph)
         }
-      when 1077, 1087, 1097, 1117
+      when 1071..1077, 1081..1087, 1091..1097, 1111..1117
         ranges = parsed.ranges
-        sig_list, svid_offset = case msg_num
-          when 1077 # GPS
+        sig_list, svid_offset = case msg_num / 10
+          when 107 # GPS
             t_meas ||= proc{ # update time of measurement
               t_meas_sec = parsed[2][0] # DF004
               dt = t_meas_sec - ref_time.seconds 
@@ -69,21 +70,23 @@ class Receiver
             [{2 => [:L1, GPS::SpaceNode.L1_WaveLength],
                 15 => [:L2CM, GPS::SpaceNode.L2_WaveLength],
                 16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, 0]
-          when 1087 # GLONASS
+          when 108 # GLONASS
             proc{
               utc = parsed[3][0] - 60 * 60 * 3 # DF034 UTC(SU)+3hr
               delta = (t_meas.seconds - utc).to_i % (60 * 60 * 24)
               leap_sec = (delta >= (60 * 60 * 12)) ? delta - (60 * 60 * 12) : delta
             }.call if t_meas
             [{2 => [:L1, GPS::SpaceNode_GLONASS.light_speed / GPS::SpaceNode_GLONASS.L1_frequency_base]}, 0x100]
-          when 1117 # QZSS
+          when 111 # QZSS
             [{2 => [:L1, GPS::SpaceNode.L1_WaveLength],
                 15 => [:L2CM, GPS::SpaceNode.L2_WaveLength],
                 16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, 192]
           else; [{}, 0]
         end
+        meas[msg_num] = meas_ = []
+        item_size = ranges[:sat_sig].size
         [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate].collect{|k|
-          ranges[k]
+          ranges[k] || ([nil] * item_size)
         }.transpose.each{|(svid, sig), pr, cpr, dr|
           prefix, len = sig_list[sig]
           next unless prefix
@@ -92,17 +95,23 @@ class Receiver
             eph = @solver.glonass_space_node.ephemeris(svid)
           end
           svid += svid_offset
-          meas.add(svid, "#{prefix}_PSEUDORANGE".to_sym, pr) if pr
-          meas.add(svid, "#{prefix}_RANGE_RATE".to_sym, dr) if dr
-          meas.add(svid, "#{prefix}_CARRIER_PHASE".to_sym, cpr / len) if cpr
+          meas_ << [svid, "#{prefix}_PSEUDORANGE".to_sym, pr] if pr
+          meas_ << [svid, "#{prefix}_RANGE_RATE".to_sym, dr] if dr
+          meas_ << [svid, "#{prefix}_CARRIER_PHASE".to_sym, cpr / len] if cpr
         }
       else
         #p({msg_num => parsed})
       end
       if (1070..1229).include?(msg_num) && 
           (!parsed.more_data? rescue (packet.decode([1], 24 + 54)[0] == 0)) then
-        after_run.call(run(meas, t_meas), [meas, ref_time = t_meas]) if t_meas
-        t_meas, meas = [nil, GPS::Measurement::new]
+        if t_meas then
+          meas_ = GPS::Measurement::new
+          meas.sort.each{|k, values| # larger msg_num entries have higher priority
+            values.each{|prn_k_v| meas_.add(*prn_k_v)}
+          } 
+          after_run.call(run(meas_, t_meas), [meas_, ref_time = t_meas])
+        end 
+        t_meas, meas = [nil, {}]
       end
     end
   end

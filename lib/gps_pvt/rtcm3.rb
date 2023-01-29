@@ -146,6 +146,10 @@ class RTCM3
         397 => invalidate.call(unum_gen.call(8, Rational(1, 1000)), 0xFF), # [sec]
         398 => unum_gen.call(10, Rational(1, 1000 << 10)), # [sec]
         399 => invalidate.call(num_gen.call(14), 0x2000), # [m/s]
+        400 => invalidate.call(num_gen.call(15, Rational(1, 1000 << 24)), 0x4000), # [sec],
+        401 => invalidate.call(num_gen.call(22, Rational(1, 1000 << 29)), 0x200000), # [sec],
+        402 => 4,
+        403 => 6, # [dB-Hz],
         404 => invalidate.call(num_gen.call(15, Rational(1, 10000)), 0x4000), # [m/s]
         405 => invalidate.call(num_gen.call(20, Rational(1, 1000 << 29)), 0x80000), # [sec]
         406 => invalidate.call(num_gen.call(24, Rational(1, 1000 << 31)), 0x800000), # [sec]
@@ -190,11 +194,15 @@ class RTCM3
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
       1044 => [2, (429..457).to_a].flatten, # 485 bits
-      1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
-      1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
-      1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
-      1117 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
-    }.collect{|mt, df_list| [mt, DataFrame.generate_prop(df_list)]}.flatten(1))]
+      1071..1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
+      1081..1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
+      1091..1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
+      1111..1117 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
+    }.collect{|mt_list, df_list|
+      (mt_list.to_a rescue [mt_list]).collect{|mt|
+        [mt, DataFrame.generate_prop(df_list)]
+      }
+    }.flatten(2))]
     module GPS_Ephemeris
       KEY2IDX = {:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
           :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
@@ -259,30 +267,59 @@ class RTCM3
       def more_data?
         self.find{|v| v[1] == 393}[0] == 1
       end
+      def property
+        idx_sat = self.find_index{|v| v[1] == 394}
+        {
+          :sats => self[idx_sat][0],
+          :cells => self[idx_sat + 2][0], # DF396
+          :header_items => idx_sat + 3,
+        }
+      end
+    end
+    module MSM
+      include MSM_Header
+      def ranges
+        {:sat_sig => property[:cells]} # expect to be overriden
+      end
+      SPEED_OF_LIGHT = 299_792_458
+    end
+    module MSM4
+      include MSM
+      def ranges
+        sats, cells, offset = property.values_at(:sats, :cells, :header_items)
+        nsat, ncell = [sats.size, cells.size]
+        range_rough = self[offset, nsat] # DF397
+        range_rough2 = self[offset + (nsat * 1), nsat] # DF398
+        range_fine = self[offset + (nsat * 2), ncell] # DF400
+        phase_fine = self[offset + (nsat * 2) + (ncell * 1), ncell] # DF401
+        Hash[*([:sat_sig, :pseudo_range, :phase_range].zip(
+            [cells] + cells.collect.with_index{|(sat, sig), i|
+              i2 = sats.find_index(sat)
+              rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
+              [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
+                  (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil)]
+            }.transpose).flatten(1))]
+      end
     end
     module MSM7
-      SPEED_OF_LIGHT = 299_792_458
+      include MSM
       def ranges
-        idx_sat = self.find_index{|v| v[1] == 394}
-        sats = self[idx_sat][0]
-        nsat = sats.size
-        cells = self[idx_sat + 2][0] # DF396
-        ncell = cells.size
-        offset = idx_sat + 3
+        sats, cells, offset = property.values_at(:sats, :cells, :header_items)
+        nsat, ncell = [sats.size, cells.size]
         range_rough = self[offset, nsat] # DF397
         range_rough2 = self[offset + (nsat * 2), nsat] # DF398
         delta_rough = self[offset + (nsat * 3), nsat] # DF399
         range_fine = self[offset + (nsat * 4), ncell] # DF405
         phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF406
         delta_fine = self[offset + (nsat * 4) + (ncell * 5), ncell] # DF404
-        Hash[*([:pseudo_range, :phase_range, :phase_range_rate, :sat_sig].zip(
-            cells.collect.with_index{|(sat, sig), i|
+        Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate].zip(
+            [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
-            rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
+              rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
               [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   ((delta_fine[i][0] + delta_rough[i2][0]) rescue nil)]
-            }.transpose + [cells]).flatten(1))]
+            }.transpose).flatten(1))]
       end
     end
     def parse
@@ -304,22 +341,33 @@ class RTCM3
         attributes << GLONASS_Ephemeris
       when 1044
         attributes << QZSS_Ephemeris
-      when 1077, 1087, 1097, 1117
-        # 1077(GPS), 1087(GLONASS), 1097(GALILEO), 1117(QZSS)
-        attributes << MSM7
+      when 1071..1077, 1081..1087, 1091..1097, 1111..1117
+        # 107X(GPS), 108X(GLONASS), 109X(GALILEO), 111X(QZSS)
         nsat, nsig = [-2, -1].collect{|i| values[i].size}
         offset = 24 + mt[:bits_total]
         df396 = DataFrame.generate_prop([[396, values[-2], values[-1]]])
         add_proc.call(df396, offset)
         ncell = values[-1].size
         offset += df396[:bits_total]
-        msm7_sat = DataFrame.generate_prop(
-            ([[397, [:uint, 4], 398, 399]] * nsat).transpose.flatten(1))
-        add_proc.call(msm7_sat, offset)
-        offset += msm7_sat[:bits_total]
-        msm7_sig = DataFrame.generate_prop(
-            ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
-        add_proc.call(msm7_sig, offset)
+        case msg_num % 10
+        when 4
+          attributes << MSM4
+          msm4_sat = DataFrame.generate_prop(([[397, 398]] * nsat).transpose.flatten(1))
+          add_proc.call(msm4_sat, offset)
+          offset += msm4_sat[:bits_total]
+          msm4_sig = DataFrame.generate_prop(
+              ([[400, 401, 402, 420, 403]] * ncell).transpose.flatten(1))
+          add_proc.call(msm4_sig, offset)
+        when 7
+          attributes << MSM7
+          msm7_sat = DataFrame.generate_prop(
+              ([[397, [:uint, 4], 398, 399]] * nsat).transpose.flatten(1))
+          add_proc.call(msm7_sat, offset)
+          offset += msm7_sat[:bits_total]
+          msm7_sig = DataFrame.generate_prop(
+              ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
+          add_proc.call(msm7_sig, offset)
+        end
       end
       attributes << MSM_Header if (1070..1229).include?(msg_num)
       res = values.zip(df_list)
