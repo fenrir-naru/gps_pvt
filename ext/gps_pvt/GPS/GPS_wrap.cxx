@@ -4379,10 +4379,10 @@ SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_t_0(SBAS_Ephemeris< double > 
 SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_t_0(SBAS_Ephemeris< double > const *self){
   return self->t_0;
 }
-SWIGINTERN int SBAS_Ephemeris_Sl_double_Sg__set_URA(SBAS_Ephemeris< double > *self,int const &v){
+SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_URA(SBAS_Ephemeris< double > *self,double const &v){
   return self->URA= v;
 }
-SWIGINTERN int const &SBAS_Ephemeris_Sl_double_Sg__get_URA(SBAS_Ephemeris< double > const *self){
+SWIGINTERN double const &SBAS_Ephemeris_Sl_double_Sg__get_URA(SBAS_Ephemeris< double > const *self){
   return self->URA;
 }
 SWIGINTERN double SBAS_Ephemeris_Sl_double_Sg__set_x(SBAS_Ephemeris< double > *self,double const &v){
@@ -18732,7 +18732,7 @@ fail:
   Document-method: GPS_PVT::GPS::Ephemeris_SBAS.URA=
 
   call-seq:
-    URA=(int const & v) -> int
+    URA=(double const & v) -> double
 
 An instance method.
 
@@ -18740,13 +18740,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Ephemeris_SBAS_URAe___(int argc, VALUE *argv, VALUE self) {
   SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
-  int *arg2 = 0 ;
+  double *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
+  double temp2 ;
+  double val2 ;
   int ecode2 = 0 ;
-  int result;
+  double result;
   VALUE vresult = Qnil;
   
   if ((argc < 1) || (argc > 1)) {
@@ -18757,15 +18757,15 @@ _wrap_Ephemeris_SBAS_URAe___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > *","set_URA", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_URA", 2, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","set_URA", 2, argv[0] ));
   } 
-  temp2 = static_cast< int >(val2);
+  temp2 = static_cast< double >(val2);
   arg2 = &temp2;
   {
     try {
-      result = (int)SBAS_Ephemeris_Sl_double_Sg__set_URA(arg1,(int const &)*arg2);
+      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_URA(arg1,(double const &)*arg2);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -18773,7 +18773,7 @@ _wrap_Ephemeris_SBAS_URAe___(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = SWIG_From_int(static_cast< int >(result));
+  vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
   return Qnil;
@@ -18784,7 +18784,7 @@ fail:
   Document-method: GPS_PVT::GPS::Ephemeris_SBAS.URA
 
   call-seq:
-    URA -> int const &
+    URA -> double const &
 
 An instance method.
 
@@ -18794,7 +18794,7 @@ _wrap_Ephemeris_SBAS_URA(int argc, VALUE *argv, VALUE self) {
   SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int *result = 0 ;
+  double *result = 0 ;
   VALUE vresult = Qnil;
   
   if ((argc < 0) || (argc > 0)) {
@@ -18807,7 +18807,7 @@ _wrap_Ephemeris_SBAS_URA(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
   {
     try {
-      result = (int *) &SBAS_Ephemeris_Sl_double_Sg__get_URA((SBAS_Ephemeris< double > const *)arg1);
+      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_URA((SBAS_Ephemeris< double > const *)arg1);
     } catch (const native_exception &e) {
       e.regenerate();
       SWIG_fail;
@@ -18815,7 +18815,7 @@ _wrap_Ephemeris_SBAS_URA(int argc, VALUE *argv, VALUE self) {
       SWIG_exception_fail(SWIG_RuntimeError, e.what());
     }
   }
-  vresult = SWIG_From_int(static_cast< int >(*result));
+  vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
   return Qnil;
