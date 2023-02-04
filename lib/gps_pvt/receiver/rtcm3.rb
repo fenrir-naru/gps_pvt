@@ -56,7 +56,22 @@ class Receiver
         critical{
           @solver.glonass_space_node.register_ephemeris(eph.svid, eph)
         }
-      when 1071..1077, 1081..1087, 1091..1097, 1111..1117
+      when 1043
+        params = parsed.params
+        eph = GPS::Ephemeris_SBAS::new
+        tod_delta = params[:tod] - (ref_time.seconds % (24 * 60 * 60)) 
+        if tod_delta > (12 * 60 * 60) then
+          tod_delta -= (24 * 60 * 60)
+        elsif tod_delta < -(12 * 60 * 60) then
+          tod_delta += (24 * 60 * 60)
+        end
+        toe = ref_time + tod_delta
+        eph.WN, eph.t_0 = [:week, :seconds].collect{|k| toe.send(k)}
+        params.each{|k, v| eph.send("#{k}=".to_sym, v) unless [:iodn, :tod].include?(k)}
+        critical{
+          @solver.sbas_space_node.register_ephemeris(eph.svid, eph)
+        }
+      when 1071..1077, 1081..1087, 1101..1107, 1111..1117
         ranges = parsed.ranges
         glonass = nil
         sig_list, svid_offset = case msg_num / 10
@@ -79,6 +94,8 @@ class Receiver
               (glonass = @solver.glonass_space_node).update_all_ephemeris(t_meas)
             }.call if t_meas
             [{2 => [:L1, nil]}, 0x100]
+          when 110 # SBAS
+            [{2 => [:L1, GPS::SpaceNode.L1_WaveLength]}, 120]
           when 111 # QZSS
             [{2 => [:L1, GPS::SpaceNode.L1_WaveLength],
                 15 => [:L2CM, GPS::SpaceNode.L2_WaveLength],
@@ -113,9 +130,9 @@ class Receiver
           meas_ = GPS::Measurement::new
           meas.sort.each{|k, values| # larger msg_num entries have higher priority
             values.each{|prn_k_v| meas_.add(*prn_k_v)}
-          } 
+          }
           after_run.call(run(meas_, t_meas), [meas_, ref_time = t_meas])
-        end 
+        end
         t_meas, meas = [nil, {}]
       end
     end

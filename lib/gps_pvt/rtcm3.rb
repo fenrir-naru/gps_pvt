@@ -175,6 +175,20 @@ class RTCM3
         src = (src.to_a rescue [src]).flatten
         (dst.to_a rescue ([dst] * src.size)).flatten.zip(src).each{|i, j| df[i] = df[j]}
       }
+      df.merge!({
+        :SBAS_prn => [6, proc{|v| v + 120}],
+        :SBAS_iodn => 8,
+        :SBAS_tod => num_gen.call(13, 1 << 4),
+        :SBAS_ura => df[77],
+        :SBAS_xy => num_gen.call(30, Rational(8, 100)),
+        :SBAS_z => num_gen.call(25, Rational(4, 10)),
+        :SBAS_dxy => num_gen.call(17, Rational(1, 1600)),
+        :SBAS_dz => num_gen.call(18, Rational(1, 250)),
+        :SBAS_ddxy => num_gen.call(10, Rational(1, 80000)),
+        :SBAS_ddz => num_gen.call(10, Rational(1, 16000)),
+        :SBAS_agf0 => num_gen.call(12, Rational(1, 1 << 31)),
+        :SBAS_agf1 => num_gen.call(8, Rational(1, 1 << 40)),
+      })
       df.define_singleton_method(:generate_prop){|idx_list|
         hash = Hash[*([:bits, :op].collect.with_index{|k, i|
           [k, idx_list.collect{|idx, *args|
@@ -184,7 +198,7 @@ class RTCM3
             [prop].flatten(1)[i]
           }]
         }.flatten(1))].merge({:df => idx_list})
-        hash[:bits_total] = hash[:bits].inject{|a, b| a + b}
+        hash[:bits_total] = hash[:bits].inject{|a, b| a + b} || 0
         hash
       }
       df
@@ -193,11 +207,16 @@ class RTCM3
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
+      1043 => [2] + [:prn, :iodn, :tod, :ura, 
+          [:xy] * 2, :z, [:dxy] * 2, :dz, [:ddxy] * 2, :ddz,
+          :agf0, :agf1].flatten.collect{|k| "SBAS_#{k}".to_sym}, # @see BNC Ntrip client RTCM3Decorder.cpp
       1044 => [2, (429..457).to_a].flatten, # 485 bits
       1071..1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
       1081..1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1091..1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98
+      1101..1107 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
       1111..1117 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
+      1121..1127 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits
     }.collect{|mt_list, df_list|
       (mt_list.to_a rescue [mt_list]).collect{|mt|
         [mt, DataFrame.generate_prop(df_list)]
@@ -224,6 +243,17 @@ class RTCM3
           else; 6
         end) * 60 * 60
         res
+      end
+    end
+    module SBAS_Ephemeris
+      KEY2IDX = {:svid => 1, :iodn => 2, :tod => 3, :URA => 4,
+          :x => 5, :y => 6, :z => 7,
+          :dx => 8, :dy => 9, :dz => 10,
+          :ddx => 11, :ddy => 12, :ddz => 13,
+          :a_Gf0 => 14, :a_Gf1 => 15}
+      def params
+        # TODO WN is required to provide
+        Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
       end
     end
     module GLONASS_Ephemeris
@@ -343,10 +373,12 @@ class RTCM3
         attributes << GPS_Ephemeris
       when 1020
         attributes << GLONASS_Ephemeris
+      when 1043
+        attributes << SBAS_Ephemeris
       when 1044
         attributes << QZSS_Ephemeris
-      when 1071..1077, 1081..1087, 1091..1097, 1111..1117
-        # 107X(GPS), 108X(GLONASS), 109X(GALILEO), 111X(QZSS)
+      when 1071..1077, 1081..1087, 1091..1097, 1101..1107, 1111..1117, 1121..1127
+        # 107X(GPS), 108X(GLONASS), 109X(GALILEO), 110X(SBAS), 111X(QZSS), 112X(Beidou)
         nsat, nsig = [-2, -1].collect{|i| values[i].size}
         offset = 24 + mt[:bits_total]
         df396 = DataFrame.generate_prop([[396, values[-2], values[-1]]])
@@ -371,6 +403,8 @@ class RTCM3
           msm7_sig = DataFrame.generate_prop(
               ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
           add_proc.call(msm7_sig, offset)
+        else
+          attributes << MSM # for #range
         end
       end
       attributes << MSM_Header if (1070..1229).include?(msg_num)
