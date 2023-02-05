@@ -86,7 +86,7 @@ class Receiver
         }
       when 1071..1077, 1081..1087, 1101..1107, 1111..1117
         ranges = parsed.ranges
-        glonass = nil
+        glonass_freq = nil
         case msg_num / 10 # check time of measurement
         when 107, 110, 111 # GPS, SBAS, QZSS
           t_meas_sec = parsed[2][0] # DF004
@@ -99,7 +99,14 @@ class Receiver
             utc = parsed[3][0] - 60 * 60 * 3 # DF034 UTC(SU)+3hr
             delta = (t_meas.seconds - utc).to_i % (60 * 60 * 24)
             leap_sec = (delta >= (60 * 60 * 12)) ? delta - (60 * 60 * 12) : delta
-            (glonass = @solver.glonass_space_node).update_all_ephemeris(t_meas)
+            glonass_freq = critical{
+              @solver.glonass_space_node.update_all_ephemeris(t_meas)
+              Hash[*(ranges[:sat_sig].collect{|svid, sig| svid}.uniq.collect{|svid|
+                eph = @solver.glonass_space_node.ephemeris(svid)
+                next nil unless eph.in_range?(t_meas)
+                [svid, {:L1 => eph.frequency_L1}]
+              }.compact.flatten(1))]
+            }
           }.call if t_meas
         end
         sig_list, svid_offset = case msg_num / 10
@@ -123,12 +130,11 @@ class Receiver
         }.transpose.each{|(svid, sig), pr, cpr, dr, cn|
           prefix, len = sig_list[sig]
           next unless prefix
-          proc{|eph|
-            next unless eph.in_range?(t_meas)
-            freq = eph.send("frequency_#{prefix}".to_sym)
+          proc{
+            next unless freq = (glonass_freq[svid] || {})[prefix]
             meas2 << [svid, "#{prefix}_FREQUENCY".to_sym, freq]
             len = GPS::SpaceNode_GLONASS.light_speed / freq
-          }.call(glonass.ephemeris(svid)) if glonass
+          }.call if glonass_freq
           svid += svid_offset
           meas2 << [svid, "#{prefix}_PSEUDORANGE".to_sym, pr] if pr
           meas2 << [svid, "#{prefix}_RANGE_RATE".to_sym, dr] if dr
