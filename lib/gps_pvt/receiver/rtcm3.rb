@@ -95,19 +95,30 @@ class Receiver
                 elsif dt >= dt_threshold then; -1
                 else; 0; end, t_meas_sec)
         when 108 # GLONASS
-          proc{
-            utc = parsed[3][0] - 60 * 60 * 3 # DF034 UTC(SU)+3hr
-            delta = (t_meas.seconds - utc).to_i % (60 * 60 * 24)
+          utc_tod = parsed[3][0] - 60 * 60 * 3.0 # DF034 UTC(SU)+3hr, time of day[sec]
+          t_meas2 = if t_meas then
+            delta = (t_meas.seconds - utc_tod).to_i % (60 * 60 * 24)
             leap_sec = (delta >= (60 * 60 * 12)) ? delta - (60 * 60 * 12) : delta
-            glonass_freq = critical{
-              @solver.glonass_space_node.update_all_ephemeris(t_meas)
-              Hash[*(ranges[:sat_sig].collect{|svid, sig| svid}.uniq.collect{|svid|
-                eph = @solver.glonass_space_node.ephemeris(svid)
-                next nil unless eph.in_range?(t_meas)
-                [svid, {:L1 => eph.frequency_L1}]
-              }.compact.flatten(1))]
-            }
-          }.call if t_meas
+            t_meas
+          else
+            ref_dow, ref_tod = ref_time.seconds.divmod(60 * 60 * 24)
+            tod = utc_tod + leap_sec
+            tod_delta = ref_tod - tod
+            if tod_delta > 12 * 60 * 60 then
+              ref_dow -= 1
+            elsif tod_delta < -12 * 60 * 60 then
+              ref_dow += 1
+            end
+            GPS::Time::new(ref_time.week, 0) + tod + 60 * 60 * 24 * ref_dow
+          end
+          glonass_freq = critical{
+            @solver.glonass_space_node.update_all_ephemeris(t_meas2)
+            Hash[*(ranges[:sat_sig].collect{|svid, sig| svid}.uniq.collect{|svid|
+              eph = @solver.glonass_space_node.ephemeris(svid)
+              next nil unless eph.in_range?(t_meas2)
+              [svid, {:L1 => eph.frequency_L1}]
+            }.compact.flatten(1))]
+          }
         end
         sig_list, svid_offset = case msg_num / 10
           when 107 # GPS
@@ -145,7 +156,7 @@ class Receiver
         #p({msg_num => parsed})
       end
       
-      run_proc.call if t_meas && t_meas2 && (t_meas != t_meas2) # fallback for incorrect more_data flag
+      run_proc.call if t_meas && t_meas2 && ((t_meas - t_meas2).abs > 1E-3) # fallback for incorrect more_data flag
       add_proc.call
       run_proc.call if (1070..1229).include?(msg_num) && (!parsed.more_data?)
     end
