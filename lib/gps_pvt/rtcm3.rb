@@ -13,6 +13,7 @@ class RTCM3
   end
   module Packet
     def decode(bits_list, offset = nil)
+      # 24 is offset of header in transport layer
       Util::BitOp::extract(self, bits_list, offset || 24)
     end
     def message_number
@@ -56,7 +57,22 @@ class RTCM3
         2 => 12,
         3 => 12,
         4 => unum_gen.call(30, Rational(1, 1000)), # [sec]
+        5 => 1,
+        6 => 5,
+        7 => 1,
+        8 => 3,
         9 => 6,
+        10 => 1,
+        11 => invalidate.call(unum_gen.call(24, Rational(2, 100)), 0x800000), # [m]
+        12 => invalidate.call(num_gen.call(20, Rational(5, 10000)), 0x80000), # [m]
+        13 => 7,
+        14 => unum_gen.call(8, 299_792.458), # [m]
+        15 => invalidate.call(unum_gen.call(8, Rational(1, 4)), 0), # [db-Hz],
+        16 => 2,
+        17 => invalidate.call(num_gen.call(14, Rational(2, 100)), 0x2000), # [m]
+        18 => num_gen.call(20, Rational(5, 10000)), # [m]
+        19 => 7,
+        20 => invalidate.call(unum_gen.call(8, Rational(1, 4)), 0), # [db-Hz]
         21 => 6,
         22 => 1,
         23 => 1,
@@ -204,6 +220,7 @@ class RTCM3
       df
     }.call
     MessageType = Hash[*({
+      1001..1004 => (2..8).to_a,
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
@@ -222,6 +239,29 @@ class RTCM3
         [mt, DataFrame.generate_prop(df_list)]
       }
     }.flatten(2))]
+    module GPS_Observation
+      def ranges
+        res = {
+          :sat => select{|v, df| df == 9}.transpose[0],
+          :pseudo_range_rem => select{|v, df| df == 11}.transpose[0],
+        }
+        add_proc = proc{|k, df, base|
+          values = select{|v, df_| df_ == df}
+          next if values.empty?
+          res[k] = values.transpose[0]
+          res[k] = res[k].zip(res[base]).collect{|a, b| (a + b) rescue nil} if base
+        }
+        add_proc.call(:pseudo_range, 14, :pseudo_range_rem)
+        suffix = res[:pseudo_range] ? "" : "_rem"
+        base = "pseudo_range#{suffix}".to_sym
+        add_proc.call("phase_range#{suffix}".to_sym, 12, base)
+        add_proc.call(:cn, 15)
+        add_proc.call("pseudo_range_L2#{suffix}".to_sym, 17, base)
+        add_proc.call("phase_range_L2#{suffix}".to_sym, 18, base)
+        add_proc.call(:cn_L2, 20)
+        res
+      end
+    end
     module GPS_Ephemeris
       KEY2IDX = {:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
           :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
@@ -369,6 +409,16 @@ class RTCM3
       }
       add_proc.call(mt)
       case msg_num
+      when 1001..1004
+        nsat = values[4]
+        offset = 24 + mt[:bits_total]
+        add_proc.call(DataFrame.generate_prop(([{
+              1001 => (9..13).to_a,
+              1002 => (9..15).to_a,
+              1003 => (9..13).to_a + (16..19).to_a,
+              1004 => (9..20).to_a,
+            }[msg_num]] * nsat).flatten), offset)
+        attributes << GPS_Observation
       when 1019
         attributes << GPS_Ephemeris
       when 1020

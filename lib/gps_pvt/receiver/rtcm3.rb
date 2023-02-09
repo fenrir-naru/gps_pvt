@@ -30,6 +30,12 @@ class Receiver
       t_meas, meas = [nil, {}]
     }
     dt_threshold = GPS::Time::Seconds_week / 2
+    tow2t = proc{|tow_sec|
+      dt = tow_sec - ref_time.seconds 
+      GPS::Time::new(ref_time.week + if dt <= -dt_threshold then; 1
+            elsif dt >= dt_threshold then; -1
+            else; 0; end, tow_sec)
+    }
 
     while packet = rtcm3.read_packet
       msg_num = packet.message_number
@@ -40,6 +46,22 @@ class Receiver
         meas[msg_num] = meas2 unless meas2.empty?
       }
       case msg_num
+      when 1001..1004
+        t_meas2 = tow2t.call(parsed[2][0]) # DF004
+        ranges = parsed.ranges
+        item_size = ranges[:sat].size
+        [:sat, :pseudo_range, :phase_range, :cn].collect{|k|
+          ranges[k] || ([nil] * item_size)
+        }.transpose.each{|svid, pr, cpr, cn|
+          case svid
+          when 1..32; # GPS
+          when 40..58; svid += 80 # SBAS
+          else; next
+          end
+          meas2 << [svid, :L1_PSEUDORANGE, pr] if pr
+          meas2 << [svid, :L1_CARRIER_PHASE, cpr / GPS::SpaceNode.L1_WaveLength] if cpr
+          meas2 << [svid, :L1_SIGNAL_STRENGTH_dBHz, cn] if cn
+        }
       when 1019, 1044
         params = parsed.params
         if msg_num == 1044
@@ -89,11 +111,7 @@ class Receiver
         glonass_freq = nil
         case msg_num / 10 # check time of measurement
         when 107, 110, 111 # GPS, SBAS, QZSS
-          t_meas_sec = parsed[2][0] # DF004
-          dt = t_meas_sec - ref_time.seconds 
-          t_meas2 = GPS::Time::new(ref_time.week + if dt <= -dt_threshold then; 1
-                elsif dt >= dt_threshold then; -1
-                else; 0; end, t_meas_sec)
+          t_meas2 = tow2t.call(parsed[2][0]) # DF004
         when 108 # GLONASS
           utc_tod = parsed[3][0] - 60 * 60 * 3.0 # DF034 UTC(SU)+3hr, time of day[sec]
           t_meas2 = if t_meas then
