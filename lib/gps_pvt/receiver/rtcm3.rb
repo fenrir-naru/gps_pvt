@@ -36,6 +36,23 @@ class Receiver
             elsif dt >= dt_threshold then; -1
             else; 0; end, tow_sec)
     }
+    utc2t = proc{|utc_tod|
+      if t_meas then
+        delta = (t_meas.seconds - utc_tod).to_i % (60 * 60 * 24)
+        leap_sec = (delta >= (60 * 60 * 12)) ? delta - (60 * 60 * 12) : delta
+        t_meas
+      else
+        ref_dow, ref_tod = ref_time.seconds.divmod(60 * 60 * 24)
+        tod = utc_tod + leap_sec
+        tod_delta = ref_tod - tod
+        if tod_delta > 12 * 60 * 60 then
+          ref_dow -= 1
+        elsif tod_delta < -12 * 60 * 60 then
+          ref_dow += 1
+        end
+        GPS::Time::new(ref_time.week, 0) + tod + 60 * 60 * 24 * ref_dow
+      end
+    }
 
     while packet = rtcm3.read_packet
       msg_num = packet.message_number
@@ -60,6 +77,28 @@ class Receiver
           end
           meas2 << [svid, :L1_PSEUDORANGE, pr] if pr
           meas2 << [svid, :L1_CARRIER_PHASE, cpr / GPS::SpaceNode.L1_WaveLength] if cpr
+          meas2 << [svid, :L1_SIGNAL_STRENGTH_dBHz, cn] if cn
+        }
+      when 1009..1012
+        t_meas2 = utc2t.call(parsed[2][0] - 60 * 60 * 3) # DF034 UTC(SU)+3hr, time of day[sec]
+        ranges = parsed.ranges
+        item_size = ranges[:sat].size
+        [:sat, :freq_ch, :pseudo_range, :phase_range, :cn].collect{|k|
+          ranges[k] || ([nil] * item_size)
+        }.transpose.each{|svid, freq_ch, pr, cpr, cn|
+          case svid
+          when 1..24 # GLONASS
+            svid += 0x100
+            freq = GPS::SpaceNode_GLONASS::L1_frequency(freq_ch)
+            len = GPS::SpaceNode_GLONASS.light_speed / freq
+            meas2 << [svid, :L1_FREQUENCY, freq]
+            meas2 << [svid, :L1_CARRIER_PHASE, cpr / len] if cpr
+          when 40..58
+            svid += 80 # SBAS
+            meas2 << [svid, :L1_CARRIER_PHASE, cpr / GPS::SpaceNode.L1_WaveLength] if cpr
+          else; next
+          end
+          meas2 << [svid, :L1_PSEUDORANGE, pr] if pr
           meas2 << [svid, :L1_SIGNAL_STRENGTH_dBHz, cn] if cn
         }
       when 1019, 1044
@@ -113,22 +152,7 @@ class Receiver
         when 107, 110, 111 # GPS, SBAS, QZSS
           t_meas2 = tow2t.call(parsed[2][0]) # DF004
         when 108 # GLONASS
-          utc_tod = parsed[3][0] - 60 * 60 * 3.0 # DF034 UTC(SU)+3hr, time of day[sec]
-          t_meas2 = if t_meas then
-            delta = (t_meas.seconds - utc_tod).to_i % (60 * 60 * 24)
-            leap_sec = (delta >= (60 * 60 * 12)) ? delta - (60 * 60 * 12) : delta
-            t_meas
-          else
-            ref_dow, ref_tod = ref_time.seconds.divmod(60 * 60 * 24)
-            tod = utc_tod + leap_sec
-            tod_delta = ref_tod - tod
-            if tod_delta > 12 * 60 * 60 then
-              ref_dow -= 1
-            elsif tod_delta < -12 * 60 * 60 then
-              ref_dow += 1
-            end
-            GPS::Time::new(ref_time.week, 0) + tod + 60 * 60 * 24 * ref_dow
-          end
+          t_meas2 = utc2t.call(parsed[3][0] - 60 * 60 * 3) # DF034 UTC(SU)+3hr, time of day[sec]
           glonass_freq = critical{
             @solver.glonass_space_node.update_all_ephemeris(t_meas2)
             Hash[*(ranges[:sat_sig].collect{|svid, sig| svid}.uniq.collect{|svid|

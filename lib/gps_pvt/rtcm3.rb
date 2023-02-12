@@ -79,8 +79,22 @@ class RTCM3
         24 => 1,
         25 => num_gen.call(38, Rational(1, 10000)), # [m]
         34 => unum_gen.call(27, Rational(1, 1000)), # [sec]
+        35 => 5,
+        36 => 1,
+        37 => 3,
         38 => 6,
-        40 => 5,
+        39 => 1,
+        40 => [5, proc{|v| v - 7}],
+        41 => invalidate.call(unum_gen.call(25, Rational(2, 100)), 0x1000000), # [m]
+        42 => invalidate.call(num_gen.call(20, Rational(5, 10000)), 0x80000), # [m]
+        43 => 7,
+        44 => unum_gen.call(7, 599_584.916), # [m]
+        45 => invalidate.call(unum_gen.call(8, Rational(1, 4)), 0), # [db-Hz],
+        46 => 2,
+        47 => invalidate.call(num_gen.call(14, Rational(2, 100)), 0x2000), # [m]
+        48 => invalidate.call(num_gen.call(20, Rational(5, 10000)), 0x80000), # [m]
+        49 => 7,
+        50 => invalidate.call(unum_gen.call(8, Rational(1, 4)), 0), # [db-Hz]
         71 => 8,
         76 => 10,
         77 => proc{
@@ -222,6 +236,7 @@ class RTCM3
     MessageType = Hash[*({
       1001..1004 => (2..8).to_a,
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
+      1009..1012 => [2, 3, 34, 5, 35, 36, 37],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
       1043 => [2] + [:prn, :iodn, :tod, :ura, 
@@ -259,6 +274,30 @@ class RTCM3
         add_proc.call("pseudo_range_L2#{suffix}".to_sym, 17, base)
         add_proc.call("phase_range_L2#{suffix}".to_sym, 18, base)
         add_proc.call(:cn_L2, 20)
+        res
+      end
+    end
+    module GLONASS_Observation
+      def ranges
+        res = {
+          :sat => select{|v, df| df == 38}.transpose[0],
+          :freq_ch => select{|v, df| df == 40}.transpose[0],
+          :pseudo_range_rem => select{|v, df| df == 41}.transpose[0],
+        }
+        add_proc = proc{|k, df, base|
+          values = select{|v, df_| df_ == df}
+          next if values.empty?
+          res[k] = values.transpose[0]
+          res[k] = res[k].zip(res[base]).collect{|a, b| (a + b) rescue nil} if base
+        }
+        add_proc.call(:pseudo_range, 44, :pseudo_range_rem)
+        suffix = res[:pseudo_range] ? "" : "_rem"
+        base = "pseudo_range#{suffix}".to_sym
+        add_proc.call("phase_range#{suffix}".to_sym, 42, base)
+        add_proc.call(:cn, 45)
+        add_proc.call("pseudo_range_L2#{suffix}".to_sym, 47, base)
+        add_proc.call("phase_range_L2#{suffix}".to_sym, 48, base)
+        add_proc.call(:cn_L2, 50)
         res
       end
     end
@@ -419,6 +458,16 @@ class RTCM3
               1004 => (9..20).to_a,
             }[msg_num]] * nsat).flatten), offset)
         attributes << GPS_Observation
+      when 1009..1012
+        nsat = values[4]
+        offset = 24 + mt[:bits_total]
+        add_proc.call(DataFrame.generate_prop(([{
+              1009 => (38..43).to_a,
+              1010 => (38..45).to_a,
+              1011 => (38..43).to_a + (46..49).to_a,
+              1012 => (38..50).to_a,
+            }[msg_num]] * nsat).flatten), offset)
+        attributes << GLONASS_Observation
       when 1019
         attributes << GPS_Ephemeris
       when 1020
