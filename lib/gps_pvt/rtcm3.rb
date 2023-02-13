@@ -392,6 +392,29 @@ class RTCM3
       end
       SPEED_OF_LIGHT = 299_792_458
     end
+    module MSM1_2_3
+      include MSM
+      def ranges
+        sats, cells, offset = property.values_at(:sats, :cells, :header_items)
+        nsat, ncell = [sats.size, cells.size]
+        res = {:sat_sig => cells}
+        range_rough = cells.collect{|sat, sig| # DF398
+          self[offset + sats.find_index(sat)][0]
+        }
+        add_proc = proc{|idx_cell|
+          values = self[offset + (nsat * 1) + (ncell * idx_cell), ncell]
+          next if values.empty? 
+          k = {400 => :pseudo_range_rem, 401 => :phase_range_rem}[values[0][1]]
+          next unless k
+          res[k] = values.zip(range_rough).collect{|(v, df), v_base|
+            ((v_base + v) * SPEED_OF_LIGHT) rescue nil
+          }
+        }
+        add_proc.call(0)
+        add_proc.call(1)
+        res
+      end
+    end
     module MSM4_6
       include MSM
       def ranges
@@ -492,6 +515,15 @@ class RTCM3
           add_proc.call(msm_sig, offset)
         }
         case msg_num % 10
+        when 1
+          attributes << MSM1_2_3
+          msm_proc.call([398], [400])
+        when 2
+          attributes << MSM1_2_3
+          msm_proc.call([398], [401, 402, 420])
+        when 3
+          attributes << MSM1_2_3
+          msm_proc.call([398], [400, 401, 402, 420])
         when 4
           attributes << MSM4_6
           msm_proc.call([397, 398], [400, 401, 402, 420, 403])
