@@ -392,16 +392,16 @@ class RTCM3
       end
       SPEED_OF_LIGHT = 299_792_458
     end
-    module MSM4
+    module MSM4_6
       include MSM
       def ranges
         sats, cells, offset = property.values_at(:sats, :cells, :header_items)
         nsat, ncell = [sats.size, cells.size]
         range_rough = self[offset, nsat] # DF397
         range_rough2 = self[offset + (nsat * 1), nsat] # DF398
-        range_fine = self[offset + (nsat * 2), ncell] # DF400
-        phase_fine = self[offset + (nsat * 2) + (ncell * 1), ncell] # DF401
-        cn = self[offset + (nsat * 2) + (ncell * 4), ncell] # DF403
+        range_fine = self[offset + (nsat * 2), ncell] # DF400/405
+        phase_fine = self[offset + (nsat * 2) + (ncell * 1), ncell] # DF401/406
+        cn = self[offset + (nsat * 2) + (ncell * 4), ncell] # DF403/408
         Hash[*([:sat_sig, :pseudo_range, :phase_range, :cn].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
@@ -412,7 +412,7 @@ class RTCM3
             }.transpose).flatten(1))]
       end
     end
-    module MSM7
+    module MSM5_7
       include MSM
       def ranges
         sats, cells, offset = property.values_at(:sats, :cells, :header_items)
@@ -420,9 +420,9 @@ class RTCM3
         range_rough = self[offset, nsat] # DF397
         range_rough2 = self[offset + (nsat * 2), nsat] # DF398
         delta_rough = self[offset + (nsat * 3), nsat] # DF399
-        range_fine = self[offset + (nsat * 4), ncell] # DF405
-        phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF406
-        cn = self[offset + (nsat * 4) + (ncell * 4), ncell] # DF403
+        range_fine = self[offset + (nsat * 4), ncell] # DF400/405
+        phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF401/406
+        cn = self[offset + (nsat * 4) + (ncell * 4), ncell] # DF403/408
         delta_fine = self[offset + (nsat * 4) + (ncell * 5), ncell] # DF404
         Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
@@ -484,24 +484,26 @@ class RTCM3
         add_proc.call(df396, offset)
         ncell = values[-1].size
         offset += df396[:bits_total]
+        msm_proc = proc{|sat_data, signal_data|
+          msm_sat = DataFrame.generate_prop(([sat_data] * nsat).transpose.flatten(1))
+          add_proc.call(msm_sat, offset)
+          offset += msm_sat[:bits_total]
+          msm_sig = DataFrame.generate_prop(([signal_data] * ncell).transpose.flatten(1))
+          add_proc.call(msm_sig, offset)
+        }
         case msg_num % 10
         when 4
-          attributes << MSM4
-          msm4_sat = DataFrame.generate_prop(([[397, 398]] * nsat).transpose.flatten(1))
-          add_proc.call(msm4_sat, offset)
-          offset += msm4_sat[:bits_total]
-          msm4_sig = DataFrame.generate_prop(
-              ([[400, 401, 402, 420, 403]] * ncell).transpose.flatten(1))
-          add_proc.call(msm4_sig, offset)
+          attributes << MSM4_6
+          msm_proc.call([397, 398], [400, 401, 402, 420, 403])
+        when 5
+          attributes << MSM5_7
+          msm_proc.call([397, [:uint, 4], 398, 399], [400, 401, 402, 420, 403, 404])
+        when 6
+          attributes << MSM4_6
+          msm_proc.call([397, 398], [405, 406, 407, 420, 408])
         when 7
-          attributes << MSM7
-          msm7_sat = DataFrame.generate_prop(
-              ([[397, [:uint, 4], 398, 399]] * nsat).transpose.flatten(1))
-          add_proc.call(msm7_sat, offset)
-          offset += msm7_sat[:bits_total]
-          msm7_sig = DataFrame.generate_prop(
-              ([[405, 406, 407, 420, 408, 404]] * ncell).transpose.flatten(1))
-          add_proc.call(msm7_sig, offset)
+          attributes << MSM5_7
+          msm_proc.call([397, [:uint, 4], 398, 399], [405, 406, 407, 420, 408, 404])
         else
           attributes << MSM # for #range
         end
