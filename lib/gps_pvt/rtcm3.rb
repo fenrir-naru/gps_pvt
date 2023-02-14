@@ -243,6 +243,7 @@ class RTCM3
           [:xy] * 2, :z, [:dxy] * 2, :dz, [:ddxy] * 2, :ddz,
           :agf0, :agf1].flatten.collect{|k| "SBAS_#{k}".to_sym}, # @see BNC Ntrip client RTCM3Decorder.cpp
       1044 => [2, (429..457).to_a].flatten, # 485 bits
+      1070..1229 => [2, [:uint, 12], [:uint, 30], 393], # 55 bits part of messages will be overwritten
       1071..1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
       1081..1087 => [2, 3, 416, 34, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-93
       1091..1097 => [2, 3, 248, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-98

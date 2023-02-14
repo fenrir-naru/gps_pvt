@@ -57,6 +57,7 @@ RSpec::describe GPS_PVT::RTCM3 do
         1101..1107 => 169,
         1111..1117 => 169,
         1121..1127 => 169,
+        1070..1229 => 55,
       }.select{|k, v| k === mt}.values[0])
     }
   end
