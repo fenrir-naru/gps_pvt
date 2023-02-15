@@ -18,6 +18,13 @@ class Receiver
     else; raise "reference time (#{ref_time}) should be GPS::Time or Time"
     end
     leap_sec = ref_time.leap_seconds
+    ref_pos = opt[:ref_pos] || if src_io.respond_to?(:property) then
+      Coordinate::LLH::new(*(src_io.property.values_at(:latitude, :longitude).collect{|v|
+        v.to_f / 180 * Math::PI
+      } + [0])).xyz
+    else 
+      defined?(@base_station) ? @base_station : nil
+    end
     after_run = b || proc{|pvt| puts pvt.to_s if pvt}
     t_meas, meas = [nil, {}]
     # meas := {msg_num => [[], ...]} due to duplicated observation such as 1074 and 1077
@@ -26,7 +33,9 @@ class Receiver
       meas.sort.each{|k, values| # larger msg_num entries have higher priority
         values.each{|prn_k_v| meas_.add(*prn_k_v)}
       }
-      after_run.call(run(meas_, t_meas), [meas_, ref_time = t_meas]) if t_meas
+      pvt = nil
+      after_run.call(pvt = run(meas_, t_meas), [meas_, ref_time = t_meas]) if t_meas
+      ref_pos = Coordinate::XYZ::new(pvt.xyz) if pvt && pvt.position_solved? # TODO pvt.xyz returns const &
       t_meas, meas = [nil, {}]
     }
     dt_threshold = GPS::Time::Seconds_week / 2
@@ -53,6 +62,49 @@ class Receiver
         GPS::Time::new(ref_time.week, 0) + tod + 60 * 60 * 24 * ref_dow
       end
     }
+    restore_ranges = proc{
+      c_1ms = 299_792.458
+      threshold = c_1ms / 10 # 100 us =~ 30 km
+      cache = {} # {[sys, svid] => [range, t], ...}
+      get_rough = proc{|t, sys, svid_list|
+        next unless sn = case sys
+        when :GPS, :QZSS; @solver.gps_space_node
+        when :SBAS; @solver.sbas_space_node
+        when :GLONASS; @solver.glonass_space_node
+        end
+        critical{
+          sn.update_all_ephemeris(t)
+          svid_list.each{|svid|
+            eph = sn.ephemeris(svid)
+            cache[[sys, svid]] = [if eph.valid?(t) then
+              sv_pos, clk_err = eph.constellation(t).values_at(0, 2)
+              sv_pos.dist(ref_pos) - (clk_err * c_1ms * 1E3)
+            end, t]
+          }
+        }
+      }
+      proc{|t, sys, svid_list, ranges_rem|
+        get_rough.call(t, sys, svid_list.uniq.reject{|svid|
+          range, t2 = cache[[sys, svid]]
+          range && ((t2 - t).abs <= 60)
+        })
+        ranges_rem.zip(svid_list).collect{|rem_in, svid|
+          range_ref, t2 = cache[[sys, svid]]
+          next nil unless range_ref
+          q, rem_ref = range_ref.divmod(c_1ms)
+          delta = rem_in - rem_ref 
+          res = if delta.abs <= threshold then
+            q * c_1ms + rem_in
+          elsif -delta + c_1ms <= threshold
+            (q - 1) * c_1ms + rem_in
+          elsif delta + c_1ms <= threshold
+            (q + 1) * c_1ms + rem_in
+          end
+          #p [sys, svid, q, rem_in, rem_ref, res]
+          (cache[[sys, svid]] = [res, t])[0]
+        }
+      }
+    }.call
 
     while packet = rtcm3.read_packet
       msg_num = packet.message_number
@@ -162,21 +214,26 @@ class Receiver
             }.compact.flatten(1))]
           }
         end
-        sig_list, svid_offset = case msg_num / 10
+        sig_list, sys, svid_offset = case msg_num / 10
           when 107 # GPS
             [{2 => [:L1, GPS::SpaceNode.L1_WaveLength],
                 15 => [:L2CM, GPS::SpaceNode.L2_WaveLength],
-                16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, 0]
+                16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, :GPS, 0]
           when 108 # GLONASS
-            [{2 => [:L1, nil]}, 0x100]
+            [{2 => [:L1, nil]}, :GLONASS, 0x100]
           when 110 # SBAS
-            [{2 => [:L1, GPS::SpaceNode.L1_WaveLength]}, 120]
+            [{2 => [:L1, GPS::SpaceNode.L1_WaveLength]}, :SBAS, 120]
           when 111 # QZSS
             [{2 => [:L1, GPS::SpaceNode.L1_WaveLength],
                 15 => [:L2CM, GPS::SpaceNode.L2_WaveLength],
-                16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, 192]
-          else; [{}, 0]
+                16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, :QZSS, 192]
+          else; [{}, nil, 0]
         end
+        svid_list = ranges[:sat_sig].collect{|sat, sig| (sat + svid_offset) & 0xFF}
+        ranges[:pseudo_range] ||= restore_ranges.call(
+          t_meas2, sys, svid_list, ranges[:pseudo_range_rem]) if ranges[:pseudo_range_rem]
+        ranges[:phase_range] ||= restore_ranges.call(
+          t_meas2, sys, svid_list, ranges[:phase_range_rem]) if ranges[:phase_range_rem]
         item_size = ranges[:sat_sig].size
         [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].collect{|k|
           ranges[k] || ([nil] * item_size)
