@@ -416,6 +416,7 @@ class Receiver
     opt = options[0] || {}
     case sys
     when :GPS, :QZSS
+      return unless bcast_data.size == 10 # 8 for QZSS(SAIF)
       return unless eph = @eph_list[prn]
       sn = @solver.gps_space_node
       subframe, iodc_or_iode = eph.parse(bcast_data)
