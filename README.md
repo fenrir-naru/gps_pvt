@@ -42,7 +42,7 @@ The format of file is automatically determined with its extension, such as .ubx 
 | --sp3=file_or_URI | [Standard Product 3 Orbit Format](https://files.igs.org/pub/data/format/sp3c.txt) (supported gps_pvt version >= 0.6.0) |
 | --antex=file_or_URI | [Antenna Exchange Format](https://igs.org/wg/antenna#files) (supported gps_pvt version >= 0.6.0) |
 | --rinex_clk=file_or_URI | [RINEX clock](https://files.igs.org/pub/data/format/rinex_clock304.txt) file (supported gps_pvt version >= 0.7.0) |
-| <a name=opt_rtcm3>--rtcm3=file_or_URI</a> | [RTCM 10403.x](https://rtcm.myshopify.com/collections/differential-global-navigation-satellite-dgnss-standards). (supported gps_pvt version >= 0.9.0) The latest version uses message type Observation(GPS: 1002, 1004; GLONASS: 1010, 1012), Epehemris(GPS: 1019; GLOANSS: 1020; SBAS: 1043; QZSS: 1044), MSM(GPS: 1074..1077; GLONASS: 1084..1087; SBAS: 1104..1107; QZSS: 1114..1117) |
+| <a name=opt_rtcm3>--rtcm3=file_or_URI</a> | [RTCM 10403.x](https://rtcm.myshopify.com/collections/differential-global-navigation-satellite-dgnss-standards). (supported gps_pvt version >= 0.9.0) The latest version uses message type Observation(GPS: 1001..1004; GLONASS: 1009..1012), Epehemris(GPS: 1019; GLOANSS: 1020; SBAS: 1043; QZSS: 1044), MSM(GPS: 1071..1077; GLONASS: 1081..1087; SBAS: 1101..1107; QZSS: 1111..1117) |
 
 Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
