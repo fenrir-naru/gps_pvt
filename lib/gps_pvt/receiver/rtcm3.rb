@@ -66,15 +66,18 @@ class Receiver
       c_1ms = 299_792.458
       threshold = c_1ms / 10 # 100 us =~ 30 km
       cache = {} # {[sys, svid] => [range, t], ...}
-      get_rough = proc{|t, sys, svid_list|
-        next unless sn = case sys
-        when :GPS, :QZSS; @solver.gps_space_node
-        when :SBAS; @solver.sbas_space_node
-        when :GLONASS; @solver.glonass_space_node
-        end
+      get_rough = proc{|t, sys_svid_list|
+        sn_list = sys_svid_list.collect{|sys, svid|
+          case sys
+          when :GPS, :QZSS; @solver.gps_space_node
+          when :SBAS; @solver.sbas_space_node
+          when :GLONASS; @solver.glonass_space_node
+          end
+        }
         critical{
-          sn.update_all_ephemeris(t)
-          svid_list.each{|svid|
+          sn_list.uniq.compact{|sn| sn.update_all_ephemeris(t)}
+          sys_svid_list.zip(sn_list).each{|(sys, svid), sn|
+            next unless sn
             eph = sn.ephemeris(svid)
             cache[[sys, svid]] = [if eph.valid?(t) then
               sv_pos, clk_err = eph.constellation(t).values_at(0, 2)
@@ -83,12 +86,13 @@ class Receiver
           }
         }
       }
-      proc{|t, sys, svid_list, ranges_rem|
-        get_rough.call(t, sys, svid_list.uniq.reject{|svid|
+      per_kind = proc{|t, sys_svid_list, ranges_rem|
+        get_rough.call(t, sys_svid_list.uniq.reject{|sys, svid|
+          next true unless sys
           range, t2 = cache[[sys, svid]]
           range && ((t2 - t).abs <= 60)
         })
-        ranges_rem.zip(svid_list).collect{|rem_in, svid|
+        ranges_rem.zip(sys_svid_list).collect{|rem_in, (sys, svid)|
           range_ref, t2 = cache[[sys, svid]]
           next nil unless range_ref
           q, rem_ref = range_ref.divmod(c_1ms)
@@ -102,6 +106,16 @@ class Receiver
           end
           #p [sys, svid, q, rem_in, rem_ref, res]
           (cache[[sys, svid]] = [res, t])[0]
+        }
+      }
+      proc{|t, sys_svid_list, ranges|
+        [
+          :pseudo_range, # for MT 1001/3/9/11, MSM1/3
+          :phase_range, # for MT 1003/11, MSM2/3
+        ].each{|k|
+          next if ranges[k]
+          k_rem = "#{k}_rem".to_sym
+          ranges[k] = per_kind.call(t, sys_svid_list, ranges[k_rem]) if ranges[k_rem]
         }
       }
     }.call
@@ -118,15 +132,19 @@ class Receiver
       when 1001..1004
         t_meas2 = tow2t.call(parsed[2][0]) # DF004
         ranges = parsed.ranges
-        item_size = ranges[:sat].size
-        [:sat, :pseudo_range, :phase_range, :cn].collect{|k|
-          ranges[k] || ([nil] * item_size)
-        }.transpose.each{|svid, pr, cpr, cn|
+        sys_svid_list = ranges[:sat].collect{|svid|
           case svid
-          when 1..32; # GPS
-          when 40..58; svid += 80 # SBAS
-          else; next
+          when 1..32; [:GPS, svid]
+          when 40..58; [:SBAS, svid + 80]
+          else; [nil, svid]
           end
+        }
+        restore_ranges.call(t_meas2, sys_svid_list, ranges)
+        item_size = sys_svid_list.size
+        ([sys_svid_list] + [:pseudo_range, :phase_range, :cn].collect{|k|
+          ranges[k] || ([nil] * item_size)
+        }).transpose.each{|(sys, svid), pr, cpr, cn|
+          next unless sys
           meas2 << [svid, :L1_PSEUDORANGE, pr] if pr
           meas2 << [svid, :L1_CARRIER_PHASE, cpr / GPS::SpaceNode.L1_WaveLength] if cpr
           meas2 << [svid, :L1_SIGNAL_STRENGTH_dBHz, cn] if cn
@@ -134,19 +152,26 @@ class Receiver
       when 1009..1012
         t_meas2 = utc2t.call(parsed[2][0] - 60 * 60 * 3) # DF034 UTC(SU)+3hr, time of day[sec]
         ranges = parsed.ranges
-        item_size = ranges[:sat].size
-        [:sat, :freq_ch, :pseudo_range, :phase_range, :cn].collect{|k|
-          ranges[k] || ([nil] * item_size)
-        }.transpose.each{|svid, freq_ch, pr, cpr, cn|
+        sys_svid_list = ranges[:sat].collect{|svid|
           case svid
-          when 1..24 # GLONASS
+          when 1..24; [:GLONASS, svid]
+          when 40..58; [:SBAS, svid + 80]
+          else; [nil, svid]
+          end
+        }
+        restore_ranges.call(t_meas2, sys_svid_list, ranges)
+        item_size = sys_svid_list.size
+        ([sys_svid_list] + [:freq_ch, :pseudo_range, :phase_range, :cn].collect{|k|
+          ranges[k] || ([nil] * item_size)
+        }).transpose.each{|(sys, svid), freq_ch, pr, cpr, cn|
+          case sys
+          when :GLONASS
             svid += 0x100
             freq = GPS::SpaceNode_GLONASS::L1_frequency(freq_ch)
             len = GPS::SpaceNode_GLONASS.light_speed / freq
             meas2 << [svid, :L1_FREQUENCY, freq]
             meas2 << [svid, :L1_CARRIER_PHASE, cpr / len] if cpr
-          when 40..58
-            svid += 80 # SBAS
+          when :SBAS
             meas2 << [svid, :L1_CARRIER_PHASE, cpr / GPS::SpaceNode.L1_WaveLength] if cpr
           else; next
           end
@@ -229,12 +254,9 @@ class Receiver
                 16 => [:L2CL, GPS::SpaceNode.L2_WaveLength]}, :QZSS, 192]
           else; [{}, nil, 0]
         end
-        svid_list = ranges[:sat_sig].collect{|sat, sig| (sat + svid_offset) & 0xFF}
-        ranges[:pseudo_range] ||= restore_ranges.call(
-          t_meas2, sys, svid_list, ranges[:pseudo_range_rem]) if ranges[:pseudo_range_rem]
-        ranges[:phase_range] ||= restore_ranges.call(
-          t_meas2, sys, svid_list, ranges[:phase_range_rem]) if ranges[:phase_range_rem]
-        item_size = ranges[:sat_sig].size
+        sys_svid_list = ranges[:sat_sig].collect{|sat, sig| [sys, (sat + svid_offset) & 0xFF]}
+        restore_ranges.call(t_meas2, sys_svid_list, ranges)
+        item_size = sys_svid_list.size
         [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].collect{|k|
           ranges[k] || ([nil] * item_size)
         }.transpose.each{|(svid, sig), pr, cpr, dr, cn|
