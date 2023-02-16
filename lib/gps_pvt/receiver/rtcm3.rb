@@ -178,6 +178,8 @@ class Receiver
           meas2 << [svid, :L1_PSEUDORANGE, pr] if pr
           meas2 << [svid, :L1_SIGNAL_STRENGTH_dBHz, cn] if cn
         }
+      when 1013
+        leap_sec = parsed[5][0]
       when 1019, 1044
         params = parsed.params
         if msg_num == 1044

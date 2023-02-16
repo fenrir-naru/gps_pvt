@@ -95,6 +95,13 @@ class RTCM3
         48 => invalidate.call(num_gen.call(20, Rational(5, 10000)), 0x80000), # [m]
         49 => 7,
         50 => invalidate.call(unum_gen.call(8, Rational(1, 4)), 0), # [db-Hz]
+        51 => 16,
+        52 => 17,
+        53 => 5,
+        54 => 8,
+        55 => 12,
+        56 => 1,
+        57 => 16,
         71 => 8,
         76 => 10,
         77 => proc{
@@ -237,6 +244,7 @@ class RTCM3
       1001..1004 => (2..8).to_a,
       1005 => [2, 3, 21, 22, 23, 24, 141, 25, 142, [1, 1], 26, 364, 27],
       1009..1012 => [2, 3, 34, 5, 35, 36, 37],
+      1013 => [2, 3, 51, 52, 53, 54],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
       1043 => [2] + [:prn, :iodn, :tod, :ura, 
@@ -492,6 +500,9 @@ class RTCM3
               1012 => (38..50).to_a,
             }[msg_num]] * nsat).flatten), offset)
         attributes << GLONASS_Observation
+      when 1013
+        add_proc.call(DataFrame.generate_prop(
+            ((55..57).to_a * values[4]).flatten), 24 + mt[:bits_total])
       when 1019
         attributes << GPS_Ephemeris
       when 1020
