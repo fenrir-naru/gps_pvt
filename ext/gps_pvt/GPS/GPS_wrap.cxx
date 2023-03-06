@@ -1895,26 +1895,28 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_int swig_types[45]
 #define SWIGTYPE_p_int_t swig_types[46]
 #define SWIGTYPE_p_llh_t swig_types[47]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[48]
-#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[49]
-#define SWIGTYPE_p_p_double swig_types[50]
-#define SWIGTYPE_p_range_correction_list_t swig_types[51]
-#define SWIGTYPE_p_s16_t swig_types[52]
-#define SWIGTYPE_p_s32_t swig_types[53]
-#define SWIGTYPE_p_s8_t swig_types[54]
-#define SWIGTYPE_p_satellites_t swig_types[55]
-#define SWIGTYPE_p_self_t swig_types[56]
-#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[57]
-#define SWIGTYPE_p_super_t swig_types[58]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[59]
-#define SWIGTYPE_p_u16_t swig_types[60]
-#define SWIGTYPE_p_u32_t swig_types[61]
-#define SWIGTYPE_p_u8_t swig_types[62]
-#define SWIGTYPE_p_uint_t swig_types[63]
-#define SWIGTYPE_p_unsigned_int swig_types[64]
-#define SWIGTYPE_p_xyz_t swig_types[65]
-static swig_type_info *swig_types[67];
-static swig_module_info swig_module = {swig_types, 66, 0, 0, 0, 0};
+#define SWIGTYPE_p_native_exception swig_types[48]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t swig_types[49]
+#define SWIGTYPE_p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t swig_types[50]
+#define SWIGTYPE_p_p_double swig_types[51]
+#define SWIGTYPE_p_range_correction_list_t swig_types[52]
+#define SWIGTYPE_p_s16_t swig_types[53]
+#define SWIGTYPE_p_s32_t swig_types[54]
+#define SWIGTYPE_p_s8_t swig_types[55]
+#define SWIGTYPE_p_satellites_t swig_types[56]
+#define SWIGTYPE_p_self_t swig_types[57]
+#define SWIGTYPE_p_std__exception swig_types[58]
+#define SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t swig_types[59]
+#define SWIGTYPE_p_super_t swig_types[60]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[61]
+#define SWIGTYPE_p_u16_t swig_types[62]
+#define SWIGTYPE_p_u32_t swig_types[63]
+#define SWIGTYPE_p_u8_t swig_types[64]
+#define SWIGTYPE_p_uint_t swig_types[65]
+#define SWIGTYPE_p_unsigned_int swig_types[66]
+#define SWIGTYPE_p_xyz_t swig_types[67]
+static swig_type_info *swig_types[69];
+static swig_module_info swig_module = {swig_types, 68, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2455,11 +2457,12 @@ struct GPS_User_PVT
     ERROR_VELOCITY_LS,
   };
   int error_code() const {return (int)(base_t::error_code);}
-  const GPS_Time<FloatT> &receiver_time() const {return base_t::receiver_time;}
-  const System_XYZ<FloatT, WGS84> &xyz() const {return base_t::user_position.xyz;}
-  const System_LLH<FloatT, WGS84> &llh() const {return base_t::user_position.llh;}
+  // Returning Type because returning const Type & causes reference problem after GC
+  GPS_Time<FloatT> receiver_time() const {return base_t::receiver_time;}
+  System_XYZ<FloatT, WGS84> xyz() const {return base_t::user_position.xyz;}
+  System_LLH<FloatT, WGS84> llh() const {return base_t::user_position.llh;}
   const FloatT &receiver_error() const {return base_t::receiver_error;}
-  const System_ENU<FloatT, WGS84> &velocity() const {return base_t::user_velocity_enu;}
+  System_ENU<FloatT, WGS84> velocity() const {return base_t::user_velocity_enu;}
   const FloatT &receiver_error_rate() const {return base_t::receiver_error_rate;}
   const FloatT &gdop() const {return base_t::dop.g;}
   const FloatT &pdop() const {return base_t::dop.p;}
@@ -3175,6 +3178,56 @@ SWIG_AsVal_double (VALUE obj, double *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_std_tm (VALUE obj, std::tm *val) {
+
+  int *dst[] = {
+    &(val->tm_year),
+    &(val->tm_mon),
+    &(val->tm_mday),
+    &(val->tm_hour),
+    &(val->tm_min),
+    &(val->tm_sec),
+  };
+  if(RB_TYPE_P(obj, T_ARRAY)){
+    int i_max(RARRAY_LEN(obj));
+    if(i_max > sizeof(dst) / sizeof(dst[0])){return SWIG_ERROR;}
+    VALUE obj_i;
+    int v;
+    for(int i(0); i < i_max; ++i){
+      obj_i = RARRAY_AREF(obj, i);
+      if(SWIG_IsOK(SWIG_AsVal_int (obj_i, &v))){
+        if(dst[i] == &(val->tm_year)){
+          *dst[i] = v - 1900;
+        }else if(dst[i] == &(val->tm_mon)){
+          *dst[i] = v - 1;
+        }else{
+          *dst[i] = v;
+        }
+      }else{
+        SWIG_exception(SWIG_TypeError, 
+            std::string("Unexpected input [").append(std::to_string(i)).append("]: ")
+              .append(inspect_str(obj_i)).c_str());
+      }
+    }
+    return SWIG_OK;
+  }
+
+  return SWIG_ERROR;
+}
+
+
+SWIGINTERNINLINE VALUE
+SWIG_From_std_tm  (const std::tm &value){
+  VALUE res(SWIG_From_int  (value.tm_year + 1900));
+  res = SWIG_Ruby_AppendOutput(res, SWIG_From_int  (value.tm_mon + 1));
+  res = SWIG_Ruby_AppendOutput(res, SWIG_From_int  (value.tm_mday));
+  res = SWIG_Ruby_AppendOutput(res, SWIG_From_int  (value.tm_hour));
+  res = SWIG_Ruby_AppendOutput(res, SWIG_From_int  (value.tm_min));
+  return SWIG_Ruby_AppendOutput(res, SWIG_From_int  (value.tm_sec));
+}
+
+
 /*@SWIG:/usr/local/share/swig/4.0.2/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
 SWIGINTERN VALUE SWIG_AUX_NUM2ULONG(VALUE arg)
 {
@@ -3653,7 +3706,7 @@ SWIGINTERN GPS_Ionospheric_UTC_Parameters< double > GPS_Ionospheric_UTC_Paramete
     typedef typename GPS_SpaceNode<double>
         ::BroadcastedMessage<unsigned int, 30> parser_t;
     if((parser_t::subframe_id(buf) != 4) || (parser_t::sv_page_id(buf) != 56)){
-      throw std::runtime_error("Not valid data");
+      throw std::invalid_argument("Not valid data");
     }
     typename GPS_SpaceNode<double>::Ionospheric_UTC_Parameters::raw_t raw;
     raw.update<2, 0>(buf);
@@ -4045,7 +4098,7 @@ SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GPS_Ephemeris_Sl_double_
 
     }
   
-SWIGINTERN void GPS_Measurement_Sl_double_Sg__each(GPS_Measurement< double > const *self){
+SWIGINTERN void GPS_Measurement_Sl_double_Sg__each(GPS_Measurement< double > const *self,void const *check_block){
     for(typename GPS_Measurement<double>::items_t::const_iterator
           it(self->items.begin()), it_end(self->items.end());
         it != it_end; ++it){
@@ -4144,7 +4197,7 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
         if((!RB_TYPE_P(res_hook, T_ARRAY))
             || (RARRAY_LEN(res_hook) != prop_items)){
           throw std::runtime_error(
-              std::string("[d * ").append(std::to_string(prop_items))
+              std::string("relative_property() returning [d * ").append(std::to_string(prop_items))
                 .append("] is expected (d: " "double" "), however ")
                 .append(inspect_str(res_hook)));
         }
@@ -4152,7 +4205,7 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
           VALUE v(RARRAY_AREF(res_hook, i));
           if(!SWIG_IsOK(swig::asval(v, &res.values[i]))){
             throw std::runtime_error(
-                std::string("double" " is exepcted, however ")
+                std::string("relative_property() returning " "double" " is exepcted, however ")
                   .append(inspect_str(v))
                   .append(" @ [").append(std::to_string(i)).append("]"));
           }
@@ -4270,7 +4323,7 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
       list_t input;
       if(update){
         if(!RB_TYPE_P(hash, T_HASH)){
-          throw std::runtime_error(
+          throw std::invalid_argument(
               std::string("Hash is expected, however ").append(inspect_str(hash)));
         }
         for(std::size_t i(0); i < sizeof(k_root) / sizeof(k_root[0]); ++i){
@@ -4754,7 +4807,7 @@ SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GLONASS_Ephemeris_Sl_dou
         pv.position, pv.velocity, self->clock_error(t_tx), self->clock_error_dot()};
     return res;
   }
-SWIGINTERN void RINEX_Observation_Sl_double_Sg__read(char const *fname){
+SWIGINTERN void RINEX_Observation_Sl_double_Sg__read(char const *fname,void const *check_block){
     std::fstream fin(fname, std::ios::in | std::ios::binary);
     struct reader_t : public RINEX_OBS_Reader<double> {
       typedef RINEX_OBS_Reader<double> super_t;
@@ -5001,17 +5054,8 @@ _wrap_new_PushableData(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (PushableData *)new PushableData();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (PushableData *)new PushableData();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -5123,16 +5167,7 @@ _wrap_Time_is_leap_year(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< int >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = (bool)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR is_leap_year((int const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR is_leap_year((int const &)*arg1);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -5178,16 +5213,7 @@ _wrap_Time_leap_year_prop__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< bool >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR leap_year_prop((int const &)*arg1,(bool const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR leap_year_prop((int const &)*arg1,(bool const &)*arg2);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >::leap_year_prop_res_t(static_cast< const GPS_Time< double >::leap_year_prop_res_t& >(result))), SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5213,16 +5239,7 @@ _wrap_Time_leap_year_prop__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< int >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR leap_year_prop((int const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR leap_year_prop((int const &)*arg1);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >::leap_year_prop_res_t(static_cast< const GPS_Time< double >::leap_year_prop_res_t& >(result))), SWIGTYPE_p_GPS_TimeT_double_t__leap_year_prop_res_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5438,17 +5455,8 @@ _wrap_new_Time__SWIG_0(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_Time< double > *)new GPS_Time< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double > *)new GPS_Time< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -5473,17 +5481,8 @@ _wrap_new_Time__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","GPS_Time<(double)>", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double > *)new GPS_Time< double >((GPS_Time< double > const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double > *)new GPS_Time< double >((GPS_Time< double > const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -5506,33 +5505,8 @@ _wrap_new_Time__SWIG_2(int argc, VALUE *argv, VALUE self) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
   {
-    arg1 = &temp1;
-    int *dst[] = {
-      &(temp1.tm_year),
-      &(temp1.tm_mon),
-      &(temp1.tm_mday),
-      &(temp1.tm_hour),
-      &(temp1.tm_min),
-      &(temp1.tm_sec),
-    };
-    int i_max(sizeof(dst) / sizeof(dst[0]));
-    if(i_max > RARRAY_LEN(argv[0])){
-      i_max = RARRAY_LEN(argv[0]);
-    }
-    for(int i(0); i < i_max; ++i){
-      VALUE obj = rb_ary_entry(argv[0], i);
-      int v;
-      if(SWIG_IsOK(SWIG_AsVal_int (obj, &v))){
-        if(dst[i] == &(temp1.tm_year)){
-          *dst[i] = v - 1900;
-        }else if(dst[i] == &(temp1.tm_mon)){
-          *dst[i] = v - 1;
-        }else{
-          *dst[i] = v;
-        }
-      }else{
-        SWIG_exception(SWIG_TypeError, "int is expected");
-      }
+    if(SWIG_AsVal_std_tm (argv[0], arg1 = &temp1) != SWIG_OK){
+      SWIG_exception(SWIG_TypeError, "int[1..6] is expected");
     }
   }
   ecode2 = SWIG_AsVal_double(argv[1], &val2);
@@ -5541,17 +5515,8 @@ _wrap_new_Time__SWIG_2(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double > *)new GPS_Time< double >((std::tm const &)*arg1,(GPS_Time< double >::float_t const &)*arg2);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double > *)new GPS_Time< double >((std::tm const &)*arg1,(GPS_Time< double >::float_t const &)*arg2);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -5570,46 +5535,12 @@ _wrap_new_Time__SWIG_3(int argc, VALUE *argv, VALUE self) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
   {
-    arg1 = &temp1;
-    int *dst[] = {
-      &(temp1.tm_year),
-      &(temp1.tm_mon),
-      &(temp1.tm_mday),
-      &(temp1.tm_hour),
-      &(temp1.tm_min),
-      &(temp1.tm_sec),
-    };
-    int i_max(sizeof(dst) / sizeof(dst[0]));
-    if(i_max > RARRAY_LEN(argv[0])){
-      i_max = RARRAY_LEN(argv[0]);
-    }
-    for(int i(0); i < i_max; ++i){
-      VALUE obj = rb_ary_entry(argv[0], i);
-      int v;
-      if(SWIG_IsOK(SWIG_AsVal_int (obj, &v))){
-        if(dst[i] == &(temp1.tm_year)){
-          *dst[i] = v - 1900;
-        }else if(dst[i] == &(temp1.tm_mon)){
-          *dst[i] = v - 1;
-        }else{
-          *dst[i] = v;
-        }
-      }else{
-        SWIG_exception(SWIG_TypeError, "int is expected");
-      }
+    if(SWIG_AsVal_std_tm (argv[0], arg1 = &temp1) != SWIG_OK){
+      SWIG_exception(SWIG_TypeError, "int[1..6] is expected");
     }
   }
-  {
-    try {
-      result = (GPS_Time< double > *)new GPS_Time< double >((std::tm const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double > *)new GPS_Time< double >((std::tm const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -5644,16 +5575,7 @@ _wrap_Time_now__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< GPS_Time< double >::float_t >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR now((double const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR now((double const &)*arg1);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5669,16 +5591,7 @@ _wrap_Time_now__SWIG_1(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR now();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR now();
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5744,16 +5657,7 @@ _wrap_Time_serialize(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","serialize", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->serialize();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->serialize();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -5795,16 +5699,7 @@ _wrap_Time___add__(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = ((GPS_Time< double > const *)arg1)->operator +((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_Time< double > const *)arg1)->operator +((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5847,16 +5742,7 @@ _wrap_Time___sub____SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = ((GPS_Time< double > const *)arg1)->operator -((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_Time< double > const *)arg1)->operator -((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -5891,16 +5777,7 @@ _wrap_Time___sub____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator -", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->operator -((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->operator -((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -5993,16 +5870,7 @@ _wrap_Time___lt__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator <", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Time< double > const *)arg1)->operator <((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Time< double > const *)arg1)->operator <((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -6045,16 +5913,7 @@ _wrap_Time___gt__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator >", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Time< double > const *)arg1)->operator >((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Time< double > const *)arg1)->operator >((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -6097,16 +5956,7 @@ _wrap_Time___eq__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator ==", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Time< double > const *)arg1)->operator ==((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Time< double > const *)arg1)->operator ==((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -6149,16 +5999,7 @@ _wrap_Time___le__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator <=", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Time< double > const *)arg1)->operator <=((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Time< double > const *)arg1)->operator <=((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -6201,16 +6042,7 @@ _wrap_Time___ge__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","operator >=", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Time< double > const *)arg1)->operator >=((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Time< double > const *)arg1)->operator >=((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -6254,23 +6086,9 @@ _wrap_Time_c_tm__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
+  result = ((GPS_Time< double > const *)arg1)->c_tm((GPS_Time< double >::float_t const &)*arg2);
   {
-    try {
-      result = ((GPS_Time< double > const *)arg1)->c_tm((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_year + 1900));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mon + 1));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mday));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_hour));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_min));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_sec));
+    vresult = SWIG_From_std_tm  (result);
   }
   return vresult;
 fail:
@@ -6294,23 +6112,9 @@ _wrap_Time_c_tm__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","c_tm", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
+  result = ((GPS_Time< double > const *)arg1)->c_tm();
   {
-    try {
-      result = ((GPS_Time< double > const *)arg1)->c_tm();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_year + 1900));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mon + 1));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mday));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_hour));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_min));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_sec));
+    vresult = SWIG_From_std_tm  (result);
   }
   return vresult;
 fail:
@@ -6399,16 +6203,7 @@ _wrap_Time_year__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->year((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->year((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6432,16 +6227,7 @@ _wrap_Time_year__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","year", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->year();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->year();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6540,16 +6326,7 @@ _wrap_Time_interval__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< GPS_Time< double >::float_t >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->interval((unsigned int const &)*arg2,(GPS_Time< double >::float_t const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->interval((unsigned int const &)*arg2,(GPS_Time< double >::float_t const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6584,16 +6361,7 @@ _wrap_Time_interval__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","interval", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->interval((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->interval((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6716,45 +6484,11 @@ _wrap_Time_guess_leap_seconds__SWIG_0(int argc, VALUE *argv, VALUE self) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
   {
-    arg1 = &temp1;
-    int *dst[] = {
-      &(temp1.tm_year),
-      &(temp1.tm_mon),
-      &(temp1.tm_mday),
-      &(temp1.tm_hour),
-      &(temp1.tm_min),
-      &(temp1.tm_sec),
-    };
-    int i_max(sizeof(dst) / sizeof(dst[0]));
-    if(i_max > RARRAY_LEN(argv[0])){
-      i_max = RARRAY_LEN(argv[0]);
-    }
-    for(int i(0); i < i_max; ++i){
-      VALUE obj = rb_ary_entry(argv[0], i);
-      int v;
-      if(SWIG_IsOK(SWIG_AsVal_int (obj, &v))){
-        if(dst[i] == &(temp1.tm_year)){
-          *dst[i] = v - 1900;
-        }else if(dst[i] == &(temp1.tm_mon)){
-          *dst[i] = v - 1;
-        }else{
-          *dst[i] = v;
-        }
-      }else{
-        SWIG_exception(SWIG_TypeError, "int is expected");
-      }
+    if(SWIG_AsVal_std_tm (argv[0], arg1 = &temp1) != SWIG_OK){
+      SWIG_exception(SWIG_TypeError, "int[1..6] is expected");
     }
   }
-  {
-    try {
-      result = (int)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR guess_leap_seconds((std::tm const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR guess_leap_seconds((std::tm const &)*arg1);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -6781,16 +6515,7 @@ _wrap_Time_guess_leap_seconds__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< GPS_Time< double >::float_t > const &","GPS_Time<(double)>::guess_leap_seconds", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< GPS_Time< GPS_Time< double >::float_t > * >(argp1);
-  {
-    try {
-      result = (int)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR guess_leap_seconds((GPS_Time< double > const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Time< double >::SWIGTEMPLATEDISAMBIGUATOR guess_leap_seconds((GPS_Time< double > const &)*arg1);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -6812,6 +6537,9 @@ SWIGINTERN VALUE _wrap_Time_guess_leap_seconds(int nargs, VALUE *args, VALUE sel
     int _v;
     {
       _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
+      
+      
+      
     }
     if (_v) {
       return _wrap_Time_guess_leap_seconds__SWIG_0(nargs, args, self);
@@ -6861,16 +6589,7 @@ _wrap_Time_leap_seconds(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","leap_seconds", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (int)((GPS_Time< double > const *)arg1)->leap_seconds();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)((GPS_Time< double > const *)arg1)->leap_seconds();
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -6903,16 +6622,7 @@ _wrap_Time_julian_date(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","julian_date", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->julian_date();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->julian_date();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6945,16 +6655,7 @@ _wrap_Time_julian_date_2000(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","julian_date_2000", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->julian_date_2000();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->julian_date_2000();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6987,23 +6688,9 @@ _wrap_Time_utc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","utc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
+  result = ((GPS_Time< double > const *)arg1)->utc();
   {
-    try {
-      result = ((GPS_Time< double > const *)arg1)->utc();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  {
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_year + 1900));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mon + 1));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_mday));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_hour));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_min));
-    vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->tm_sec));
+    vresult = SWIG_From_std_tm  (result);
   }
   return vresult;
 fail:
@@ -7047,16 +6734,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec_ires1996__SWIG_0(int argc, VALUE *ar
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires1996((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires1996((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7080,16 +6758,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec_ires1996__SWIG_1(int argc, VALUE *ar
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","greenwich_mean_sidereal_time_sec_ires1996", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires1996();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires1996();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7189,16 +6858,7 @@ _wrap_Time_earth_rotation_angle__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< GPS_Time< double >::float_t >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle((GPS_Time< double >::float_t const &)*arg2,(GPS_Time< double >::float_t const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle((GPS_Time< double >::float_t const &)*arg2,(GPS_Time< double >::float_t const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7232,16 +6892,7 @@ _wrap_Time_earth_rotation_angle__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7265,16 +6916,7 @@ _wrap_Time_earth_rotation_angle__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","earth_rotation_angle", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->earth_rotation_angle();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7385,16 +7027,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec_ires2010__SWIG_0(int argc, VALUE *ar
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires2010((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires2010((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7418,16 +7051,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec_ires2010__SWIG_1(int argc, VALUE *ar
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","greenwich_mean_sidereal_time_sec_ires2010", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires2010();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec_ires2010();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7516,16 +7140,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec__SWIG_0(int argc, VALUE *argv, VALUE
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec((GPS_Time< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec((GPS_Time< double >::float_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7549,16 +7164,7 @@ _wrap_Time_greenwich_mean_sidereal_time_sec__SWIG_1(int argc, VALUE *argv, VALUE
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","greenwich_mean_sidereal_time_sec", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double >::float_t)((GPS_Time< double > const *)arg1)->greenwich_mean_sidereal_time_sec();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -7668,17 +7274,8 @@ _wrap_new_Time__SWIG_4(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_Time< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_Time< double > *)new_GPS_Time_Sl_double_Sg___SWIG_4((int const &)*arg1,(double const &)*arg2,arg3);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Time< double > *)new_GPS_Time_Sl_double_Sg___SWIG_4((int const &)*arg1,(double const &)*arg2,arg3);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -7711,6 +7308,9 @@ SWIGINTERN VALUE _wrap_new_Time(int nargs, VALUE *args, VALUE self) {
     int _v;
     {
       _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
+      
+      
+      
     }
     if (_v) {
       return _wrap_new_Time__SWIG_3(nargs, args, self);
@@ -7720,6 +7320,9 @@ SWIGINTERN VALUE _wrap_new_Time(int nargs, VALUE *args, VALUE self) {
     int _v;
     {
       _v = (TYPE(argv[0]) == T_ARRAY) ? 1 : 0;
+      
+      
+      
     }
     if (_v) {
       {
@@ -7791,16 +7394,7 @@ _wrap_Time_to_a(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Time< double > const *","to_a", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Time< double > * >(argp1);
-  {
-    try {
-      GPS_Time_Sl_double_Sg__to_a((GPS_Time< double > const *)arg1,arg2,arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Time_Sl_double_Sg__to_a((GPS_Time< double > const *)arg1,arg2,arg3);
   vresult = rb_ary_new();
   if (SWIG_IsTmpObj(res2)) {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int((*arg2)));
@@ -7855,16 +7449,7 @@ _wrap_Time___cmp__(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","__cmp__", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (int)GPS_Time_Sl_double_Sg____cmp__((GPS_Time< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Time_Sl_double_Sg____cmp__((GPS_Time< double > const *)arg1,(GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -7958,16 +7543,7 @@ _wrap_SpaceNode_L1_WaveLength(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t *) &GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L1_WaveLength();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t *) &GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L1_WaveLength();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -8046,16 +7622,7 @@ _wrap_SpaceNode_L2_WaveLength(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t *) &GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L2_WaveLength();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t *) &GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L2_WaveLength();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -8117,16 +7684,7 @@ _wrap_SpaceNode_gamma_per_L1(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< GPS_SpaceNode< double >::float_t >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR gamma_per_L1((double const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR gamma_per_L1((double const &)*arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -8165,17 +7723,8 @@ _wrap_new_SpaceNode(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_SpaceNode< double > *)new GPS_SpaceNode< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double > *)new GPS_SpaceNode< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -8213,16 +7762,7 @@ _wrap_SpaceNode_iono_utc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SpaceNode< double > const *","iono_utc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double > * >(argp1);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &((GPS_SpaceNode< double > const *)arg1)->iono_utc();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &((GPS_SpaceNode< double > const *)arg1)->iono_utc();
   {
     vresult = SWIG_NewPointerObj(
       reinterpret_cast< GPS_Ionospheric_UTC_Parameters<double> * >(result),
@@ -8261,16 +7801,7 @@ _wrap_SpaceNode_is_valid_iono(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SpaceNode< double > const *","is_valid_iono", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_iono();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_iono();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -8303,16 +7834,7 @@ _wrap_SpaceNode_is_valid_utc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SpaceNode< double > const *","is_valid_utc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_utc();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_utc();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -8345,16 +7867,7 @@ _wrap_SpaceNode_is_valid_iono_utc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SpaceNode< double > const *","is_valid_iono_utc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_iono_utc();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_SpaceNode< double > const *)arg1)->is_valid_iono_utc();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -8421,16 +7934,7 @@ _wrap_SpaceNode_update_iono_utc__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< bool >(val4);
   arg4 = &temp4;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2,(bool const &)*arg3,(bool const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2,(bool const &)*arg3,(bool const &)*arg4);
   {
     vresult = SWIG_NewPointerObj(
       reinterpret_cast< GPS_Ionospheric_UTC_Parameters<double> * >(result),
@@ -8481,16 +7985,7 @@ _wrap_SpaceNode_update_iono_utc__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< bool >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2,(bool const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2,(bool const &)*arg3);
   {
     vresult = SWIG_NewPointerObj(
       reinterpret_cast< GPS_Ionospheric_UTC_Parameters<double> * >(result),
@@ -8531,16 +8026,7 @@ _wrap_SpaceNode_update_iono_utc__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &","update_iono_utc", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::Ionospheric_UTC_Parameters * >(argp2);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *) &(arg1)->update_iono_utc((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters const &)*arg2);
   {
     vresult = SWIG_NewPointerObj(
       reinterpret_cast< GPS_Ionospheric_UTC_Parameters<double> * >(result),
@@ -8671,16 +8157,7 @@ _wrap_SpaceNode_has_satellite(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)((GPS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -8722,16 +8199,7 @@ _wrap_SpaceNode_update_all_ephemeris(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::gps_time_t const &","update_all_ephemeris", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::gps_time_t * >(argp2);
-  {
-    try {
-      (arg1)->update_all_ephemeris((GPS_SpaceNode< double >::gps_time_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->update_all_ephemeris((GPS_SpaceNode< double >::gps_time_t const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -8783,16 +8251,7 @@ _wrap_SpaceNode_merge__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< bool >(val3);
   arg3 = &temp3;
-  {
-    try {
-      (arg1)->merge((GPS_SpaceNode< double >::self_t const &)*arg2,(bool const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->merge((GPS_SpaceNode< double >::self_t const &)*arg2,(bool const &)*arg3);
   return Qnil;
 fail:
   return Qnil;
@@ -8824,16 +8283,7 @@ _wrap_SpaceNode_merge__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::self_t const &","merge", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::self_t * >(argp2);
-  {
-    try {
-      (arg1)->merge((GPS_SpaceNode< double >::self_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->merge((GPS_SpaceNode< double >::self_t const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -8945,16 +8395,7 @@ _wrap_SpaceNode_pierce_point__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< GPS_SpaceNode< double >::float_t >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR pierce_point((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR pierce_point((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2,(double const &)*arg3);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->latitude));
     vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->longitude));
@@ -8995,16 +8436,7 @@ _wrap_SpaceNode_pierce_point__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::llh_t const &","GPS_SpaceNode<(double)>::pierce_point", 2, argv[1])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::llh_t * >(argp2);
-  {
-    try {
-      result = GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR pierce_point((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR pierce_point((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->latitude));
     vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((&result)->longitude));
@@ -9108,16 +8540,7 @@ _wrap_SpaceNode_slant_factor__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_SpaceNode< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR slant_factor((System_ENU< double,WGS84 > const &)*arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR slant_factor((System_ENU< double,WGS84 > const &)*arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9144,16 +8567,7 @@ _wrap_SpaceNode_slant_factor__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::enu_t const &","GPS_SpaceNode<(double)>::slant_factor", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double >::enu_t * >(argp1);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR slant_factor((System_ENU< double,WGS84 > const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR slant_factor((System_ENU< double,WGS84 > const &)*arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9243,16 +8657,7 @@ _wrap_SpaceNode_tec2delay__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< GPS_SpaceNode< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tec2delay((double const &)*arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tec2delay((double const &)*arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9278,16 +8683,7 @@ _wrap_SpaceNode_tec2delay__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< GPS_SpaceNode< double >::float_t >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tec2delay((double const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tec2delay((double const &)*arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9400,16 +8796,7 @@ _wrap_SpaceNode_iono_correction__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::gps_time_t const &","iono_correction", 4, argv[2])); 
   }
   arg4 = reinterpret_cast< GPS_SpaceNode< double >::gps_time_t * >(argp4);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)((GPS_SpaceNode< double > const *)arg1)->iono_correction((GPS_SpaceNode< double >::enu_t const &)*arg2,(GPS_SpaceNode< double >::llh_t const &)*arg3,(GPS_SpaceNode< double >::gps_time_t const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)((GPS_SpaceNode< double > const *)arg1)->iono_correction((GPS_SpaceNode< double >::enu_t const &)*arg2,(GPS_SpaceNode< double >::llh_t const &)*arg3,(GPS_SpaceNode< double >::gps_time_t const &)*arg4);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9466,16 +8853,7 @@ _wrap_SpaceNode_iono_correction__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::gps_time_t const &","iono_correction", 4, argv[2])); 
   }
   arg4 = reinterpret_cast< GPS_SpaceNode< double >::gps_time_t * >(argp4);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)((GPS_SpaceNode< double > const *)arg1)->iono_correction((GPS_SpaceNode< double >::xyz_t const &)*arg2,(GPS_SpaceNode< double >::xyz_t const &)*arg3,(GPS_SpaceNode< double >::gps_time_t const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)((GPS_SpaceNode< double > const *)arg1)->iono_correction((GPS_SpaceNode< double >::xyz_t const &)*arg2,(GPS_SpaceNode< double >::xyz_t const &)*arg3,(GPS_SpaceNode< double >::gps_time_t const &)*arg4);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9592,16 +8970,7 @@ _wrap_SpaceNode_tropo_correction__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::llh_t const &","GPS_SpaceNode<(double)>::tropo_correction", 2, argv[1])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::llh_t * >(argp2);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((System_ENU< double,WGS84 > const &)*arg1,(System_LLH< double,WGS84 > const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9657,16 +9026,7 @@ _wrap_SpaceNode_tropo_correction_zenith_hydrostatic_Saastamoinen(int argc, VALUE
   } 
   temp3 = static_cast< GPS_SpaceNode< double >::float_t >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction_zenith_hydrostatic_Saastamoinen((double const &)*arg1,(double const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction_zenith_hydrostatic_Saastamoinen((double const &)*arg1,(double const &)*arg2,(double const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9714,16 +9074,7 @@ _wrap_SpaceNode_tropo_correction__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::xyz_t const &","GPS_SpaceNode<(double)>::tropo_correction", 2, argv[1])); 
   }
   arg2 = reinterpret_cast< GPS_SpaceNode< double >::xyz_t * >(argp2);
-  {
-    try {
-      result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((System_XYZ< double,WGS84 > const &)*arg1,(System_XYZ< double,WGS84 > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double >::float_t)GPS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((System_XYZ< double,WGS84 > const &)*arg1,(System_XYZ< double,WGS84 > const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -9834,16 +9185,7 @@ _wrap_SpaceNode_register_ephemeris__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< int >(val4);
   arg4 = &temp4;
-  {
-    try {
-      GPS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GPS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GPS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
   return Qnil;
 fail:
   return Qnil;
@@ -9885,16 +9227,7 @@ _wrap_SpaceNode_register_ephemeris__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Ephemeris< double > const &","register_ephemeris", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Ephemeris< double > * >(argp3);
-  {
-    try {
-      GPS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GPS_Ephemeris< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GPS_Ephemeris< double > const &)*arg3);
   return Qnil;
 fail:
   return Qnil;
@@ -10003,16 +9336,7 @@ _wrap_SpaceNode_ephemeris(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = GPS_SpaceNode_Sl_double_Sg__ephemeris((GPS_SpaceNode< double > const *)arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_SpaceNode_Sl_double_Sg__ephemeris((GPS_SpaceNode< double > const *)arg1,(int const &)*arg2);
   vresult = SWIG_NewPointerObj((new GPS_Ephemeris< double >(static_cast< const GPS_Ephemeris< double >& >(result))), SWIGTYPE_p_GPS_EphemerisT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -10054,16 +9378,7 @@ _wrap_SpaceNode_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)GPS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -10118,16 +9433,7 @@ _wrap_Ionospheric_UTC_Parameters_alphae___(int argc, VALUE *argv, VALUE self) {
     }
     arg2 = temp2;
   }
-  {
-    try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_alpha(arg1,(double const (*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_alpha(arg1,(double const (*))arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -10161,16 +9467,7 @@ _wrap_Ionospheric_UTC_Parameters_alpha(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_alpha", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_alpha((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
   {
     for(int i(0); i < 4; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((*arg2)[i]));
@@ -10218,16 +9515,7 @@ _wrap_Ionospheric_UTC_Parameters_betae___(int argc, VALUE *argv, VALUE self) {
     }
     arg2 = temp2;
   }
-  {
-    try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_beta(arg1,(double const (*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_beta(arg1,(double const (*))arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -10261,16 +9549,7 @@ _wrap_Ionospheric_UTC_Parameters_beta(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_beta", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_beta((GPS_Ionospheric_UTC_Parameters< double > const *)arg1,(double const *(*))arg2);
   {
     for(int i(0); i < 4; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((*arg2)[i]));
@@ -10317,16 +9596,7 @@ _wrap_Ionospheric_UTC_Parameters_A1e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A1(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A1(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -10359,16 +9629,7 @@ _wrap_Ionospheric_UTC_Parameters_A1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_A1", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A1((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A1((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -10411,16 +9672,7 @@ _wrap_Ionospheric_UTC_Parameters_A0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_A0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -10453,16 +9705,7 @@ _wrap_Ionospheric_UTC_Parameters_A0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_A0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A0((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_A0((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -10505,16 +9748,7 @@ _wrap_Ionospheric_UTC_Parameters_t_ote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_t_ot(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_t_ot(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -10547,16 +9781,7 @@ _wrap_Ionospheric_UTC_Parameters_t_ot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_t_ot", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_t_ot((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_t_ot((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -10599,16 +9824,7 @@ _wrap_Ionospheric_UTC_Parameters_WN_te___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_t(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_t(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -10641,16 +9857,7 @@ _wrap_Ionospheric_UTC_Parameters_WN_t(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_WN_t", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_t((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_t((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -10693,16 +9900,7 @@ _wrap_Ionospheric_UTC_Parameters_delta_t_LSe___(int argc, VALUE *argv, VALUE sel
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LS(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LS(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -10735,16 +9933,7 @@ _wrap_Ionospheric_UTC_Parameters_delta_t_LS(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_delta_t_LS", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LS((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LS((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -10787,16 +9976,7 @@ _wrap_Ionospheric_UTC_Parameters_WN_LSFe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_LSF(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_WN_LSF(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -10829,16 +10009,7 @@ _wrap_Ionospheric_UTC_Parameters_WN_LSF(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_WN_LSF", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_LSF((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_WN_LSF((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -10881,16 +10052,7 @@ _wrap_Ionospheric_UTC_Parameters_DNe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_DN(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_DN(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -10923,16 +10085,7 @@ _wrap_Ionospheric_UTC_Parameters_DN(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_DN", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_DN((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_DN((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -10975,16 +10128,7 @@ _wrap_Ionospheric_UTC_Parameters_delta_t_LSFe___(int argc, VALUE *argv, VALUE se
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LSF(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__set_delta_t_LSF(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -11017,16 +10161,7 @@ _wrap_Ionospheric_UTC_Parameters_delta_t_LSF(int argc, VALUE *argv, VALUE self) 
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ionospheric_UTC_Parameters< double > const *","get_delta_t_LSF", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ionospheric_UTC_Parameters< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LSF((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__get_delta_t_LSF((GPS_Ionospheric_UTC_Parameters< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -11064,15 +10199,10 @@ _wrap_Ionospheric_UTC_Parameters_parse(int argc, VALUE *argv, VALUE self) {
     }
     arg1 = temp1;
   }
-  {
-    try {
-      result = GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__parse((unsigned int const (*))arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
+  try {
+    result = GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__parse((unsigned int const (*))arg1);
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new GPS_Ionospheric_UTC_Parameters< double >(static_cast< const GPS_Ionospheric_UTC_Parameters< double >& >(result))), SWIGTYPE_p_GPS_Ionospheric_UTC_ParametersT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
@@ -11121,16 +10251,7 @@ _wrap_Ionospheric_UTC_Parameters_dump(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","dump", 3, argv[0])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__dump(arg1,arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ionospheric_UTC_Parameters_Sl_double_Sg__dump(arg1,arg2,(GPS_Time< double > const &)*arg3);
   {
     for(int i(0); i < 10; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
@@ -11173,17 +10294,8 @@ _wrap_new_Ionospheric_UTC_Parameters(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_Ionospheric_UTC_Parameters< double > *)new GPS_Ionospheric_UTC_Parameters< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Ionospheric_UTC_Parameters< double > *)new GPS_Ionospheric_UTC_Parameters< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -11299,16 +10411,7 @@ _wrap_Ephemeris_invalidate(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > *","invalidate", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      (arg1)->invalidate();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->invalidate();
   return Qnil;
 fail:
   return Qnil;
@@ -11340,16 +10443,7 @@ _wrap_Ephemeris_consistentq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","is_consistent", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_Ephemeris< double > const *)arg1)->is_consistent();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Ephemeris< double > const *)arg1)->is_consistent();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11393,16 +10487,7 @@ _wrap_Ephemeris_validq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GPS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -11435,16 +10520,7 @@ _wrap_Ephemeris_t_clock(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","t_clock", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_Ephemeris< double > const *)arg1)->t_clock();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_Ephemeris< double > const *)arg1)->t_clock();
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -11477,16 +10553,7 @@ _wrap_Ephemeris_t_ephemeris(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","t_ephemeris", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_Ephemeris< double > const *)arg1)->t_ephemeris();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_Ephemeris< double > const *)arg1)->t_ephemeris();
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -11511,17 +10578,8 @@ _wrap_new_Ephemeris__SWIG_0(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_Ephemeris< double > *)new GPS_Ephemeris< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Ephemeris< double > *)new GPS_Ephemeris< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -11561,17 +10619,8 @@ _wrap_new_Ephemeris__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_SpaceNode< double >::SatelliteProperties::Ephemeris const &","GPS_Ephemeris<(double)>", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< GPS_SpaceNode< double >::SatelliteProperties::Ephemeris * >(argp1);
-  {
-    try {
-      result = (GPS_Ephemeris< double > *)new GPS_Ephemeris< double >((GPS_SpaceNode< double >::SatelliteProperties::Ephemeris const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Ephemeris< double > *)new GPS_Ephemeris< double >((GPS_SpaceNode< double >::SatelliteProperties::Ephemeris const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -11645,16 +10694,7 @@ _wrap_Ephemeris_svide___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -11687,16 +10727,7 @@ _wrap_Ephemeris_svid(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_svid", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_svid((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_svid((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -11739,16 +10770,7 @@ _wrap_Ephemeris_WNe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_WN(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_WN(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -11781,16 +10803,7 @@ _wrap_Ephemeris_WN(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_WN", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_WN((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_WN((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -11833,16 +10846,7 @@ _wrap_Ephemeris_URAe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_URA(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_URA(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -11875,16 +10879,7 @@ _wrap_Ephemeris_URA(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_URA", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_URA((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_URA((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -11927,16 +10922,7 @@ _wrap_Ephemeris_SV_healthe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_SV_health(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GPS_Ephemeris_Sl_double_Sg__set_SV_health(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -11969,16 +10955,7 @@ _wrap_Ephemeris_SV_health(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_SV_health", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_SV_health((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GPS_Ephemeris_Sl_double_Sg__get_SV_health((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -12021,16 +10998,7 @@ _wrap_Ephemeris_iodce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GPS_Ephemeris_Sl_double_Sg__set_iodc(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Ephemeris_Sl_double_Sg__set_iodc(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -12063,16 +11031,7 @@ _wrap_Ephemeris_iodc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_iodc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GPS_Ephemeris_Sl_double_Sg__get_iodc((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GPS_Ephemeris_Sl_double_Sg__get_iodc((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -12115,16 +11074,7 @@ _wrap_Ephemeris_t_GDe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_GD(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_GD(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12157,16 +11107,7 @@ _wrap_Ephemeris_t_GD(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_t_GD", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_GD((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_GD((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12209,16 +11150,7 @@ _wrap_Ephemeris_t_oce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_oc(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_oc(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12251,16 +11183,7 @@ _wrap_Ephemeris_t_oc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_t_oc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_oc((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_oc((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12303,16 +11226,7 @@ _wrap_Ephemeris_a_f2e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f2(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f2(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12345,16 +11259,7 @@ _wrap_Ephemeris_a_f2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_a_f2", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f2((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f2((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12397,16 +11302,7 @@ _wrap_Ephemeris_a_f1e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f1(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f1(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12439,16 +11335,7 @@ _wrap_Ephemeris_a_f1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_a_f1", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f1((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f1((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12491,16 +11378,7 @@ _wrap_Ephemeris_a_f0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_a_f0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12533,16 +11411,7 @@ _wrap_Ephemeris_a_f0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_a_f0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_a_f0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12585,16 +11454,7 @@ _wrap_Ephemeris_iodee___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GPS_Ephemeris_Sl_double_Sg__set_iode(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Ephemeris_Sl_double_Sg__set_iode(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -12627,16 +11487,7 @@ _wrap_Ephemeris_iode(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_iode", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GPS_Ephemeris_Sl_double_Sg__get_iode((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GPS_Ephemeris_Sl_double_Sg__get_iode((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -12679,16 +11530,7 @@ _wrap_Ephemeris_c_rse___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_rs(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_rs(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12721,16 +11563,7 @@ _wrap_Ephemeris_c_rs(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_rs", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_rs((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_rs((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12773,16 +11606,7 @@ _wrap_Ephemeris_delta_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_delta_n(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_delta_n(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12815,16 +11639,7 @@ _wrap_Ephemeris_delta_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_delta_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_delta_n((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_delta_n((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12867,16 +11682,7 @@ _wrap_Ephemeris_M0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_M0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_M0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -12909,16 +11715,7 @@ _wrap_Ephemeris_M0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_M0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_M0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_M0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -12961,16 +11758,7 @@ _wrap_Ephemeris_c_uce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_uc(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_uc(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13003,16 +11791,7 @@ _wrap_Ephemeris_c_uc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_uc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_uc((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_uc((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13055,16 +11834,7 @@ _wrap_Ephemeris_ee___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_e(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_e(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13097,16 +11867,7 @@ _wrap_Ephemeris_e(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_e", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_e((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_e((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13149,16 +11910,7 @@ _wrap_Ephemeris_c_use___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_us(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_us(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13191,16 +11943,7 @@ _wrap_Ephemeris_c_us(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_us", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_us((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_us((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13243,16 +11986,7 @@ _wrap_Ephemeris_sqrt_Ae___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_sqrt_A(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_sqrt_A(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13285,16 +12019,7 @@ _wrap_Ephemeris_sqrt_A(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_sqrt_A", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_sqrt_A((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_sqrt_A((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13337,16 +12062,7 @@ _wrap_Ephemeris_t_oee___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_oe(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_t_oe(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13379,16 +12095,7 @@ _wrap_Ephemeris_t_oe(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_t_oe", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_oe((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_t_oe((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13431,16 +12138,7 @@ _wrap_Ephemeris_fit_intervale___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_fit_interval(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_fit_interval(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13473,16 +12171,7 @@ _wrap_Ephemeris_fit_interval(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_fit_interval", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_fit_interval((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_fit_interval((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13525,16 +12214,7 @@ _wrap_Ephemeris_c_ice___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_ic(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_ic(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13567,16 +12247,7 @@ _wrap_Ephemeris_c_ic(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_ic", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_ic((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_ic((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13619,16 +12290,7 @@ _wrap_Ephemeris_Omega0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_Omega0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_Omega0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13661,16 +12323,7 @@ _wrap_Ephemeris_Omega0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_Omega0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_Omega0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_Omega0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13713,16 +12366,7 @@ _wrap_Ephemeris_c_ise___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_is(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_is(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13755,16 +12399,7 @@ _wrap_Ephemeris_c_is(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_is", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_is((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_is((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13807,16 +12442,7 @@ _wrap_Ephemeris_i0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_i0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_i0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13849,16 +12475,7 @@ _wrap_Ephemeris_i0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_i0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_i0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_i0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13901,16 +12518,7 @@ _wrap_Ephemeris_c_rce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_rc(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_c_rc(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13943,16 +12551,7 @@ _wrap_Ephemeris_c_rc(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_c_rc", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_rc((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_c_rc((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -13995,16 +12594,7 @@ _wrap_Ephemeris_omegae___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_omega(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_omega(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -14037,16 +12627,7 @@ _wrap_Ephemeris_omega(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_omega", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_omega((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_omega((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -14089,16 +12670,7 @@ _wrap_Ephemeris_dot_Omega0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_dot_Omega0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_dot_Omega0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -14131,16 +12703,7 @@ _wrap_Ephemeris_dot_Omega0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_dot_Omega0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_dot_Omega0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_dot_Omega0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -14183,16 +12746,7 @@ _wrap_Ephemeris_dot_i0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_Ephemeris_Sl_double_Sg__set_dot_i0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_dot_i0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -14225,16 +12779,7 @@ _wrap_Ephemeris_dot_i0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_dot_i0", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_dot_i0((GPS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_Ephemeris_Sl_double_Sg__get_dot_i0((GPS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -14287,16 +12832,7 @@ _wrap_Ephemeris_parse(int argc, VALUE *argv, VALUE self) {
     }
     arg2 = temp2;
   }
-  {
-    try {
-      GPS_Ephemeris_Sl_double_Sg__parse(arg1,(unsigned int const (*))arg2,arg3,arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ephemeris_Sl_double_Sg__parse(arg1,(unsigned int const (*))arg2,arg3,arg4);
   vresult = rb_ary_new();
   if (SWIG_IsTmpObj(res3)) {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int((*arg3)));
@@ -14366,16 +12902,7 @@ _wrap_Ephemeris_dump(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","dump", 5, argv[0])); 
   }
   arg5 = reinterpret_cast< GPS_Time< double > * >(argp5);
-  {
-    try {
-      GPS_Ephemeris_Sl_double_Sg__dump(arg1,arg2,arg3,arg4,(GPS_Time< double > const &)*arg5);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ephemeris_Sl_double_Sg__dump(arg1,arg2,arg3,arg4,(GPS_Time< double > const &)*arg5);
   vresult = rb_ary_new();
   {
     for(int i(0); i < 10; ++i){
@@ -14436,16 +12963,7 @@ _wrap_Ephemeris_parse_almanac(int argc, VALUE *argv, VALUE self) {
     }
     arg2 = temp2;
   }
-  {
-    try {
-      result = (int)GPS_Ephemeris_Sl_double_Sg__parse_almanac(arg1,(unsigned int const (*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GPS_Ephemeris_Sl_double_Sg__parse_almanac(arg1,(unsigned int const (*))arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -14504,16 +13022,7 @@ _wrap_Ephemeris_dump_almanac__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< unsigned int >(val4);
   arg4 = &temp4;
-  {
-    try {
-      GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(arg1,arg2,(GPS_Time< double > const &)*arg3,(unsigned int const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(arg1,arg2,(GPS_Time< double > const &)*arg3,(unsigned int const &)*arg4);
   {
     for(int i(0); i < 10; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
@@ -14556,16 +13065,7 @@ _wrap_Ephemeris_dump_almanac__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","dump_almanac", 3, argv[0])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(arg1,arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GPS_Ephemeris_Sl_double_Sg__dump_almanac__SWIG_0(arg1,arg2,(GPS_Time< double > const &)*arg3);
   {
     for(int i(0); i < 10; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
@@ -14679,16 +13179,7 @@ _wrap_Ephemeris_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< double >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -14734,16 +13225,7 @@ _wrap_Ephemeris_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GPS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -14863,17 +13345,8 @@ _wrap_new_PVT(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_User_PVT< double > *)new GPS_User_PVT< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_User_PVT< double > *)new GPS_User_PVT< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -14995,16 +13468,7 @@ _wrap_PVT_error_code(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","error_code", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (int)((GPS_User_PVT< double > const *)arg1)->error_code();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)((GPS_User_PVT< double > const *)arg1)->error_code();
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -15026,7 +13490,7 @@ _wrap_PVT_receiver_time(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  GPS_Time< double > *result = 0 ;
+  GPS_Time< double > result;
   VALUE vresult = Qnil;
   
   if ((argc < 0) || (argc > 0)) {
@@ -15037,17 +13501,8 @@ _wrap_PVT_receiver_time(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","receiver_time", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (GPS_Time< double > *) &((GPS_User_PVT< double > const *)arg1)->receiver_time();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_TimeT_double_t, 0 |  0 );
+  result = ((GPS_User_PVT< double > const *)arg1)->receiver_time();
+  vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
   return Qnil;
@@ -15068,7 +13523,7 @@ _wrap_PVT_xyz(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_XYZ< double,WGS84 > *result = 0 ;
+  System_XYZ< double,WGS84 > result;
   VALUE vresult = Qnil;
   
   if ((argc < 0) || (argc > 0)) {
@@ -15079,17 +13534,8 @@ _wrap_PVT_xyz(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","xyz", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (System_XYZ< double,WGS84 > *) &((GPS_User_PVT< double > const *)arg1)->xyz();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_System_XYZT_double_WGS84_t, 0 |  0 );
+  result = ((GPS_User_PVT< double > const *)arg1)->xyz();
+  vresult = SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(static_cast< const System_XYZ< double,WGS84 >& >(result))), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
   return Qnil;
@@ -15110,7 +13556,7 @@ _wrap_PVT_llh(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_LLH< double,WGS84 > *result = 0 ;
+  System_LLH< double,WGS84 > result;
   VALUE vresult = Qnil;
   
   if ((argc < 0) || (argc > 0)) {
@@ -15121,17 +13567,8 @@ _wrap_PVT_llh(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","llh", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (System_LLH< double,WGS84 > *) &((GPS_User_PVT< double > const *)arg1)->llh();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_System_LLHT_double_WGS84_t, 0 |  0 );
+  result = ((GPS_User_PVT< double > const *)arg1)->llh();
+  vresult = SWIG_NewPointerObj((new System_LLH< double,WGS84 >(static_cast< const System_LLH< double,WGS84 >& >(result))), SWIGTYPE_p_System_LLHT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
   return Qnil;
@@ -15163,16 +13600,7 @@ _wrap_PVT_receiver_error(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","receiver_error", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->receiver_error();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->receiver_error();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15194,7 +13622,7 @@ _wrap_PVT_velocity(int argc, VALUE *argv, VALUE self) {
   GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  System_ENU< double,WGS84 > *result = 0 ;
+  System_ENU< double,WGS84 > result;
   VALUE vresult = Qnil;
   
   if ((argc < 0) || (argc > 0)) {
@@ -15205,17 +13633,8 @@ _wrap_PVT_velocity(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","velocity", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (System_ENU< double,WGS84 > *) &((GPS_User_PVT< double > const *)arg1)->velocity();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_System_ENUT_double_WGS84_t, 0 |  0 );
+  result = ((GPS_User_PVT< double > const *)arg1)->velocity();
+  vresult = SWIG_NewPointerObj((new System_ENU< double,WGS84 >(static_cast< const System_ENU< double,WGS84 >& >(result))), SWIGTYPE_p_System_ENUT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
   return Qnil;
@@ -15247,16 +13666,7 @@ _wrap_PVT_receiver_error_rate(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","receiver_error_rate", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->receiver_error_rate();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->receiver_error_rate();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15289,16 +13699,7 @@ _wrap_PVT_gdop(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","gdop", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->gdop();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->gdop();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15331,16 +13732,7 @@ _wrap_PVT_pdop(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","pdop", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->pdop();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->pdop();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15373,16 +13765,7 @@ _wrap_PVT_hdop(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","hdop", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->hdop();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->hdop();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15415,16 +13798,7 @@ _wrap_PVT_vdop(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","vdop", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->vdop();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->vdop();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15457,16 +13831,7 @@ _wrap_PVT_tdop(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","tdop", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (double *) &((GPS_User_PVT< double > const *)arg1)->tdop();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->tdop();
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -15499,16 +13864,7 @@ _wrap_PVT_used_satellites(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","used_satellites", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &((GPS_User_PVT< double > const *)arg1)->used_satellites();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &((GPS_User_PVT< double > const *)arg1)->used_satellites();
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -15541,16 +13897,7 @@ _wrap_PVT_used_satellite_list(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","used_satellite_list", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->used_satellite_list();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->used_satellite_list();
   {
     vresult = rb_ary_new();
     
@@ -15590,16 +13937,7 @@ _wrap_PVT_position_solvedq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","position_solved", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_User_PVT< double > const *)arg1)->position_solved();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_User_PVT< double > const *)arg1)->position_solved();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -15632,16 +13970,7 @@ _wrap_PVT_velocity_solvedq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","velocity_solved", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GPS_User_PVT< double > const *)arg1)->velocity_solved();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GPS_User_PVT< double > const *)arg1)->velocity_solved();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -15674,16 +14003,7 @@ _wrap_PVT_G(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","G", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->G();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->G();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
   return vresult;
 fail:
@@ -15716,16 +14036,7 @@ _wrap_PVT_W(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","W", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->W();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->W();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
   return vresult;
 fail:
@@ -15758,16 +14069,7 @@ _wrap_PVT_delta_r(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","delta_r", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->delta_r();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (Matrix_Frozen< double,Array2D_Dense< double > > *) &((GPS_User_PVT< double > const *)arg1)->delta_r();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
   return vresult;
 fail:
@@ -15800,16 +14102,7 @@ _wrap_PVT_G_enu(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","G_enu", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->G_enu();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->G_enu();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -15842,16 +14135,7 @@ _wrap_PVT_C(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","C", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->C();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->C();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -15884,16 +14168,7 @@ _wrap_PVT_C_enu(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","C_enu", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->C_enu();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->C_enu();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -15926,16 +14201,7 @@ _wrap_PVT_S(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","S", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->S();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->S();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -15980,16 +14246,7 @@ _wrap_PVT_S_enu__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","S_enu", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->S_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->S_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16013,16 +14270,7 @@ _wrap_PVT_S_enu__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","S_enu", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->S_enu();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->S_enu();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16111,16 +14359,7 @@ _wrap_PVT_slope_HV__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","slope_HV", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV((Matrix< double,Array2D_Dense< double > > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->slope_HV((Matrix< double,Array2D_Dense< double > > const &)*arg2);
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16144,16 +14383,7 @@ _wrap_PVT_slope_HV__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","slope_HV", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->slope_HV();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16242,16 +14472,7 @@ _wrap_PVT_slope_HV_enu__SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Matrix< double,Array2D_Dense< double > > const &","slope_HV_enu", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< Matrix< double,Array2D_Dense< double > > * >(argp2);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->slope_HV_enu((Matrix< double,Array2D_Dense< double > > const &)*arg2);
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16275,16 +14496,7 @@ _wrap_PVT_slope_HV_enu__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","slope_HV_enu", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_User_PVT< double > const *)arg1)->slope_HV_enu();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_User_PVT< double > const *)arg1)->slope_HV_enu();
   vresult = SWIG_NewPointerObj((new Matrix< double,Array2D_Dense< double > >(static_cast< const Matrix< double,Array2D_Dense< double > >& >(result))), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -16365,16 +14577,7 @@ _wrap_PVT_fd(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","fd", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      ((GPS_User_PVT< double > const *)arg1)->fd((GPS_User_PVT< double >::base_t::detection_t const **)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  ((GPS_User_PVT< double > const *)arg1)->fd((GPS_User_PVT< double >::base_t::detection_t const **)arg2);
   {
     if((*arg2)->valid){
       vresult = SWIG_Ruby_AppendOutput(vresult, swig::from((*arg2)->wssr));
@@ -16426,16 +14629,7 @@ _wrap_PVT_fde_min(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","fde_min", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      ((GPS_User_PVT< double > const *)arg1)->fde_min((GPS_User_PVT< double >::base_t::detection_t const **)arg2,(GPS_User_PVT< double >::base_t::exclusion_t const **)arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  ((GPS_User_PVT< double > const *)arg1)->fde_min((GPS_User_PVT< double >::base_t::detection_t const **)arg2,(GPS_User_PVT< double >::base_t::exclusion_t const **)arg3);
   vresult = rb_ary_new();
   {
     if((*arg2)->valid){
@@ -16507,16 +14701,7 @@ _wrap_PVT_fde_2nd(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","fde_2nd", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
-  {
-    try {
-      ((GPS_User_PVT< double > const *)arg1)->fde_2nd((GPS_User_PVT< double >::base_t::detection_t const **)arg2,(GPS_User_PVT< double >::base_t::exclusion_t const **)arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  ((GPS_User_PVT< double > const *)arg1)->fde_2nd((GPS_User_PVT< double >::base_t::detection_t const **)arg2,(GPS_User_PVT< double >::base_t::exclusion_t const **)arg3);
   vresult = rb_ary_new();
   {
     if((*arg2)->valid){
@@ -16910,16 +15095,7 @@ _wrap_Measurement_add(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< double >(val4);
   arg4 = &temp4;
-  {
-    try {
-      (arg1)->add((int const &)*arg2,(int const &)*arg3,(double const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->add((int const &)*arg2,(int const &)*arg3,(double const &)*arg4);
   return Qnil;
 fail:
   return Qnil;
@@ -16937,9 +15113,16 @@ Iterate thru each element in the Measurement.  A block must be provided.
 SWIGINTERN VALUE
 _wrap_Measurement_each(int argc, VALUE *argv, VALUE self) {
   GPS_Measurement< double > *arg1 = (GPS_Measurement< double > *) 0 ;
+  void *arg2 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+    
+  }
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -16948,19 +15131,11 @@ _wrap_Measurement_each(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Measurement< double > const *","each", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Measurement< double > * >(argp1);
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_intern("each")), argc, argv);
-    }
-    
-    try {
-      GPS_Measurement_Sl_double_Sg__each((GPS_Measurement< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
+  try {
+    GPS_Measurement_Sl_double_Sg__each((GPS_Measurement< double > const *)arg1,(void const *)arg2);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
   }
   return Qnil;
 fail:
@@ -16993,16 +15168,7 @@ _wrap_Measurement_to_hash(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Measurement< double > const *","to_hash", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Measurement< double > * >(argp1);
-  {
-    try {
-      result = (VALUE)GPS_Measurement_Sl_double_Sg__to_hash((GPS_Measurement< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (VALUE)GPS_Measurement_Sl_double_Sg__to_hash((GPS_Measurement< double > const *)arg1);
   vresult = result;
   return vresult;
 fail:
@@ -17027,17 +15193,8 @@ _wrap_new_Measurement__SWIG_0(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_Measurement< double > *)new GPS_Measurement< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Measurement< double > *)new GPS_Measurement< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -17074,17 +15231,8 @@ _wrap_new_Measurement__SWIG_1(int argc, VALUE *argv, VALUE self) {
       SWIG_exception(SWIG_TypeError, "in method 'GPS_Measurement<(double)>', expecting type GPS_Measurement< double >");
     }
   }
-  {
-    try {
-      result = (GPS_Measurement< double > *)new GPS_Measurement< double >((GPS_Measurement< double > const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Measurement< double > *)new GPS_Measurement< double >((GPS_Measurement< double > const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -17180,16 +15328,7 @@ _wrap_SolverOptionsCommon_elevation_maske___(int argc, VALUE *argv, VALUE self) 
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_SolverOptions_Common_Sl_double_Sg__set_elevation_mask(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_SolverOptions_Common_Sl_double_Sg__set_elevation_mask(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -17222,16 +15361,7 @@ _wrap_SolverOptionsCommon_elevation_mask(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > const *","get_elevation_mask", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_SolverOptions_Common_Sl_double_Sg__get_elevation_mask((GPS_SolverOptions_Common< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_SolverOptions_Common_Sl_double_Sg__get_elevation_mask((GPS_SolverOptions_Common< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -17274,16 +15404,7 @@ _wrap_SolverOptionsCommon_residual_maske___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GPS_SolverOptions_Common_Sl_double_Sg__set_residual_mask(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GPS_SolverOptions_Common_Sl_double_Sg__set_residual_mask(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -17316,16 +15437,7 @@ _wrap_SolverOptionsCommon_residual_mask(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > const *","get_residual_mask", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mask((GPS_SolverOptions_Common< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mask((GPS_SolverOptions_Common< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -17375,16 +15487,7 @@ _wrap_SolverOptions_exclude(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->exclude((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->exclude((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -17424,16 +15527,7 @@ _wrap_SolverOptions_include(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->include((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->include((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -17465,16 +15559,7 @@ _wrap_SolverOptions_excluded(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions< double > const *","excluded", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SolverOptions< double > * >(argp1);
-  {
-    try {
-      result = ((GPS_SolverOptions< double > const *)arg1)->excluded();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GPS_SolverOptions< double > const *)arg1)->excluded();
   {
     vresult = rb_ary_new();
     
@@ -17514,16 +15599,7 @@ _wrap_SolverOptions_exclude_L2Cq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions< double > *","get_exclude_L2C", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_SolverOptions< double > * >(argp1);
-  {
-    try {
-      result = (bool)(arg1)->get_exclude_L2C();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)(arg1)->get_exclude_L2C();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -17566,16 +15642,7 @@ _wrap_SolverOptions_exclude_L2Ce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< bool >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)(arg1)->set_exclude_L2C((bool const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)(arg1)->set_exclude_L2C((bool const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -17614,17 +15681,8 @@ _wrap_new_SolverOptions(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_SolverOptions< double > *)new GPS_SolverOptions< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SolverOptions< double > *)new GPS_SolverOptions< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -17710,17 +15768,8 @@ _wrap_new_Solver(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GPS_Solver< double > *)new GPS_Solver< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_Solver< double > *)new GPS_Solver< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -17752,16 +15801,7 @@ _wrap_Solver_gps_space_node(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","gps_space_node", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (GPS_SpaceNode< double > *) &(arg1)->gps_space_node();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SpaceNode< double > *) &(arg1)->gps_space_node();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_SpaceNodeT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -17794,16 +15834,7 @@ _wrap_Solver_gps_options(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","gps_options", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (GPS_SolverOptions< double > *) &(arg1)->gps_options();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GPS_SolverOptions< double > *) &(arg1)->gps_options();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GPS_SolverOptionsT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -17836,16 +15867,7 @@ _wrap_Solver_sbas_space_node(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","sbas_space_node", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (SBAS_SpaceNode< double > *) &(arg1)->sbas_space_node();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SpaceNode< double > *) &(arg1)->sbas_space_node();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SBAS_SpaceNodeT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -17878,16 +15900,7 @@ _wrap_Solver_sbas_options(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","sbas_options", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (SBAS_SolverOptions< double > *) &(arg1)->sbas_options();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SolverOptions< double > *) &(arg1)->sbas_options();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SBAS_SolverOptionsT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -17920,16 +15933,7 @@ _wrap_Solver_glonass_space_node(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","glonass_space_node", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (GLONASS_SpaceNode< double > *) &(arg1)->glonass_space_node();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SpaceNode< double > *) &(arg1)->glonass_space_node();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_SpaceNodeT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -17962,16 +15966,7 @@ _wrap_Solver_glonass_options(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > *","glonass_options", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (GLONASS_SolverOptions< double > *) &(arg1)->glonass_options();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SolverOptions< double > *) &(arg1)->glonass_options();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_SolverOptionsT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -18023,15 +16018,13 @@ _wrap_Solver_solve(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","solve", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = ((GPS_Solver< double > const *)arg1)->solve((GPS_Measurement< double > const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
+  try {
+    result = ((GPS_Solver< double > const *)arg1)->solve((GPS_Measurement< double > const &)*arg2,(GPS_Time< double > const &)*arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new GPS_User_PVT< double >(static_cast< const GPS_User_PVT< double >& >(result))), SWIGTYPE_p_GPS_User_PVTT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
@@ -18065,16 +16058,7 @@ _wrap_Solver_correction(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > const *","get_correction", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = (VALUE)GPS_Solver_Sl_double_Sg__get_correction((GPS_Solver< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (VALUE)GPS_Solver_Sl_double_Sg__get_correction((GPS_Solver< double > const *)arg1);
   vresult = result;
   return vresult;
 fail:
@@ -18109,15 +16093,10 @@ _wrap_Solver_correctione___(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
   arg2 = argv[0];
-  {
-    try {
-      result = (VALUE)GPS_Solver_Sl_double_Sg__set_correction(arg1,arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
+  try {
+    result = (VALUE)GPS_Solver_Sl_double_Sg__set_correction(arg1,arg2);
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
   vresult = result;
   return vresult;
@@ -18151,16 +16130,7 @@ _wrap_Solver_options(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Solver< double > const *","get_options", 1, self )); 
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
-  {
-    try {
-      result = GPS_Solver_Sl_double_Sg__get_options((GPS_Solver< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Solver_Sl_double_Sg__get_options((GPS_Solver< double > const *)arg1);
   {
     VALUE res(rb_hash_new());
     rb_hash_aset(res, ID2SYM(rb_intern("skip_exclusion")), SWIG_From_bool  ((&result)->skip_exclusion));
@@ -18199,16 +16169,7 @@ _wrap_Solver_optionse___(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< GPS_Solver< double > * >(argp1);
   arg2 = argv[0];
-  {
-    try {
-      result = GPS_Solver_Sl_double_Sg__set_options(arg1,arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GPS_Solver_Sl_double_Sg__set_options(arg1,arg2);
   {
     VALUE res(rb_hash_new());
     rb_hash_aset(res, ID2SYM(rb_intern("skip_exclusion")), SWIG_From_bool  ((&result)->skip_exclusion));
@@ -18252,17 +16213,8 @@ _wrap_new_Ephemeris_SBAS__SWIG_0(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (SBAS_Ephemeris< double > *)new SBAS_Ephemeris< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_Ephemeris< double > *)new SBAS_Ephemeris< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -18302,17 +16254,8 @@ _wrap_new_Ephemeris_SBAS__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris const &","SBAS_Ephemeris<(double)>", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris * >(argp1);
-  {
-    try {
-      result = (SBAS_Ephemeris< double > *)new SBAS_Ephemeris< double >((SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_Ephemeris< double > *)new SBAS_Ephemeris< double >((SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -18387,16 +16330,7 @@ _wrap_Ephemeris_SBAS_validq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((SBAS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((SBAS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -18429,16 +16363,7 @@ _wrap_Ephemeris_SBAS_t_applicable(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","t_applicable", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = ((SBAS_Ephemeris< double > const *)arg1)->t_applicable();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SBAS_Ephemeris< double > const *)arg1)->t_applicable();
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -18481,16 +16406,7 @@ _wrap_Ephemeris_SBAS_svide___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)SBAS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)SBAS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -18523,16 +16439,7 @@ _wrap_Ephemeris_SBAS_svid(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_svid", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &SBAS_Ephemeris_Sl_double_Sg__get_svid((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &SBAS_Ephemeris_Sl_double_Sg__get_svid((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -18575,16 +16482,7 @@ _wrap_Ephemeris_SBAS_WNe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)SBAS_Ephemeris_Sl_double_Sg__set_WN(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)SBAS_Ephemeris_Sl_double_Sg__set_WN(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -18617,16 +16515,7 @@ _wrap_Ephemeris_SBAS_WN(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_WN", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &SBAS_Ephemeris_Sl_double_Sg__get_WN((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &SBAS_Ephemeris_Sl_double_Sg__get_WN((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -18669,16 +16558,7 @@ _wrap_Ephemeris_SBAS_t_0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_t_0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_t_0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -18711,16 +16591,7 @@ _wrap_Ephemeris_SBAS_t_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_t_0", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_t_0((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_t_0((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -18763,16 +16634,7 @@ _wrap_Ephemeris_SBAS_URAe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_URA(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_URA(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -18805,16 +16667,7 @@ _wrap_Ephemeris_SBAS_URA(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_URA", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_URA((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_URA((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -18857,16 +16710,7 @@ _wrap_Ephemeris_SBAS_xe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_x(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_x(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -18899,16 +16743,7 @@ _wrap_Ephemeris_SBAS_x(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_x", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_x((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_x((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -18951,16 +16786,7 @@ _wrap_Ephemeris_SBAS_ye___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_y(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_y(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -18993,16 +16819,7 @@ _wrap_Ephemeris_SBAS_y(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_y", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_y((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_y((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19045,16 +16862,7 @@ _wrap_Ephemeris_SBAS_ze___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_z(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_z(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19087,16 +16895,7 @@ _wrap_Ephemeris_SBAS_z(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_z", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_z((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_z((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19139,16 +16938,7 @@ _wrap_Ephemeris_SBAS_dxe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dx(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dx(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19181,16 +16971,7 @@ _wrap_Ephemeris_SBAS_dx(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_dx", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dx((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dx((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19233,16 +17014,7 @@ _wrap_Ephemeris_SBAS_dye___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dy(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dy(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19275,16 +17047,7 @@ _wrap_Ephemeris_SBAS_dy(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_dy", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dy((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dy((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19327,16 +17090,7 @@ _wrap_Ephemeris_SBAS_dze___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dz(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_dz(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19369,16 +17123,7 @@ _wrap_Ephemeris_SBAS_dz(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_dz", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dz((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_dz((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19421,16 +17166,7 @@ _wrap_Ephemeris_SBAS_ddxe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddx(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddx(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19463,16 +17199,7 @@ _wrap_Ephemeris_SBAS_ddx(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_ddx", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddx((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddx((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19515,16 +17242,7 @@ _wrap_Ephemeris_SBAS_ddye___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddy(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddy(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19557,16 +17275,7 @@ _wrap_Ephemeris_SBAS_ddy(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_ddy", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddy((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddy((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19609,16 +17318,7 @@ _wrap_Ephemeris_SBAS_ddze___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddz(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_ddz(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19651,16 +17351,7 @@ _wrap_Ephemeris_SBAS_ddz(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_ddz", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddz((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_ddz((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19703,16 +17394,7 @@ _wrap_Ephemeris_SBAS_a_Gf0e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_a_Gf0(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_a_Gf0(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19745,16 +17427,7 @@ _wrap_Ephemeris_SBAS_a_Gf0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_a_Gf0", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf0((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf0((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19797,16 +17470,7 @@ _wrap_Ephemeris_SBAS_a_Gf1e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)SBAS_Ephemeris_Sl_double_Sg__set_a_Gf1(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)SBAS_Ephemeris_Sl_double_Sg__set_a_Gf1(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -19839,16 +17503,7 @@ _wrap_Ephemeris_SBAS_a_Gf1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_a_Gf1", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf1((SBAS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &SBAS_Ephemeris_Sl_double_Sg__get_a_Gf1((SBAS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -19896,16 +17551,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
-  {
-    try {
-      SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(arg1,arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(arg1,arg2,(unsigned int const &)*arg3);
   {
     for(int i(0); i < 8; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
@@ -19937,16 +17583,7 @@ _wrap_Ephemeris_SBAS_dump__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > *","dump", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(arg1,arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  SBAS_Ephemeris_Sl_double_Sg__dump__SWIG_0(arg1,arg2);
   {
     for(int i(0); i < 8; ++i){
       vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_unsigned_SS_int  ((arg2)[i]));
@@ -20061,16 +17698,7 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< bool >(val4);
   arg4 = &temp4;
-  {
-    try {
-      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3,(bool const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3,(bool const &)*arg4);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -20126,16 +17754,7 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< double >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -20181,16 +17800,7 @@ _wrap_Ephemeris_SBAS_constellation__SWIG_2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = SBAS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((SBAS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -20540,16 +18150,7 @@ _wrap_SpaceNode_SBAS_sagnac_correction(int argc, VALUE *argv, VALUE self) {
       arg2 = *(reinterpret_cast< SBAS_SpaceNode< double >::xyz_t * >(argp2));
     }
   }
-  {
-    try {
-      result = (SBAS_SpaceNode< double >::float_t)SBAS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR sagnac_correction(arg1,arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SpaceNode< double >::float_t)SBAS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR sagnac_correction(arg1,arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -20606,16 +18207,7 @@ _wrap_SpaceNode_SBAS_tropo_correction(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "SBAS_SpaceNode< double >::llh_t const &","SBAS_SpaceNode<(double)>::tropo_correction", 3, argv[2])); 
   }
   arg3 = reinterpret_cast< SBAS_SpaceNode< double >::llh_t * >(argp3);
-  {
-    try {
-      result = (SBAS_SpaceNode< double >::float_t)SBAS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((double const &)*arg1,(System_ENU< double,WGS84 > const &)*arg2,(System_LLH< double,WGS84 > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SpaceNode< double >::float_t)SBAS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR tropo_correction((double const &)*arg1,(System_ENU< double,WGS84 > const &)*arg2,(System_LLH< double,WGS84 > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -20654,17 +18246,8 @@ _wrap_new_SpaceNode_SBAS(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (SBAS_SpaceNode< double > *)new SBAS_SpaceNode< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SpaceNode< double > *)new SBAS_SpaceNode< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -20712,16 +18295,7 @@ _wrap_SpaceNode_SBAS_has_satellite(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)((SBAS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((SBAS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -20763,16 +18337,7 @@ _wrap_SpaceNode_SBAS_update_all_ephemeris(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "SBAS_SpaceNode< double >::gps_time_t const &","update_all_ephemeris", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< SBAS_SpaceNode< double >::gps_time_t * >(argp2);
-  {
-    try {
-      (arg1)->update_all_ephemeris((SBAS_SpaceNode< double >::gps_time_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->update_all_ephemeris((SBAS_SpaceNode< double >::gps_time_t const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -20814,16 +18379,7 @@ _wrap_SpaceNode_SBAS_available_satellites(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< SBAS_SpaceNode< double >::float_t >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = ((SBAS_SpaceNode< double > const *)arg1)->available_satellites((SBAS_SpaceNode< double >::float_t const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SBAS_SpaceNode< double > const *)arg1)->available_satellites((SBAS_SpaceNode< double >::float_t const &)*arg2);
   vresult = SWIG_NewPointerObj((new SBAS_SpaceNode< double >::available_satellites_t(static_cast< const SBAS_SpaceNode< double >::available_satellites_t& >(result))), SWIGTYPE_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -20886,16 +18442,7 @@ _wrap_SpaceNode_SBAS_register_ephemeris__SWIG_0(int argc, VALUE *argv, VALUE sel
   } 
   temp4 = static_cast< int >(val4);
   arg4 = &temp4;
-  {
-    try {
-      SBAS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(SBAS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  SBAS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(SBAS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
   return Qnil;
 fail:
   return Qnil;
@@ -20937,16 +18484,7 @@ _wrap_SpaceNode_SBAS_register_ephemeris__SWIG_1(int argc, VALUE *argv, VALUE sel
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "SBAS_Ephemeris< double > const &","register_ephemeris", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp3);
-  {
-    try {
-      SBAS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(SBAS_Ephemeris< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  SBAS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(SBAS_Ephemeris< double > const &)*arg3);
   return Qnil;
 fail:
   return Qnil;
@@ -21055,16 +18593,7 @@ _wrap_SpaceNode_SBAS_ephemeris(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = SBAS_SpaceNode_Sl_double_Sg__ephemeris((SBAS_SpaceNode< double > const *)arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = SBAS_SpaceNode_Sl_double_Sg__ephemeris((SBAS_SpaceNode< double > const *)arg1,(int const &)*arg2);
   vresult = SWIG_NewPointerObj((new SBAS_Ephemeris< double >(static_cast< const SBAS_Ephemeris< double >& >(result))), SWIGTYPE_p_SBAS_EphemerisT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -21106,16 +18635,7 @@ _wrap_SpaceNode_SBAS_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)SBAS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)SBAS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -21195,16 +18715,7 @@ _wrap_SpaceNode_SBAS_decode_message__SWIG_2(int argc, VALUE *argv, VALUE self) {
   } 
   temp5 = static_cast< bool >(val5);
   arg5 = &temp5;
-  {
-    try {
-      result = (int)SBAS_SpaceNode_Sl_double_Sg__decode_message__SWIG_2(arg1,(unsigned int const (*))arg2,(int const &)*arg3,(GPS_Time< double > const &)*arg4,(bool const &)*arg5);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)SBAS_SpaceNode_Sl_double_Sg__decode_message__SWIG_2(arg1,(unsigned int const (*))arg2,(int const &)*arg3,(GPS_Time< double > const &)*arg4,(bool const &)*arg5);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -21262,16 +18773,7 @@ _wrap_SpaceNode_SBAS_decode_message__SWIG_3(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","decode_message", 4, argv[2])); 
   }
   arg4 = reinterpret_cast< GPS_Time< double > * >(argp4);
-  {
-    try {
-      result = (int)SBAS_SpaceNode_Sl_double_Sg__decode_message__SWIG_2(arg1,(unsigned int const (*))arg2,(int const &)*arg3,(GPS_Time< double > const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)SBAS_SpaceNode_Sl_double_Sg__decode_message__SWIG_2(arg1,(unsigned int const (*))arg2,(int const &)*arg3,(GPS_Time< double > const &)*arg4);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -21391,16 +18893,7 @@ _wrap_SpaceNode_SBAS_ionospheric_grid_points(int argc, VALUE *argv, VALUE self) 
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = SBAS_SpaceNode_Sl_double_Sg__ionospheric_grid_points((SBAS_SpaceNode< double > const *)arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = SBAS_SpaceNode_Sl_double_Sg__ionospheric_grid_points((SBAS_SpaceNode< double > const *)arg1,(int const &)*arg2);
   vresult = SWIG_From_std_string(static_cast< std::string >(result));
   return vresult;
 fail:
@@ -21450,16 +18943,7 @@ _wrap_SolverOptions_SBAS_exclude(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->exclude((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->exclude((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -21499,16 +18983,7 @@ _wrap_SolverOptions_SBAS_include(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->include((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->include((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -21540,16 +19015,7 @@ _wrap_SolverOptions_SBAS_excluded(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_SolverOptions< double > const *","excluded", 1, self )); 
   }
   arg1 = reinterpret_cast< SBAS_SolverOptions< double > * >(argp1);
-  {
-    try {
-      result = ((SBAS_SolverOptions< double > const *)arg1)->excluded();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SBAS_SolverOptions< double > const *)arg1)->excluded();
   {
     vresult = rb_ary_new();
     
@@ -21595,17 +19061,8 @@ _wrap_new_SolverOptions_SBAS(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (SBAS_SolverOptions< double > *)new SBAS_SolverOptions< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SBAS_SolverOptions< double > *)new SBAS_SolverOptions< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -21789,16 +19246,7 @@ _wrap_SpaceNode_GLONASS_L1_frequency(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< GLONASS_SpaceNode< double >::int_t >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L1_frequency((int const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L1_frequency((int const &)*arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -21833,16 +19281,7 @@ _wrap_SpaceNode_GLONASS_L2_frequency(int argc, VALUE *argv, VALUE self) {
   } 
   temp1 = static_cast< GLONASS_SpaceNode< double >::int_t >(val1);
   arg1 = &temp1;
-  {
-    try {
-      result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L2_frequency((int const &)*arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SpaceNode< double >::float_t)GLONASS_SpaceNode< double >::SWIGTEMPLATEDISAMBIGUATOR L2_frequency((int const &)*arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -21881,17 +19320,8 @@ _wrap_new_SpaceNode_GLONASS(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GLONASS_SpaceNode< double > *)new GLONASS_SpaceNode< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SpaceNode< double > *)new GLONASS_SpaceNode< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -21939,16 +19369,7 @@ _wrap_SpaceNode_GLONASS_has_satellite(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)((GLONASS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GLONASS_SpaceNode< double > const *)arg1)->has_satellite((int const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -21990,16 +19411,7 @@ _wrap_SpaceNode_GLONASS_update_all_ephemeris(int argc, VALUE *argv, VALUE self) 
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< GLONASS_SpaceNode< double >::float_t > const &","update_all_ephemeris", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< GLONASS_SpaceNode< double >::float_t > * >(argp2);
-  {
-    try {
-      (arg1)->update_all_ephemeris((GPS_Time< GLONASS_SpaceNode< double >::float_t > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->update_all_ephemeris((GPS_Time< GLONASS_SpaceNode< double >::float_t > const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -22061,16 +19473,7 @@ _wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_0(int argc, VALUE *argv, VALUE 
   } 
   temp4 = static_cast< int >(val4);
   arg4 = &temp4;
-  {
-    try {
-      GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3,(int const &)*arg4);
   return Qnil;
 fail:
   return Qnil;
@@ -22112,16 +19515,7 @@ _wrap_SpaceNode_GLONASS_register_ephemeris__SWIG_1(int argc, VALUE *argv, VALUE 
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GLONASS_Ephemeris< double > const &","register_ephemeris", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp3);
-  {
-    try {
-      GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GLONASS_SpaceNode_Sl_double_Sg__register_ephemeris__SWIG_0(arg1,(int const &)*arg2,(GLONASS_Ephemeris< double > const &)*arg3);
   return Qnil;
 fail:
   return Qnil;
@@ -22230,16 +19624,7 @@ _wrap_SpaceNode_GLONASS_ephemeris(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = GLONASS_SpaceNode_Sl_double_Sg__ephemeris((GLONASS_SpaceNode< double > const *)arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GLONASS_SpaceNode_Sl_double_Sg__ephemeris((GLONASS_SpaceNode< double > const *)arg1,(int const &)*arg2);
   vresult = SWIG_NewPointerObj((new GLONASS_Ephemeris< double >(static_cast< const GLONASS_Ephemeris< double >& >(result))), SWIGTYPE_p_GLONASS_EphemerisT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -22281,16 +19666,7 @@ _wrap_SpaceNode_GLONASS_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)GLONASS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GLONASS_SpaceNode_Sl_double_Sg__read(arg1,(char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -22545,16 +19921,7 @@ _wrap_Ephemeris_GLONASS_invalidate(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","invalidate", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      (arg1)->invalidate();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->invalidate();
   return Qnil;
 fail:
   return Qnil;
@@ -22586,16 +19953,7 @@ _wrap_Ephemeris_GLONASS_consistentq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","is_consistent", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_consistent();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_consistent();
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -22639,16 +19997,7 @@ _wrap_Ephemeris_GLONASS_in_rangeq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_in_range", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_in_range((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_in_range((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -22692,16 +20041,7 @@ _wrap_Ephemeris_GLONASS_validq___(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","is_valid", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((GLONASS_Ephemeris< double > const *)arg1)->is_valid((GPS_Time< double > const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -22726,17 +20066,8 @@ _wrap_new_Ephemeris_GLONASS__SWIG_0(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -22776,17 +20107,8 @@ _wrap_new_Ephemeris_GLONASS__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GLONASS_Ephemeris< double >::eph_t const &","GLONASS_Ephemeris<(double)>", 1, argv[0])); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double >::eph_t * >(argp1);
-  {
-    try {
-      result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >((GLONASS_Ephemeris< double >::eph_t const &)*arg1);
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_Ephemeris< double > *)new GLONASS_Ephemeris< double >((GLONASS_Ephemeris< double >::eph_t const &)*arg1);
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -22861,16 +20183,7 @@ _wrap_Ephemeris_GLONASS_rehash__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash((int const &)*arg2);
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -22894,16 +20207,7 @@ _wrap_Ephemeris_GLONASS_rehash__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","rehash", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_Ephemeris< double > *) &(arg1)->rehash();
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
   return vresult;
 fail:
@@ -22991,16 +20295,7 @@ _wrap_Ephemeris_GLONASS_svide___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_svid(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -23033,16 +20328,7 @@ _wrap_Ephemeris_GLONASS_svid(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_svid", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_svid((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_svid((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -23085,16 +20371,7 @@ _wrap_Ephemeris_GLONASS_freq_che___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_freq_ch(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_freq_ch(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -23127,16 +20404,7 @@ _wrap_Ephemeris_GLONASS_freq_ch(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_freq_ch", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_freq_ch((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_freq_ch((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -23179,16 +20447,7 @@ _wrap_Ephemeris_GLONASS_t_ke___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_k(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_k(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -23221,16 +20480,7 @@ _wrap_Ephemeris_GLONASS_t_k(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_t_k", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_k((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_k((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -23273,16 +20523,7 @@ _wrap_Ephemeris_GLONASS_t_be___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_b(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_t_b(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -23315,16 +20556,7 @@ _wrap_Ephemeris_GLONASS_t_b(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_t_b", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_b((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_t_b((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -23367,16 +20599,7 @@ _wrap_Ephemeris_GLONASS_Me___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_M(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_M(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -23409,16 +20632,7 @@ _wrap_Ephemeris_GLONASS_M(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_M", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_M((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_M((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -23461,16 +20675,7 @@ _wrap_Ephemeris_GLONASS_gamma_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_gamma_n(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_gamma_n(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23503,16 +20708,7 @@ _wrap_Ephemeris_GLONASS_gamma_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_gamma_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_gamma_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_gamma_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -23555,16 +20751,7 @@ _wrap_Ephemeris_GLONASS_tau_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_n(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_n(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23597,16 +20784,7 @@ _wrap_Ephemeris_GLONASS_tau_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -23649,16 +20827,7 @@ _wrap_Ephemeris_GLONASS_xne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23691,16 +20860,7 @@ _wrap_Ephemeris_GLONASS_xn(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -23743,16 +20903,7 @@ _wrap_Ephemeris_GLONASS_xn_dote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_dot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_dot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23785,16 +20936,7 @@ _wrap_Ephemeris_GLONASS_xn_dot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn_dot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_dot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_dot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -23837,16 +20979,7 @@ _wrap_Ephemeris_GLONASS_xn_ddote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_ddot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_xn_ddot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23879,16 +21012,7 @@ _wrap_Ephemeris_GLONASS_xn_ddot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_xn_ddot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_ddot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_xn_ddot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -23931,16 +21055,7 @@ _wrap_Ephemeris_GLONASS_yne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -23973,16 +21088,7 @@ _wrap_Ephemeris_GLONASS_yn(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24025,16 +21131,7 @@ _wrap_Ephemeris_GLONASS_yn_dote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_dot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_dot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24067,16 +21164,7 @@ _wrap_Ephemeris_GLONASS_yn_dot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn_dot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_dot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_dot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24119,16 +21207,7 @@ _wrap_Ephemeris_GLONASS_yn_ddote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_ddot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_yn_ddot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24161,16 +21240,7 @@ _wrap_Ephemeris_GLONASS_yn_ddot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_yn_ddot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_ddot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_yn_ddot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24213,16 +21283,7 @@ _wrap_Ephemeris_GLONASS_zne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24255,16 +21316,7 @@ _wrap_Ephemeris_GLONASS_zn(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24307,16 +21359,7 @@ _wrap_Ephemeris_GLONASS_zn_dote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_dot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_dot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24349,16 +21392,7 @@ _wrap_Ephemeris_GLONASS_zn_dot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn_dot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_dot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_dot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24401,16 +21435,7 @@ _wrap_Ephemeris_GLONASS_zn_ddote___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_ddot(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_zn_ddot(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24443,16 +21468,7 @@ _wrap_Ephemeris_GLONASS_zn_ddot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_zn_ddot", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_ddot((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_zn_ddot((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24495,16 +21511,7 @@ _wrap_Ephemeris_GLONASS_B_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_B_n(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_B_n(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -24537,16 +21544,7 @@ _wrap_Ephemeris_GLONASS_B_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_B_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_B_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_B_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -24589,16 +21587,7 @@ _wrap_Ephemeris_GLONASS_pe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_p(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_p(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -24631,16 +21620,7 @@ _wrap_Ephemeris_GLONASS_p(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_p", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_p((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_p((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -24683,16 +21663,7 @@ _wrap_Ephemeris_GLONASS_N_Te___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_N_T(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_N_T(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -24725,16 +21696,7 @@ _wrap_Ephemeris_GLONASS_N_T(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_N_T", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_N_T((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_N_T((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -24777,16 +21739,7 @@ _wrap_Ephemeris_GLONASS_F_Te___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_F_T(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_F_T(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -24819,16 +21772,7 @@ _wrap_Ephemeris_GLONASS_F_T(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_F_T", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_F_T((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_F_T((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -24871,16 +21815,7 @@ _wrap_Ephemeris_GLONASS_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_n(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_n(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -24913,16 +21848,7 @@ _wrap_Ephemeris_GLONASS_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -24965,16 +21891,7 @@ _wrap_Ephemeris_GLONASS_delta_tau_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_delta_tau_n(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_delta_tau_n(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -25007,16 +21924,7 @@ _wrap_Ephemeris_GLONASS_delta_tau_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_delta_tau_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_delta_tau_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_delta_tau_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -25059,16 +21967,7 @@ _wrap_Ephemeris_GLONASS_E_ne___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_E_n(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_E_n(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -25101,16 +22000,7 @@ _wrap_Ephemeris_GLONASS_E_n(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_E_n", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_E_n((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_E_n((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -25153,16 +22043,7 @@ _wrap_Ephemeris_GLONASS_P1e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< unsigned int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_P1(arg1,(unsigned int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int)GLONASS_Ephemeris_Sl_double_Sg__set_P1(arg1,(unsigned int const &)*arg2);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return vresult;
 fail:
@@ -25195,16 +22076,7 @@ _wrap_Ephemeris_GLONASS_P1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P1", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_P1((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (unsigned int *) &GLONASS_Ephemeris_Sl_double_Sg__get_P1((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(*result));
   return vresult;
 fail:
@@ -25247,16 +22119,7 @@ _wrap_Ephemeris_GLONASS_P2e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< bool >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P2(arg1,(bool const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P2(arg1,(bool const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -25289,16 +22152,7 @@ _wrap_Ephemeris_GLONASS_P2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P2", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P2((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P2((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_bool(static_cast< bool >(*result));
   return vresult;
 fail:
@@ -25341,16 +22195,7 @@ _wrap_Ephemeris_GLONASS_P4e___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< bool >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P4(arg1,(bool const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)GLONASS_Ephemeris_Sl_double_Sg__set_P4(arg1,(bool const &)*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -25383,16 +22228,7 @@ _wrap_Ephemeris_GLONASS_P4(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P4", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P4((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool *) &GLONASS_Ephemeris_Sl_double_Sg__get_P4((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_bool(static_cast< bool >(*result));
   return vresult;
 fail:
@@ -25435,16 +22271,7 @@ _wrap_Ephemeris_GLONASS_tau_ce___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_c(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_c(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -25477,16 +22304,7 @@ _wrap_Ephemeris_GLONASS_tau_c(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_c", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_c((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_c((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -25529,16 +22347,7 @@ _wrap_Ephemeris_GLONASS_tau_GPSe___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_GPS(arg1,(double const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__set_tau_GPS(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -25571,16 +22380,7 @@ _wrap_Ephemeris_GLONASS_tau_GPS(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_tau_GPS", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_GPS((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double *) &GLONASS_Ephemeris_Sl_double_Sg__get_tau_GPS((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(*result));
   return vresult;
 fail:
@@ -25623,16 +22423,7 @@ _wrap_Ephemeris_GLONASS_yeare___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_year(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_year(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -25665,16 +22456,7 @@ _wrap_Ephemeris_GLONASS_year(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_year", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_year((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_year((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -25717,16 +22499,7 @@ _wrap_Ephemeris_GLONASS_day_of_yeare___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_day_of_year(arg1,(int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)GLONASS_Ephemeris_Sl_double_Sg__set_day_of_year(arg1,(int const &)*arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
@@ -25759,16 +22532,7 @@ _wrap_Ephemeris_GLONASS_day_of_year(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_day_of_year", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_day_of_year((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int *) &GLONASS_Ephemeris_Sl_double_Sg__get_day_of_year((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_int(static_cast< int >(*result));
   return vresult;
 fail:
@@ -25820,16 +22584,7 @@ _wrap_Ephemeris_GLONASS_set_date__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
-  {
-    try {
-      GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_0(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_0(arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
   return Qnil;
 fail:
   return Qnil;
@@ -25855,45 +22610,11 @@ _wrap_Ephemeris_GLONASS_set_date__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
   {
-    arg2 = &temp2;
-    int *dst[] = {
-      &(temp2.tm_year),
-      &(temp2.tm_mon),
-      &(temp2.tm_mday),
-      &(temp2.tm_hour),
-      &(temp2.tm_min),
-      &(temp2.tm_sec),
-    };
-    int i_max(sizeof(dst) / sizeof(dst[0]));
-    if(i_max > RARRAY_LEN(argv[0])){
-      i_max = RARRAY_LEN(argv[0]);
-    }
-    for(int i(0); i < i_max; ++i){
-      VALUE obj = rb_ary_entry(argv[0], i);
-      int v;
-      if(SWIG_IsOK(SWIG_AsVal_int (obj, &v))){
-        if(dst[i] == &(temp2.tm_year)){
-          *dst[i] = v - 1900;
-        }else if(dst[i] == &(temp2.tm_mon)){
-          *dst[i] = v - 1;
-        }else{
-          *dst[i] = v;
-        }
-      }else{
-        SWIG_exception(SWIG_TypeError, "int is expected");
-      }
+    if(SWIG_AsVal_std_tm (argv[0], arg2 = &temp2) != SWIG_OK){
+      SWIG_exception(SWIG_TypeError, "int[1..6] is expected");
     }
   }
-  {
-    try {
-      GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_1(arg1,(std::tm const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_1(arg1,(std::tm const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -25919,6 +22640,9 @@ SWIGINTERN VALUE _wrap_Ephemeris_GLONASS_set_date(int nargs, VALUE *args, VALUE 
     if (_v) {
       {
         _v = (TYPE(argv[1]) == T_ARRAY) ? 1 : 0;
+        
+        
+        
       }
       if (_v) {
         return _wrap_Ephemeris_GLONASS_set_date__SWIG_1(nargs, args, self);
@@ -25981,16 +22705,7 @@ _wrap_Ephemeris_GLONASS_frequency_L1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","frequency_L1", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L1((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L1((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -26023,16 +22738,7 @@ _wrap_Ephemeris_GLONASS_frequency_L2(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","frequency_L2", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L2((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)GLONASS_Ephemeris_Sl_double_Sg__frequency_L2((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -26065,16 +22771,7 @@ _wrap_Ephemeris_GLONASS_base_time(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","base_time", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
-  {
-    try {
-      result = GLONASS_Ephemeris_Sl_double_Sg__base_time((GLONASS_Ephemeris< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GLONASS_Ephemeris_Sl_double_Sg__base_time((GLONASS_Ephemeris< double > const *)arg1);
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -26131,16 +22828,7 @@ _wrap_Ephemeris_GLONASS_parse__SWIG_0(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< unsigned int >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2,(unsigned int const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2,(unsigned int const &)*arg3);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -26177,16 +22865,7 @@ _wrap_Ephemeris_GLONASS_parse__SWIG_1(int argc, VALUE *argv, VALUE self) {
     }
     arg2 = temp2;
   }
-  {
-    try {
-      result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)GLONASS_Ephemeris_Sl_double_Sg__parse__SWIG_0(arg1,(unsigned int const (*))arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -26309,16 +22988,7 @@ _wrap_Ephemeris_GLONASS_dump(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","dump", 7, argv[0])); 
   }
   arg7 = reinterpret_cast< GPS_Time< double > * >(argp7);
-  {
-    try {
-      GLONASS_Ephemeris_Sl_double_Sg__dump(arg1,arg2,arg3,arg4,arg5,arg6,(GPS_Time< double > const &)*arg7);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  GLONASS_Ephemeris_Sl_double_Sg__dump(arg1,arg2,arg3,arg4,arg5,arg6,(GPS_Time< double > const &)*arg7);
   vresult = rb_ary_new();
   {
     for(int i(0); i < 3; ++i){
@@ -26398,16 +23068,7 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_0(int argc, VALUE *argv, VALUE self)
   } 
   temp3 = static_cast< double >(val3);
   arg3 = &temp3;
-  {
-    try {
-      result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2,(double const &)*arg3);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -26453,16 +23114,7 @@ _wrap_Ephemeris_GLONASS_constellation__SWIG_1(int argc, VALUE *argv, VALUE self)
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","constellation", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Time< double > * >(argp2);
-  {
-    try {
-      result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = GLONASS_Ephemeris_Sl_double_Sg__constellation__SWIG_0((GLONASS_Ephemeris< double > const *)arg1,(GPS_Time< double > const &)*arg2);
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_NewPointerObj((new System_XYZ<double, WGS84>((&result)->position)), 
         SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN))
@@ -26584,16 +23236,7 @@ _wrap_SolverOptions_GLONASS_exclude(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->exclude((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->exclude((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -26633,16 +23276,7 @@ _wrap_SolverOptions_GLONASS_include(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    try {
-      (arg1)->include((int const &)*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  (arg1)->include((int const &)*arg2);
   return Qnil;
 fail:
   return Qnil;
@@ -26674,16 +23308,7 @@ _wrap_SolverOptions_GLONASS_excluded(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_SolverOptions< double > const *","excluded", 1, self )); 
   }
   arg1 = reinterpret_cast< GLONASS_SolverOptions< double > * >(argp1);
-  {
-    try {
-      result = ((GLONASS_SolverOptions< double > const *)arg1)->excluded();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((GLONASS_SolverOptions< double > const *)arg1)->excluded();
   {
     vresult = rb_ary_new();
     
@@ -26729,17 +23354,8 @@ _wrap_new_SolverOptions_GLONASS(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (GLONASS_SolverOptions< double > *)new GLONASS_SolverOptions< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (GLONASS_SolverOptions< double > *)new GLONASS_SolverOptions< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -26774,10 +23390,17 @@ A class method.
 SWIGINTERN VALUE
 _wrap_RINEX_Observation_read(int argc, VALUE *argv, VALUE self) {
   char *arg1 = (char *) 0 ;
+  void *arg2 = (void *) 0 ;
   int res1 ;
   char *buf1 = 0 ;
   int alloc1 = 0 ;
   
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+    
+  }
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -26786,19 +23409,11 @@ _wrap_RINEX_Observation_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "char const *","RINEX_Observation_Sl_double_Sg__read", 1, argv[0] ));
   }
   arg1 = reinterpret_cast< char * >(buf1);
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_intern("read")), argc, argv);
-    }
-    
-    try {
-      RINEX_Observation_Sl_double_Sg__read((char const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
+  try {
+    RINEX_Observation_Sl_double_Sg__read((char const *)arg1,(void const *)arg2);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
   }
   if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
   return Qnil;
@@ -26839,17 +23454,8 @@ _wrap_new_RINEX_Observation(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (RINEX_Observation< double > *)new RINEX_Observation< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (RINEX_Observation< double > *)new RINEX_Observation< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -26906,16 +23512,7 @@ _wrap_SP3_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)(arg1)->read((char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)(arg1)->read((char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -26950,16 +23547,7 @@ _wrap_SP3_satellites(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SP3< double > const *","satellites", 1, self )); 
   }
   arg1 = reinterpret_cast< SP3< double > * >(argp1);
-  {
-    try {
-      result = ((SP3< double > const *)arg1)->satellites();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SP3< double > const *)arg1)->satellites();
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->gps));
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->sbas));
@@ -27021,16 +23609,7 @@ _wrap_SP3_push__SWIG_0(int argc, VALUE *argv, VALUE self) {
     temp3 = static_cast< PushableData::system_t >(val3);
     arg3 = &temp3;
   }
-  {
-    try {
-      result = (bool)((SP3< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((SP3< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -27065,16 +23644,7 @@ _wrap_SP3_push__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Solver< double > &","push", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Solver< double > * >(argp2);
-  {
-    try {
-      result = (bool)((SP3< double > const *)arg1)->push(*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((SP3< double > const *)arg1)->push(*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -27183,16 +23753,7 @@ _wrap_SP3_position(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","position", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = ((SP3< double > const *)arg1)->position((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SP3< double > const *)arg1)->position((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(static_cast< const System_XYZ< double,WGS84 >& >(result))), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -27246,16 +23807,7 @@ _wrap_SP3_velocity(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","velocity", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = ((SP3< double > const *)arg1)->velocity((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((SP3< double > const *)arg1)->velocity((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_NewPointerObj((new System_XYZ< double,WGS84 >(static_cast< const System_XYZ< double,WGS84 >& >(result))), SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -27309,16 +23861,7 @@ _wrap_SP3_clock_error(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = (double)((SP3< double > const *)arg1)->clock_error((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)((SP3< double > const *)arg1)->clock_error((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -27372,16 +23915,7 @@ _wrap_SP3_clock_error_dot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error_dot", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = (double)((SP3< double > const *)arg1)->clock_error_dot((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)((SP3< double > const *)arg1)->clock_error_dot((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -27423,16 +23957,7 @@ _wrap_SP3_apply_antex(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","apply_antex", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)(arg1)->apply_antex((char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)(arg1)->apply_antex((char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -27473,17 +23998,8 @@ _wrap_new_SP3(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (SP3< double > *)new SP3< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (SP3< double > *)new SP3< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -27540,16 +24056,7 @@ _wrap_RINEX_Clock_read(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","read", 2, argv[0] ));
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  {
-    try {
-      result = (int)(arg1)->read((char const *)arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (int)(arg1)->read((char const *)arg2);
   vresult = SWIG_From_int(static_cast< int >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return vresult;
@@ -27584,16 +24091,7 @@ _wrap_RINEX_Clock_satellites(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "RINEX_Clock< double > const *","satellites", 1, self )); 
   }
   arg1 = reinterpret_cast< RINEX_Clock< double > * >(argp1);
-  {
-    try {
-      result = ((RINEX_Clock< double > const *)arg1)->satellites();
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = ((RINEX_Clock< double > const *)arg1)->satellites();
   {
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->gps));
     vresult = SWIG_Ruby_AppendOutput(vresult, SWIG_From_int  ((&result)->sbas));
@@ -27655,16 +24153,7 @@ _wrap_RINEX_Clock_push__SWIG_0(int argc, VALUE *argv, VALUE self) {
     temp3 = static_cast< PushableData::system_t >(val3);
     arg3 = &temp3;
   }
-  {
-    try {
-      result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2,(PushableData::system_t const &)*arg3);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -27699,16 +24188,7 @@ _wrap_RINEX_Clock_push__SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Solver< double > &","push", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< GPS_Solver< double > * >(argp2);
-  {
-    try {
-      result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (bool)((RINEX_Clock< double > const *)arg1)->push(*arg2);
   vresult = SWIG_From_bool(static_cast< bool >(result));
   return vresult;
 fail:
@@ -27817,16 +24297,7 @@ _wrap_RINEX_Clock_clock_error(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = (double)((RINEX_Clock< double > const *)arg1)->clock_error((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)((RINEX_Clock< double > const *)arg1)->clock_error((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -27880,16 +24351,7 @@ _wrap_RINEX_Clock_clock_error_dot(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "GPS_Time< double > const &","clock_error_dot", 3, argv[1])); 
   }
   arg3 = reinterpret_cast< GPS_Time< double > * >(argp3);
-  {
-    try {
-      result = (double)((RINEX_Clock< double > const *)arg1)->clock_error_dot((int const &)*arg2,(GPS_Time< double > const &)*arg3);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (double)((RINEX_Clock< double > const *)arg1)->clock_error_dot((int const &)*arg2,(GPS_Time< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -27928,17 +24390,8 @@ _wrap_new_RINEX_Clock(int argc, VALUE *argv, VALUE self) {
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
-  {
-    try {
-      result = (RINEX_Clock< double > *)new RINEX_Clock< double >();
-      DATA_PTR(self) = result;
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception_fail(SWIG_RuntimeError, e.what());
-    }
-  }
+  result = (RINEX_Clock< double > *)new RINEX_Clock< double >();
+  DATA_PTR(self) = result;
   return self;
 fail:
   return Qnil;
@@ -27971,6 +24424,9 @@ static void *_p_GLONASS_EphemerisT_double_tTo_p_GLONASS_SpaceNodeT_double_t__Sat
 }
 static void *_p_SBAS_EphemerisT_double_tTo_p_SBAS_SpaceNodeT_double_t__SatelliteProperties__Ephemeris(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SBAS_SpaceNode< double >::SatelliteProperties::Ephemeris *)  ((SBAS_Ephemeris< double > *) x));
+}
+static void *_p_native_exceptionTo_p_std__exception(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((std::exception *)  ((native_exception *) x));
 }
 static void *_p_GPS_Ionospheric_UTC_ParametersT_double_tTo_p_GPS_SpaceNodeT_double_t__Ionospheric_UTC_Parameters(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((GPS_SpaceNode< double >::Ionospheric_UTC_Parameters *)  ((GPS_Ionospheric_UTC_Parameters< double > *) x));
@@ -28041,6 +24497,8 @@ static swig_type_info _swigt__p_s32_t = {"_p_s32_t", "s32_t *", 0, 0, (void*)0, 
 static swig_type_info _swigt__p_s8_t = {"_p_s8_t", "s8_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_satellites_t = {"_p_satellites_t", "satellites_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_self_t = {"_p_self_t", "self_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__exception = {"_p_std__exception", "std::exception *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_native_exception = {"_p_native_exception", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t = {"_p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t", "SBAS_SpaceNode< double >::available_satellites_t *|std::vector< std::pair< int,SBAS_SpaceNode< double >::Satellite const * > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_super_t = {"_p_super_t", "super_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__GC_VALUE = {"_p_swig__GC_VALUE", "swig::GC_VALUE *", 0, 0, (void*)0, 0};
@@ -28100,6 +24558,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_int,
   &_swigt__p_int_t,
   &_swigt__p_llh_t,
+  &_swigt__p_native_exception,
   &_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t,
   &_swigt__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t,
   &_swigt__p_p_double,
@@ -28109,6 +24568,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_s8_t,
   &_swigt__p_satellites_t,
   &_swigt__p_self_t,
+  &_swigt__p_std__exception,
   &_swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t,
   &_swigt__p_super_t,
   &_swigt__p_swig__GC_VALUE,
@@ -28177,6 +24637,8 @@ static swig_cast_info _swigc__p_s32_t[] = {  {&_swigt__p_s32_t, 0, 0, 0},{0, 0, 
 static swig_cast_info _swigc__p_s8_t[] = {  {&_swigt__p_s8_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_satellites_t[] = {  {&_swigt__p_satellites_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_self_t[] = {  {&_swigt__p_self_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_native_exception[] = {{&_swigt__p_native_exception, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__exception[] = {  {&_swigt__p_std__exception, 0, 0, 0},  {&_swigt__p_native_exception, _p_native_exceptionTo_p_std__exception, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t[] = {  {&_swigt__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_super_t[] = {  {&_swigt__p_super_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__GC_VALUE[] = {  {&_swigt__p_swig__GC_VALUE, 0, 0, 0},{0, 0, 0, 0}};
@@ -28236,6 +24698,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_int,
   _swigc__p_int_t,
   _swigc__p_llh_t,
+  _swigc__p_native_exception,
   _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__detection_t,
   _swigc__p_p_GPS_Solver_RAIM_LSRT_double_GPS_Solver_Base_DebugT_double_GPS_Solver_BaseT_double_t_t_t__user_pvt_t__exclusion_t,
   _swigc__p_p_double,
@@ -28245,6 +24708,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_s8_t,
   _swigc__p_satellites_t,
   _swigc__p_self_t,
+  _swigc__p_std__exception,
   _swigc__p_std__vectorT_std__pairT_int_SBAS_SpaceNodeT_double_t__Satellite_const_p_t_t,
   _swigc__p_super_t,
   _swigc__p_swig__GC_VALUE,

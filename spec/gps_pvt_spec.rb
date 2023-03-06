@@ -759,6 +759,10 @@ __RINEX_CLK_TEXT__
       expect(t_meas.to_a).to eq([1849, 172413])
       expect(t_meas.c_tm).to eq([2015, 6, 15, 23, 53, 33])
       expect(GPS::Time::new(0, t_meas.serialize)).to eq(t_meas)
+      expect(t_meas.leap_seconds).to eq(sn.iono_utc.delta_t_LS)
+      expect(GPS::Time::leap_second_events.select{|wn, sec, leap|
+        t_meas >= GPS::Time::new(wn, sec)
+      }[0][2]).to eq(sn.iono_utc.delta_t_LS)
       
       sn.update_all_ephemeris(t_meas)
       
@@ -881,7 +885,7 @@ __RINEX_CLK_TEXT__
       expect(solver.options[:skip_exclusion]).to eq(true)
       expect(solver.correction[:gps_ionospheric]).to include(:klobuchar)
       expect(solver.correction[:gps_tropospheric]).to include(:hopfield)
-      expect{solver.correction = nil}.to raise_error(RuntimeError)
+      expect{solver.correction = nil}.to raise_error(ArgumentError)
       expect{solver.correction = {
         :gps_ionospheric => [proc{|t, usr_pos, sat_pos|
               expect(t).to be_a_kind_of(GPS::Time)

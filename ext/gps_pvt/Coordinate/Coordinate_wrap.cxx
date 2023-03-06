@@ -1855,11 +1855,13 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_a_3__a_3__double swig_types[5]
 #define SWIGTYPE_p_char swig_types[6]
 #define SWIGTYPE_p_llh_t swig_types[7]
-#define SWIGTYPE_p_self_t swig_types[8]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[9]
-#define SWIGTYPE_p_xyz_t swig_types[10]
-static swig_type_info *swig_types[12];
-static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
+#define SWIGTYPE_p_native_exception swig_types[8]
+#define SWIGTYPE_p_self_t swig_types[9]
+#define SWIGTYPE_p_std__exception swig_types[10]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[11]
+#define SWIGTYPE_p_xyz_t swig_types[12]
+static swig_type_info *swig_types[14];
+static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2614,7 +2616,7 @@ SWIG_From_std_string  (const std::string& s)
   return SWIG_FromCharPtrAndSize(s.data(), s.size());
 }
 
-SWIGINTERN void System_3D_Sl_double_Sg__each(System_3D< double > const *self){
+SWIGINTERN void System_3D_Sl_double_Sg__each(System_3D< double > const *self,void const *check_block){
     for(int i(0); i < 3; ++i){
 
       int state;
@@ -3000,9 +3002,16 @@ Iterate thru each element in the Base.  A block must be provided.
 SWIGINTERN VALUE
 _wrap_Base_each(int argc, VALUE *argv, VALUE self) {
   System_3D< double > *arg1 = (System_3D< double > *) 0 ;
+  void *arg2 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+    
+  }
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -3011,19 +3020,11 @@ _wrap_Base_each(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_3D< double > const *","each", 1, self )); 
   }
   arg1 = reinterpret_cast< System_3D< double > * >(argp1);
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_intern("each")), argc, argv);
-    }
-    
-    try {
-      System_3D_Sl_double_Sg__each((System_3D< double > const *)arg1);
-    } catch (const native_exception &e) {
-      e.regenerate();
-      SWIG_fail;
-    } catch (const std::exception& e) {
-      SWIG_exception(SWIG_RuntimeError, e.what());
-    }
+  try {
+    System_3D_Sl_double_Sg__each((System_3D< double > const *)arg1,(void const *)arg2);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
   }
   return Qnil;
 fail:
@@ -6248,6 +6249,9 @@ static void *_p_System_LLHT_double_WGS84_tTo_p_System_3DT_double_t(void *x, int 
 static void *_p_System_ENUT_double_WGS84_tTo_p_System_3DT_double_t(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((System_3D< double > *)  ((System_ENU< double,WGS84 > *) x));
 }
+static void *_p_native_exceptionTo_p_std__exception(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((std::exception *)  ((native_exception *) x));
+}
 static swig_type_info _swigt__p_System_3DT_double_t = {"_p_System_3DT_double_t", "System_3D< double >::self_t *|System_3D< double > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_System_ENUT_double_WGS84_t = {"_p_System_ENUT_double_WGS84_t", "System_ENU< double,WGS84 > *|System_ENU< double,WGS84 >::self_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_System_LLHT_double_WGS84_t = {"_p_System_LLHT_double_WGS84_t", "System_ENU< double,WGS84 >::llh_t *|System_LLH< double,WGS84 > *|System_LLH< double,WGS84 >::self_t *", 0, 0, (void*)0, 0};
@@ -6257,6 +6261,8 @@ static swig_type_info _swigt__p_a_3__a_3__double = {"_p_a_3__a_3__double", "doub
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_llh_t = {"_p_llh_t", "llh_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_self_t = {"_p_self_t", "self_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__exception = {"_p_std__exception", "std::exception *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_native_exception = {"_p_native_exception", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_swig__GC_VALUE = {"_p_swig__GC_VALUE", "swig::GC_VALUE *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_xyz_t = {"_p_xyz_t", "xyz_t *", 0, 0, (void*)0, 0};
 
@@ -6269,7 +6275,9 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_a_3__a_3__double,
   &_swigt__p_char,
   &_swigt__p_llh_t,
+  &_swigt__p_native_exception,
   &_swigt__p_self_t,
+  &_swigt__p_std__exception,
   &_swigt__p_swig__GC_VALUE,
   &_swigt__p_xyz_t,
 };
@@ -6283,6 +6291,8 @@ static swig_cast_info _swigc__p_a_3__a_3__double[] = {  {&_swigt__p_a_3__a_3__do
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_llh_t[] = {  {&_swigt__p_llh_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_self_t[] = {  {&_swigt__p_self_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_native_exception[] = {{&_swigt__p_native_exception, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__exception[] = {  {&_swigt__p_std__exception, 0, 0, 0},  {&_swigt__p_native_exception, _p_native_exceptionTo_p_std__exception, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__GC_VALUE[] = {  {&_swigt__p_swig__GC_VALUE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_xyz_t[] = {  {&_swigt__p_xyz_t, 0, 0, 0},{0, 0, 0, 0}};
 
@@ -6295,7 +6305,9 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_a_3__a_3__double,
   _swigc__p_char,
   _swigc__p_llh_t,
+  _swigc__p_native_exception,
   _swigc__p_self_t,
+  _swigc__p_std__exception,
   _swigc__p_swig__GC_VALUE,
   _swigc__p_xyz_t,
 };
