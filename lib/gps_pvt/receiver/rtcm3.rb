@@ -35,7 +35,7 @@ class Receiver
       }
       pvt = nil
       after_run.call(pvt = run(meas_, t_meas), [meas_, ref_time = t_meas]) if t_meas
-      ref_pos = Coordinate::XYZ::new(pvt.xyz) if pvt && pvt.position_solved? # TODO pvt.xyz returns const &
+      ref_pos = pvt.xyz if pvt && pvt.position_solved?
       t_meas, meas = [nil, {}]
     }
     dt_threshold = GPS::Time::Seconds_week / 2
