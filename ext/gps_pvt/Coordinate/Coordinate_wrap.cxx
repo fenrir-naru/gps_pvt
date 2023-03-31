@@ -2209,7 +2209,7 @@ SWIG_ruby_failed(VALUE SWIGUNUSEDPARM(arg1), VALUE SWIGUNUSEDPARM(arg2))
 } 
 
 
-/*@SWIG:/usr/local/share/swig/4.0.2/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
+/*@SWIG:/usr/share/swig4.0/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
 SWIGINTERN VALUE SWIG_AUX_NUM2DBL(VALUE arg)
 {
   VALUE *args = (VALUE *)arg;
