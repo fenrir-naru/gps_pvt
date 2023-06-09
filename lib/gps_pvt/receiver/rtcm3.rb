@@ -81,7 +81,7 @@ class Receiver
             eph = sn.ephemeris(svid)
             cache[[sys, svid]] = [if eph.valid?(t) then
               sv_pos, clk_err = eph.constellation(t).values_at(0, 2)
-              sv_pos.dist(ref_pos) - (clk_err * c_1ms * 1E3)
+              sv_pos.distance(ref_pos) - (clk_err * c_1ms * 1E3)
             end, t]
           }
         }

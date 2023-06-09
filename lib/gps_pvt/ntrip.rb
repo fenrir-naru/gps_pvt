@@ -54,7 +54,7 @@ class Ntrip < Net::HTTP
       llh0 = Coordinate::LLH::new(D2R * lat_deg, D2R * lng_deg, 0)
       collect{|pt, prop|
         llh = Coordinate::LLH::new(*([:latitude, :longitude].collect{|k| D2R * prop[k].to_f} + [0]))
-        [llh0.xyz.dist(llh.xyz), prop]
+        [llh0.xyz.distance(llh.xyz), prop]
       }.sort{|a, b| a[0] <=> b[0]} # return [distance, property]
     end
   end

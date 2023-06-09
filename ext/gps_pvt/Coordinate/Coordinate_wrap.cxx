@@ -3665,17 +3665,17 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Coordinate::XYZ.dist
+  Document-method: GPS_PVT::Coordinate::XYZ.distance
 
   call-seq:
-    dist -> double
-    dist(XYZ another) -> double
+    distance -> double
+    distance(XYZ another) -> double
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_XYZ_dist__SWIG_0(int argc, VALUE *argv, VALUE self) {
+_wrap_XYZ_distance__SWIG_0(int argc, VALUE *argv, VALUE self) {
   System_XYZ< double,WGS84 > *arg1 = (System_XYZ< double,WGS84 > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3687,10 +3687,10 @@ _wrap_XYZ_dist__SWIG_0(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_System_XYZT_double_WGS84_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 > const *","dist", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 > const *","distance", 1, self )); 
   }
   arg1 = reinterpret_cast< System_XYZ< double,WGS84 > * >(argp1);
-  result = (double)((System_XYZ< double,WGS84 > const *)arg1)->dist();
+  result = (double)((System_XYZ< double,WGS84 > const *)arg1)->distance();
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -3699,7 +3699,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_XYZ_dist__SWIG_1(int argc, VALUE *argv, VALUE self) {
+_wrap_XYZ_distance__SWIG_1(int argc, VALUE *argv, VALUE self) {
   System_XYZ< double,WGS84 > *arg1 = (System_XYZ< double,WGS84 > *) 0 ;
   System_XYZ< double,WGS84 >::self_t *arg2 = 0 ;
   void *argp1 = 0 ;
@@ -3714,18 +3714,18 @@ _wrap_XYZ_dist__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_System_XYZT_double_WGS84_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 > const *","dist", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 > const *","distance", 1, self )); 
   }
   arg1 = reinterpret_cast< System_XYZ< double,WGS84 > * >(argp1);
   res2 = SWIG_ConvertPtr(argv[0], &argp2, SWIGTYPE_p_System_XYZT_double_WGS84_t,  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 >::self_t const &","dist", 2, argv[0] )); 
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "System_XYZ< double,WGS84 >::self_t const &","distance", 2, argv[0] )); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "System_XYZ< double,WGS84 >::self_t const &","dist", 2, argv[0])); 
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "System_XYZ< double,WGS84 >::self_t const &","distance", 2, argv[0])); 
   }
   arg2 = reinterpret_cast< System_XYZ< double,WGS84 >::self_t * >(argp2);
-  result = (double)((System_XYZ< double,WGS84 > const *)arg1)->dist((System_XYZ< double,WGS84 >::self_t const &)*arg2);
+  result = (double)((System_XYZ< double,WGS84 > const *)arg1)->distance((System_XYZ< double,WGS84 >::self_t const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -3733,7 +3733,7 @@ fail:
 }
 
 
-SWIGINTERN VALUE _wrap_XYZ_dist(int nargs, VALUE *args, VALUE self) {
+SWIGINTERN VALUE _wrap_XYZ_distance(int nargs, VALUE *args, VALUE self) {
   int argc;
   VALUE argv[3];
   int ii;
@@ -3750,7 +3750,7 @@ SWIGINTERN VALUE _wrap_XYZ_dist(int nargs, VALUE *args, VALUE self) {
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_System_XYZT_double_WGS84_t, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_XYZ_dist__SWIG_0(nargs, args, self);
+      return _wrap_XYZ_distance__SWIG_0(nargs, args, self);
     }
   }
   if (argc == 2) {
@@ -3763,15 +3763,15 @@ SWIGINTERN VALUE _wrap_XYZ_dist(int nargs, VALUE *args, VALUE self) {
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_System_XYZT_double_WGS84_t, SWIG_POINTER_NO_NULL);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_XYZ_dist__SWIG_1(nargs, args, self);
+        return _wrap_XYZ_distance__SWIG_1(nargs, args, self);
       }
     }
   }
   
 fail:
-  Ruby_Format_OverloadedError( argc, 3, "XYZ.dist", 
-    "    double XYZ.dist()\n"
-    "    double XYZ.dist(System_XYZ< double,WGS84 >::self_t const &another)\n");
+  Ruby_Format_OverloadedError( argc, 3, "XYZ.distance", 
+    "    double XYZ.distance()\n"
+    "    double XYZ.distance(System_XYZ< double,WGS84 >::self_t const &another)\n");
   
   return Qnil;
 }
@@ -5967,6 +5967,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::Coordinate::ENU.distance
+
+  call-seq:
+    distance -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_ENU_distance(int argc, VALUE *argv, VALUE self) {
+  System_ENU< double,WGS84 > *arg1 = (System_ENU< double,WGS84 > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_System_ENUT_double_WGS84_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "System_ENU< double,WGS84 > const *","distance", 1, self )); 
+  }
+  arg1 = reinterpret_cast< System_ENU< double,WGS84 > * >(argp1);
+  result = (double)((System_ENU< double,WGS84 > const *)arg1)->distance();
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::Coordinate::ENU.elevation
 
   call-seq:
@@ -6598,7 +6631,7 @@ SWIGEXPORT void Init_Coordinate(void) {
   rb_define_method(SwigClassXYZ.klass, "z", VALUEFUNC(_wrap_XYZ_z), -1);
   rb_define_method(SwigClassXYZ.klass, "+", VALUEFUNC(_wrap_XYZ___add__), -1);
   rb_define_method(SwigClassXYZ.klass, "-", VALUEFUNC(_wrap_XYZ___sub__), -1);
-  rb_define_method(SwigClassXYZ.klass, "dist", VALUEFUNC(_wrap_XYZ_dist), -1);
+  rb_define_method(SwigClassXYZ.klass, "distance", VALUEFUNC(_wrap_XYZ_distance), -1);
   rb_define_singleton_method(SwigClassXYZ.klass, "f0", VALUEFUNC(_wrap_XYZ_f0_get), 0);
   rb_define_singleton_method(SwigClassXYZ.klass, "a0", VALUEFUNC(_wrap_XYZ_a0_get), 0);
   rb_define_singleton_method(SwigClassXYZ.klass, "b0", VALUEFUNC(_wrap_XYZ_b0_get), 0);
@@ -6652,6 +6685,7 @@ SWIGEXPORT void Init_Coordinate(void) {
   rb_define_singleton_method(SwigClassENU.klass, "relative_rel", VALUEFUNC(_wrap_ENU_relative_rel), -1);
   rb_define_singleton_method(SwigClassENU.klass, "relative", VALUEFUNC(_wrap_ENU_relative), -1);
   rb_define_method(SwigClassENU.klass, "absolute", VALUEFUNC(_wrap_ENU_absolute), -1);
+  rb_define_method(SwigClassENU.klass, "distance", VALUEFUNC(_wrap_ENU_distance), -1);
   rb_define_method(SwigClassENU.klass, "elevation", VALUEFUNC(_wrap_ENU_elevation), -1);
   rb_define_method(SwigClassENU.klass, "azimuth", VALUEFUNC(_wrap_ENU_azimuth), -1);
   rb_define_method(SwigClassENU.klass, "down", VALUEFUNC(_wrap_ENU_down), -1);

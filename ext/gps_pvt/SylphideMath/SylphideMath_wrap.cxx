@@ -2818,12 +2818,6 @@ struct MatrixViewFilter : public BaseView {
     res.view().partial(new_rows, new_columns, row_offset, column_offset);
     return res;
   }
-  template <class T, class Array2D_Type, class ViewType>
-  static Matrix_Frozen<T, Array2D_Type, self_t> partial(
-      const Matrix_Frozen<T, Array2D_Type, ViewType> &orig,
-      const unsigned int &new_rows, const unsigned int &new_columns) {
-    return partial(orig, new_rows, new_columns, 0, 0);
-  }
 
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits> &operator<<(
@@ -3377,9 +3371,16 @@ SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Froz
 
 
   }
-SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
+SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial__SWIG_0(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
 
     return MatView_f::partial(*self, new_rows, new_columns, row_offset, column_offset);
+
+
+
+  }
+SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial__SWIG_1(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns){
+
+    return MatView_f::partial(*self, new_rows, new_columns, 0, 0);
 
 
 
@@ -3571,9 +3572,16 @@ SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Froz
 
 
   }
-SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial(Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
+SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial__SWIG_0(Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
 
     return MatView_f::partial(*self, new_rows, new_columns, row_offset, column_offset);
+
+
+
+  }
+SWIGINTERN Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial__SWIG_1(Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns){
+
+    return MatView_f::partial(*self, new_rows, new_columns, 0, 0);
 
 
 
@@ -3910,9 +3918,16 @@ SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,M
 
 
   }
-SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
+SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial__SWIG_0(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
 
     return MatView_f::partial(*self, new_rows, new_columns, row_offset, column_offset);
+
+
+
+  }
+SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial__SWIG_1(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self,unsigned int const &new_rows,unsigned int const &new_columns){
+
+    return MatView_f::partial(*self, new_rows, new_columns, 0, 0);
 
 
 
@@ -4104,9 +4119,16 @@ SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,M
 
 
   }
-SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
+SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial__SWIG_0(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns,unsigned int const &row_offset,unsigned int const &column_offset){
 
     return MatView_f::partial(*self, new_rows, new_columns, row_offset, column_offset);
+
+
+
+  }
+SWIGINTERN Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial__SWIG_1(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *self,unsigned int const &new_rows,unsigned int const &new_columns){
+
+    return MatView_f::partial(*self, new_rows, new_columns, 0, 0);
 
 
 
@@ -9087,12 +9109,13 @@ fail:
   call-seq:
     partial(unsigned int const & new_rows, unsigned int const & new_columns, unsigned int const & row_offset, 
     unsigned int const & column_offset) -> Matrix_FrozenD_f
+    partial(unsigned int const & new_rows, unsigned int const & new_columns) -> Matrix_FrozenD_f
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Matrix_FrozenD_partial(int argc, VALUE *argv, VALUE self) {
+_wrap_Matrix_FrozenD_partial__SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *) 0 ;
   unsigned int *arg2 = 0 ;
   unsigned int *arg3 = 0 ;
@@ -9152,13 +9175,138 @@ _wrap_Matrix_FrozenD_partial(int argc, VALUE *argv, VALUE self) {
   raise_if_lt_zero_after_asval(*arg4);
   raise_if_lt_zero_after_asval(*arg5);
   try {
-    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
+    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial__SWIG_0((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >(static_cast< const Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenD_partial__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  SwigValueWrapper< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *","partial", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","partial", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  try {
+    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__partial__SWIG_1((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+  } catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  vresult = SWIG_NewPointerObj((new Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >(static_cast< const Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Matrix_FrozenD_partial(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[6];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 6) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Matrix_FrozenD_partial__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            {
+              int res = SWIG_AsVal_unsigned_SS_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_Matrix_FrozenD_partial__SWIG_0(nargs, args, self);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 6, "partial", 
+    "    Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns, unsigned int const &row_offset, unsigned int const &column_offset)\n"
+    "    Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns)\n");
+  
   return Qnil;
 }
 
@@ -12406,12 +12554,13 @@ fail:
   call-seq:
     partial(unsigned int const & new_rows, unsigned int const & new_columns, unsigned int const & row_offset, 
     unsigned int const & column_offset) -> Matrix_FrozenD_f
+    partial(unsigned int const & new_rows, unsigned int const & new_columns) -> Matrix_FrozenD_f
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Matrix_FrozenD_f_partial(int argc, VALUE *argv, VALUE self) {
+_wrap_Matrix_FrozenD_f_partial__SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *) 0 ;
   unsigned int *arg2 = 0 ;
   unsigned int *arg3 = 0 ;
@@ -12471,13 +12620,138 @@ _wrap_Matrix_FrozenD_f_partial(int argc, VALUE *argv, VALUE self) {
   raise_if_lt_zero_after_asval(*arg4);
   raise_if_lt_zero_after_asval(*arg5);
   try {
-    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
+    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial__SWIG_0((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >(static_cast< const Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenD_f_partial__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  SwigValueWrapper< Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *","partial", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","partial", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  try {
+    result = Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__partial__SWIG_1((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+  } catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  vresult = SWIG_NewPointerObj((new Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >(static_cast< const Matrix_Frozen< double,Array2D_Dense< double >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Matrix_FrozenD_f_partial(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[6];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 6) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Matrix_FrozenD_f_partial__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            {
+              int res = SWIG_AsVal_unsigned_SS_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_Matrix_FrozenD_f_partial__SWIG_0(nargs, args, self);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 6, "partial", 
+    "    Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns, unsigned int const &row_offset, unsigned int const &column_offset)\n"
+    "    Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns)\n");
+  
   return Qnil;
 }
 
@@ -16788,12 +17062,13 @@ fail:
   call-seq:
     partial(unsigned int const & new_rows, unsigned int const & new_columns, unsigned int const & row_offset, 
     unsigned int const & column_offset) -> Matrix_FrozenComplexD_f
+    partial(unsigned int const & new_rows, unsigned int const & new_columns) -> Matrix_FrozenComplexD_f
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Matrix_FrozenComplexD_partial(int argc, VALUE *argv, VALUE self) {
+_wrap_Matrix_FrozenComplexD_partial__SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *) 0 ;
   unsigned int *arg2 = 0 ;
   unsigned int *arg3 = 0 ;
@@ -16853,13 +17128,138 @@ _wrap_Matrix_FrozenComplexD_partial(int argc, VALUE *argv, VALUE self) {
   raise_if_lt_zero_after_asval(*arg4);
   raise_if_lt_zero_after_asval(*arg5);
   try {
-    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
+    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial__SWIG_0((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >(static_cast< const Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenComplexD_partial__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  SwigValueWrapper< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *","partial", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","partial", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  try {
+    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__partial__SWIG_1((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+  } catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  vresult = SWIG_NewPointerObj((new Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >(static_cast< const Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Matrix_FrozenComplexD_partial(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[6];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 6) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Matrix_FrozenComplexD_partial__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            {
+              int res = SWIG_AsVal_unsigned_SS_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_Matrix_FrozenComplexD_partial__SWIG_0(nargs, args, self);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 6, "partial", 
+    "    Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns, unsigned int const &row_offset, unsigned int const &column_offset)\n"
+    "    Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns)\n");
+  
   return Qnil;
 }
 
@@ -20105,12 +20505,13 @@ fail:
   call-seq:
     partial(unsigned int const & new_rows, unsigned int const & new_columns, unsigned int const & row_offset, 
     unsigned int const & column_offset) -> Matrix_FrozenComplexD_f
+    partial(unsigned int const & new_rows, unsigned int const & new_columns) -> Matrix_FrozenComplexD_f
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Matrix_FrozenComplexD_f_partial(int argc, VALUE *argv, VALUE self) {
+_wrap_Matrix_FrozenComplexD_f_partial__SWIG_0(int argc, VALUE *argv, VALUE self) {
   Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *) 0 ;
   unsigned int *arg2 = 0 ;
   unsigned int *arg3 = 0 ;
@@ -20170,13 +20571,138 @@ _wrap_Matrix_FrozenComplexD_f_partial(int argc, VALUE *argv, VALUE self) {
   raise_if_lt_zero_after_asval(*arg4);
   raise_if_lt_zero_after_asval(*arg5);
   try {
-    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
+    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial__SWIG_0((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3,(unsigned int const &)*arg4,(unsigned int const &)*arg5);
   } catch(std::out_of_range &_e) {
     SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
   }
   vresult = SWIG_NewPointerObj((new Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >(static_cast< const Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenComplexD_f_partial__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *) 0 ;
+  unsigned int *arg2 = 0 ;
+  unsigned int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int temp2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  unsigned int temp3 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  SwigValueWrapper< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *","partial", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned int","partial", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+  } 
+  temp3 = static_cast< unsigned int >(val3);
+  arg3 = &temp3;
+  raise_if_lt_zero_after_asval(*arg2);
+  raise_if_lt_zero_after_asval(*arg3);
+  try {
+    result = Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__partial__SWIG_1((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1,(unsigned int const &)*arg2,(unsigned int const &)*arg3);
+  } catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  vresult = SWIG_NewPointerObj((new Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >(static_cast< const Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f >& >(result))), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Matrix_FrozenComplexD_f_partial(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[6];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 6) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Matrix_FrozenComplexD_f_partial__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            {
+              int res = SWIG_AsVal_unsigned_SS_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_Matrix_FrozenComplexD_f_partial__SWIG_0(nargs, args, self);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 6, "partial", 
+    "    Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns, unsigned int const &row_offset, unsigned int const &column_offset)\n"
+    "    Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > partial(unsigned int const &new_rows, unsigned int const &new_columns)\n");
+  
   return Qnil;
 }
 
