@@ -1,10 +1,11 @@
-ninja_tool_dir = File::absolute_path(File::join(
-    File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool'))
-
 require "mkmf"
-cflags = " -Wall -I#{ninja_tool_dir}"
+proc{|ninja_tool_dir|
+  dir_config('ninja_tool', ninja_tool_dir, ninja_tool_dir)
+}.call(File::absolute_path(File::join(
+    File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool')))
+cflags = " -Wall"
 $CFLAGS += cflags
-$CPPFLAGS += cflags if RUBY_VERSION >= "2.0.0"
+$CPPFLAGS += cflags
 $LOCAL_LIBS += " -lstdc++ "
 
 IO_TARGETS = [
