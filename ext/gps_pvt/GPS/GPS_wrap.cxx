@@ -2551,6 +2551,7 @@ struct GPS_Measurement {
     L1_RANGE_RATE_SIGMA,
     L1_SIGNAL_STRENGTH_dBHz,
     L1_LOCK_SEC,
+    L1_CARRIER_PHASE_AMBIGUITY_SCALE,
     L1_FREQUENCY,
 
 
@@ -2560,6 +2561,7 @@ struct GPS_Measurement {
     L2CM_RANGE_RATE, L2CL_RANGE_RATE, L2CM_RANGE_RATE_SIGMA, L2CL_RANGE_RATE_SIGMA,
     L2CM_SIGNAL_STRENGTH_dBHz, L2CL_SIGNAL_STRENGTH_dBHz,
     L2CM_LOCK_SEC, L2CL_LOCK_SEC,
+    L2CM_CARRIER_PHASE_AMBIGUITY_SCALE, L2CL_CARRIER_PHASE_AMBIGUITY_SCALE,
 
 
     ITEMS_PREDEFINED,
@@ -4066,18 +4068,18 @@ SWIGINTERN GPS_Ephemeris< double >::constellation_res_t GPS_Ephemeris_Sl_double_
                       .append(inspect_str(v_key_value)).append("}").c_str());
               }
               rb_hash_foreach(v_key_value,
-
+#if RUBY_API_VERSION_CODE < 20700
                   // @see https://docs.ruby-lang.org/ja/latest/doc/news=2f2_7_0.html
                   (int (*)(ANYARGS))
-
+#endif
                   arg_t::iter2, v_arg);
               return ST_CONTINUE;
             }
           } arg = {val};
           rb_hash_foreach(obj,
-
+#if RUBY_API_VERSION_CODE < 20700
               (int (*)(ANYARGS))
-
+#endif
               arg_t::iter1, reinterpret_cast<VALUE>(&arg));
           return SWIG_OK;
         }
@@ -14845,6 +14847,15 @@ A class method.
 
 */
 /*
+  Document-method: GPS_PVT::GPS.L1_CARRIER_PHASE_AMBIGUITY_SCALE
+
+  call-seq:
+    L1_CARRIER_PHASE_AMBIGUITY_SCALE -> int
+
+A class method.
+
+*/
+/*
   Document-method: GPS_PVT::GPS.L1_FREQUENCY
 
   call-seq:
@@ -15029,6 +15040,24 @@ A class method.
 
   call-seq:
     L2CL_LOCK_SEC -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CM_CARRIER_PHASE_AMBIGUITY_SCALE
+
+  call-seq:
+    L2CM_CARRIER_PHASE_AMBIGUITY_SCALE -> int
+
+A class method.
+
+*/
+/*
+  Document-method: GPS_PVT::GPS.L2CL_CARRIER_PHASE_AMBIGUITY_SCALE
+
+  call-seq:
+    L2CL_CARRIER_PHASE_AMBIGUITY_SCALE -> int
 
 A class method.
 
@@ -25245,6 +25274,7 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_const(SwigClassMeasurement.klass, "L1_RANGE_RATE_SIGMA", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_RANGE_RATE_SIGMA)));
   rb_define_const(SwigClassMeasurement.klass, "L1_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_SIGNAL_STRENGTH_dBHz)));
   rb_define_const(SwigClassMeasurement.klass, "L1_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_LOCK_SEC)));
+  rb_define_const(SwigClassMeasurement.klass, "L1_CARRIER_PHASE_AMBIGUITY_SCALE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_CARRIER_PHASE_AMBIGUITY_SCALE)));
   rb_define_const(SwigClassMeasurement.klass, "L1_FREQUENCY", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L1_FREQUENCY)));
   rb_define_const(SwigClassMeasurement.klass, "L2CM_PSEUDORANGE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_PSEUDORANGE)));
   rb_define_const(SwigClassMeasurement.klass, "L2CL_PSEUDORANGE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_PSEUDORANGE)));
@@ -25266,6 +25296,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_const(SwigClassMeasurement.klass, "L2CL_SIGNAL_STRENGTH_dBHz", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_SIGNAL_STRENGTH_dBHz)));
   rb_define_const(SwigClassMeasurement.klass, "L2CM_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_LOCK_SEC)));
   rb_define_const(SwigClassMeasurement.klass, "L2CL_LOCK_SEC", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_LOCK_SEC)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CM_CARRIER_PHASE_AMBIGUITY_SCALE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CM_CARRIER_PHASE_AMBIGUITY_SCALE)));
+  rb_define_const(SwigClassMeasurement.klass, "L2CL_CARRIER_PHASE_AMBIGUITY_SCALE", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::L2CL_CARRIER_PHASE_AMBIGUITY_SCALE)));
   rb_define_const(SwigClassMeasurement.klass, "ITEMS_PREDEFINED", SWIG_From_int(static_cast< int >(GPS_Measurement< double >::ITEMS_PREDEFINED)));
   rb_define_method(SwigClassMeasurement.klass, "add", VALUEFUNC(_wrap_Measurement_add), -1);
   rb_define_method(SwigClassMeasurement.klass, "each", VALUEFUNC(_wrap_Measurement_each), -1);
