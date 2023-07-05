@@ -259,9 +259,9 @@ class Receiver
         sys_svid_list = ranges[:sat_sig].collect{|sat, sig| [sys, (sat + svid_offset) & 0xFF]}
         restore_ranges.call(t_meas2, sys_svid_list, ranges)
         item_size = sys_svid_list.size
-        [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].collect{|k|
+        [:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn, :halfc_amb].collect{|k|
           ranges[k] || ([nil] * item_size)
-        }.transpose.each{|(svid, sig), pr, cpr, dr, cn|
+        }.transpose.each{|(svid, sig), pr, cpr, dr, cn, amb|
           prefix, len = sig_list[sig]
           next unless prefix
           proc{
@@ -274,6 +274,7 @@ class Receiver
           meas2 << [svid, "#{prefix}_RANGE_RATE".to_sym, dr] if dr
           meas2 << [svid, "#{prefix}_CARRIER_PHASE".to_sym, cpr / len] if cpr && len
           meas2 << [svid, "#{prefix}_SIGNAL_STRENGTH_dBHz".to_sym, cn] if cn
+          meas2 << [svid, "#{prefix}_CARRIER_PHASE_AMBIGUITY_SCALE".to_sym, 0.5] if amb && (amb == 1)
         }
       else
         #p({msg_num => parsed})

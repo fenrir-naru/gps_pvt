@@ -421,6 +421,7 @@ class RTCM3
         }
         add_proc.call(0)
         add_proc.call(1)
+        res[:halfc_amb] = self[-ncell, ncell].transpose[0] if self[-1][1] == 420
         res
       end
     end
@@ -433,14 +434,16 @@ class RTCM3
         range_rough2 = self[offset + (nsat * 1), nsat] # DF398
         range_fine = self[offset + (nsat * 2), ncell] # DF400/405
         phase_fine = self[offset + (nsat * 2) + (ncell * 1), ncell] # DF401/406
+        halfc_amb = self[offset + (nsat * 2) + (ncell * 3), ncell] # DF420
         cn = self[offset + (nsat * 2) + (ncell * 4), ncell] # DF403/408
-        Hash[*([:sat_sig, :pseudo_range, :phase_range, :cn].zip(
+        Hash[*([:sat_sig, :pseudo_range, :phase_range, :cn, :halfc_amb].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
               rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
               [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
-                  cn[i][0]]
+                  cn[i][0],
+                  halfc_amb[i][0]]
             }.transpose).flatten(1))]
       end
     end
@@ -454,16 +457,18 @@ class RTCM3
         delta_rough = self[offset + (nsat * 3), nsat] # DF399
         range_fine = self[offset + (nsat * 4), ncell] # DF400/405
         phase_fine = self[offset + (nsat * 4) + (ncell * 1), ncell] # DF401/406
+        halfc_amb = self[offset + (nsat * 4) + (ncell * 3), ncell] # DF420
         cn = self[offset + (nsat * 4) + (ncell * 4), ncell] # DF403/408
         delta_fine = self[offset + (nsat * 4) + (ncell * 5), ncell] # DF404
-        Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn].zip(
+        Hash[*([:sat_sig, :pseudo_range, :phase_range, :phase_range_rate, :cn, :halfc_amb].zip(
             [cells] + cells.collect.with_index{|(sat, sig), i|
               i2 = sats.find_index(sat)
               rough_ms = (range_rough2[i2][0] + range_rough[i2][0]) rescue nil
               [(((range_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   (((phase_fine[i][0] + rough_ms) * SPEED_OF_LIGHT) rescue nil),
                   ((delta_fine[i][0] + delta_rough[i2][0]) rescue nil),
-                  cn[i][0]]
+                  cn[i][0],
+                  halfc_amb[i][0]]
             }.transpose).flatten(1))]
       end
     end
