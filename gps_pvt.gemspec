@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
-  #spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  #spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
     
   spec.extensions = ["ext/gps_pvt/extconf.rb"]
 
@@ -63,6 +63,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "matrix" if GPS_PVT::version_compare(RUBY_VERSION, "3.1") >= 0
+  spec.add_development_dependency "github_changelog_generator"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

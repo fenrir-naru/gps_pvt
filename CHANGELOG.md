@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.4](https://github.com/fenrir-naru/gps_pvt/tree/v0.9.4) (2023-07-05)
+
+[Full Changelog](https://github.com/fenrir-naru/gps_pvt/compare/v0.9.3...v0.9.4)
+
 ## [v0.9.3](https://github.com/fenrir-naru/gps_pvt/tree/v0.9.3) (2023-03-07)
 
 [Full Changelog](https://github.com/fenrir-naru/gps_pvt/compare/v0.9.2...v0.9.3)

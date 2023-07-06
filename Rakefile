@@ -111,4 +111,11 @@ file "ext/ninja-scan-light/tool" do |t|
   Rake::Task["git:submodules:init"].invoke
 end
 
+GitHubChangelogGenerator::RakeTask.new :changelog do |config|
+  %r|github\.com/([^/]+)/([^/]+)| =~ Bundler::load_gemspec(
+        Dir::glob(File::join(File::dirname(__FILE__), '*.gemspec')).first).homepage
+  config.user = $1
+  config.project = $2
+end if require 'github_changelog_generator/task'
+
 task :default => ["ext/ninja-scan-light/tool", :compile, :spec]
