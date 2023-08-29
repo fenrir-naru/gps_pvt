@@ -766,7 +766,7 @@ __TEXT__
   REGEXP_PATTERN = /(?:
     (\s+|--[^\n]*|\/\*[^\*]*\*\/)
     | (#{RESERVED_WORDS.collect{|k, sym|
-        Regexp::escape(k) + (k =~ /^[\w\-]+$/ ? '\b' : '')
+        Regexp::escape(k) + (k =~ /^[\w\-]+$/ ? '\b(?!\-)' : '')
       }.join('|')})
     | ([A-Z][-\w]+)
     | ([a-z][-\w]+)
