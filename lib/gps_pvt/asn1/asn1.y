@@ -484,7 +484,7 @@ rule
       | LBRACKET DefinedValue ObjIdComponentsList RBRACKET
   ObjIdComponentsList :
       ObjIdComponents
-      | ObjIdComponents ObjIdComponentsList
+      | ObjIdComponentsList ObjIdComponents
   ObjIdComponents :
       NameForm
       | NumberForm
