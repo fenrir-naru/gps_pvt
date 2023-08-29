@@ -372,6 +372,7 @@ encode_opentype = proc{|bits| # 10.2
 encode = proc{|tree, data|
   if tree[:type] then
     type, opts = tree[:type]
+    data = opts[:hook_encode].call(data) if opts[:hook_encode]
     case type
     when :BOOLEAN
       data ? "1" : "0"
@@ -543,7 +544,7 @@ decode_opentype = proc{|str| # 10.2
 decode = proc{|tree, str|
   if tree[:type] then
     type, opts = tree[:type]
-    case type
+    res = case type
     when :BOOLEAN
       str.slice!(0) == "1"
     when :INTEGER
@@ -593,21 +594,21 @@ decode = proc{|tree, str|
       str.slice!(0, bits * len).scan(/.{#{bits}}/).collect{|chunk| chunk.to_i(2)}
     when :SEQUENCE
       has_extension = (opts[:extension] && (str.slice!(0) == '1'))
-      res = Hash[*(
+      data = Hash[*(
         opts[:root].collect{|v| [v[:name], v[:default]] if v[:default]}.compact.flatten(1)
       )].merge(Hash[*(opts[:root].select{|v| # 18.2
         (v[:default] || v[:optional]) ? (str.slice!(0) == '1') : true
       }.collect{|v|
         [v[:name], decode.call(v, str)]
       }.flatten(1))])
-      res.merge!(Hash[*(
+      data.merge!(Hash[*(
           decoder.length_normally_small_length(str).times.collect{
             str.slice!(0) == '1'
           }.zip(opts[:extension]).collect{|has_elm, v|
             next unless has_elm
             [v[:name], decode.call(v, decode_opentype(str))]
           }.compact.flatten(1))]) if has_extension
-      res
+      data
     when :SEQUENCE_OF
       (if opts[:size_range][:additional] && str.slice!(0) then
         decoder.semi_constrained_whole_number(
@@ -666,19 +667,66 @@ decode = proc{|tree, str|
       args = 5.times.collect{|i| $1[i * 2, 2].to_i}
       args[0] += 2000
       args << $2.to_i if $2
-      res = Time::gm(*args)
-      res += ($3[0, 3].to_i * 60 + $3[3, 2].to_i) if $3
-      res
-      # data.getutc.strftime("%y%m%d%H%M%SZ")
+      data = Time::gm(*args)
+      data += ($3[0, 3].to_i * 60 + $3[3, 2].to_i) if $3
+      data
     when :NULL
     else
       raise
     end
+    res = opts[:hook_decode].call(res) if opts[:hook_decode]
+    res
   else
     Hash[*(tree.collect{|k, v|
       [k, decode.call(v, str)]
     }.flatten(1))]
   end
+}
+
+dig = proc{|tree, *keys|
+  if tree[:type] then
+    type, opts = tree[:type]
+    case type
+    when :SEQUENCE, :CHOICE
+      k = keys.shift
+      elm = (opts[:root] + (opts[:extension] || [])).find{|v| v[:name] == k}
+      keys.empty? ? elm : dig.call(elm, *keys)
+    else
+      raise
+    end
+  else
+    elm = tree[keys.shift]
+    keys.empty? ? elm : dig.call(elm, *keys)
+  end
+}
+
+# RRLP payload conversion
+dig.call(upl, :ULP, :"ULP-PDU", :message, :msSUPLPOS, :posPayLoad, :rrlpPayload)[:type][1].merge!({
+  :hook_encode => proc{|data|
+    next data unless data.kind_of?(Hash)
+    encode.call(upl[:"RRLP-Messages"][:PDU], data).scan(/.{1,8}/).tap{|buf|
+      buf[-1] += "0" * (8 - buf[-1].length)
+    }.collect{|str| str.to_i(2)}
+  },
+  :hook_decode => proc{|data|
+    data.define_singleton_method(:decode){
+      decode.call(upl[:"RRLP-Messages"][:PDU], self.collect{|v| "%08b" % [v]}.join)
+    }
+    data
+  },
+})
+
+# BCD String
+[:msisdn, :mdn, :imsi].each{|k|
+  dig.call(upl, :ULP, :"ULP-PDU", :sessionID, :setSessionID, :setId, k)[:type][1].merge!({
+    :hook_encode => proc{|data|
+      next data unless data.kind_of?(String)
+      (("0" * (16 - data.size)) + data).scan(/\d{2}/).collect{|v| v.to_i(16)}
+    },
+    :hook_decode => proc{|data|
+      data.collect{|v| "%02X"%[v]}.join
+    },
+  })
 }
 
 =begin
@@ -699,25 +747,12 @@ define_method(:generate_skelton){|k_cmd|
   res
 }
 define_method(:encode){|cmd|
-  if (pos_payload = (cmd[:message][:msSUPLPOS][:posPayLoad] rescue nil)) \
-      && pos_payload[:rrlpPayload].kind_of?(Hash) then
-    pos_payload[:rrlpPayload] = encode.call(
-        upl[:"RRLP-Messages"][:PDU], pos_payload[:rrlpPayload]).scan(/.{1,8}/).tap{|buf|
-      buf[-1] += "0" * (8 - buf[-1].length)
-    }.collect{|str| str.to_i(2)} # covert to OctetString
-  end
   buf = encode.call(upl[:ULP][:"ULP-PDU"], cmd).scan(/.{1,8}/)
   buf[-1] += "0" * (8 - buf[-1].length)
   (buf.length.divmod(1 << 8) + buf[2..-1].collect{|str| str.to_i(2)}).pack("C*")
 } 
 define_method(:decode){|str|
-  res = decode.call(upl[:ULP][:"ULP-PDU"], str.unpack("C*").collect{|v| "%08b" % [v]}.join)
-  if (rrlp = (res[:message][:msSUPLPOS][:posPayLoad][:rrlpPayload] rescue nil)) then
-    rrlp.define_singleton_method(:decode){
-      decode.call(upl[:"RRLP-Messages"][:PDU], self.collect{|v| "%08b" % [v]}.join)
-    }
-  end
-  res
+  decode.call(upl[:ULP][:"ULP-PDU"], str.unpack("C*").collect{|v| "%08b" % [v]}.join)
 }
 module_function(:generate_skelton, :encode, :decode)
 }

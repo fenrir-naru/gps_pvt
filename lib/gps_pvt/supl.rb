@@ -53,9 +53,8 @@ class SUPL_Client
       :sessionId => 1,
       :setId => {
         #:msisdn => [0xFF, 0xFF, 0x91, 0x94, 0x48, 0x45, 0x83, 0x98],
-        :imsi => "440109012345678".scan(/(.)(.?)/).collect{|a, b|
-          "0x#{a}#{b == '' ? '0' : b}".to_i(16)
-        },
+        :imsi => "440109012345678",
+        #:iPAddress => {:ipv4Address => [192, 168, 1, 1]},
       }
     }
     proc{|cap|
