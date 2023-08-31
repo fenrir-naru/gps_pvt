@@ -254,7 +254,8 @@ resolve_tree = proc{|root|
   }
   
   prepare_coding = proc{|tree|
-    next tree.each{|k, v| prepare_coding.call(v)} unless tree[:type]
+    next tree.each{|k, v| prepare_coding.call(v)} unless tree.include?(:type)
+    next unless tree[:type] # skip undefined type
 
     type = tree[:type][0]
     opts = tree[:type][1] = reduce_constraint.call(tree[:type][1])
@@ -316,7 +317,7 @@ resolve_tree = proc{|root|
 resolve_tree.call(upl)
 
 generate_skelton = proc{|tree|
-  if tree[:type] then
+  if tree.include?(:type) then
     type, opts = tree[:type]
     case type
     when :BOOLEAN
@@ -370,7 +371,7 @@ encode_opentype = proc{|bits| # 10.2
   encoder.length_normally_small_length(q) + bits
 }
 encode = proc{|tree, data|
-  if tree[:type] then
+  if tree.include?(:type) then
     type, opts = tree[:type]
     data = opts[:hook_encode].call(data) if opts[:hook_encode]
     case type
@@ -542,7 +543,7 @@ decode_opentype = proc{|str| # 10.2
   str.slice!(0, decoder.length_normally_small_length(str) * 8)
 }
 decode = proc{|tree, str|
-  if tree[:type] then
+  if tree.include?(:type) then
     type, opts = tree[:type]
     res = case type
     when :BOOLEAN
