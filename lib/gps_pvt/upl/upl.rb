@@ -449,7 +449,7 @@ encode = proc{|tree, data|
             flags.join # 18.7
           }#{
             args_list.collect{|args|
-              encode_opentype(encode.call(*args)) # 18.9
+              encode_opentype.call(encode.call(*args)) # 18.9
             }.join
           }"]
         else
@@ -489,7 +489,7 @@ encode = proc{|tree, data|
         next false unless data.include?(k = v[:name])
         res += "1" # 22.5
         res += encoder.normally_small_non_negative_whole_number(i) # 22.8
-        res += encode_opentype(encode.call(v, data[k]))
+        res += encode_opentype.call(encode.call(v, data[k]))
       } || raise
       res
     when :IA5String, :VisibleString
@@ -607,7 +607,7 @@ decode = proc{|tree, str|
             str.slice!(0) == '1'
           }.zip(opts[:extension]).collect{|has_elm, v|
             next unless has_elm
-            [v[:name], decode.call(v, decode_opentype(str))]
+            [v[:name], decode.call(v, decode_opentype.call(str))]
           }.compact.flatten(1))]) if has_extension
       data
     when :SEQUENCE_OF
@@ -629,7 +629,7 @@ decode = proc{|tree, str|
       if opts[:extension] && (str.slice!(0) == '1') then
         i = decoder.normally_small_non_negative_whole_number(str) # 22.8
         v = opts[:extension][i]
-        {v[:name] => decode.call(v, decode_opentype(str))}
+        {v[:name] => decode.call(v, decode_opentype.call(str))}
       else
         root_i_lt = opts[:root].size
         i = if root_i_lt > 1 then
@@ -739,12 +739,13 @@ module GPS_PVT
 end
 
 GPS_PVT::UPL = Module::new{
-define_method(:generate_skelton){|k_cmd|
+define_method(:generate_skelton){|k_cmd, *args|
+  opts = args[0] || {}
   res = generate_skelton.call(upl[:ULP][:"ULP-PDU"])
   res[:message].reject!{|k, v|
     "ms#{k_cmd}".to_sym != k
   }
-  res[:version][:maj] = 1
+  res[:version][:maj] = opts[:version] || 1
   res
 }
 define_method(:encode){|cmd|
