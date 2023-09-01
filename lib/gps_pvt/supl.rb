@@ -48,7 +48,7 @@ class SUPL_Client
   end
 
   def send_supl_start
-    cmd = generate_skelton(:SUPLSTART)
+    cmd = generate_skeleton(:SUPLSTART)
     cmd[:sessionID][:setSessionID] = {
       :sessionId => 1,
       :setId => {
@@ -85,7 +85,7 @@ class SUPL_Client
   end
 
   def send_supl_pos_init
-    cmd = generate_skelton(:SUPLPOSINIT)
+    cmd = generate_skeleton(:SUPLPOSINIT)
     cmd[:sessionID] = @session_id
     proc{|posinit|
       posinit[:sETCapabilities] = @capability
@@ -142,7 +142,7 @@ class SUPL_Client
       break unless (rrlp_data[:component][:assistanceData][:moreAssDataToBeSent] == :moreMessagesOnTheWay)
       
       # SUPL-POS + RRLP-assistanceDataAck
-      cmd = generate_skelton(:SUPLPOS)
+      cmd = generate_skeleton(:SUPLPOS)
       cmd[:sessionID] = @session_id
       cmd[:message][:msSUPLPOS] = {
         :posPayLoad => {:rrlpPayload => {

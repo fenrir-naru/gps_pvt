@@ -316,7 +316,7 @@ resolve_tree = proc{|root|
 }
 resolve_tree.call(upl)
 
-generate_skelton = proc{|tree|
+generate_skeleton = proc{|tree|
   if tree.include?(:type) then
     type, opts = tree[:type]
     case type
@@ -332,16 +332,16 @@ generate_skelton = proc{|tree|
     when :SEQUENCE
       Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         next if (v[:optional] || v[:default])
-        [v[:name], generate_skelton.call(v)]
+        [v[:name], generate_skeleton.call(v)]
       }.compact.flatten(1))]
     when :SEQUENCE_OF
-      v = Marshal::dump(generate_skelton.call(opts))
+      v = Marshal::dump(generate_skeleton.call(opts))
       (opts[:size_range][:root].first rescue 0).times.collect{
         Marshal::load(v)
       }
     when :CHOICE
       Hash[*((opts[:root] + (opts[:extension] || [])).collect.with_index{|v, i|
-        [v[:name], generate_skelton.call(v)]
+        [v[:name], generate_skeleton.call(v)]
       }.flatten(1))]
     when :IA5String, :VisibleString
       opts[:character_table][:root].first * (opts[:size_range][:root].first rescue 0)
@@ -354,7 +354,7 @@ generate_skelton = proc{|tree|
     end
   else
     Hash[*(tree.collect{|k, v|
-      [k, generate_skelton.call(v)]
+      [k, generate_skeleton.call(v)]
     }.flatten(1))]
   end
 }
@@ -739,9 +739,9 @@ module GPS_PVT
 end
 
 GPS_PVT::UPL = Module::new{
-define_method(:generate_skelton){|k_cmd, *args|
+define_method(:generate_skeleton){|k_cmd, *args|
   opts = args[0] || {}
-  res = generate_skelton.call(upl[:ULP][:"ULP-PDU"])
+  res = generate_skeleton.call(upl[:ULP][:"ULP-PDU"])
   res[:message].reject!{|k, v|
     "ms#{k_cmd}".to_sym != k
   }
@@ -756,5 +756,5 @@ define_method(:encode){|cmd|
 define_method(:decode){|str|
   decode.call(upl[:ULP][:"ULP-PDU"], str.unpack("C*").collect{|v| "%08b" % [v]}.join)
 }
-module_function(:generate_skelton, :encode, :decode)
+module_function(:generate_skeleton, :encode, :decode)
 }
