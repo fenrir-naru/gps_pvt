@@ -86,19 +86,20 @@ proc{
   }
 }.call
 
-# parse RINEX NAV
+# parse RINEX NAV first
 files.each{|fname, ftype|
   case ftype
   when :rinex_nav; rcv.parse_rinex_nav(fname)
   end
 }
 
-# other files
+# then, other files
 threads = files.collect{|fname, ftype|
   task = case ftype
   when :ubx; proc{rcv.parse_ubx(fname){}}
   when :rinex_obs; proc{rcv.parse_rinex_obs(fname){}}
   when :rtcm3; proc{rcv.parse_rtcm3(fname){}}
+  when :rinex_nav; proc{}
   end
   case fname
   when URI::Ntrip; Thread::new(&task)
