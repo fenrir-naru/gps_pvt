@@ -144,5 +144,20 @@ class UBX
       nil
     end
   end
+  
+  def UBX.gnss_svid(svid_legacy)
+    case svid_legacy
+    when 1..32;     [:GPS, svid_legacy]
+    when 120..158;  [:SBAS, svid_legacy]
+    when 211..246;  [:Galileo, svid_legacy - 210]
+    when 159..163;  [:Beido, svid_legacy - 158]
+    when 33..64;    [:Beido, svid_legacy - 27]
+    #when 173..182 # IMES
+    when 193..197;  [:QZSS, svid_legacy - 192]
+    when 65..96;    [:GLONASS, svid_legacy - 64]
+    when 255;       [:GLONASS, nil]
+    else; nil
+    end
+  end
 end
 end
