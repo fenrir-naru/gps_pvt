@@ -733,24 +733,15 @@ __RINEX_CLK_TEXT__
           }.call(meas.to_a))
       expect(GPS::Measurement::new(meas.to_a).to_a.sort).to eq(meas.to_a.sort) # accept [[prn, k, v], ...]
       expect(GPS::Measurement::new(meas.to_hash).to_a.sort).to eq(meas.to_a.sort) # accept {prn => {k => v, ...}, ...}
-      expect(proc{
-        res = GPS::Measurement::new
-        meas.to_a2.each{|items| # to_a2 returns an array having Symbol for key
-          expect(items[1]).to be_a_kind_of(Symbol)
-          res.add(*items)
-        }
-        res.to_a.sort
-      }.call).to eq(meas.to_a.sort)
-      expect(proc{
-        res = GPS::Measurement::new
+      expect(GPS::Measurement::new.tap{|res|
         meas.to_hash2.each{|prn, k_v| # to_hash2 returns a hash having Symbol for key
           k_v.to_a.each{|k, v|
             expect(k).to be_a_kind_of(Symbol)
             res.add(prn, k, v)
           }
         }
-        res.to_a.sort
-      }.call).to eq(meas.to_a.sort)
+      }.to_a.sort).to eq(meas.to_a.sort)
+      expect(meas.to_hash2.to_meas.to_a.sort).to eq(meas.to_a.sort)
       expect{GPS::Measurement::new({:sym => {1 => 2}})}.to raise_error(TypeError)
       expect{GPS::Measurement::new({1 => {:sym => 2}})}.to raise_error(TypeError)
       expect{GPS::Measurement::new({1 => [2, 3]})}.to raise_error(TypeError)
