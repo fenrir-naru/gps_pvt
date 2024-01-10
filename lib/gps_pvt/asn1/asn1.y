@@ -34,7 +34,7 @@ rule
 
   DefinitiveObjIdComponentList :
       DefinitiveObjIdComponent
-      | DefinitiveObjIdComponent DefinitiveObjIdComponentList
+      | DefinitiveObjIdComponentList DefinitiveObjIdComponent
 
   DefinitiveObjIdComponent :
       NameForm
@@ -42,6 +42,8 @@ rule
       | DefinitiveNameAndNumberForm
 
   DefinitiveNumberForm : number
+  
+  DefinitiveNameAndNumberForm : identifier LCBRACE DefinitiveNumberForm RCBRACE
   
   TagDefault :
       EXPLICIT TAGS {raise} # not supported
@@ -387,8 +389,10 @@ rule
       ComponentType
       | ExtensionAdditionGroup
   ExtensionAdditionGroup :
-      LVBRACKET VersionNumber ComponentTypeList RVBRACKET {raise} # Not supported
+      LVBRACKET VersionNumber ComponentTypeList RVBRACKET
+          {result = {:group => val[2]}; result[:version] = val[1] if val[1]}
   VersionNumber :
+      /* empty */
       | number COLON
   ComponentTypeList :
       ComponentType {result = [val[0]]}
@@ -452,7 +456,8 @@ rule
       ExtensionAdditionAlternativesGroup
       | NamedType
   ExtensionAdditionAlternativesGroup :
-      LVBRACKET VersionNumber AlternativeTypeList RVBRACKET {raise} # Not supported
+      LVBRACKET VersionNumber AlternativeTypeList RVBRACKET
+          {result = {:group => val[2]}; result[:version] = val[1] if val[1]}
   AlternativeTypeList :
       NamedType {result = [val[0]]}
       | AlternativeTypeList COMMA NamedType {result << val[2]}
@@ -768,8 +773,8 @@ __TEXT__
     | (#{RESERVED_WORDS.collect{|k, sym|
         Regexp::escape(k) + (k =~ /^[\w\-]+$/ ? '\b(?!\-)' : '')
       }.join('|')})
-    | ([A-Z][-\w]+)
-    | ([a-z][-\w]+)
+    | ([A-Z][-\w]*)
+    | ([a-z][-\w]*)
     | (\d+)
     | \"((?:\"\"|[^\"])*)\"
   )/mxo
@@ -873,7 +878,18 @@ __TEXT__
 if $0 == __FILE__ then
   require 'json'
   parser = ASN1::Parser::new
-  #parser.yydebug = true
-  tree = parser.parse(ARGV[0] ? open(ARGV.shift).read : $stdin)
+  opts = []
+  ARGV.reject!{|arg|
+    next false unless arg =~ /^--([^=]+)=?/
+    k, v = [$1.to_sym, $' == '' ? true : $']
+    opts << [k, v]
+  }
+  parser.yydebug = true if opts.any?([:debug, true])
+  tree = {}
+  (ARGV.empty? ? ['-'] : ARGV).each{|f|
+    $stderr.print "Reading #{f == '-' ? '$stdin' : f} ... "
+    tree.merge!(parser.parse((f == '-' ? $stdin : open(f)).read))
+    $stderr.puts "done."
+  }
   print JSON::pretty_generate(tree)
 end

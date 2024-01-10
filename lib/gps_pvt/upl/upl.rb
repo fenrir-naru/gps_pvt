@@ -15,26 +15,31 @@ resolve_tree = proc{|root|
     child_k = (path ||= [])[-1]
     case child_v
     when Hash
+      keys = child_v.keys
       if child_v[:typeref] then
-        if !child_v[:type] then
-          if (child_v[:type] = assigned_type[child_v[:typeref].to_sym]) then
-            assigned_type[child_k] = child_v[:type]
-            resolved += 1
-          end
+        child_v[:typeref] = child_v[:typeref].to_sym
+        keys -= [:typeref, :type]
+        if !child_v[:type] &&
+            (child_v[:type] = assigned_type[child_v[:typeref]]) then
+          resolved += 1
         end
       elsif child_v[:type] then
         type, *other = child_v[:type]
         if type.kind_of?(String) then
           child_v[:type] = [type.to_sym] + (other.empty? ? [{}] : other)
           resolved += 1
-        end
-        if !assigned_type.keys.include?(child_k) then
-          assigned_type[child_k] = child_v[:type]
-          assigned_const[child_k.to_s] = child_v[:value] if child_v.keys.include?(:value)
+          if child_k.kind_of?(Symbol) && !assigned_type[child_k] then
+            assigned_type[child_k] = child_v[:type]
+            if child_v.keys.include?(:value) then
+              assigned_const[child_k.to_s] = child_v[:value]
+            else
+              child_v[:type][1][:typename] = child_k
+            end
+          end
         end
       end
-      child_v.each{|k, v|
-        expand_ref.call(v, path + [k], child_v)
+      keys.each{|k|
+        expand_ref.call(child_v[k], path + [k], child_v)
       }
     when Array
       child_v.each.with_index{|v, i|
@@ -57,14 +62,14 @@ resolve_tree = proc{|root|
   reduce_constraint = proc{|props|
     case props
     when /^((?:(?!\.{2,})\.[^\.\s]|[^\.\s])+)\.\.(\.?)((?:(?!\.{2,})\.[^\.\s]|[^\.\s])+)$/
-      a, b = $~.values_at(1, 3).collect{|v| Integer(v) rescue Float(v) rescue v}
+      a, b = $~.values_at(1, 3).collect{|v| Integer(v) rescue Float(v) rescue (assigned_const[v] || v)}
       Range::new(a, b, $2.empty? ? false : true)
     when Array
-      props.collect{|prop| reduce_constraint.call(prop)}
+      props.collect!{|prop| reduce_constraint.call(prop)}
     when Hash
-      props = Hash[*(props.collect{|k, prop|
-        [k, reduce_constraint.call(prop)]
-      }.flatten(1))]
+      props.keys.each{|k|
+        props[k] = reduce_constraint.call(props[k])
+      }
       if props[:and] then
         down_to, up_to, less_than = [[], [], []]
         prop = props[:and].reject{|v|
@@ -97,6 +102,7 @@ resolve_tree = proc{|root|
     end
   }
   find_range = proc{|type_opts, k|
+    type_opts[k] = reduce_constraint.call(type_opts[k]) if type_opts[k]
     res = {:root => []} # [min, max]
     res.define_singleton_method(:belong_to){|v|
       min, max = self[:root]
@@ -163,6 +169,7 @@ resolve_tree = proc{|root|
     res 
   }
   find_element = proc{|type_opts, k, elm_default|
+    type_opts[k] = reduce_constraint.call(type_opts[k]) if type_opts[k]
     elm_default ||= []
     res = {:root => nil}
     iter_proc = proc{|props, cat, cnd_or|
@@ -256,9 +263,9 @@ resolve_tree = proc{|root|
   prepare_coding = proc{|tree|
     next tree.each{|k, v| prepare_coding.call(v)} unless tree.include?(:type)
     next unless tree[:type] # skip undefined type
+    next if tree[:typeref]
 
-    type = tree[:type][0]
-    opts = tree[:type][1] = reduce_constraint.call(tree[:type][1])
+    type, opts = tree[:type]
     
     case type
     when :BOOLEAN
@@ -285,13 +292,22 @@ resolve_tree = proc{|root|
     when :SEQUENCE
       (opts[:root] + (opts[:extension] || [])).each.with_index{|v, i|
         v[:name] = v[:name] ? v[:name].to_sym : i
+        v[:type] = [:SEQUENCE, {:root => v[:group]}] if v[:group]
         prepare_coding.call(v)
+        v[:names] = v[:group].collect{|v2|
+          # if name is not Symbol, it will be changed to [index_in_sequence, index_in_group]
+          v2[:name] = [v[:name], v2[:name]] unless v2[:name].kind_of?(Symbol)
+          v2[:name]
+        } if v[:group]
       }
     when :SEQUENCE_OF
       opts[:size_range] = find_range.call(opts, :size)
       prepare_coding.call(opts)
     when :CHOICE
       # Skip reordering based on automatic tagging assumption
+      opts[:extension] = opts[:extension].collect{|v|
+        v[:group] || [v] # 22. Note says "Version brackets have no effect"
+      }.flatten(1) if opts[:extension]
       (opts[:root] + (opts[:extension] || [])).each.with_index{|v, i|
         v[:name] = v[:name] ? v[:name].to_sym : i
         prepare_coding.call(v)
@@ -332,15 +348,16 @@ generate_skeleton = proc{|tree|
     when :SEQUENCE
       Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         next if (v[:optional] || v[:default])
-        [v[:name], generate_skeleton.call(v)]
-      }.compact.flatten(1))]
+        subset = generate_skeleton.call(v)
+        v[:group] ? subset.to_a : [[v[:name], subset]]
+      }.compact.flatten(2))]
     when :SEQUENCE_OF
       v = Marshal::dump(generate_skeleton.call(opts))
       (opts[:size_range][:root].first rescue 0).times.collect{
         Marshal::load(v)
       }
     when :CHOICE
-      Hash[*((opts[:root] + (opts[:extension] || [])).collect.with_index{|v, i|
+      Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         [v[:name], generate_skeleton.call(v)]
       }.flatten(1))]
     when :IA5String, :VisibleString
@@ -439,16 +456,22 @@ encode = proc{|tree, data|
 
       ext_bit, ext_encoded = if opts[:extension] then
         flags, args_list = opts[:extension].collect{|v|
-          (elm = data[v[:name]]) ? ['1', [v, elm]] : ['0', nil]
+          elm = if v[:group] then
+            data_in_group = data.select{|k2, v2| v[:names].include?(k2)}
+            data_in_group.empty? ? nil : data_in_group
+          else
+            data[v[:name]]
+          end
+          elm ? ['1', [v, elm]] : ['0', nil]
         }.transpose
-        (args_list ||= []).compact!
+        args_list ||= []
         unless args_list.empty? then # 18.1
           ['1', "#{ # 18.8
             encoder.length_normally_small_length(args_list.size)
           }#{
             flags.join # 18.7
           }#{
-            args_list.collect{|args|
+            args_list.compact.collect{|args|
               encode_opentype.call(encode.call(*args)) # 18.9
             }.join
           }"]
@@ -607,8 +630,9 @@ decode = proc{|tree, str|
             str.slice!(0) == '1'
           }.zip(opts[:extension]).collect{|has_elm, v|
             next unless has_elm
-            [v[:name], decode.call(v, decode_opentype.call(str))]
-          }.compact.flatten(1))]) if has_extension
+            decoded = decode.call(v, decode_opentype.call(str))
+            v[:group] ? decoded.to_a : [[v[:name], decoded]]
+          }.compact.flatten(2))]) if has_extension
       data
     when :SEQUENCE_OF
       (if opts[:size_range][:additional] && str.slice!(0) then
