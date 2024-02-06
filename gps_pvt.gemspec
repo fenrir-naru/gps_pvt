@@ -63,7 +63,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "matrix" if GPS_PVT::version_compare(RUBY_VERSION, "3.1") >= 0
-  spec.add_development_dependency "github_changelog_generator"
+  spec.add_development_dependency "github_changelog_generator" unless ((Gem::Platform.local.os =~ /mingw/) && (GPS_PVT::version_compare(RUBY_VERSION, "3.1") >= 0))
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

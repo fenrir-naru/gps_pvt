@@ -116,6 +116,6 @@ GitHubChangelogGenerator::RakeTask.new :changelog do |config|
         Dir::glob(File::join(File::dirname(__FILE__), '*.gemspec')).first).homepage
   config.user = $1
   config.project = $2
-end if require 'github_changelog_generator/task'
+end if (begin; require 'github_changelog_generator/task'; rescue Exception; false; end)
 
 task :default => ["ext/ninja-scan-light/tool", :compile, :spec]
