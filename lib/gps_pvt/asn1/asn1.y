@@ -56,7 +56,7 @@ rule
       |
   
   ModuleBody :
-      Exports Imports AssignmentList {result = val[2]}
+      Exports Imports AssignmentList {result = val[2].merge(val[1] || {})}
       |
   
   Exports :
@@ -69,8 +69,12 @@ rule
       | 
   
   Imports :
-      IMPORTS SymbolsImported SEMICOLON
-      | 
+      IMPORTS SymbolsImported SEMICOLON {
+        result = Hash[*((val[1] || {}).collect{|k, v|
+          [k, {:typeref => [v, k]}]
+        }.flatten(1))]
+      }
+      |
   
   SymbolsImported :
       SymbolsFromModuleList
@@ -78,9 +82,13 @@ rule
   
   SymbolsFromModuleList :
       SymbolsFromModule
-      | SymbolsFromModuleList SymbolsFromModule
+      | SymbolsFromModuleList SymbolsFromModule {result = result.merge(val[1])}
   
-  SymbolsFromModule : SymbolList FROM GlobalModuleReference
+  SymbolsFromModule : SymbolList FROM GlobalModuleReference {
+    result = Hash[*(val[0].collect{|v|
+      [v, val[2]]
+    }.flatten(1))]
+  }
   
   GlobalModuleReference : modulereference AssignedIdentifier
   
@@ -90,8 +98,8 @@ rule
       |
   
   SymbolList :
-      Symbol
-      | SymbolList COMMA Symbol
+      Symbol {result = [val[0]]}
+      | SymbolList COMMA Symbol {result << val[2]}
   
   Symbol :
       Reference
@@ -670,9 +678,6 @@ rule
       item.empty? ? nil : item
     }.compact
     range = {:and => range} if range.size > 1
-    ((range = (val[2][0] == :<=) \
-        ? (val[0][1]..val[2][1]) \
-        : (val[0][1]...val[2][1])) rescue nil) if val[0][0] == :>=
     result = {:value => range}
   }
   LowerEndpoint :
@@ -820,6 +825,7 @@ __TEXT__
     rescue Racc::ParseError => e # ASN1Error
       @error = e.to_s
       @backtrace = e.backtrace
+      p [e, @scanner.string.slice(@scanner.pos, 40)]
       return nil
     end
 
