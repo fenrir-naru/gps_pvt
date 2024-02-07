@@ -225,18 +225,22 @@ resolve_tree = proc{|root|
     }
     iter_proc.call(type_opts, :root)
     [:root, :addtional].each{|cat|
-      res[cat] ||= elm_default if res.keys.include?(cat)
+      next if !res.keys.include?(cat) || res[cat]
+      res[cat] = ([nil] * elm_default.first.bytes[0]) + elm_default.to_a # zero padding
     }
-    tbl_root = res[:root].to_a
+    to_hash = proc{|src| 
+      Hash[*(src.to_a.collect.with_index.to_a.select{|v, i| v}.flatten(1))]
+    }
+    tbl_root = to_hash.call(res[:root])
     unless res[:additional] then
       res.define_singleton_method(:index){|v|
-        raise unless idx = tbl_root.find_index(v)
+        raise unless idx = tbl_root[v]
         [idx]
       }
     else
-      tbl_additional = res[:additional].to_a
+      tbl_additional = to_hash.call(res[:additional])
       res.define_singleton_method(:index){|v|
-        indices = [tbl_root.find_index[v], tbl_additional.find_index(v)]
+        indices = [tbl_root[v], tbl_additional[v]]
         raise if indices.any?
         indices
       }
@@ -326,6 +330,8 @@ resolve_tree = proc{|root|
           opts, :from, {
             :IA5String => ("\x0".."\x7F"),
             :VisibleString => ("\x20".."\x7E"),
+            #:NumericString => ("\x20".."\x39"),
+            #:PrintableString => ("\x20".."\x7A"),
           }[type])
     when :UTCTime
       props = [:VisibleString, opts]
