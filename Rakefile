@@ -107,6 +107,23 @@ task :swig do
   }
 end
 
+desc "Update upl.json.gz by using upl/*.asn"
+task "upl.json" do
+  parser_dir = File::join(File::dirname(__FILE__), 'lib', 'gps_pvt', 'asn1')
+  upl_dir = File::join(parser_dir, '..', 'upl')
+  upl_files = Dir::glob(File::join(upl_dir, '*.asn'))
+  chdir(parser_dir){
+    sh [:racc, 'asn1.y', '--debug'].join(' ')
+    require 'zlib'
+    Zlib::GzipWriter.wrap(open(File::join(upl_dir, 'upl.json.gz'), 'w')){|gz|
+      json_str = `#{['ruby', 'asn1.tab.rb', *upl_files].join(' ')}`
+      puts "generating JSON => #{json_str.gsub(/\s+/, ' ').slice(0, 100)} ... " 
+      gz.write json_str
+    }
+    remove_file('asn1.tab.rb')
+  }
+end
+
 file "ext/ninja-scan-light/tool" do |t|
   Rake::Task["git:submodules:init"].invoke
 end
