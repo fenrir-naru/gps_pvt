@@ -40,14 +40,14 @@ class <<self
     end
   end
   def semi_constrained_whole_number(v, v_min, *len_enc) # 10.7
-    len_enc = :length_normally_small_length if len_enc.empty?
+    len_enc = :length_otherwise if len_enc.empty?
     bf = non_negative_binary_integer(v - v_min, 8).scan(/.{8}/)
     with_length(bf.size, *len_enc).collect{|len_str, range|
       len_str + bf[range].join
     }.join
   end
   def unconstrained_whole_number(v, *len_enc) # 10.8
-    len_enc = :length_normally_small_length if len_enc.empty?
+    len_enc = :length_otherwise if len_enc.empty?
     bf = twos_complement_binary_integer(v).scan(/.{8}/)
     with_length(bf.size, *len_enc).collect{|len_str, range|
       len_str + bf[range].join
@@ -126,14 +126,14 @@ class <<self
     end
   end
   def semi_constrained_whole_number(str, v_min, *len_dec) # 10.7
-    len_dec = :length_normally_small_length if len_dec.empty?
+    len_dec = :length_otherwise if len_dec.empty?
     v_str = with_length(str, *len_dec).collect{|len_oct|
       str.slice!(0, len_oct * 8)
     }.join
     non_negative_binary_integer(v_str, v_str.size) + v_min
   end
   def unconstrained_whole_number(str, *len_dec) # 10.8
-    len_dec = :length_normally_small_length if len_dec.empty?
+    len_dec = :length_otherwise if len_dec.empty?
     v_str = with_length(str, *len_dec).collect{|len_oct|
       str.slice!(0, len_oct * 8)
     }.join
