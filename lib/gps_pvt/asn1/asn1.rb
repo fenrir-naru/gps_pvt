@@ -346,7 +346,7 @@ generate_skeleton = proc{|tree|
     when :BOOLEAN
       true
     when :INTEGER
-      opts[:value_range][:root].first rescue 0
+      opts[:value_range][:root].first || 0
     when :ENUMERATED
       opts[:encoded][:root][0]
     when :BIT_STRING, :OCTET_STRING
@@ -368,7 +368,7 @@ generate_skeleton = proc{|tree|
         [v[:name], generate_skeleton.call(v)]
       }.flatten(1))]
     when :IA5String, :VisibleString
-      opts[:character_table][:root].first * (opts[:size_range][:root].first rescue 0)
+      opts[:character_table][:root].first * (opts[:size_range][:root].first || 0)
     when :UTCTime
       Time::now #.utc.strftime("%y%m%d%H%MZ")
     when :NULL
@@ -543,6 +543,7 @@ encode = proc{|tree, data|
       idx_root, idx_additional = data.each_char.collect{|char|
         tbl_all.index(char)
       }.transpose
+      idx_root ||= []
       ext_bit, (alb, aub) = case (cat_size =
           opts[:size_range].belong_to(data.size))
       when :additional
