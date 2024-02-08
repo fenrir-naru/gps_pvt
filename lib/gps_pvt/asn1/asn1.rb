@@ -151,7 +151,7 @@ resolve_tree = proc{|root|
         if props[:root] then
           res[:additional] = []
           iter_proc.call(props[:root], cat, cnd_or)
-          iter_proc.call(props[:additional], :additional, cnd_or)
+          iter_proc.call(props[:additional], :additional, cnd_or) if props[:additional]
         elsif props[k] then
           [props[k]].flatten(1).each{|prop|
             iter_proc.call(prop, cat, true)
@@ -691,7 +691,7 @@ decode = proc{|tree, str|
           }.compact.flatten(2))]) if has_extension
       data
     when :SEQUENCE_OF
-      len_dec = if opts[:size_range][:additional] && str.slice!(0) then
+      len_dec = if opts[:size_range][:additional] && (str.slice!(0) == '1') then
         # 19.4 -> 10.9.4.2(semi_constrained_whole_number)
         :length_otherwise
       else
