@@ -166,8 +166,71 @@ RSpec::describe GPS_PVT::PER do
 ]}
 } }
           __JSON__
-          #<<-'__JSON__',
-          #__JSON__
+          <<-'__JSON__',
+{"X691_A3": {
+"PersonnelRecord": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "name", "typeref": "Name"},
+      {"name": "number", "typeref": "EmployeeNumber"},
+      {"name": "title", "type": "VisibleString"},
+      {"name": "dateOfHire", "typeref": "Date"},
+      {"name": "nameOfSpouse", "typeref": "Name"},
+      {"name": "children",
+        "type": [
+          "SEQUENCE_OF",
+          {"typeref": "ChildInformation", "size": {"root": 2}}
+        ],
+        "optional": true
+      }
+    ], "extension": [] }
+  ]
+},
+"ChildInformation": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "name", "typeref": "Name"},
+      {"name": "dateOfBirth", "typeref": "Date"}
+    ], "extension": [
+      {"name": "sex", "type": [
+          "ENUMERATED",
+          {"root": {"male": 1, "female": 2, "unknown": 3}}],
+        "optional": true
+      }
+    ] }
+  ]
+},
+"Name": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "givenName", "typeref": "NameString"},
+      {"name": "initial", "typeref": "NameString", "type": [null, {"size": 1}]},
+      {"name": "familyName", "typeref": "NameString"}
+    ], "extension": [] }
+  ]
+},
+"EmployeeNumber": {"type": [
+  "INTEGER",
+  {"value": {"root": {"and": [[">=", 0], ["<=", 9999]]}}}
+] },
+"Date": {"type": [
+  "VisibleString",
+  {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": {
+    "root": 8,
+    "additional": {"and": [[">=", 9], ["<=", 20]]}
+  }}
+]},
+"NameString": {"type": [
+  "VisibleString", {
+    "from": [{"and": [[">=", "a"], ["<=", "z"]]}, {"and": [[">=", "A"], ["<=", "Z"]]}, "-."],
+    "size": {"root": {"and": [[">=", 1], ["<=", 64]]}}
+  }
+]}
+} }
+          __JSON__
         ].inject({}){|res, json_str|
           res.merge!(asn1.read_json(StringIO::new(json_str)))
         }
@@ -222,6 +285,35 @@ RSpec::describe GPS_PVT::PER do
         encoded_true = (<<-__HEX_STRING__).gsub(/\s+/, '').scan(/.{2}/).collect{|str| "%08b"%[Integer(str, 16)]}.join[0..-4]
 865D51D2 888A5125 F1809984 44D3CB2E 3E9BF90C B8848B86 7396E8A8 8A5125F1
 81089B93 D71AA229 4497C632 AE222222 985CE521 885D54C1 70CAC838 B8
+        __HEX_STRING__
+        expect(encoded).to eq(encoded_true)
+
+        decoded = asn1.decode_per(fmt, encoded_true.dup)
+        encoded2 = asn1.encode_per(fmt, decoded)
+        expect(encoded2).to eq(encoded_true)
+      end
+      it 'passes tests of X.691 A.3 example' do
+        data = {:PersonnelRecord => {
+          :name => {:givenName => "John", :initial => "P", :familyName => "Smith"},
+          :title => "Director",
+          :number => 51,
+          :dateOfHire => "19710917",
+          :nameOfSpouse => {:givenName => "Mary", :initial => "T", :familyName => "Smith"},
+          :children => [{
+            :name => {:givenName => "Ralph", :initial => "T", :familyName => "Smith"},
+            :dateOfBirth => "19571111"
+          }, {
+            :name => {:givenName => "Susan", :initial => "B", :familyName => "Jones"},
+            :dateOfBirth => "19590717", :sex => :female
+          }]
+        }}
+        fmt = examples[:X691_A3][:PersonnelRecord]
+        #asn1.debug = true
+        encoded = asn1.encode_per(fmt, data[:PersonnelRecord])
+        encoded_true = (<<-__HEX_STRING__).gsub(/\s+/, '').scan(/.{2}/).collect{|str| "%08b"%[Integer(str, 16)]}.join[0..-2]
+40CBAA3A 5108A512 5F180330 889A7965 C7D37F20 CB8848B8 19CE5BA2 A114A24B
+E3011372 7AE35422 94497C61 95711118 22985CE5 21842EAA 60B832B2 0E2E0202
+80
         __HEX_STRING__
         expect(encoded).to eq(encoded_true)
 
