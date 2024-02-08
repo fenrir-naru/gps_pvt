@@ -5,6 +5,8 @@ require 'rspec'
 require 'gps_pvt/asn1/per'
 require 'gps_pvt/asn1/asn1'
 
+require 'stringio'
+
 RSpec::describe GPS_PVT::PER do
   describe 'Basic_Unaligned' do
     describe 'Encoder and Decoder' do
@@ -116,12 +118,7 @@ RSpec::describe GPS_PVT::PER do
           #<<-'__JSON__',
           #__JSON__
         ].inject({}){|res, json_str|
-          require 'json'
-          Tempfile.create{|fp|
-            fp.print json_str
-            fp.close
-            res.merge!(asn1.read_json(fp.path))
-          }
+          res.merge!(asn1.read_json(StringIO::new(json_str)))
         }
       }
       it 'passes tests of X691 A.1 example' do

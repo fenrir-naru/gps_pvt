@@ -837,10 +837,12 @@ define_method(:generate_skeleton, &generate_skeleton)
 define_method(:encode_per, &encode)
 define_method(:decode_per, &decode)
 define_method(:dig, &dig)
-define_method(:read_json){|*json_files|
+define_method(:read_json){|*src_list|
   require 'json'
-  resolve_tree(json_files.inject({}){|res, file|
-    res.merge(JSON::parse(open(file).read, {:symbolize_names => true}))
+  resolve_tree(src_list.inject({}){|res, src|
+    res.merge(JSON::parse(
+        (src.respond_to?(:read) ? src : open(src)).read,
+        {:symbolize_names => true}))
   })
 }
 decode_orig = decode
