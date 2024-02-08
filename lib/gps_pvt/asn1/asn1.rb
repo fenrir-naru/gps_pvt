@@ -10,20 +10,29 @@ resolve_tree = proc{|root|
     case child_v
     when Hash
       keys = child_v.keys
+      assigned_k = [path[0], child_k] if child_k.kind_of?(Symbol)
       if child_v[:typeref] then
         keys -= [:typeref, :type]
         if child_v[:typeref].kind_of?(Array) then # imported type
           src_k = child_v[:typeref].collect!{|v| v.to_sym}
-          dst_k = [path[0], child_k]
-          if !assigned_type[dst_k] && assigned_type[src_k] then 
-            assigned_type[dst_k] = assigned_type[src_k]
-            assigned_const[dst_k] = assigned_const[src_k] if assigned_const[src_k]
+          if !assigned_type[assigned_k] && assigned_type[src_k] then 
+            assigned_type[assigned_k] = assigned_type[src_k]
+            assigned_const[assigned_k] = assigned_const[src_k] if assigned_const[src_k]
             resolved += 1
           end
         elsif !child_v[:type] then
           child_v[:typeref] = child_v[:typeref].to_sym
           if (child_v[:type] = assigned_type[[path[0], child_v[:typeref]]]) then
-            assigned_type[[path[0], child_k]] = child_v[:type]
+            assigned_type[assigned_k] = child_v[:type] if assigned_k
+            resolved += 1
+          end
+        elsif !child_v[:type][0] then # referenced type with additional constraints
+          child_v[:typeref] = child_v[:typeref].to_sym
+          type, opts = assigned_type[[path[0], child_v[:typeref]]]
+          if type then
+            child_v.delete(:typeref) # because this type is not same as the referenced type
+            child_v[:type] = [type, opts.merge(child_v[:type][1])]
+            assigned_type[assigned_k] = child_v[:type] if assigned_k
             resolved += 1
           end
         end
@@ -32,10 +41,10 @@ resolve_tree = proc{|root|
         if type.kind_of?(String) then
           child_v[:type] = [type.to_sym] + (other.empty? ? [{}] : other)
           resolved += 1
-          if child_k.kind_of?(Symbol) then
-            assigned_type[[path[0], child_k]] = child_v[:type]
+          if assigned_k then
+            assigned_type[assigned_k] = child_v[:type]
             if child_v.keys.include?(:value) then
-              assigned_const[[path[0], child_k]] = child_v[:value]
+              assigned_const[assigned_k] = child_v[:value]
             else
               child_v[:type][1][:typename] = child_k
             end

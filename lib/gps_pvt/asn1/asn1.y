@@ -569,7 +569,7 @@ rule
       Type Constraint {
         type_name, type_opt = val[0][:type]
         type_opt = constraint_hash(type_opt ? [:and, type_opt, val[1]] : val[1])
-        result = {:type => [type_name, type_opt]}
+        result = val[0].merge({:type => [type_name, type_opt]})
       }
       | TypeWithConstraint
   TypeWithConstraint :
