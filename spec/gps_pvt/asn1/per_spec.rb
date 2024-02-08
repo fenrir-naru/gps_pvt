@@ -113,15 +113,66 @@ RSpec::describe GPS_PVT::PER do
 "Date": {"type": "VisibleString"}
 } }
           __JSON__
-          #<<-'__JSON__',
-          #__JSON__
+          <<-'__JSON__',
+{"X691_A2": {
+"PersonnelRecord": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "name", "typeref": "Name"},
+      {"name": "number", "typeref": "EmployeeNumber"},
+      {"name": "title", "type": "VisibleString"},
+      {"name": "dateOfHire", "typeref": "Date"},
+      {"name": "nameOfSpouse", "typeref": "Name"},
+      {"name": "children",
+        "type": [
+          "SEQUENCE_OF",
+          {"typeref": "ChildInformation"}
+        ],
+        "default": []
+      }
+    ] }
+  ]
+},
+"ChildInformation": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "name", "typeref": "Name"},
+      {"name": "dateOfBirth", "typeref": "Date"}
+    ] }
+  ]
+},
+"Name": {
+  "type": [
+    "SEQUENCE",
+    {"root": [
+      {"name": "givenName", "typeref": "NameString"},
+      {"name": "initial", "typeref": "NameString", "type": [null, {"size": 1}]},
+      {"name": "familyName", "typeref": "NameString"}
+    ] }
+  ]
+},
+"EmployeeNumber": {"type": "INTEGER"},
+"Date": {"type": [
+  "VisibleString",
+  {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": 8}
+]},
+"NameString": {"type": [
+  "VisibleString", {
+    "from": [{"and": [[">=", "a"], ["<=", "z"]]}, {"and": [[">=", "A"], ["<=", "Z"]]}, "-."],
+    "size": {"and": [[">=", 1], ["<=", 64]]}
+  }
+]}
+} }
+          __JSON__
           #<<-'__JSON__',
           #__JSON__
         ].inject({}){|res, json_str|
           res.merge!(asn1.read_json(StringIO::new(json_str)))
         }
       }
-      it 'passes tests of X691 A.1 example' do
+      it 'passes tests of X.691 A.1 example' do
         data = {:PersonnelRecord => {
           :name => {:givenName => "John", :initial => "P", :familyName => "Smith"},
           :title => "Director",
@@ -143,6 +194,34 @@ RSpec::describe GPS_PVT::PER do
 824ADFA3 700D005A 7B74F4D0 02661113 4F2CB8FA 6FE410C5 CB762C1C B16E0937
 0F2F2035 0169EDD3 D340102D 2C3B3868 01A80B4F 6E9E9A02 18B96ADD 8B162C41
 69F5E787 700C2059 5BF765E6 10C5CB57 2C1BB16E
+        __HEX_STRING__
+        expect(encoded).to eq(encoded_true)
+
+        decoded = asn1.decode_per(fmt, encoded_true.dup)
+        encoded2 = asn1.encode_per(fmt, decoded)
+        expect(encoded2).to eq(encoded_true)
+      end
+      it 'passes tests of X.691 A.2 example' do
+        data = {:PersonnelRecord => {
+          :name => {:givenName => "John", :initial => "P", :familyName => "Smith"},
+          :title => "Director",
+          :number => 51,
+          :dateOfHire => "19710917",
+          :nameOfSpouse => {:givenName => "Mary", :initial => "T", :familyName => "Smith"},
+          :children => [{
+            :name => {:givenName => "Ralph", :initial => "T", :familyName => "Smith"},
+            :dateOfBirth => "19571111"
+          }, {
+            :name => {:givenName => "Susan", :initial => "B", :familyName => "Jones"},
+            :dateOfBirth => "19590717"
+          }]
+        }}
+        fmt = examples[:X691_A2][:PersonnelRecord]
+        #asn1.debug = true
+        encoded = asn1.encode_per(fmt, data[:PersonnelRecord])
+        encoded_true = (<<-__HEX_STRING__).gsub(/\s+/, '').scan(/.{2}/).collect{|str| "%08b"%[Integer(str, 16)]}.join[0..-4]
+865D51D2 888A5125 F1809984 44D3CB2E 3E9BF90C B8848B86 7396E8A8 8A5125F1
+81089B93 D71AA229 4497C632 AE222222 985CE521 885D54C1 70CAC838 B8
         __HEX_STRING__
         expect(encoded).to eq(encoded_true)
 
