@@ -849,7 +849,7 @@ GPS_PVT::ASN1 = Module::new{
 define_method(:resolve_tree, &resolve_tree)
 define_method(:generate_skeleton, &generate_skeleton)
 define_method(:encode_per, &encode)
-define_method(:decode_per, &decode)
+define_method(:decode_per){|*args| decode.call(args)}
 define_method(:dig, &dig)
 define_method(:read_json){|*src_list|
   require 'json'
