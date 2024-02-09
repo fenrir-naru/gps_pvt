@@ -235,7 +235,11 @@ resolve_tree = proc{|root|
     iter_proc.call(type_opts, :root)
     [:root, :addtional].each{|cat|
       next if !res.keys.include?(cat) || res[cat]
-      res[cat] = ([nil] * elm_default.first.bytes[0]) + elm_default.to_a # zero padding
+      res[cat] = case elm_default
+      when Range; ([nil] * elm_default.first.bytes[0]) + elm_default.to_a # zero padding
+      when Array; elm_default
+      else; raise
+      end
     }
     to_hash = proc{|src| 
       Hash[*(src.to_a.collect.with_index.to_a.select{|v, i| v}.flatten(1))]
@@ -258,8 +262,7 @@ resolve_tree = proc{|root|
   }
   
   # This proc is useless because assumed automatic tagging 
-  # does not require to re-ordering based on tags 
-  # derived from manual tags and class numbers
+  # does not require to re-order based on manual tags or class numbers
   # @see https://stackoverflow.com/a/31450137
   get_universal_class_number = proc{|type|
     next get_universal_class_number.call(type[1][:root][0][:type]) if type[0] == :CHOICE
@@ -271,6 +274,8 @@ resolve_tree = proc{|root|
       :NULL => 5,
       :ENUMERATED => 10,
       :SEQUENCE => 16,
+      :NumericString => 18, # @see Table.6
+      :PrintableString => 19, # @see Table.6
       :IA5String => 22, # @see Table.6
       :VisibleString => 26, # @see Table.6
       :UTCTime => 23, # @see 43.3
@@ -333,14 +338,14 @@ resolve_tree = proc{|root|
         v[:type][1][:typename] ||= v[:name] if v[:name].kind_of?(Symbol) && v[:type] # for debugger
         prepare_coding.call(v)
       }
-    when :IA5String, :VisibleString
+    when :IA5String, :VisibleString, :NumericString, :PrintableString
       opts[:size_range] = find_range.call(opts, :size)
       opts[:character_table] = find_element.call(
           opts, :from, {
             :IA5String => ("\x0".."\x7F"),
             :VisibleString => ("\x20".."\x7E"),
-            #:NumericString => ("\x20".."\x39"),
-            #:PrintableString => ("\x20".."\x7A"),
+            :NumericString => ([' '] + ('0'..'9').to_a),
+            :PrintableString => ("\x20".."\x7A"),
           }[type])
     when :UTCTime
       props = [:VisibleString, opts]
@@ -382,7 +387,7 @@ generate_skeleton = proc{|tree|
       Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         [v[:name], generate_skeleton.call(v)]
       }.flatten(1))]
-    when :IA5String, :VisibleString
+    when :IA5String, :VisibleString, :NumericString, :PrintableString
       opts[:character_table][:root].first * (opts[:size_range][:root].first || 0)
     when :UTCTime
       Time::now #.utc.strftime("%y%m%d%H%MZ")
@@ -553,7 +558,7 @@ encode = proc{|tree, data|
         res += encode_opentype.call(encode.call(v, data[k]))
       } || raise
       res
-    when :IA5String, :VisibleString
+    when :IA5String, :VisibleString, :NumericString, :PrintableString
       tbl_all = opts[:character_table]
       idx_root, idx_additional = data.each_char.collect{|char|
         tbl_all.index(char)
@@ -724,7 +729,7 @@ decode = proc{|tree, str|
         v = opts[:root][i]
         {v[:name] => decode.call(v, str)}
       end
-    when :IA5String, :VisibleString
+    when :IA5String, :VisibleString, :NumericString, :PrintableString
       tbl = opts[:character_table][:additional]
       alb, aub = if (tbl || opts[:size_range][:additional]) \
           && (str.slice!(0) == '1') then
