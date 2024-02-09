@@ -231,6 +231,36 @@ RSpec::describe GPS_PVT::PER do
 ]}
 } }
           __JSON__
+          <<-'__JSON__',
+{"X691_A4": {
+"Ax": {
+  "type": [
+    "SEQUENCE",
+    {
+      "root": [
+        {
+          "name": "a",
+          "type": ["INTEGER", {"value": {"and": [[">=", 250], ["<=", 253]]}}]
+        },
+        {"name": "b", "type": "BOOLEAN"},
+        {
+          "name": "c",
+          "type": ["CHOICE",
+              {"root": [{"name": "d", "type": "INTEGER"}],
+                "extension": [{"group": [
+                  {"name": "e", "type": "BOOLEAN"},
+                  {"name": "f", "type": "IA5String"}]}]}]
+        },
+        {"name": "i", "type": "IA5String", "optional": true},
+        {"name": "j", "type": "PrintableString", "optional": true}
+      ],
+      "extension": [{"group": [
+          {"name": "g", "type": ["NumericString", {"size": 3}]},
+          {"name": "h", "type": "BOOLEAN", "optional": true}]}]
+    }]
+}
+} }
+          __JSON__
         ].inject({}){|res, json_str|
           res.merge!(asn1.read_json(StringIO::new(json_str)))
         }
@@ -314,6 +344,20 @@ RSpec::describe GPS_PVT::PER do
 40CBAA3A 5108A512 5F180330 889A7965 C7D37F20 CB8848B8 19CE5BA2 A114A24B
 E3011372 7AE35422 94497C61 95711118 22985CE5 21842EAA 60B832B2 0E2E0202
 80
+        __HEX_STRING__
+        expect(encoded).to eq(encoded_true)
+
+        decoded = asn1.decode_per(fmt, encoded_true.dup)
+        encoded2 = asn1.encode_per(fmt, decoded)
+        expect(encoded2).to eq(encoded_true)
+      end
+      it 'passes tests of X.691 A.4 example' do
+        data = {:Ax => {:a => 253, :b => true, :c => {:e => true}, :g => "123", :h => true}}
+        fmt = examples[:X691_A4][:Ax]
+        #asn1.debug = true
+        encoded = asn1.encode_per(fmt, data[:Ax])
+        encoded_true = (<<-__HEX_STRING__).gsub(/\s+/, '').scan(/.{2}/).collect{|str| "%08b"%[Integer(str, 16)]}.join[0..-3]
+9E000600 040A4690
         __HEX_STRING__
         expect(encoded).to eq(encoded_true)
 
