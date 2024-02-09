@@ -368,28 +368,26 @@ rule
   ComponentTypeLists : # work around version
       /* empty */ {result = {:root => []}}
       | ComponentTypeList {result = {:root => val[0]}}
-      | ComponentTypeList COMMA ELLIPSIS ExceptionSpec ExtensionAdditions
-          {result = {:root => val[0], :extension => val[4]}}
-      | ComponentTypeList COMMA ELLIPSIS ExceptionSpec ExtensionAdditions
-          COMMA ELLIPSIS
-          {result = {:root => val[0], :extension => val[4]}}
-      | ComponentTypeList COMMA ELLIPSIS ExceptionSpec ExtensionAdditions
-          COMMA ELLIPSIS COMMA ComponentTypeList
-          {result = {:root => val[0] + val[8], :extension => val[4]}}
-      | ELLIPSIS ExceptionSpec
-          {result = {:root => [], :extension => []}}
-      | ELLIPSIS ExceptionSpec COMMA ELLIPSIS
-          {result = {:root => [], :extension => []}}
-      | ELLIPSIS ExceptionSpec ExtensionAdditions
-          {result = {:root => [], :extension => val[2]}}
-      | ELLIPSIS ExceptionSpec ExtensionAdditions COMMA ELLIPSIS
-          {result = {:root => [], :extension => val[2]}}
-      | ELLIPSIS ExceptionSpec ExtensionAdditions COMMA ELLIPSIS
-          COMMA ComponentTypeList
-          {result = {:root => val[6], :extension => val[2]}}
-  ExtensionAdditions :
-      COMMA ExtensionAdditionList {result = val[1]}
-      | {result = []}
+      | ComponentTypeList COMMA ELLIPSIS ExceptionSpec ComponentTypeLists2
+          {result = {:root => val[0], :extension => []}.merge(val[4]){|k, v1, v2| v1 + v2}}
+      | ELLIPSIS ExceptionSpec ComponentTypeLists2
+          {result = {:root => [], :extension => []}.merge(val[2]){|k, v1, v2| v1 + v2}}
+  ComponentTypeLists2 : # work around version
+      /* empty */
+          {result = {}}
+      | COMMA ELLIPSIS
+          {result = {}}
+      | COMMA ELLIPSIS COMMA ComponentTypeList
+          {result = {:root => val[3]}}
+      | COMMA ExtensionAdditionList
+          {result = {:extension => val[1]}}
+      | COMMA ExtensionAdditionList COMMA ELLIPSIS
+          {result = {:extension => val[1]}}
+      | COMMA ExtensionAdditionList COMMA ELLIPSIS COMMA ComponentTypeList
+          {result = {:root => val[5], :extension => val[1]}}
+  /*ExtensionAdditions :
+      COMMA ExtensionAdditionList
+      | */
   ExtensionAdditionList :
       ExtensionAddition {result = [val[0]]}
       | ExtensionAdditionList COMMA ExtensionAddition {result << val[2]}
@@ -449,14 +447,18 @@ rule
   */
   AlternativeTypeLists : # work around version
       AlternativeTypeList {result = {:root => val[0]}}
-      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec ExtensionAdditionAlternatives
-          {result = {:root => val[0], :extension => val[4]}}
-      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec ExtensionAdditionAlternatives
+      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec
+          {result = {:root => val[0], :extension => []}}
+      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec COMMA ELLIPSIS
+          {result = {:root => val[0], :extension => []}}
+      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec COMMA ExtensionAdditionAlternativesList
+          {result = {:root => val[0], :extension => val[5]}}
+      | AlternativeTypeList COMMA ELLIPSIS ExceptionSpec COMMA ExtensionAdditionAlternativesList
           COMMA ELLIPSIS
-          {result = {:root => val[0], :extension => val[4]}}
-  ExtensionAdditionAlternatives :
-      COMMA ExtensionAdditionAlternativesList {result = val[1]}
-      | {result = []}
+          {result = {:root => val[0], :extension => val[5]}}
+  /*ExtensionAdditionAlternatives :
+      COMMA ExtensionAdditionAlternativesList
+      |*/
   ExtensionAdditionAlternativesList :
       ExtensionAdditionAlternative {result = [val[0]]}
       | ExtensionAdditionAlternativesList COMMA ExtensionAdditionAlternative {result << val[2]}
@@ -523,10 +525,10 @@ rule
       | GeneralString
       | GraphicString
       |*/ IA5String
-      /*| ISO646String
+      /*| ISO646String*/
       | NumericString
       | PrintableString
-      | TeletexString
+      /*| TeletexString
       | T61String
       | UniversalString
       | UTF8String
