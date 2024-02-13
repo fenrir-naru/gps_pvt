@@ -407,7 +407,7 @@ rule
       NamedType
       | NamedType OPTIONAL {result = val[0].merge({:optional => true})}
       | NamedType DEFAULT Value {result = val[0].merge({:default => val[2]})}
-      | COMPONENTS OF Type
+      | COMPONENTS OF Type {result = val[2]; raise} /* TODO 24.4 says only root components of SEQUENCE are included */
   
   SequenceValue :
       LBRACE ComponentValueList RBRACE
