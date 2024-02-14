@@ -359,38 +359,51 @@ resolve_tree = proc{|root|
   prepare_coding.call(root)
 }
 
-generate_skeleton = proc{|tree|
+generate_skeleton = proc{|tree, data|
   if tree.include?(:type) then
     type, opts = tree[:type]
     case type
     when :BOOLEAN
-      true
+      (data == nil) ? true : data
     when :INTEGER
-      opts[:value_range][:root].first || 0
+      data || opts[:value_range][:root].first || 0
     when :ENUMERATED
-      opts[:encoded][:root][0]
+      data || opts[:encoded][:root][0]
     when :BIT_STRING, :OCTET_STRING
-      {:BIT_STRING => [0], :OCTET_STRING => [0xFF]}[type] \
-          * (opts[:size_range][:root].first rescue 0)
+      data || ({:BIT_STRING => [0], :OCTET_STRING => [0xFF]}[type] \
+          * (opts[:size_range][:root].first rescue 0))
     when :SEQUENCE
+      data ||= {}
       Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
-        next if (v[:optional] || v[:default])
-        subset = generate_skeleton.call(v)
-        v[:group] ? subset.to_a : [[v[:name], subset]]
+        if v[:group] then
+          generate_skeleton.call(v, data).to_a
+        else
+          k = v[:name]
+          if data[k] then
+            [[k, generate_skeleton.call(v, data[k])]] 
+          elsif !(v[:optional] || v[:default]) then
+            [[k, generate_skeleton.call(v)]] 
+          end
+        end
       }.compact.flatten(2))]
     when :SEQUENCE_OF
+      next data.collect{|v| generate_skeleton.call(opts, v)} if data
       v = Marshal::dump(generate_skeleton.call(opts))
       (opts[:size_range][:root].first rescue 0).times.collect{
         Marshal::load(v)
       }
     when :CHOICE
-      Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
+      (data && (opts[:root] + (opts[:extension] || [])).any?{|v|
+        k = v[:name]
+        next unless data[k]
+        break {k => generate_skeleton.call(v, data[k])}
+      }) || Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         [v[:name], generate_skeleton.call(v)]
       }.flatten(1))]
     when :IA5String, :VisibleString, :NumericString, :PrintableString
-      opts[:character_table][:root].first * (opts[:size_range][:root].first || 0)
+      data || (opts[:character_table][:root].first * (opts[:size_range][:root].first || 0))
     when :UTCTime
-      Time::now #.utc.strftime("%y%m%d%H%MZ")
+      data || Time::now #.utc.strftime("%y%m%d%H%MZ")
     when :NULL
       nil
     else
@@ -398,8 +411,9 @@ generate_skeleton = proc{|tree|
       raise
     end
   else
+    data ||= {}
     Hash[*(tree.collect{|k, v|
-      [k, generate_skeleton.call(v)]
+      [k, generate_skeleton.call(v, data[k])]
     }.flatten(1))]
   end
 }
@@ -847,7 +861,9 @@ dig = proc{|tree, *keys|
 
 GPS_PVT::ASN1 = Module::new{
 define_method(:resolve_tree, &resolve_tree)
-define_method(:generate_skeleton, &generate_skeleton)
+define_method(:generate_skeleton){|tree, *data|
+  generate_skeleton.call(tree, *data)
+}
 define_method(:encode_per, &encode)
 define_method(:decode_per){|*args| decode.call(args)}
 define_method(:dig, &dig)
