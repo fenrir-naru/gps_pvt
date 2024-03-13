@@ -15,7 +15,6 @@ class SUPL_Client
     @opts = {
       :port => 7275,
       :debug => 0,
-      :imsi => "440109012345678",
       :protocol => [:lpp, :rrlp],
     }.merge(opts)
   end
@@ -71,12 +70,22 @@ class SUPL_Client
     cmd = generate_skeleton(:SUPLSTART, {:version => 2})
     cmd[:sessionID][:setSessionID] = {
       :sessionId => 1,
-      :setId => {
-        #:msisdn => [0xFF, 0xFF, 0x91, 0x94, 0x48, 0x45, 0x83, 0x98],
-        :imsi => @opts[:imsi].scan(/(.)(.?)/).collect{|a, b|
+      :setId => proc{
+        # Ex) :msisdn => [0xFF, 0xFF, 0x91, 0x94, 0x48, 0x45, 0x83, 0x98],
+        next {:msisdn => @opts[:msisdn]} if @opts[:msisdn]
+        # Ex) :imsi => "440109012345678",
+        next {:imsi => @opts[:imsi].scan(/(.)(.?)/).collect{|a, b|
           "0x#{a}#{b == '' ? '0' : b}".to_i(16)
-        },
-      }
+        }} if @opts[:imsi]
+        require 'resolv'
+        remote_ip = Resolv::DNS.new({:nameserver => "resolver1.opendns.com"}) \
+            .getresources("myip.opendns.com", Resolv::DNS::Resource::IN::A)[0].address
+        {:iPAddress => case remote_ip
+        when Resolv::IPv4; {:ipv4Address => remote_ip.address.unpack("C4")}
+        when Resolv::IPv6; {:ipv6Address => remote_ip.address.unpack("C16")}
+        else; raise
+        end}
+      }.call
     }
     proc{|cap|
       cap[:posTechnology].keys.each{|k|
