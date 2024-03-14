@@ -526,3 +526,35 @@ class SUPL_Client
   end
 end
 end
+
+require 'open-uri'
+
+OpenURI.class_eval{
+  def OpenURI.open_supl(buf, target, proxy, options) # :nodoc:
+    options[:port] = target.port
+    URI.decode_www_form(target.query || "").each{|k, v|
+      case k = k.to_sym
+      when :protocol
+        (options[k] ||= []) << v.to_sym
+      end
+    }
+    buf.instance_eval{
+      @io = GPS_PVT::SUPL_Client::new(target.host, options).get_assisted_data
+      @io.define_singleton_method(:closed?){true} # For open-uri auto close
+    }
+  end
+}
+module URI
+  class Supl < Generic
+    DEFAULT_PORT = 7275
+    def buffer_open(buf, proxy, options)
+      OpenURI.open_supl(buf, self, proxy, options)
+    end
+    include OpenURI::OpenRead
+  end
+  if respond_to?(:register_scheme) then
+    register_scheme('SUPL', Supl)
+  else
+    @@schemes['SUPL'] = Supl
+  end
+end
