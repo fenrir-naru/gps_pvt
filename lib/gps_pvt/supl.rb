@@ -539,7 +539,11 @@ OpenURI.class_eval{
       end
     }
     buf.instance_eval{
-      @io = GPS_PVT::SUPL_Client::new(target.host, options).get_assisted_data
+      @io = GPS_PVT::SUPL_Client::new(target.host, options)
+      @io.define_singleton_method(:read){
+        require 'json'
+        JSON::pretty_generate(self.get_assisted_data)
+      }
       @io.define_singleton_method(:closed?){true} # For open-uri auto close
     }
   end
