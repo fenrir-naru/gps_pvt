@@ -69,6 +69,7 @@ rcv = GPS_PVT::Receiver::new(options)
 obs = Queue::new
 rcv.define_singleton_method(:run){|meas, t_meas, *args|
   obs << [t_meas, meas]
+  nil
 }
 
 proc{|src|
