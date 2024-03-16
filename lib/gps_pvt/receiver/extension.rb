@@ -57,4 +57,24 @@ class Receiver
     }
   end
 end
+
+module GPS
+[
+  Ionospheric_UTC_Parameters,
+  Ephemeris, Ephemeris_SBAS, Ephemeris_GLONASS,
+].each{|cls|
+  cls.class_eval{
+    proc{|func_list|
+      func_list.select!{|func|
+        (/=$/ !~ func.to_s) && func_list.include?("#{func}=".to_sym)
+      }
+      define_method(:to_hash){
+        Hash[*(func_list.collect{|func|
+          [func, send(func)]
+        }.flatten(1))]
+      }
+    }.call(instance_methods(false))
+  }
+}
+end
 end
