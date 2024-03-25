@@ -363,7 +363,7 @@ class SUPL_Client
   end
 
   EPH_KEY_TBL_LPP = Hash[*({
-    :URA        => :URA,
+    #:URA_idx    => :URA,
     :dot_i0     => [:IDot, -43, true],
     #:iode       => nil,
     :t_oc       => [:Toc, 4],
@@ -471,7 +471,12 @@ class SUPL_Client
           v2 = sf * eph_src[src_k]
           eph.send(dst_k, v2.kind_of?(Rational) ? v2.to_f : v2)
         }
+        eph.URA = [
+            2.40, 3.40, 4.85, 6.85, 9.65, 13.65, 24.00, 48.00,
+            96.00, 192.00, 384.00, 768.00, 1536.00, 3072.00, 6144.00,
+            6144.00 * 2][eph_src[:navURA]]
         eph.iodc = Integer(v[:iod].join, 2)
+        eph.iode = (eph.iodc & 0xFF)
         eph.SV_health = Integer(v[:svHealth].join, 2)
         eph.WN = t_gps.week
         delta_sec = t_gps.seconds - eph.t_oe
