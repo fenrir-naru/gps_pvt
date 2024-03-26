@@ -117,6 +117,17 @@ class Ephemeris_SBAS
     (ura < 0) ? -1 : URA_TABLE.find_index{|v| ura <= v}
   end
 end
+class Ephemeris_GLONASS
+  F_T_TABLE = [ # Table 4.4 in ICD 5.1
+      1, 2, 2.5, 4, 5, 7, 10, 12, 14, 16, 32, 64, 128, 256, 512, 1024]
+  def F_T_index=(idx)
+    send(:F_T=, (idx >= F_T_TABLE.size) ? (F_T_TABLE[-1] * 2) : (idx < 0 ? -1 : F_T_TABLE[idx]))
+  end
+  def F_T_index
+    f_t = send(:F_T)
+    (f_t < 0) ? -1 : F_T_TABLE.find_index{|v| f_t <= v}
+  end
+end
 
 [
   Ionospheric_UTC_Parameters,

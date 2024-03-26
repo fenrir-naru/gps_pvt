@@ -151,9 +151,7 @@ class RTCM3
         125 => num_sign_gen.call(5, Rational(1, 1 << 30)), # [sec], (M)
         126 => 5, # [day]
         127 => 1, # (M)
-        128 => [4, proc{|v|
-          [1, 2, 2.5, 4, 5, 7, 10, 12, 14, 16, 32, 64, 128, 256, 512, 1024][v]
-        }], # [m] (M)
+        128 => 4, # (M)
         129 => 11, # [day]
         130 => 2, # 1 => GLONASS-M, (M) fields are active 
         131 => 1,
@@ -341,13 +339,13 @@ class RTCM3
             :yn_dot => 13, :yn => 14, :yn_ddot => 15,
             :zn_dot => 16, :zn => 17, :zn_ddot => 18,
             :P3 => 19, :gamma_n => 20, :p => 21, :tau_n => 23, :delta_tau_n => 24, :E_n => 25,
-            :P4 => 26, :F_T => 27, :N_T => 28, :M => 29}
+            :P4 => 26, :F_T_index => 27, :N_T => 28, :M => 29}
         k_i.merge!({:NA => 31, :tau_c => 32, :N_4 => 33, :tau_GPS => 34}) if self[30][0] == 1 # check DF131
         res = Hash[*(k_i.collect{|k, i| [k, self[i][0]]}.flatten(1))]
         res.reject!{|k, v|
           case k
           when :N_T; v == 0
-          when :p, :delta_tau_n, :P4, :F_T, :N_4, :tau_GPS; true # TODO sometimes delta_tau_n is valid?
+          when :p, :delta_tau_n, :P4, :F_T_index, :N_4, :tau_GPS; true # TODO sometimes delta_tau_n is valid?
           else; false
           end
         } if (res[:M] != 1) # check DF130

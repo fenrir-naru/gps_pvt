@@ -195,7 +195,7 @@ class Receiver
       when 1020
         params = parsed.params
         eph = GPS::Ephemeris_GLONASS::new
-        params[:F_T] ||= 10 # [m]
+        eph.F_T = 10 # [m], default to be overwritten
         params.each{|k, v|
           next if [:P3, :NA, :N_4].include?(k)
           eph.send("#{k}=".to_sym, v)
