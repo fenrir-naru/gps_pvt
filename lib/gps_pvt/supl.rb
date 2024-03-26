@@ -403,7 +403,7 @@ class SUPL_Client
     :zn => [:Z, Rational(1000, 1 << 11)], :zn_dot => [:Zdot, Rational(1000, 1 << 20)], :zn_ddot => [:Zdotdot, Rational(1000, 1 << 30)],
     :tau_n => [:Tau, Rational(1, 1 << 30)],
     :gamma_n => [:Gamma, Rational(1, 1 << 40)],
-    :M => :M, :P1 => :P1, :P2 => :P2, :E_n => :En,
+    :M => :M, :P1 => [:P1, proc{|v| [0, 30, 45, 60][v] * 60}], :P2 => :P2, :E_n => :En,
   }.collect{|dst_k, (src_k, sf)|
     ["#{dst_k}=".to_sym, ["glo#{src_k}".to_sym, sf || 1]]
   }.flatten(1))]
@@ -501,16 +501,16 @@ class SUPL_Client
             sat[:"gnss-OrbitModel"][:"glonass-ECEF"])
         EPH_KEY_TBL_LPP_GLO.each{|dst_k, (src_k, sf)|
           v = eph_src[src_k]
-          v2 = sf * case v
+          v2 = sf.send(sf.kind_of?(Proc) ? :call : :*, case v
           when Array; Integer(v.join, 2)
           when true; 1
           when false; 0
           else; v
-          end
+          end)
           eph.send(dst_k, v2.kind_of?(Rational) ? v2.to_f : v2)
         }
         eph.B_n = sat[:svHealth][0]
-        eph.F_T = Integer(sat[:svHealth][1..4].join, 2)
+        eph.F_T_index = Integer(sat[:svHealth][1..4].join, 2)
         eph.t_b = Integer(sat[:iod][4..-1].join, 2) * 15 * 60
         eph.set_date((t_gps + 3 * 60 * 60).c_tm(leap_seconds)) # UTC -> Moscow time
         eph.rehash(leap_seconds)
