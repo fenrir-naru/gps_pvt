@@ -316,17 +316,7 @@ class RTCM3
       def params
         # TODO WN is truncated to 0-1023
         res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
-        res[:fit_interval] = ((self[29] == 0) ? 4 : case res[:iodc] 
-          when 240..247; 8
-          when 248..255, 496; 14
-          when 497..503; 26
-          when 504..510; 50
-          when 511, 752..756; 74
-          when 757..763; 98
-          when 764..767, 1088..1010; 122
-          when 1011..1020; 146
-          else; 6
-        end) * 60 * 60
+        res[:fit_interval] = [self[29][0], res[:iodc]]
         res
       end
     end
@@ -374,7 +364,7 @@ class RTCM3
       def params
         # TODO PRN = svid + 192, WN is truncated to 0-1023
         res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
-        res[:fit_interval] = (self[29] == 0) ? 2 * 60 * 60 : nil # TODO how to treat fit_interval > 2 hrs
+        res[:fit_interval] = [self[29][0], res[:iodc], :QZSS]
         res
       end
     end

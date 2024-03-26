@@ -73,6 +73,37 @@ class Ephemeris
     ura = send(:URA)
     (ura < 0) ? -1 : URA_TABLE.find_index{|v| ura <= v}
   end
+  proc{
+    orig = instance_method(:fit_interval=)
+    define_method(:fit_interval=){|args|
+      args = case args
+      when Array
+        flag, iodc, sys = args
+        hr = case (sys ||= :GPS)
+        when :GPS, :gps
+          (flag == 0) ? 4 : case iodc 
+          when 240..247; 8
+          when 248..255, 496; 14
+          when 497..503; 26
+          when 504..510; 50
+          when 511, 752..756; 74
+          when 757..763; 98
+          when 764..767, 1088..1010; 122
+          when 1011..1020; 146
+          else; 6
+          end
+        when :QZSS, :qzss
+          raise unless flag == 0 # TODO how to treat fit_interval > 2 hrs
+          2
+        else; raise
+        end
+        hr * 60 * 60
+      else
+        args
+      end
+      orig.bind(self).call(args)
+    }
+  }.call
 end
 class Ephemeris_SBAS
   URA_TABLE = [ # Table 2-3 in DO-229E
