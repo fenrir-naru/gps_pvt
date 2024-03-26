@@ -352,11 +352,9 @@ class SUPL_Client
         elsif delta_sec < -GPS::Time::Seconds_week / 2 then
           eph.WN -= 1
         end
-        eph.fit_interval = (if eph_src[:ephemFitFlag] == 0 then
-          4 
-        else
-          6 # TODO
-        end) * 60 * 60
+        eph.iode = eph.iodc & 0xFF
+        eph.fit_interval = [eph_src[:ephemFitFlag], eph.iodc]
+        eph
       }
     }
     msg
@@ -462,7 +460,8 @@ class SUPL_Client
     }.call
     leap_seconds = iono_utc.delta_t_LS rescue t_gps.leap_seconds
     msg.define_singleton_method(:iono_utc){iono_utc}
-    extract_gps_ephemeris = proc{|sat_list, offset|
+    extract_gps_ephemeris = proc{|sat_list, sys|
+      offset = {:gps => 1, :qzss => 193}[sys]
       sat_list.collect{|v|
         eph = GPS::Ephemeris::new
         eph.svid = v[:svID][:"satellite-id"] + offset
@@ -481,11 +480,7 @@ class SUPL_Client
         elsif delta_sec < -GPS::Time::Seconds_week / 2 then
           eph.WN -= 1
         end
-        eph.fit_interval = (if eph_src[:navFitFlag] == 0 then
-          4 
-        else
-          6 # TODO
-        end) * 60 * 60
+        eph.fit_interval = [eph_src[:navFitFlag], eph.iodc, sys]
         eph
       }
     }
@@ -493,10 +488,10 @@ class SUPL_Client
       assist_data = self[:c1][:provideAssistanceData][:criticalExtensions][:c1] \
           [:"provideAssistanceData-r9"][:"a-gnss-ProvideAssistanceData"] \
           [:"gnss-GenericAssistData"]
-      res = {:gps => 1, :qzss => 193}.collect{|k, offset|
+      res = [:gps, :qzss].collect{|k|
         extract_gps_ephemeris.call(
             assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == k}[0] \
-              [:"gnss-NavigationModel"][:"gnss-SatelliteList"], offset)
+              [:"gnss-NavigationModel"][:"gnss-SatelliteList"], k)
       }.flatten(1)
       res += assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == :glonass}[0] \
           [:"gnss-NavigationModel"][:"gnss-SatelliteList"].collect{|sat|
