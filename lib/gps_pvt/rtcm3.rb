@@ -104,12 +104,7 @@ class RTCM3
         57 => 16,
         71 => 8,
         76 => 10,
-        77 => proc{
-          idx2meter = [
-              2.40, 3.40, 4.85, 6.85, 9.65, 13.65, 24.00, 48.00,
-              96.00, 192.00, 384.00, 768.00, 1536.00, 3072.00, 6144.00]
-          [4, proc{|v| (v >= idx2meter.size) ? (idx2meter[-1] * 2) : idx2meter[v]}]
-        }.call, # [m]
+        77 => 4,
         78 => 2,
         79 => num_gen.call(14, Rational(sc2rad, 1 << 43)), # [rad/s]
         81 => unum_gen.call(16, 1 << 4), # [sec]
@@ -247,9 +242,11 @@ class RTCM3
       1013 => [2, 3, 51, 52, 53, 54],
       1019 => [2, 9, (76..79).to_a, 71, (81..103).to_a, 137].flatten, # 488 bits @see Table 3.5-21
       1020 => [2, 38, 40, (104..136).to_a].flatten, # 360 bits @see Table 3.5-21
+      # @see BNC Ntrip client DecodeSBASEphemeris() of RTCM3Decorder.cpp
+      # https://software.rtcm-ntrip.org/browser/ntrip/trunk/BNC/src/RTCM3/RTCM3Decoder.cpp
       1043 => [2] + [:prn, :iodn, :tod, :ura, 
           [:xy] * 2, :z, [:dxy] * 2, :dz, [:ddxy] * 2, :ddz,
-          :agf0, :agf1].flatten.collect{|k| "SBAS_#{k}".to_sym}, # @see BNC Ntrip client RTCM3Decorder.cpp
+          :agf0, :agf1].flatten.collect{|k| "SBAS_#{k}".to_sym},
       1044 => [2, (429..457).to_a].flatten, # 485 bits
       1070..1229 => [2, [:uint, 12], [:uint, 30], 393], # 55 bits part of messages will be overwritten
       1071..1077 => [2, 3, 4, 393, 409, [1, 7], 411, 412, 417, 418, 394, 395], # 169 bits @see Table 3.5-78
@@ -311,7 +308,7 @@ class RTCM3
       end
     end
     module GPS_Ephemeris
-      KEY2IDX = {:svid => 1, :WN => 2, :URA => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
+      KEY2IDX = {:svid => 1, :WN => 2, :URA_index => 3, :dot_i0 => 5, :iode => 6, :t_oc => 7,
           :a_f2 => 8, :a_f1 => 9, :a_f0 => 10, :iodc => 11, :c_rs => 12, :delta_n => 13,
           :M0 => 14, :c_uc => 15, :e => 16, :c_us => 17, :sqrt_A => 18, :t_oe => 19, :c_ic => 20,
           :Omega0 => 21, :c_is => 22, :i0 => 23, :c_rc => 24, :omega => 25, :dot_Omega0 => 26,
@@ -334,7 +331,7 @@ class RTCM3
       end
     end
     module SBAS_Ephemeris
-      KEY2IDX = {:svid => 1, :iodn => 2, :tod => 3, :URA => 4,
+      KEY2IDX = {:svid => 1, :iodn => 2, :tod => 3, :URA_index => 4,
           :x => 5, :y => 6, :z => 7,
           :dx => 8, :dy => 9, :dz => 10,
           :ddx => 11, :ddy => 12, :ddz => 13,
@@ -372,7 +369,7 @@ class RTCM3
           :iode => 6, :c_rs => 7, :delta_n => 8, :M0 => 9, :c_uc => 10, :e => 11,
           :c_us => 12, :sqrt_A => 13, :t_oe => 14, :c_ic => 15, :Omega0 => 16,
           :c_is => 17, :i0 => 18, :c_rc => 19, :omega => 20, :dot_Omega0 => 21,
-          :dot_i0 => 22, :WN => 24, :URA => 25, :SV_health => 26,
+          :dot_i0 => 22, :WN => 24, :URA_index => 25, :SV_health => 26,
           :t_GD => 27, :iodc => 28}
       def params
         # TODO PRN = svid + 192, WN is truncated to 0-1023

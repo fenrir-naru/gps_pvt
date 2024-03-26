@@ -59,6 +59,34 @@ class Receiver
 end
 
 module GPS
+
+# These ephemeris helper functions will be removed
+# when native functions are available in GPS.i
+class Ephemeris
+  URA_TABLE = [
+      2.40, 3.40, 4.85, 6.85, 9.65, 13.65, 24.00, 48.00,
+      96.00, 192.00, 384.00, 768.00, 1536.00, 3072.00, 6144.00]
+  def URA_index=(idx)
+    send(:URA=, (idx >= URA_TABLE.size) ? (URA_TABLE[-1] * 2) : (idx < 0 ? -1 : URA_TABLE[idx]))
+  end
+  def URA_index
+    ura = send(:URA)
+    (ura < 0) ? -1 : URA_TABLE.find_index{|v| ura <= v}
+  end
+end
+class Ephemeris_SBAS
+  URA_TABLE = [ # Table 2-3 in DO-229E
+      2.0, 2.8, 4.0, 5.7, 8.0, 11.3, 16.0, 32.0,
+      64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0]
+  def URA_index=(idx)
+    send(:URA=, (idx >= URA_TABLE.size) ? (URA_TABLE[-1] * 2) : (idx < 0 ? -1 : URA_TABLE[idx]))
+  end
+  def URA_index
+    ura = send(:URA)
+    (ura < 0) ? -1 : URA_TABLE.find_index{|v| ura <= v}
+  end
+end
+
 [
   Ionospheric_UTC_Parameters,
   Ephemeris, Ephemeris_SBAS, Ephemeris_GLONASS,
