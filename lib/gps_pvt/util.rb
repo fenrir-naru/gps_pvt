@@ -27,6 +27,7 @@ proc{
 
 require 'open-uri'
 require_relative 'ntrip'
+require_relative 'supl'
 
 class URI::Ntrip
   def read_format(options = {})

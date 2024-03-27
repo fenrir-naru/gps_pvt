@@ -11,11 +11,12 @@ As GPS_file, rinex_nav(*.YYn, *.YYh, *.YYq, *.YYg), rinex_obs(*.YYo), ubx(*.ubx)
 (YY = last two digit of year)
 File format is automatically determined based on its extention described in above parentheses.
 If you want to specify its format manually, command options like --rinex_nav=file_name are available.
-Other than --rinex_nav, --rinex_obs, --rinex_clk, --ubx, --sp3, --antex or --rtcm3 are supported. 
+In addition to --rinex_nav, --rinex_obs, --rinex_clk, --ubx, --sp3, --antex, --rtcm3, and --supl are supported. 
 Supported RINEX versions are 2 and 3.
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
 Major URI such as http(s)://... or ftp://..., and serial port (COMn for Windows, /dev/tty* for *NIX) is acceptable as an input file name.
 Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported, and its format is automatically detected.
+Assisted GPS by using SUPL (Secure user plane location) is also supported by using supl://(host) URI.
 __STRING__
 
 options = []
@@ -78,7 +79,10 @@ files.collect!{|fname, ftype|
   when /\.clk$/; :rinex_clk
   end
   if (!(uri = URI::parse(fname)).instance_of?(URI::Generic) rescue false) then
-    ftype ||= uri.read_format if uri.instance_of?(URI::Ntrip)
+    ftype ||= case uri
+    when URI::Ntrip; uri.read_format
+    when URI::Supl; :supl
+    end
     fname = uri
   end
   raise "Format cannot be guessed, use --(format, ex. rinex_nav)=#{fname}" unless ftype
@@ -137,6 +141,7 @@ files.collect{|fname, ftype|
   when :ubx; Thread::new{rcv.parse_ubx(fname)}
   when :rinex_obs; Thread::new{rcv.parse_rinex_obs(fname)}
   when :rtcm3; Thread::new{rcv.parse_rtcm3(fname)}
+  when :supl; Thread::new{rcv.parse_supl(fname)}
   else; nil
   end
 }.compact.each{|th| th.join}

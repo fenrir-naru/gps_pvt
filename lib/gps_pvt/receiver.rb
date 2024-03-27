@@ -730,4 +730,5 @@ end
 end
 
 require_relative 'receiver/rtcm3'
+require_relative 'receiver/agps'
 require_relative 'receiver/extension'

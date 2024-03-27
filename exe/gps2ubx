@@ -17,7 +17,8 @@ Supported RINEX versions are 2 and 3.
 RXM-RAWX and RXM-SFRBX are included in output UBX if corresponding file(s) is given. 
 A file having additional ".gz" or ".Z" extension is recognized as a compressed file.
 Major URL such as http(s)://... or ftp://... is acceptable as an input file name.
-Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported, and its format is automatically detected. 
+Ntrip specified in URI as ntrip://(username):(password)@(caster_host):(port)/(mount_point) is also supported, and its format is automatically detected.
+Assisted GPS by using SUPL (Secure user plane location) is also supported by using supl://(host) URI. 
 __STRING__
 
 options = []
@@ -44,7 +45,10 @@ files.collect!{|fname, ftype|
   when /\.ubx$/; :ubx
   end
   if (!(uri = URI::parse(fname)).instance_of?(URI::Generic) rescue false) then
-    ftype ||= uri.read_format if uri.instance_of?(URI::Ntrip)
+    ftype ||= case uri
+    when URI::Ntrip; uri.read_format
+    when URI::Supl; :supl
+    end
     fname = uri
   end
   raise "Format cannot be guessed, use --(format, ex. rinex_obs)=#{fname}" unless ftype
@@ -100,10 +104,11 @@ threads = files.collect{|fname, ftype|
   when :ubx; proc{rcv.parse_ubx(fname){}}
   when :rinex_obs; proc{rcv.parse_rinex_obs(fname){}}
   when :rtcm3; proc{rcv.parse_rtcm3(fname){}}
+  when :supl; proc{rcv.parse_supl(fname)}
   when :rinex_nav; proc{}
   end
   case fname
-  when URI::Ntrip; Thread::new(&task)
+  when URI::Ntrip, URI::Supl; Thread::new(&task)
   else; task.call; nil
   end
 }.compact
