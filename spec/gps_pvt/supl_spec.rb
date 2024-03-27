@@ -26,7 +26,8 @@ RSpec::describe GPS_PVT::SUPL_Client do
     rcv
   }
   before{
-    # skip "SUPL_URI and external ephemeris source (EX_EPH_SRC) are required by ENV" unless ['SUPL_URI', 'EPH_SRC'].all?{|k| ENV[k]}
+    # If use default URIs, comment out the following line
+    skip "SUPL_URI and external ephemeris source (EX_EPH_SRC) are required by ENV" unless ['SUPL_URI', 'EX_EPH_SRC'].all?{|k| ENV[k]}
   }
   let(:supl_uri_base){
     ENV['SUPL_URI'] || 'supl://supl.google.com/'
