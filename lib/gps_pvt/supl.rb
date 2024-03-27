@@ -493,21 +493,27 @@ class SUPL_Client
             assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == k}[0] \
               [:"gnss-NavigationModel"][:"gnss-SatelliteList"], k)
       }.flatten(1)
-      res += assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == :glonass}[0] \
-          [:"gnss-NavigationModel"][:"gnss-SatelliteList"].collect{|sat|
+      assist_data_glo = assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == :glonass}[0]
+      utc_params_glo = {
+        :tau_c= => [:tauC, Rational(1, 1 << 31)],
+      }.collect{|dst_k, (src_k, sf)|
+        [dst_k, sf * assist_data_glo[:"gnss-UTC-Model"][:utcModel3][src_k]]
+      }
+      res += assist_data_glo[:"gnss-NavigationModel"][:"gnss-SatelliteList"].collect{|sat|
         eph = GPS::Ephemeris_GLONASS::new
         eph.svid = sat[:svID][:"satellite-id"] + 1
         eph_src = sat[:"gnss-ClockModel"][:"glonass-ClockModel"].merge(
             sat[:"gnss-OrbitModel"][:"glonass-ECEF"])
-        EPH_KEY_TBL_LPP_GLO.each{|dst_k, (src_k, sf)|
+        (EPH_KEY_TBL_LPP_GLO.collect{|dst_k, (src_k, sf)|
           v = eph_src[src_k]
-          v2 = sf.send(sf.kind_of?(Proc) ? :call : :*, case v
-          when Array; Integer(v.join, 2)
-          when true; 1
-          when false; 0
-          else; v
-          end)
-          eph.send(dst_k, v2.kind_of?(Rational) ? v2.to_f : v2)
+          [dst_k, sf.send(sf.kind_of?(Proc) ? :call : :*, case v
+              when Array; Integer(v.join, 2)
+              when true; 1
+              when false; 0
+              else; v
+              end)]
+        } + utc_params_glo).each{|dst_k, v|
+          eph.send(dst_k, v.kind_of?(Rational) ? v.to_f : v)
         }
         eph.B_n = sat[:svHealth][0]
         eph.F_T_index = Integer(sat[:svHealth][1..4].join, 2)
