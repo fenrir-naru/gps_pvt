@@ -28,12 +28,13 @@ RSpec::describe GPS_PVT::SUPL_Client do
   before{
     # skip "SUPL_URI and external ephemeris source (EX_EPH_SRC) are required by ENV" unless ['SUPL_URI', 'EPH_SRC'].all?{|k| ENV[k]}
   }
-  let(:supl_uri){
-    ENV['SUPL_URI'] || 'supl://supl.google.com/'#?protocol=llp/rrlp'
+  let(:supl_uri_base){
+    ENV['SUPL_URI'] || 'supl://supl.google.com/'
   }
   let(:eph_src){
     ENV['EX_EPH_SRC'] || 'ntrip://test%40example.com:none@rtk2go.com:2101/RTCM3EPH'
   }
+  shared_examples "per_url" do
   it "can acquire the same ephemeris as the other methods" do
     $stderr.print "Connecting #{supl_uri} ..."
     agps = URI::parse(supl_uri).open.get_assisted_data
@@ -131,5 +132,15 @@ RSpec::describe GPS_PVT::SUPL_Client do
     Timeout::timeout(60){
       Thread::new{rcv.send(func, src_cmp, &proc{})}.join
     } rescue nil
+  end
+  end
+  
+  describe "with LPP protocol" do
+    let(:supl_uri){"#{supl_uri_base}?protocol=lpp"}
+    include_examples "per_url"
+  end
+  describe "with RRLP protocol" do
+    let(:supl_uri){"#{supl_uri_base}?protocol=rrlp"}
+    include_examples "per_url"
   end
 end
