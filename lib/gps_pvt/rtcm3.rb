@@ -152,12 +152,12 @@ class RTCM3
         126 => 5, # [day]
         127 => 1, # (M)
         128 => 4, # (M)
-        129 => 11, # [day]
+        129 => invalidate.call(unum_gen.call(11), 0), # [day]
         130 => 2, # 1 => GLONASS-M, (M) fields are active 
         131 => 1,
-        132 => 11, # [day]
+        132 => invalidate.call(unum_gen.call(11), 0), # [day]
         133 => num_sign_gen.call(32, Rational(1, 1 << 31)), # [sec]
-        134 => 5, # [4year], (M)
+        134 => invalidate.call(unum_gen.call(5), 0), # [4year], (M)
         135 => num_sign_gen.call(22, Rational(1, 1 << 30)), # [sec], (M)
         136 => 1, # (M)
         137 => 1,
