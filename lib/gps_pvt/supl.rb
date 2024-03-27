@@ -513,6 +513,7 @@ class SUPL_Client
         eph.F_T_index = Integer(sat[:svHealth][1..4].join, 2)
         eph.t_b = Integer(sat[:iod][4..-1].join, 2) * 15 * 60
         eph.set_date((t_gps + 3 * 60 * 60).c_tm(leap_seconds)) # UTC -> Moscow time
+        eph.N_T = eph.NA
         eph.rehash(leap_seconds)
         eph
       }
