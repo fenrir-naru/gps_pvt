@@ -472,7 +472,7 @@ class SUPL_Client
         }
         eph.iodc = Integer(v[:iod].join, 2)
         eph.iode = (eph.iodc & 0xFF)
-        eph.SV_health = Integer(v[:svHealth].join, 2)
+        eph.SV_health = Integer(v[:svHealth][0..5].join, 2)
         eph.WN = t_gps.week
         delta_sec = t_gps.seconds - eph.t_oe
         if delta_sec > GPS::Time::Seconds_week / 2 then
