@@ -32,7 +32,7 @@ An attached executable is useful. After installation, type
 
     $ gps_pvt file_or_URI(s)
 
-The format of file is automatically determined with its extension, such as .ubx will be treated as UBX format. A compressed file of .gz or .Z can be specified directly (decompression is internally performed). URI such as http(s)://... and ftp://, and serial port (COMn for Windows and /dev/tty* for *NIX, version >= 0.8.0) are also acceptable. Moreover, Ntrip URI of ntrip://(username):(password)@(caster_host):(port)/(mount_point), for exmaple, ```ntrip://test%40example.com:none@rtk2go.com:2101/NAIST-UBX``` (%40 is recognized as '@') is supported (version >= 0.8.4), and its content format can be automatically determined (version >= 0.9.0). If you want to specify the file format, instead of file_or_URI(s), use the following arguments:
+The format of file is automatically determined with its extension, such as .ubx will be treated as UBX format. A compressed file of .gz or .Z can be specified directly (decompression is internally performed). URI such as http(s)://... and ftp://, and serial port (COMn for Windows and /dev/tty* for *NIX, version >= 0.8.0) are also acceptable. Moreover, Ntrip URI of ntrip://(username):(password)@(caster_host):(port)/(mount_point), for exmaple, ```ntrip://test%40example.com:none@rtk2go.com:2101/NAIST-UBX``` (%40 is recognized as '@') is supported (version >= 0.8.4), and its content format can be automatically determined (version >= 0.9.0). A-GPS to get ephemeris quickly is supported via special URI like ```supl://supl.google.com/``` (version >= 0.10.0). If you want to specify the file format, instead of file_or_URI(s), use the following arguments:
 
 | specification | recoginized as |
 ----|----
@@ -43,6 +43,7 @@ The format of file is automatically determined with its extension, such as .ubx 
 | --antex=file_or_URI | [Antenna Exchange Format](https://igs.org/wg/antenna#files) (supported gps_pvt version >= 0.6.0) |
 | --rinex_clk=file_or_URI | [RINEX clock](https://files.igs.org/pub/data/format/rinex_clock304.txt) file (supported gps_pvt version >= 0.7.0) |
 | <a name=opt_rtcm3>--rtcm3=file_or_URI</a> | [RTCM 10403.x](https://rtcm.myshopify.com/collections/differential-global-navigation-satellite-dgnss-standards). (supported gps_pvt version >= 0.9.0) The latest version uses message type Observation(GPS: 1001..1004; GLONASS: 1009..1012), Epehemris(GPS: 1019; GLOANSS: 1020; SBAS: 1043; QZSS: 1044), MSM(GPS: 1071..1077; GLONASS: 1081..1087; SBAS: 1101..1107; QZSS: 1111..1117) |
+| <a name=opt_supl>--supl=URI</a> | [SUPL, secure user plane location](https://www.openmobilealliance.org/release/SUPL/). (supported gps_pvt version >= 0.10.0) Both [LPP](https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=3710)(default) and [RRLP](https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=2688) are internally used, which can be manually selected by adding ```?protocol=lpp_or_rrlp``` URI query string. |
 
 Since version 0.2.0, SBAS and QZSS are supported in addition to GPS. Since version 0.4.0, GLONASS is also available. QZSS ranging is activated in default, however, SBAS is just utilized for ionospheric correction. GLONASS is also turned off by default. If you want to activate SBAS or GLONASS ranging, "--with=(system or PRN)" options are used with gps_pvt executable like
 
@@ -157,7 +158,7 @@ Utility to convert observation into u-blox ubx format and dump standard input. A
 
     $ gps2ubx file_or_URI(s) (options) > out.ubx
 
-saves resultant into out.ubx by using redirection. The shared options with gps_pvt executable are [rinex_obs](#opt_rinex_obs), [rinex_nav](#opt_rinex_nav), [ubx](#opt_ubx), [rtcm3](#opt_rtcm3) and [online_ephemeris](#opt_online_ephemeris). In addition, the following options are available.
+saves resultant into out.ubx by using redirection. The shared options with gps_pvt executable are [rinex_obs](#opt_rinex_obs), [rinex_nav](#opt_rinex_nav), [ubx](#opt_ubx), [rtcm3](#opt_rtcm3), [supl](#opt_supl) and [online_ephemeris](#opt_online_ephemeris). In addition, the following options are available.
 
 | key | value | comment | since |
 ----|----|----|----
@@ -170,7 +171,7 @@ Utility to get and dump GPS files. After installation of gps_pvt, to type
 
     $ gps_get file_or_URI(s) (options) > output_file
 
-saves data into output_file by using redirection. http(s), ftp, and ntrip can be used as scheme of URI. Serial port is also supported. Note that compressed data is automatically decompressed before output. The following options are available.
+saves data into output_file by using redirection. http(s), ftp, ntrip, and supl can be used as scheme of URI. Serial port is also supported. Note that compressed data is automatically decompressed before output. The following options are available.
 
 | key | value | comment | since |
 ----|----|----|----
