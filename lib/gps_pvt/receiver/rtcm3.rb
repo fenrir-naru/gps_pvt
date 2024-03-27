@@ -205,6 +205,7 @@ class Receiver
               ? date_src \
               : [(ref_time + 3 * 60 * 60).c_tm(leap_sec)])) # UTC -> Moscow time
         }.call([:N_4, :NA].collect{|k| params[k]})
+        eph.N_T = params[:NA] || eph.NA unless params[:N_T] # N_T is available only for GLONASS-M
         eph.rehash(leap_sec)
         critical{
           @solver.glonass_space_node.register_ephemeris(eph.svid, eph)

@@ -127,6 +127,10 @@ class Ephemeris_GLONASS
     f_t = send(:F_T)
     (f_t < 0) ? -1 : F_T_TABLE.find_index{|v| f_t <= v}
   end
+  def NA
+    # based on TimeProperties::date2raw
+    self.day_of_year + [1, 367, 732, 1097][(self.year - 1996) % 4]
+  end
 end
 
 [
