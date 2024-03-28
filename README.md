@@ -110,17 +110,18 @@ receiver.solver.gps_options.elevation_mask = Math::PI / 180 * 10 # example 10 [d
 
 # Precise control of properties for each satellite and for each iteration
 receiver.solver.hooks[:relative_property] = proc{|prn, rel_prop, meas, rcv_e, t_arv, usr_pos, usr_vel|
-  weight, range_c, range_r, rate_rel_neg, *los_neg = rel_prop # relative property
+  weight_range, range_c, range_r, weight_rate, rate_rel_neg, *los_neg = rel_prop # relative property
   # meas is measurement represented by pseudo range of the selected satellite.
   # rcv_e, t_arv, usr_pos, usr_vel are temporary solution of 
   # receiver clock error [m], time of arrival [s], user position and velocity in ECEF, respectively.
+  # Note: weight_rate is added since v0.10.1
   
-  weight = 1 # quick example: identical weight for each visible satellite
+  weight_range = 1 # quick example: identical weight for each visible satellite
   # or weight based on elevation, for example:
   # elv = GPS_PVT::Coordinate::ENU::relative_rel(GPS_PVT::Coordinate::XYZ::new(*los_neg), usr_pos).elevation
-  # weight = (Math::sin(elv)/0.8)**2
+  # weight_range = (Math::sin(elv)/0.8)**2
   
-  [weight, range_c, range_r, rate_rel_neg] + los_neg # must return relative property
+  [weight_range, range_c, range_r, weight_rate, rate_rel_neg] + los_neg # must return relative property
 }
 
 # Range correction (since v0.3.0)
