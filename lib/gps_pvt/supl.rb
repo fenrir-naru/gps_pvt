@@ -353,7 +353,7 @@ class SUPL_Client
           eph.WN -= 1
         end
         eph.iode = eph.iodc & 0xFF
-        eph.fit_interval = [eph_src[:ephemFitFlag], eph.iodc]
+        eph.fit_interval = (eph_src[:ephemFitFlag] != 0)
         eph
       }
     }
@@ -403,7 +403,7 @@ class SUPL_Client
     :zn => [:Z, Rational(1000, 1 << 11)], :zn_dot => [:Zdot, Rational(1000, 1 << 20)], :zn_ddot => [:Zdotdot, Rational(1000, 1 << 30)],
     :tau_n => [:Tau, Rational(1, 1 << 30)],
     :gamma_n => [:Gamma, Rational(1, 1 << 40)],
-    :M => :M, :P1 => [:P1, proc{|v| [0, 30, 45, 60][v] * 60}], :P2 => :P2, :E_n => :En,
+    :M => :M, :P1_index => :P1, :P2 => :P2, :E_n => :En,
   }.collect{|dst_k, (src_k, sf)|
     ["#{dst_k}=".to_sym, ["glo#{src_k}".to_sym, sf || 1]]
   }.flatten(1))]
@@ -480,7 +480,7 @@ class SUPL_Client
         elsif delta_sec < -GPS::Time::Seconds_week / 2 then
           eph.WN -= 1
         end
-        eph.fit_interval = [eph_src[:navFitFlag], eph.iodc, sys]
+        eph.fit_interval = (eph_src[:navFitFlag] != 0)
         eph
       }
     }

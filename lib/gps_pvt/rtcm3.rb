@@ -132,7 +132,7 @@ class RTCM3
         103 => 1,
         104 => 1,
         105 => 1,
-        106 => [2, proc{|v| [0, 30, 45, 60][v] * 60}], # [s]
+        106 => 2,
         107 => [12, proc{|v|
           hh, mm, ss = [v >> 7, (v & 0x7E) >> 1, (v & 0x1) > 0 ? 30 : 0]
           hh * 3600 + mm * 60 + ss # [sec]
@@ -314,7 +314,7 @@ class RTCM3
       def params
         # TODO WN is truncated to 0-1023
         res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
-        res[:fit_interval] = [self[29][0], res[:iodc]]
+        res[:fit_interval] = (self[29][0] != 0)
         res
       end
     end
@@ -334,7 +334,7 @@ class RTCM3
         # TODO insufficient: :n => ?(String4); extra: :P3
         # TODO generate time with t_b, N_T, NA, N_4
         # TODO GPS.i is required to modify to generate EPhemeris_with_GPS_Time
-        k_i =  {:svid => 1, :freq_ch => 2, :P1 => 5, :t_k => 6, :B_n => 7, :P2 => 8, :t_b => 9,
+        k_i =  {:svid => 1, :freq_ch => 2, :P1_index => 5, :t_k => 6, :B_n => 7, :P2 => 8, :t_b => 9,
             :xn_dot => 10, :xn => 11, :xn_ddot => 12,
             :yn_dot => 13, :yn => 14, :yn_ddot => 15,
             :zn_dot => 16, :zn => 17, :zn_ddot => 18,
@@ -362,7 +362,7 @@ class RTCM3
       def params
         # TODO PRN = svid + 192, WN is truncated to 0-1023
         res = Hash[*(KEY2IDX.collect{|k, i| [k, self[i][0]]}.flatten(1))]
-        res[:fit_interval] = [self[29][0], res[:iodc], :QZSS]
+        res[:fit_interval] = (self[29][0] != 0)
         res
       end
     end
