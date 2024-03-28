@@ -38,20 +38,21 @@ class Receiver
         ] + (pvt.rel_ENU.to_a rescue [nil] * 3)
       } 
     ]] + [proc{
-      labels = [:g, :p, :h, :v, :t].collect{|k| "#{k}dop".to_sym}
+      labels = [:g, :p, :h, :v, :t].collect{|k| "#{k}dop".to_sym} \
+          + [:h, :v, :t].collect{|k| "#{k}sigma".to_sym}
       [
         labels,
         proc{|pvt|
-          next [nil] * 5 unless pvt.position_solved?
+          next [nil] * 8 unless pvt.position_solved?
           labels.collect{|k| pvt.send(k)}
         }
       ]
     }.call] + [[
-      [:v_north, :v_east, :v_down, :receiver_clock_error_dot_ms],
+      [:v_north, :v_east, :v_down, :receiver_clock_error_dot_ms, :vel_sigma],
       proc{|pvt|
         next [nil] * 4 unless pvt.velocity_solved?
         [:north, :east, :down].collect{|k| pvt.velocity.send(k)} \
-            + [pvt.receiver_error_rate] 
+            + [pvt.receiver_error_rate, pvt.vel_sigma] 
       }
     ]] + [
       [:used_satellites, proc{|pvt| pvt.used_satellites}],

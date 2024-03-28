@@ -84,7 +84,7 @@ RSpec::describe GPS_PVT::SUPL_Client do
       when :sbas_space_node; GPS_PVT::GPS::Ephemeris_SBAS
       when :glonass_space_node
         [GPS_PVT::GPS::Ephemeris_GLONASS, :raw, :F_T, :F_T_index,
-            :t_k, :delta_tau_n, :P1, :freq_ch, :P4,
+            :t_k, :delta_tau_n, :P1, :P1_index, :freq_ch, :P4,
             :tau_GPS, :tau_c, :day_of_year, :p]
       else; NilClass
       end

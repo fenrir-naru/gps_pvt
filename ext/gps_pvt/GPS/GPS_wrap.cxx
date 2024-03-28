@@ -2377,6 +2377,22 @@ struct GPS_Ephemeris : public GPS_SpaceNode<FloatT>::SatelliteProperties::Epheme
     System_XYZ<FloatT, WGS84> position, velocity;
     FloatT clock_error, clock_error_dot;
   };
+  
+  int get_URA_index() const {
+    return GPS_Ephemeris<FloatT>::URA_index(this->URA);
+  }
+  int set_URA_index(const int &idx) {
+    this->URA = GPS_Ephemeris<FloatT>::URA_meter(idx);
+    return get_URA_index();
+  }
+  FloatT set_fit_interval(const bool &flag) {
+    // set svid/iodc before invocation of this function
+    if((this->svid >= 193) && (this->svid <= 202)){ // QZSS
+      return (this->fit_interval = (flag ? (std::numeric_limits<FloatT>::max)() : (2 * 60 * 60)));
+    }else{
+      return (this->fit_interval = GPS_Ephemeris<FloatT>::raw_t::fit_interval(flag, this->iodc));
+    }
+  }
 };
 
 
@@ -2392,6 +2408,13 @@ struct SBAS_Ephemeris : public SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephe
     return SBAS_SpaceNode<FloatT>::SatelliteProperties::Ephemeris::is_valid(t);
   }
   GPS_Time<FloatT> t_applicable() const {return GPS_Time<FloatT>(this->WN, this->t_0);}
+  int get_URA_index() const {
+    return SBAS_Ephemeris<FloatT>::URA_index(this->URA);
+  }
+  int set_URA_index(const int &idx) {
+    this->URA = SBAS_Ephemeris<FloatT>::URA_meter(idx);
+    return get_URA_index();
+  }
 };
 
 
@@ -2432,6 +2455,21 @@ struct GLONASS_Ephemeris
           (typename GLONASS_SpaceNode<FloatT>::TimeProperties)(*this)),
         deltaT));
   }
+  
+  unsigned char get_F_T_index() const {
+    return GLONASS_Ephemeris<FloatT>::F_T_index();
+  }
+  unsigned char set_F_T_index(const unsigned char &idx) {
+    this->F_T = GLONASS_Ephemeris<FloatT>::raw_t::F_T_value(idx);
+    return get_F_T_index();
+  }
+  unsigned char get_P1_index() const {
+    return GLONASS_Ephemeris<FloatT>::P1_index();
+  }
+  unsigned char set_P1_index(const unsigned char &idx) {
+    this->P1 = GLONASS_Ephemeris<FloatT>::raw_t::P1_value(idx);
+    return get_P1_index();
+  }
 };
 
 
@@ -2469,6 +2507,10 @@ struct GPS_User_PVT
   const FloatT &hdop() const {return base_t::dop.h;}
   const FloatT &vdop() const {return base_t::dop.v;}
   const FloatT &tdop() const {return base_t::dop.t;}
+  const FloatT &hsigma() const {return base_t::sigma_pos.h;}
+  const FloatT &vsigma() const {return base_t::sigma_pos.v;}
+  const FloatT &tsigma() const {return base_t::sigma_pos.t;}
+  const FloatT &vel_sigma() const {return base_t::sigma_vel.p;}
   const unsigned int &used_satellites() const {return base_t::used_satellites;}
   std::vector<int> used_satellite_list() const {return base_t::used_satellite_mask.indices_one();}
   bool position_solved() const {return base_t::position_solved();}
@@ -2493,7 +2535,7 @@ struct GPS_User_PVT
     return linear_solver().C();
   }
   Matrix<FloatT, Array2D_Dense<FloatT> > C_enu() const {
-    return proxy_t::linear_solver_t::rotate_C(C(), base_t::user_position.ecef2enu());
+    return proxy_t::linear_solver_t::rotate_CP(C(), base_t::user_position.ecef2enu());
   }
   Matrix<FloatT, Array2D_Dense<FloatT> > S() const {
     Matrix<FloatT, Array2D_Dense<FloatT> > res;
@@ -3837,7 +3879,7 @@ SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_t_oe(GPS_Ephemeris< double > *
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_t_oe(GPS_Ephemeris< double > const *self){
   return self->t_oe;
 }
-SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_fit_interval(GPS_Ephemeris< double > *self,double const &v){
+SWIGINTERN double GPS_Ephemeris_Sl_double_Sg__set_fit_interval__SWIG_1(GPS_Ephemeris< double > *self,double const &v){
   return self->fit_interval= v;
 }
 SWIGINTERN double const &GPS_Ephemeris_Sl_double_Sg__get_fit_interval(GPS_Ephemeris< double > const *self){
@@ -4139,6 +4181,12 @@ SWIGINTERN double GPS_SolverOptions_Common_Sl_double_Sg__set_residual_mask(GPS_S
 SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mask(GPS_SolverOptions_Common< double > const *self){
   return self->cast_general()->residual_mask;
 }
+SWIGINTERN bool GPS_SolverOptions_Common_Sl_double_Sg__set_use_external_sigma(GPS_SolverOptions_Common< double > *self,bool const &v){
+  return self->cast_general()->use_external_sigma= v;
+}
+SWIGINTERN bool const &GPS_SolverOptions_Common_Sl_double_Sg__get_use_external_sigma(GPS_SolverOptions_Common< double > const *self){
+  return self->cast_general()->use_external_sigma;
+}
 
     template <> template <>
     HookableSolver<
@@ -4166,7 +4214,7 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
           const GPS_Solver<double>::base_t::relative_property_t &res_orig) const {
       union {
         base_t::relative_property_t prop;
-        double values[7];
+        double values[8];
       } res = {res_orig};
 
       do{
@@ -4174,15 +4222,19 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
         static const int prop_items(sizeof(res.values) / sizeof(res.values[0]));
         VALUE hook(rb_hash_lookup(hooks, key));
         if(NIL_P(hook)){break;}
-        double weight((res.prop.range_sigma > 0) 
+        double weight_range((res.prop.range_sigma > 0) 
             ? (1. / std::pow(res.prop.range_sigma, 2)) // weight=1/(sigma^2)
             : res.prop.range_sigma);
+        double weight_rate((res.prop.rate_sigma > 0) 
+            ? (1. / std::pow(res.prop.rate_sigma, 2)) // weight=1/(sigma^2)
+            : res.prop.rate_sigma);
         VALUE values[] = {
             SWIG_From_int  (prn), // prn
             rb_ary_new_from_args(prop_items, // relative_property
-              swig::from(weight),
+              swig::from(weight_range),
               swig::from(res.prop.range_corrected),
               swig::from(res.prop.range_residual),
+              swig::from(weight_rate),
               swig::from(res.prop.rate_relative_neg),
               swig::from(res.prop.los_neg[0]),
               swig::from(res.prop.los_neg[1]),
@@ -4214,6 +4266,9 @@ SWIGINTERN double const &GPS_SolverOptions_Common_Sl_double_Sg__get_residual_mas
         }
         if(res.values[0] > 0){
           res.values[0] = std::pow(1. / res.values[0], 0.5); // sigma=(1/weight)^0.5
+        }
+        if(res.values[3] > 0){
+          res.values[3] = std::pow(1. / res.values[3], 0.5); // sigma=(1/weight)^0.5
         }
       }while(false);
 
@@ -4562,6 +4617,29 @@ SWIGINTERN int GLONASS_SpaceNode_Sl_double_Sg__read(GLONASS_SpaceNode< double > 
     list.glonass = self;
     return RINEX_NAV_Reader<double>::read_all(fin, list);
   }
+
+SWIGINTERNINLINE VALUE
+SWIG_From_unsigned_SS_char  (unsigned char value)
+{    
+  return SWIG_From_unsigned_SS_long  (value);
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_char (VALUE obj, unsigned char *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > UCHAR_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned char >(v);
+    }
+  }  
+  return res;
+}
+
 SWIGINTERN unsigned int GLONASS_Ephemeris_Sl_double_Sg__set_svid(GLONASS_Ephemeris< double > *self,unsigned int const &v){
   return self->svid= v;
 }
@@ -4748,6 +4826,23 @@ SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_0(GLONASS_Ephemer
 SWIGINTERN void GLONASS_Ephemeris_Sl_double_Sg__set_date__SWIG_1(GLONASS_Ephemeris< double > *self,std::tm const &t){
     self->date = GLONASS_SpaceNode<double>::TimeProperties::date_t::from_c_tm(t);
   }
+SWIGINTERN unsigned char GLONASS_Ephemeris_Sl_double_Sg__N_4(GLONASS_Ephemeris< double > const *self){
+    unsigned char res;
+    GLONASS_Ephemeris<double>::TimeProperties::raw_t::date2raw(self->date, &res, NULL);
+    return res;
+  }
+SWIGINTERN unsigned short GLONASS_Ephemeris_Sl_double_Sg__NA(GLONASS_Ephemeris< double > const *self){
+    unsigned short res;
+    GLONASS_Ephemeris<double>::TimeProperties::raw_t::date2raw(self->date, NULL, &res);
+    return res;
+  }
+
+SWIGINTERNINLINE VALUE
+SWIG_From_unsigned_SS_short  (unsigned short value)
+{    
+  return SWIG_From_unsigned_SS_long  (value);
+}
+
 SWIGINTERN double GLONASS_Ephemeris_Sl_double_Sg__frequency_L1(GLONASS_Ephemeris< double > const *self){
     return self->L1_frequency();
   }
@@ -10662,6 +10757,126 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris.URA_index
+
+  call-seq:
+    URA_index -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_URA_index(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > const *","get_URA_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  result = (int)((GPS_Ephemeris< double > const *)arg1)->get_URA_index();
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris.URA_index=
+
+  call-seq:
+    URA_index=(int const & idx) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_URA_indexe___(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > *","set_URA_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_URA_index", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (int)(arg1)->set_URA_index((int const &)*arg2);
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris.fit_interval=
+
+  call-seq:
+    fit_interval=(bool const & flag) -> double
+    fit_interval=(double const & v) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_fit_intervale_____SWIG_0(int argc, VALUE *argv, VALUE self) {
+  GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
+  bool *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool temp2 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_Ephemeris< double > *","set_fit_interval", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_bool(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "bool","set_fit_interval", 2, argv[0] ));
+  } 
+  temp2 = static_cast< bool >(val2);
+  arg2 = &temp2;
+  result = (double)(arg1)->set_fit_interval((bool const &)*arg2);
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris.svid=
 
   call-seq:
@@ -12109,13 +12324,14 @@ fail:
   Document-method: GPS_PVT::GPS::Ephemeris.fit_interval=
 
   call-seq:
+    fit_interval=(bool const & flag) -> double
     fit_interval=(double const & v) -> double
 
 An instance method.
 
 */
 SWIGINTERN VALUE
-_wrap_Ephemeris_fit_intervale___(int argc, VALUE *argv, VALUE self) {
+_wrap_Ephemeris_fit_intervale_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   GPS_Ephemeris< double > *arg1 = (GPS_Ephemeris< double > *) 0 ;
   double *arg2 = 0 ;
   void *argp1 = 0 ;
@@ -12140,10 +12356,61 @@ _wrap_Ephemeris_fit_intervale___(int argc, VALUE *argv, VALUE self) {
   } 
   temp2 = static_cast< double >(val2);
   arg2 = &temp2;
-  result = (double)GPS_Ephemeris_Sl_double_Sg__set_fit_interval(arg1,(double const &)*arg2);
+  result = (double)GPS_Ephemeris_Sl_double_Sg__set_fit_interval__SWIG_1(arg1,(double const &)*arg2);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Ephemeris_fit_intervale___(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_double(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_Ephemeris_fit_intervale_____SWIG_1(nargs, args, self);
+      }
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_GPS_EphemerisT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_bool(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_Ephemeris_fit_intervale_____SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "Ephemeris.fit_interval=", 
+    "    double Ephemeris.fit_interval=(bool const &flag)\n"
+    "    double Ephemeris.fit_interval=(double const &v)\n");
+  
   return Qnil;
 }
 
@@ -13842,6 +14109,138 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::PVT.hsigma
+
+  call-seq:
+    hsigma -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_PVT_hsigma(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","hsigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->hsigma();
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::PVT.vsigma
+
+  call-seq:
+    vsigma -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_PVT_vsigma(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","vsigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->vsigma();
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::PVT.tsigma
+
+  call-seq:
+    tsigma -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_PVT_tsigma(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","tsigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->tsigma();
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::PVT.vel_sigma
+
+  call-seq:
+    vel_sigma -> double const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_PVT_vel_sigma(int argc, VALUE *argv, VALUE self) {
+  GPS_User_PVT< double > *arg1 = (GPS_User_PVT< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_User_PVTT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_User_PVT< double > const *","vel_sigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_User_PVT< double > * >(argp1);
+  result = (double *) &((GPS_User_PVT< double > const *)arg1)->vel_sigma();
+  vresult = SWIG_From_double(static_cast< double >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::PVT.used_satellites
 
   call-seq:
@@ -15475,6 +15874,82 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::SolverOptionsCommon.use_external_sigma=
+
+  call-seq:
+    use_external_sigma=(bool const & v) -> bool
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptionsCommon_use_external_sigmae___(int argc, VALUE *argv, VALUE self) {
+  GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *) 0 ;
+  bool *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool temp2 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  bool result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > *","set_use_external_sigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
+  ecode2 = SWIG_AsVal_bool(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "bool","set_use_external_sigma", 2, argv[0] ));
+  } 
+  temp2 = static_cast< bool >(val2);
+  arg2 = &temp2;
+  result = (bool)GPS_SolverOptions_Common_Sl_double_Sg__set_use_external_sigma(arg1,(bool const &)*arg2);
+  vresult = SWIG_From_bool(static_cast< bool >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::SolverOptionsCommon.use_external_sigma
+
+  call-seq:
+    use_external_sigma -> bool const &
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_SolverOptionsCommon_use_external_sigma(int argc, VALUE *argv, VALUE self) {
+  GPS_SolverOptions_Common< double > *arg1 = (GPS_SolverOptions_Common< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GPS_SolverOptions_CommonT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GPS_SolverOptions_Common< double > const *","get_use_external_sigma", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GPS_SolverOptions_Common< double > * >(argp1);
+  result = (bool *) &GPS_SolverOptions_Common_Sl_double_Sg__get_use_external_sigma((GPS_SolverOptions_Common< double > const *)arg1);
+  vresult = SWIG_From_bool(static_cast< bool >(*result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-class: GPS_PVT::GPS::SolverOptions < GPS::SolverOptionsCommon
 
   Proxy of C++ GPS_PVT::GPS::SolverOptions class
@@ -16394,6 +16869,82 @@ _wrap_Ephemeris_SBAS_t_applicable(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
   result = ((SBAS_Ephemeris< double > const *)arg1)->t_applicable();
   vresult = SWIG_NewPointerObj((new GPS_Time< double >(static_cast< const GPS_Time< double >& >(result))), SWIGTYPE_p_GPS_TimeT_double_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_SBAS.URA_index
+
+  call-seq:
+    URA_index -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_SBAS_URA_index(int argc, VALUE *argv, VALUE self) {
+  SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SBAS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > const *","get_URA_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
+  result = (int)((SBAS_Ephemeris< double > const *)arg1)->get_URA_index();
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_SBAS.URA_index=
+
+  call-seq:
+    URA_index=(int const & idx) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_SBAS_URA_indexe___(int argc, VALUE *argv, VALUE self) {
+  SBAS_Ephemeris< double > *arg1 = (SBAS_Ephemeris< double > *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SBAS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "SBAS_Ephemeris< double > *","set_URA_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< SBAS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","set_URA_index", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (int)(arg1)->set_URA_index((int const &)*arg2);
+  vresult = SWIG_From_int(static_cast< int >(result));
   return vresult;
 fail:
   return Qnil;
@@ -20290,6 +20841,158 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.F_T_index
+
+  call-seq:
+    F_T_index -> unsigned char
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_F_T_index(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned char result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_F_T_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned char)((GLONASS_Ephemeris< double > const *)arg1)->get_F_T_index();
+  vresult = SWIG_From_unsigned_SS_char(static_cast< unsigned char >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.F_T_index=
+
+  call-seq:
+    F_T_index=(unsigned char const & idx) -> unsigned char
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_F_T_indexe___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned char *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned char temp2 ;
+  unsigned char val2 ;
+  int ecode2 = 0 ;
+  unsigned char result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_F_T_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_char(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned char","set_F_T_index", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned char >(val2);
+  arg2 = &temp2;
+  result = (unsigned char)(arg1)->set_F_T_index((unsigned char const &)*arg2);
+  vresult = SWIG_From_unsigned_SS_char(static_cast< unsigned char >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P1_index
+
+  call-seq:
+    P1_index -> unsigned char
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P1_index(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned char result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","get_P1_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned char)((GLONASS_Ephemeris< double > const *)arg1)->get_P1_index();
+  vresult = SWIG_From_unsigned_SS_char(static_cast< unsigned char >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.P1_index=
+
+  call-seq:
+    P1_index=(unsigned char const & idx) -> unsigned char
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_P1_indexe___(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  unsigned char *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned char temp2 ;
+  unsigned char val2 ;
+  int ecode2 = 0 ;
+  unsigned char result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > *","set_P1_index", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_char(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "unsigned char","set_P1_index", 2, argv[0] ));
+  } 
+  temp2 = static_cast< unsigned char >(val2);
+  arg2 = &temp2;
+  result = (unsigned char)(arg1)->set_P1_index((unsigned char const &)*arg2);
+  vresult = SWIG_From_unsigned_SS_char(static_cast< unsigned char >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.svid=
 
   call-seq:
@@ -22705,6 +23408,72 @@ fail:
     "    void set_date(unsigned int const &N_4, unsigned int const &NA)\n"
     "    void set_date(std::tm const &t)\n");
   
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.N_4
+
+  call-seq:
+    N_4 -> unsigned char
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_N_4(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned char result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","N_4", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned char)GLONASS_Ephemeris_Sl_double_Sg__N_4((GLONASS_Ephemeris< double > const *)arg1);
+  vresult = SWIG_From_unsigned_SS_char(static_cast< unsigned char >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::GPS::Ephemeris_GLONASS.NA
+
+  call-seq:
+    NA -> unsigned short
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Ephemeris_GLONASS_NA(int argc, VALUE *argv, VALUE self) {
+  GLONASS_Ephemeris< double > *arg1 = (GLONASS_Ephemeris< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned short result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_GLONASS_EphemerisT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "GLONASS_Ephemeris< double > const *","NA", 1, self )); 
+  }
+  arg1 = reinterpret_cast< GLONASS_Ephemeris< double > * >(argp1);
+  result = (unsigned short)GLONASS_Ephemeris_Sl_double_Sg__NA((GLONASS_Ephemeris< double > const *)arg1);
+  vresult = SWIG_From_unsigned_SS_short(static_cast< unsigned short >(result));
+  return vresult;
+fail:
   return Qnil;
 }
 
@@ -25147,6 +25916,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_validq___), -1);
   rb_define_method(SwigClassEphemeris.klass, "t_clock", VALUEFUNC(_wrap_Ephemeris_t_clock), -1);
   rb_define_method(SwigClassEphemeris.klass, "t_ephemeris", VALUEFUNC(_wrap_Ephemeris_t_ephemeris), -1);
+  rb_define_method(SwigClassEphemeris.klass, "URA_index", VALUEFUNC(_wrap_Ephemeris_URA_index), -1);
+  rb_define_method(SwigClassEphemeris.klass, "URA_index=", VALUEFUNC(_wrap_Ephemeris_URA_indexe___), -1);
   rb_define_method(SwigClassEphemeris.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_svide___), -1);
   rb_define_method(SwigClassEphemeris.klass, "svid", VALUEFUNC(_wrap_Ephemeris_svid), -1);
   rb_define_method(SwigClassEphemeris.klass, "WN=", VALUEFUNC(_wrap_Ephemeris_WNe___), -1);
@@ -25238,6 +26009,10 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassPVT.klass, "hdop", VALUEFUNC(_wrap_PVT_hdop), -1);
   rb_define_method(SwigClassPVT.klass, "vdop", VALUEFUNC(_wrap_PVT_vdop), -1);
   rb_define_method(SwigClassPVT.klass, "tdop", VALUEFUNC(_wrap_PVT_tdop), -1);
+  rb_define_method(SwigClassPVT.klass, "hsigma", VALUEFUNC(_wrap_PVT_hsigma), -1);
+  rb_define_method(SwigClassPVT.klass, "vsigma", VALUEFUNC(_wrap_PVT_vsigma), -1);
+  rb_define_method(SwigClassPVT.klass, "tsigma", VALUEFUNC(_wrap_PVT_tsigma), -1);
+  rb_define_method(SwigClassPVT.klass, "vel_sigma", VALUEFUNC(_wrap_PVT_vel_sigma), -1);
   rb_define_method(SwigClassPVT.klass, "used_satellites", VALUEFUNC(_wrap_PVT_used_satellites), -1);
   rb_define_method(SwigClassPVT.klass, "used_satellite_list", VALUEFUNC(_wrap_PVT_used_satellite_list), -1);
   rb_define_method(SwigClassPVT.klass, "position_solved?", VALUEFUNC(_wrap_PVT_position_solvedq___), -1);
@@ -25313,6 +26088,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassSolverOptionsCommon.klass, "elevation_mask", VALUEFUNC(_wrap_SolverOptionsCommon_elevation_mask), -1);
   rb_define_method(SwigClassSolverOptionsCommon.klass, "residual_mask=", VALUEFUNC(_wrap_SolverOptionsCommon_residual_maske___), -1);
   rb_define_method(SwigClassSolverOptionsCommon.klass, "residual_mask", VALUEFUNC(_wrap_SolverOptionsCommon_residual_mask), -1);
+  rb_define_method(SwigClassSolverOptionsCommon.klass, "use_external_sigma=", VALUEFUNC(_wrap_SolverOptionsCommon_use_external_sigmae___), -1);
+  rb_define_method(SwigClassSolverOptionsCommon.klass, "use_external_sigma", VALUEFUNC(_wrap_SolverOptionsCommon_use_external_sigma), -1);
   SwigClassSolverOptionsCommon.mark = 0;
   SwigClassSolverOptionsCommon.destroy = (void (*)(void *)) free_GPS_SolverOptions_Common_Sl_double_Sg_;
   SwigClassSolverOptionsCommon.trackObjects = 0;
@@ -25356,6 +26133,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_SBAS.klass, "initialize", VALUEFUNC(_wrap_new_Ephemeris_SBAS), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_SBAS_validq___), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "t_applicable", VALUEFUNC(_wrap_Ephemeris_SBAS_t_applicable), -1);
+  rb_define_method(SwigClassEphemeris_SBAS.klass, "URA_index", VALUEFUNC(_wrap_Ephemeris_SBAS_URA_index), -1);
+  rb_define_method(SwigClassEphemeris_SBAS.klass, "URA_index=", VALUEFUNC(_wrap_Ephemeris_SBAS_URA_indexe___), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_SBAS_svide___), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_SBAS_svid), -1);
   rb_define_method(SwigClassEphemeris_SBAS.klass, "WN=", VALUEFUNC(_wrap_Ephemeris_SBAS_WNe___), -1);
@@ -25477,6 +26256,10 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "in_range?", VALUEFUNC(_wrap_Ephemeris_GLONASS_in_rangeq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "valid?", VALUEFUNC(_wrap_Ephemeris_GLONASS_validq___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "rehash", VALUEFUNC(_wrap_Ephemeris_GLONASS_rehash), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "F_T_index", VALUEFUNC(_wrap_Ephemeris_GLONASS_F_T_index), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "F_T_index=", VALUEFUNC(_wrap_Ephemeris_GLONASS_F_T_indexe___), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P1_index", VALUEFUNC(_wrap_Ephemeris_GLONASS_P1_index), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "P1_index=", VALUEFUNC(_wrap_Ephemeris_GLONASS_P1_indexe___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid=", VALUEFUNC(_wrap_Ephemeris_GLONASS_svide___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "svid", VALUEFUNC(_wrap_Ephemeris_GLONASS_svid), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "freq_ch=", VALUEFUNC(_wrap_Ephemeris_GLONASS_freq_che___), -1);
@@ -25538,6 +26321,8 @@ SWIGEXPORT void Init_GPS(void) {
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "day_of_year=", VALUEFUNC(_wrap_Ephemeris_GLONASS_day_of_yeare___), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "day_of_year", VALUEFUNC(_wrap_Ephemeris_GLONASS_day_of_year), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "set_date", VALUEFUNC(_wrap_Ephemeris_GLONASS_set_date), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "N_4", VALUEFUNC(_wrap_Ephemeris_GLONASS_N_4), -1);
+  rb_define_method(SwigClassEphemeris_GLONASS.klass, "NA", VALUEFUNC(_wrap_Ephemeris_GLONASS_NA), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L1", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L1), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "frequency_L2", VALUEFUNC(_wrap_Ephemeris_GLONASS_frequency_L2), -1);
   rb_define_method(SwigClassEphemeris_GLONASS.klass, "base_time", VALUEFUNC(_wrap_Ephemeris_GLONASS_base_time), -1);
