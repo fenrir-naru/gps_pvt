@@ -46,10 +46,10 @@ rule
   DefinitiveNameAndNumberForm : identifier LCBRACE DefinitiveNumberForm RCBRACE
   
   TagDefault :
-      EXPLICIT TAGS {raise} # not supported
-      | IMPLICIT TAGS {raise} # not supported
-      | AUTOMATIC TAGS
-      | {raise} # not supported
+      EXPLICIT TAGS {@tags = val[0]}
+      | IMPLICIT TAGS {@tags = val[0]}
+      | AUTOMATIC TAGS {@tags = val[0]} # 12.3
+      | {@tags = :EXPLICIT} # 12.2
   
   ExtensionDefault :
       EXTENSIBILITY IMPLIED
@@ -436,6 +436,10 @@ rule
 
   # 28. Notation for choice types
   ChoiceType : CHOICE LBRACE AlternativeTypeLists RBRACE {
+    # 28.2
+    val[2].merge!({:automatic_tagging => false}) \
+        if (@tags != :AUTOMATIC) \
+          || (val[2][:root] + (val[2][:extension] || [])).any?{|v| v[:tag]}
     result = {:type => [val[0], val[2]]}
   }
   /*
@@ -475,11 +479,22 @@ rule
   ChoiceValue : identifier COLON Value
   
   # 30. Notation for tagged types
-  TaggedType :
+  /*TaggedType :
       Tag Type
       | Tag IMPLICIT Type
-      | Tag EXPLICIT Type
-  Tag : LBRACKET Class ClassNumber RBRACKET
+      | Tag EXPLICIT Type*/
+  TaggedType :
+      Tag TaggingConstruction Type {
+        result = {:tag => val[0]}.merge(val[2])
+        result.merge!({:tag_cnstr => val[1]}) if val[1]
+      }
+  TaggingConstruction :
+      IMPLICIT {result = nil}
+      | EXPLICIT # 30.6 a)
+      | {result = :EXPLICIT if @tags == :EXPLICIT} # 30.6 b)
+  Tag : 
+      LBRACKET Class ClassNumber RBRACKET
+          {result = val.values_at(2, 1).compact}
   ClassNumber :
       number
       | DefinedValue

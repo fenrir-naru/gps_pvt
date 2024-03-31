@@ -329,7 +329,10 @@ resolve_tree = proc{|root|
       opts[:size_range] = find_range.call(opts, :size)
       prepare_coding.call(opts)
     when :CHOICE
-      # Skip reordering based on automatic tagging assumption
+      if opts[:automatic_tagging] == false then
+        # reordering when automatic tagging transformation is not selected
+        raise # TODO
+      end
       opts[:extension] = opts[:extension].collect{|v|
         v[:group] || [v] # 22. Note says "Version brackets have no effect"
       }.flatten(1) if opts[:extension]
