@@ -1191,7 +1191,12 @@ GANSSRefTimeInfo ::= SEQUENCE {
 GANSSTOD ::= INTEGER (0 .. 86399) 
 
 -- GANSS TOD uncertainty 
-GANSSTODUncertainty ::= INTEGER (0 .. 127) -- Coding according to Annex 
+GANSSTODUncertainty ::= INTEGER (0 .. 127) -- Coding according to Annex
+
+-- GANSS Reference Time Rel-10 Extension:
+GANSSReferenceTime-R10-Ext ::= SEQUENCE {
+  ganssDayCycleNumber INTEGER(0..7) -- coding according to annex
+}
 
 -- GANSS TOD-GSM Time association 
 GANSSTOD-GSMTimeAssociation ::= SEQUENCE { 
