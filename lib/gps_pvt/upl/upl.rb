@@ -26,6 +26,54 @@ ASN1::dig(upl, :ULP, :"ULP-PDU", :message, :msSUPLPOS, :posPayLoad, :rrlpPayload
   },
 })
 
+ASN1::dig(upl, :"MAP-LCS-DataTypes", :"Ext-GeographicalInformation")[:type][1].merge!({
+  :hook_decode => proc{
+    gen_ut = proc{|c, x| proc{|k| ((x + 1) ** k - 1) * c} }
+    tbl_task = {
+      :lat => [3, proc{|v| Rational((v & 0x7FFFFF) * 90, 1 << 23).to_f * (((v >> 23) == 1) ? -1 : 1)}],
+      :lng => [3, proc{|v| Rational((v >= (1 << 23) ? v - (1 << 24) : v) * 180, 1 << 23).to_f}],
+      :ucode => 1,
+      :usmaj => [1, gen_ut.call(10, 0.1)],
+      :usmin => [1, gen_ut.call(10, 0.1)],
+      :omaj => 1,
+      :cnf => 1,
+      :alt => [2, proc{|v| (v & 0x7FFF) * (((v >> 15) == 1) ? -1 : 1)}],
+      :ualt => [1, gen_ut.call(45, 0.025)],
+      :irad => [2, proc{|v| v * 5}],
+      :urad => [1, gen_ut.call(10, 0.1)],
+      :oang => [1, proc{|v| v * 2}],
+      :iang => [1, proc{|v| (v + 1) * 2}],
+    }
+    tbl_item = { # 7.2 Table 2a in 3GPP TS 23.032
+      # (a) 7.3.2 Ellipsoid point with uncertainty Circle
+      1 => [8, :lat, :lng, :ucode],
+      # (b) 7.3.3 Ellipsoid point with uncertainty Ellipse
+      3 => [11, :lat, :lng, :usmaj, :usmin, :omaj, :cnf],
+      # (c) 7.3.6 Ellipsoid point with altitude and uncertainty Ellipsoid
+      9 => [14, :lat, :lng, :alt, :usmaj, :usmin, :omaj, :ualt, :cnf],
+      # (d) 7.3.7 Ellipsoid Arc 
+      10 => [13, :lat, :lng, :irad, :urad, :oang, :iang, :cnf],
+      # (e) 7.3.1 Ellipsoid Point
+      0 => [7, :lat, :lng],
+    }
+    proc{|data|
+      data.define_singleton_method(:decode){
+        len, *items = tbl_item[self[0] >> 4]
+        next nil unless self.length == len
+        offset = 1
+        Hash[*(items.collect{|k|
+          len2, task = tbl_task[k]
+          v = self.slice(offset, len2).inject(0){|res, v2| (res << 8) + v2}
+          v = task.call(v) if task
+          offset += len2
+          [k, v]
+        }.flatten(1))]
+      }
+      data
+    }
+  }.call,
+})
+
 # LPP payload conversion
 ASN1::dig(upl, :ULP, :"ULP-PDU", :message, :msSUPLPOS, :posPayLoad, :"ver2-PosPayLoad-extension", :lPPPayload)[:type][1].merge!({
   :hook_encode => proc{|data|
