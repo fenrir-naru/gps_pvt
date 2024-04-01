@@ -486,6 +486,7 @@ rule
   TaggedType :
       Tag TaggingConstruction Type {
         result = {:tag => val[0]}.merge(val[2])
+        # TODO 30.6 c) to check whether Type is an untagged CHOICE after extraction of ReferencedType 
         result.merge!({:tag_cnstr => val[1]}) if val[1]
       }
   TaggingConstruction :
@@ -494,7 +495,8 @@ rule
       | {result = :EXPLICIT if @tags == :EXPLICIT} # 30.6 b)
   Tag : 
       LBRACKET Class ClassNumber RBRACKET
-          {result = val.values_at(2, 1).compact}
+          {result = val[1] ? val[1..2] : val[2]}
+          # if class specified, array is returned; otherwise, integer.
   ClassNumber :
       number
       | DefinedValue

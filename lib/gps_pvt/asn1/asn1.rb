@@ -261,10 +261,10 @@ resolve_tree = proc{|root|
     res
   }
   
-  # This proc is useless because assumed automatic tagging 
-  # does not require to re-order based on manual tags or class numbers
+  # This proc is used to re-order for non-automatic tagging transformation
   # @see https://stackoverflow.com/a/31450137
   get_universal_class_number = proc{|type|
+    # TODO where is CHOICE class number definition?
     next get_universal_class_number.call(type[1][:root][0][:type]) if type[0] == :CHOICE
     { # @see Table.1 unless any comment
       :BOOLEAN => 1,
@@ -274,6 +274,7 @@ resolve_tree = proc{|root|
       :NULL => 5,
       :ENUMERATED => 10,
       :SEQUENCE => 16,
+      :SEQUENCE_OF => 16,
       :NumericString => 18, # @see Table.6
       :PrintableString => 19, # @see Table.6
       :IA5String => 22, # @see Table.6
@@ -329,10 +330,17 @@ resolve_tree = proc{|root|
       opts[:size_range] = find_range.call(opts, :size)
       prepare_coding.call(opts)
     when :CHOICE
-      if opts[:automatic_tagging] == false then
+      [opts[:root], opts[:extension]].compact.each{|items|
         # reordering when automatic tagging transformation is not selected
-        raise # TODO
-      end
+        items.collect!{|v|
+          tag_class, tag_num = case v[:tag]
+          when Array; [{"APPLICATION" => 1, "PRIVATE" => 3}[v[:tag][0]], v[:tag][1]]
+          when Integer; [2, v[:tag]] # (Context-specific) 
+          else; [0, get_universal_class_number.call(v[:type])] # UNIVERSAL
+          end
+          [v, [tag_class, tag_num]]
+        }.sort!{|a, b| a[1] <=> b[1]}.collect!{|v| v[0]}
+      } if (opts[:automatic_tagging] == false)
       opts[:extension] = opts[:extension].collect{|v|
         v[:group] || [v] # 22. Note says "Version brackets have no effect"
       }.flatten(1) if opts[:extension]
