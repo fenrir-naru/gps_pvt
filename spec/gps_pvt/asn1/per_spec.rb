@@ -72,15 +72,17 @@ RSpec::describe GPS_PVT::PER do
         [<<-'__JSON__',
 {"X691_A1": {
 "PersonnelRecord": {
+  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "type": "VisibleString"},
-      {"name": "dateOfHire", "typeref": "Date"},
-      {"name": "nameOfSpouse", "typeref": "Name"},
+      {"name": "title", "tag": 0, "type": "VisibleString"},
+      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
+      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
       {"name": "children",
+        "tag": 3, 
         "type": [
           "SEQUENCE_OF",
           {"typeref": "ChildInformation"}
@@ -95,11 +97,12 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "typeref": "Date"}
+      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
     ] }
   ]
 },
 "Name": {
+  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
@@ -109,22 +112,24 @@ RSpec::describe GPS_PVT::PER do
     ] }
   ]
 },
-"EmployeeNumber": {"type": "INTEGER"},
-"Date": {"type": "VisibleString"}
+"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": "INTEGER"},
+"Date": {"tag": ["APPLICATION", 3], "type": "VisibleString"}
 } }
           __JSON__
           <<-'__JSON__',
 {"X691_A2": {
 "PersonnelRecord": {
+  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "type": "VisibleString"},
-      {"name": "dateOfHire", "typeref": "Date"},
-      {"name": "nameOfSpouse", "typeref": "Name"},
+      {"name": "title", "tag": 0, "type": "VisibleString"},
+      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
+      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
       {"name": "children",
+        "tag": 3,
         "type": [
           "SEQUENCE_OF",
           {"typeref": "ChildInformation"}
@@ -139,11 +144,12 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "typeref": "Date"}
+      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
     ] }
   ]
 },
 "Name": {
+  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
@@ -153,8 +159,8 @@ RSpec::describe GPS_PVT::PER do
     ] }
   ]
 },
-"EmployeeNumber": {"type": "INTEGER"},
-"Date": {"type": [
+"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": "INTEGER"},
+"Date": {"tag": ["APPLICATION", 3], "type": [
   "VisibleString",
   {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": 8}
 ]},
@@ -169,15 +175,17 @@ RSpec::describe GPS_PVT::PER do
           <<-'__JSON__',
 {"X691_A3": {
 "PersonnelRecord": {
+  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "type": "VisibleString"},
-      {"name": "dateOfHire", "typeref": "Date"},
-      {"name": "nameOfSpouse", "typeref": "Name"},
+      {"name": "title", "tag": 0, "type": "VisibleString"},
+      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
+      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
       {"name": "children",
+        "tag": 3, 
         "type": [
           "SEQUENCE_OF",
           {"typeref": "ChildInformation", "size": {"root": 2}}
@@ -192,9 +200,9 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "typeref": "Date"}
+      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
     ], "extension": [
-      {"name": "sex", "type": [
+      {"name": "sex", "tag": 1, "type": [
           "ENUMERATED",
           {"root": {"male": 1, "female": 2, "unknown": 3}}],
         "optional": true
@@ -203,6 +211,7 @@ RSpec::describe GPS_PVT::PER do
   ]
 },
 "Name": {
+  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
@@ -212,11 +221,11 @@ RSpec::describe GPS_PVT::PER do
     ], "extension": [] }
   ]
 },
-"EmployeeNumber": {"type": [
+"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": [
   "INTEGER",
   {"value": {"root": {"and": [[">=", 0], ["<=", 9999]]}}}
 ] },
-"Date": {"type": [
+"Date": {"tag": ["APPLICATION", 3], "type": [
   "VisibleString",
   {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": {
     "root": 8,
