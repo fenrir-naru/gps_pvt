@@ -199,22 +199,22 @@ rule
       | ObjectClassFieldValue
 
   BuiltinValue : # 16.9
-      BitStringValue
-      | BooleanValue
-      | CharacterStringValue
-      | ChoiceValue
+      BitStringValue # String, Array, Hash (possible returned value, same below)
+      | BooleanValue # true/false
+      | CharacterStringValue # String, Array, Hash
+      | ChoiceValue # Hash
       #| EmbeddedPDVValue
-      | EnumeratedValue
+      | EnumeratedValue # String
       #| ExternalValue
       #| InstanceOfValue
-      | IntegerValue
-      | NullValue
-      | ObjectIdentifierValue
-      | OctetStringValue
-      | RealValue
+      | IntegerValue # Number, String
+      | NullValue # nil
+      | ObjectIdentifierValue # Array
+      | OctetStringValue # String, Hash
+      | RealValue # Number, Hash(M * B^E), String([PLUS|MINUS]_INFINITY)
       #| RelativeOIDValue
-      | SequenceValue
-      | SequenceOfValue
+      | SequenceValue # Hash
+      | SequenceOfValue # Array, Hash
       #| SetValue
       #| SetOfValue
       #| TaggedValue
@@ -222,9 +222,11 @@ rule
   #ReferencedValue : DefinedValue | ValueFromObject # 16.11
   #ReferencedValue : identifier
   
+  NamedValue : identifier Value {result = {val[0] => val[1]}} # 16.13
+  
   # 17. Notation for the boolean type
   BooleanType : BOOLEAN
-  BooleanValue : TRUE | FALSE
+  BooleanValue : TRUE {result = true} | FALSE {result = false}
   
   # 18. Notation for the integer type
   IntegerType :
@@ -240,7 +242,7 @@ rule
       number
       | MINUS number {result = -val[1]}
       
-  IntegerValue :
+  IntegerValue : # returning Number or String
       SignedNumber
       | identifier
 
@@ -299,13 +301,13 @@ rule
   # 20. Notation for the real type
   RealType : REAL
   
-  RealValue :
+  RealValue : # returning Number, Hash (M * B^E) or String ([PLUS|MINUS]_INFINITY)
       NumericRealValue
       | SpecialRealValue
   NumericRealValue :
       realnumber 
-      | MINUS realnumber
-      | SequenceValue
+      | MINUS realnumber {result = -val[1]}
+      | SequenceValue # 20.3 in M * B^E format
   SpecialRealValue : PLUS_INFINITY | MINUS_INFINITY
   
   # 21. Notation for the bitstring
@@ -319,22 +321,22 @@ rule
       identifier LCBRACE number RCBRACE {result = {val[0] => val[2]}}
       | identifier LCBRACE DefinedValue RCBRACE {result = {val[0] => val[2]}}
   
-  BitStringValue :
+  BitStringValue : # returning String, Array or Hash
       bstring
       | hstring
-      | LBRACE IdentifierList RBRACE
-      | LBRACE RBRACE
-      | CONTAINING Value
+      | LBRACE IdentifierList RBRACE {result = val[1]}
+      | LBRACE RBRACE {result = []}
+      | CONTAINING Value {result = {:containing => val[1]}}
   IdentifierList :
-      identifier
-      | IdentifierList COMMA identifier
+      identifier {result = [val[0]]}
+      | IdentifierList COMMA identifier  {result << val[2]}
   
   # 22. Notation for the octetstring type
   OctetStringType : OCTET STRING {result = {:type => :OCTET_STRING}}
-  OctetStringValue :
+  OctetStringValue : # returning String or Hash
       bstring
       | hstring
-      | CONTAINING Value
+      | CONTAINING Value {result = {:containing => val[1]}}
   
   # 23. Notation for the null type
   NullType : NULL
@@ -409,12 +411,12 @@ rule
       | NamedType DEFAULT Value {result = val[0].merge({:default => val[2]})}
       | COMPONENTS OF Type {result = val[2]; raise} /* TODO 24.4 says only root components of SEQUENCE are included */
   
-  SequenceValue :
-      LBRACE ComponentValueList RBRACE
-      | LBRACE RBRACE
+  SequenceValue : # returning Hash
+      LBRACE ComponentValueList RBRACE {result = val[1]}
+      | LBRACE RBRACE {result = {}}
   ComponentValueList :
-      NamedValue
-      | ComponentValueList COMMA NamedValue
+      NamedValue {result = val[0]}
+      | ComponentValueList COMMA NamedValue {result = val[0].merge(val[2])}
 
   # 25 Notation for sequence-of types
   SequenceOfType :
@@ -423,16 +425,16 @@ rule
       }
   SequenceOfType_t : Type | NamedType
   
-  SequenceOfValue :
-      LBRACE ValueList RBRACE 
-      | LBRACE NamedValueList RBRACE
-      | LBRACE RBRACE
+  SequenceOfValue : # returning Array or Hash
+      LBRACE ValueList RBRACE {result = val[1]}
+      | LBRACE NamedValueList RBRACE {result = val[1]}
+      | LBRACE RBRACE {result = {}}
   ValueList :
-      Value 
-      | ValueList COMMA Value
+      Value {result = [val[0]]}
+      | ValueList COMMA Value {result << val[2]}
   NamedValueList :
-      NamedValue
-      | NamedValueList COMMA NamedValue
+      NamedValue {result = val[0]}
+      | NamedValueList COMMA NamedValue {result = val[0].merge(val[2])}
 
   # 28. Notation for choice types
   ChoiceType : CHOICE LBRACE AlternativeTypeLists RBRACE {
@@ -476,7 +478,8 @@ rule
       NamedType {result = [val[0]]}
       | AlternativeTypeList COMMA NamedType {result << val[2]}
   
-  ChoiceValue : identifier COLON Value
+  ChoiceValue : # returning Hash
+      identifier COLON Value {result = {val[0] => val[2]}}
   
   # 30. Notation for tagged types
   /*TaggedType :
@@ -511,12 +514,12 @@ rule
   # 31. Notation for the object identifier type
   ObjectIdentifierType : OBJECT IDENTIFIER
   
-  ObjectIdentifierValue :
-      LBRACE ObjIdComponentsList RBRACE
-      | LBRACKET DefinedValue ObjIdComponentsList RBRACKET
+  ObjectIdentifierValue : # returning Array
+      LBRACE ObjIdComponentsList RBRACE {result = val[1]}
+      | LBRACKET DefinedValue ObjIdComponentsList RBRACKET {result = [val[1]] + val[2]}
   ObjIdComponentsList :
-      ObjIdComponents
-      | ObjIdComponentsList ObjIdComponents
+      ObjIdComponents {result = [val[0]]}
+      | ObjIdComponentsList ObjIdComponents {result << val[1]}
   ObjIdComponents :
       NameForm
       | NumberForm
@@ -526,13 +529,13 @@ rule
   NumberForm :
       number
       | DefinedValue
-  NameAndNumberForm : identifier LCBRACE NumberForm RCBRACE
+  NameAndNumberForm : identifier LCBRACE NumberForm RCBRACE {result = val.values_at(0, 2)}
   
   # 36. Notation for character string types
   CharacterStringType :
       RestrictedCharacterStringType
       | UnrestrictedCharacterStringType
-  CharacterStringValue :
+  CharacterStringValue : # returning String, Array or Hash
       RestrictedCharacterStringValue
       | UnrestrictedCharacterStringValue
   
@@ -552,26 +555,26 @@ rule
       | VideotexString*/
       | VisibleString
       
-  RestrictedCharacterStringValue :
+  RestrictedCharacterStringValue : # returning String or Array
       cstring
       | CharacterStringList
       | Quadruple
       | Tuple
-  CharacterStringList : LBRACE CharSyms RBRACE
+  CharacterStringList : LBRACE CharSyms RBRACE {result = val[1]}
   CharSyms :
-      CharsDefn
-      | CharSyms COMMA CharsDefn
+      CharsDefn {result = [val[0]]}
+      | CharSyms COMMA CharsDefn {result << val[2]}
   CharsDefn :
       cstring
       | Quadruple
       | Tuple
       | DefinedValue
-  Quadruple : LBRACE Group COMMA Plane COMMA Row COMMA Cell RBRACE
+  Quadruple : LBRACE Group COMMA Plane COMMA Row COMMA Cell RBRACE {result = val.values_at(1, 3, 5, 7)}
   Group : number
   Plane : number
   Row : number
   Cell : number
-  Tuple : LBRACE TableColumn COMMA TableRow RBRACE
+  Tuple : LBRACE TableColumn COMMA TableRow RBRACE {result = val.values_at(1, 3)}
   TableColumn : number
   TableRow : number
   
