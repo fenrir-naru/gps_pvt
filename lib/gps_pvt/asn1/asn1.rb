@@ -1,3 +1,5 @@
+require 'set'
+
 module GPS_PVT
 end
 
@@ -282,6 +284,23 @@ resolve_tree = proc{|root|
       :UTCTime => 23, # @see 43.3
     }[type[0]]
   }
+
+  reorder_children = proc{|type_opts|
+    # reordering when automatic tagging transformation is not selected
+    tags = Set[]
+    [type_opts[:root], type_opts[:extension]].compact.each{|items|
+      items.collect!{|v|
+        tag = v[:type][1][:tag]
+        tag_class_num = case tag
+        when Array; [{"APPLICATION" => 1, "PRIVATE" => 3}[tag[0]], tag[1]]
+        when Integer; [2, tag] # (Context-specific) 
+        else; [0, get_universal_class_number.call(v[:type])] # UNIVERSAL
+        end
+        raise unless tags.add?(tag_class_num) # Identical tag is already existed!
+        [v, tag_class_num]
+      }.sort!{|a, b| a[1] <=> b[1]}.collect!{|v| v[0]}
+    }
+  }
   
   prepare_coding = proc{|tree|
     next tree.each{|k, v|
@@ -330,17 +349,7 @@ resolve_tree = proc{|root|
       opts[:size_range] = find_range.call(opts, :size)
       prepare_coding.call(opts)
     when :CHOICE
-      [opts[:root], opts[:extension]].compact.each{|items|
-        # reordering when automatic tagging transformation is not selected
-        items.collect!{|v|
-          tag_class, tag_num = case v[:tag]
-          when Array; [{"APPLICATION" => 1, "PRIVATE" => 3}[v[:tag][0]], v[:tag][1]]
-          when Integer; [2, v[:tag]] # (Context-specific) 
-          else; [0, get_universal_class_number.call(v[:type])] # UNIVERSAL
-          end
-          [v, [tag_class, tag_num]]
-        }.sort!{|a, b| a[1] <=> b[1]}.collect!{|v| v[0]}
-      } if (opts[:automatic_tagging] == false)
+      reorder_children.call(opts) if (opts[:automatic_tagging] == false)
       opts[:extension] = opts[:extension].collect{|v|
         v[:group] || [v] # 22. Note says "Version brackets have no effect"
       }.flatten(1) if opts[:extension]

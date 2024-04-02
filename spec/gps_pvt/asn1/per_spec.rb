@@ -72,24 +72,22 @@ RSpec::describe GPS_PVT::PER do
         [<<-'__JSON__',
 {"X691_A1": {
 "PersonnelRecord": {
-  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "tag": 0, "type": "VisibleString"},
-      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
-      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
+      {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
+      {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
-        "tag": 3, 
         "type": [
           "SEQUENCE_OF",
-          {"typeref": "ChildInformation"}
+          {"typeref": "ChildInformation", "tag": 3}
         ],
         "default": []
       }
-    ] }
+    ], "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
@@ -97,46 +95,43 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
+      {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
     ] }
   ]
 },
 "Name": {
-  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "givenName", "type": "VisibleString"},
       {"name": "initial", "type": "VisibleString"},
       {"name": "familyName", "type": "VisibleString"}
-    ] }
+    ], "tag": ["APPLICATION", 1]}
   ]
 },
-"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": "INTEGER"},
-"Date": {"tag": ["APPLICATION", 3], "type": "VisibleString"}
+"EmployeeNumber": {"type": ["INTEGER", {"tag": ["APPLICATION", 2]}]},
+"Date": {"type": ["VisibleString", {"tag": ["APPLICATION", 3]}]}
 } }
           __JSON__
           <<-'__JSON__',
 {"X691_A2": {
 "PersonnelRecord": {
-  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "tag": 0, "type": "VisibleString"},
-      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
-      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
+      {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
+      {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
-        "tag": 3,
         "type": [
           "SEQUENCE_OF",
-          {"typeref": "ChildInformation"}
+          {"typeref": "ChildInformation", "tag": 3}
         ],
         "default": []
       }
-    ] }
+    ], "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
@@ -144,25 +139,24 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
+      {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
     ] }
   ]
 },
 "Name": {
-  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "givenName", "typeref": "NameString"},
       {"name": "initial", "typeref": "NameString", "type": [null, {"size": 1}]},
       {"name": "familyName", "typeref": "NameString"}
-    ] }
+    ], "tag": ["APPLICATION", 1]}
   ]
 },
-"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": "INTEGER"},
-"Date": {"tag": ["APPLICATION", 3], "type": [
+"EmployeeNumber": {"type": ["INTEGER", {"tag": ["APPLICATION", 2]}]},
+"Date": {"type": [
   "VisibleString",
-  {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": 8}
+  {"tag": ["APPLICATION", 3], "from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": 8}
 ]},
 "NameString": {"type": [
   "VisibleString", {
@@ -175,24 +169,22 @@ RSpec::describe GPS_PVT::PER do
           <<-'__JSON__',
 {"X691_A3": {
 "PersonnelRecord": {
-  "tag": ["APPLICATION", 0],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "number", "typeref": "EmployeeNumber"},
-      {"name": "title", "tag": 0, "type": "VisibleString"},
-      {"name": "dateOfHire", "tag": 1, "typeref": "Date"},
-      {"name": "nameOfSpouse", "tag": 2, "typeref": "Name"},
+      {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
+      {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
-        "tag": 3, 
         "type": [
           "SEQUENCE_OF",
-          {"typeref": "ChildInformation", "size": {"root": 2}}
+          {"typeref": "ChildInformation", "size": {"root": 2}, "tag": 3}
         ],
         "optional": true
       }
-    ], "extension": [] }
+    ], "extension": [], "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
@@ -200,37 +192,36 @@ RSpec::describe GPS_PVT::PER do
     "SEQUENCE",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "dateOfBirth", "tag": 0, "typeref": "Date"}
+      {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
     ], "extension": [
-      {"name": "sex", "tag": 1, "type": [
+      {"name": "sex", "type": [
           "ENUMERATED",
-          {"root": {"male": 1, "female": 2, "unknown": 3}}],
+          {"root": {"male": 1, "female": 2, "unknown": 3}, "tag": 1}],
         "optional": true
       }
     ] }
   ]
 },
 "Name": {
-  "tag": ["APPLICATION", 1],
   "type": [
     "SEQUENCE",
     {"root": [
       {"name": "givenName", "typeref": "NameString"},
       {"name": "initial", "typeref": "NameString", "type": [null, {"size": 1}]},
       {"name": "familyName", "typeref": "NameString"}
-    ], "extension": [] }
+    ], "extension": [], "tag": ["APPLICATION", 1]}
   ]
 },
-"EmployeeNumber": {"tag": ["APPLICATION", 2], "type": [
+"EmployeeNumber": {"type": [
   "INTEGER",
-  {"value": {"root": {"and": [[">=", 0], ["<=", 9999]]}}}
+  {"value": {"root": {"and": [[">=", 0], ["<=", 9999]]}}, "tag": ["APPLICATION", 2]}
 ] },
-"Date": {"tag": ["APPLICATION", 3], "type": [
+"Date": {"type": [
   "VisibleString",
   {"from": {"and": [[">=", "0"], ["<=", "9"]]}, "size": {
     "root": 8,
     "additional": {"and": [[">=", 9], ["<=", 20]]}
-  }}
+  }, "tag": ["APPLICATION", 3]}
 ]},
 "NameString": {"type": [
   "VisibleString", {

@@ -441,7 +441,9 @@ rule
     # 28.2
     val[2].merge!({:automatic_tagging => false}) \
         if (@tags != :AUTOMATIC) \
-          || (val[2][:root] + (val[2][:extension] || [])).any?{|v| v[:tag]}
+          || (val[2][:root] + (val[2][:extension] || [])).any?{|v|
+            v[:type][1][:tag] rescue false
+          }
     result = {:type => [val[0], val[2]]}
   }
   /*
@@ -488,9 +490,11 @@ rule
       | Tag EXPLICIT Type*/
   TaggedType :
       Tag TaggingConstruction Type {
-        result = {:tag => val[0]}.merge(val[2])
+        result = val[2] # => {} having :type or :typeref keys
+        result[:type] = [result[:type]].flatten(1)
+        (result[:type][1] ||= {}).merge!({:tag => val[0]})
         # TODO 30.6 c) to check whether Type is an untagged CHOICE after extraction of ReferencedType 
-        result.merge!({:tag_cnstr => val[1]}) if val[1]
+        result[:type][1].merge!({:tag_cnstr => val[1]}) if val[1]
       }
   TaggingConstruction :
       IMPLICIT {result = nil}
