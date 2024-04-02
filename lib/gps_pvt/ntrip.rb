@@ -129,13 +129,16 @@ OpenURI.class_eval{
   def OpenURI.open_ntrip(buf, target, proxy, options) # :nodoc:
     GPS_PVT::Ntrip.start(target.host, target.port){|ntrip|
       # get source table
-      tbl = ntrip.get_source_table(options){|str| str}
+      tbl_str = ntrip.get_source_table(options){|str| str}
       if target.root? then
-        buf << tbl
+        buf << tbl_str
         buf.io.rewind
+        buf.io.define_singleton_method(:source_table){
+          GPS_PVT::Ntrip::parse_source_table(tbl_str)
+        }
         next
       end
-      tbl = GPS_PVT::Ntrip::parse_source_table(tbl)
+      tbl = GPS_PVT::Ntrip::parse_source_table(tbl_str)
       
       # check mount point
       mnt_pt = target.mount_point
