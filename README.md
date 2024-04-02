@@ -172,7 +172,7 @@ Utility to get and dump GPS files. After installation of gps_pvt, to type
 
     $ gps_get file_or_URI(s) (options) > output_file
 
-saves data into output_file by using redirection. http(s), ftp, ntrip, and supl can be used as scheme of URI. Serial port is also supported. Note that compressed data is automatically decompressed before output. The following options are available.
+saves data into output_file by using redirection. http(s), ftp, ntrip, and supl can be used as scheme of URI. Serial port is also supported. Note that compressed data is automatically decompressed before output. It is also noted that supl received data are filtered to its LPP/RRLP content, and printed in JSON format. The following options are available.
 
 | key | value | comment | since |
 ----|----|----|----
