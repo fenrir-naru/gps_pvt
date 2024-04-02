@@ -179,8 +179,8 @@ rule
       #| RelativeOIDType
       | SequenceType
       | SequenceOfType
-      #| SetType
-      #| SetOfType
+      | SetType
+      | SetOfType
       | TaggedType
       | UTCTime # 43. Universal time
 
@@ -215,8 +215,8 @@ rule
       #| RelativeOIDValue
       | SequenceValue # Hash
       | SequenceOfValue # Array, Hash
-      #| SetValue
-      #| SetOfValue
+      | SetValue # Hash
+      | SetOfValue # Array, Hash
       #| TaggedValue
 
   #ReferencedValue : DefinedValue | ValueFromObject # 16.11
@@ -435,6 +435,31 @@ rule
   NamedValueList :
       NamedValue {result = val[0]}
       | NamedValueList COMMA NamedValue {result = val[0].merge(val[2])}
+
+  # 26. Notation for set types
+  SetType :
+      /*SET LBRACE RBRACE
+      | SET LBRACE ExtensionAndException OptionalExtensionMarker RBRACE
+      |*/ SET LBRACE ComponentTypeLists RBRACE {
+        # 26.3
+        val[2].merge!({:automatic_tagging => false}) \
+            if (@tags != :AUTOMATIC) \
+              || (val[2][:root] + (val[2][:extension] || [])).any?{|v|
+                v[:type][1][:tag] rescue false
+              }
+        result = {:type => [val[0], val[2]]}
+      }
+
+  SetValue : SequenceValue # returning Hash
+
+  # 27. Notation for set-of types
+  SetOfType :
+      SET OF SetOfType_t {
+        result = {:type => ["#{val[0]}_#{val[1]}".to_sym, val[2]]}
+      }
+  SetOfType_t : Type | NamedType
+  
+  SetOfValue : SequenceOfValue # returning Array or Hash
 
   # 28. Notation for choice types
   ChoiceType : CHOICE LBRACE AlternativeTypeLists RBRACE {

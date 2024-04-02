@@ -277,6 +277,8 @@ resolve_tree = proc{|root|
       :ENUMERATED => 10,
       :SEQUENCE => 16,
       :SEQUENCE_OF => 16,
+      :SET => 17,
+      :SET_OF => 17,
       :NumericString => 18, # @see Table.6
       :PrintableString => 19, # @see Table.6
       :IA5String => 22, # @see Table.6
@@ -333,7 +335,8 @@ resolve_tree = proc{|root|
       }
     when :BIT_STRING, :OCTET_STRING
       opts[:size_range] = find_range.call(opts, :size)
-    when :SEQUENCE
+    when :SEQUENCE, :SET
+      reorder_children.call(opts) if (opts[:automatic_tagging] == false) # only for SET
       (opts[:root] + (opts[:extension] || [])).each.with_index{|v, i|
         v[:name] = v[:name] ? v[:name].to_sym : i
         v[:type][1][:typename] ||= v[:name] if v[:name].kind_of?(Symbol) && v[:type] # for debugger
@@ -345,7 +348,7 @@ resolve_tree = proc{|root|
           v2[:name]
         } if v[:group]
       }
-    when :SEQUENCE_OF
+    when :SEQUENCE_OF, :SET_OF
       opts[:size_range] = find_range.call(opts, :size)
       prepare_coding.call(opts)
     when :CHOICE
@@ -392,7 +395,7 @@ generate_skeleton = proc{|tree, data|
     when :BIT_STRING, :OCTET_STRING
       data || ({:BIT_STRING => [0], :OCTET_STRING => [0xFF]}[type] \
           * (opts[:size_range][:root].first rescue 0))
-    when :SEQUENCE
+    when :SEQUENCE, :SET
       data ||= {}
       Hash[*((opts[:root] + (opts[:extension] || [])).collect{|v|
         if v[:group] then
@@ -406,7 +409,7 @@ generate_skeleton = proc{|tree, data|
           end
         end
       }.compact.flatten(2))]
-    when :SEQUENCE_OF
+    when :SEQUENCE_OF, :SET_OF
       next data.collect{|v| generate_skeleton.call(opts, v)} if data
       v = Marshal::dump(generate_skeleton.call(opts))
       (opts[:size_range][:root].first rescue 0).times.collect{
@@ -508,7 +511,7 @@ encode = proc{|tree, data|
         end
       end
       res += data.collect{|v| "%0#{bits}b"%[v]}.join
-    when :SEQUENCE
+    when :SEQUENCE, :SET
       opt_def_flags, root_encoded = opts[:root].collect{|v| # 18.2
         has_elm = data.include?(v[:name])
         elm = data[v[:name]]
@@ -552,7 +555,7 @@ encode = proc{|tree, data|
       end
 
       "#{ext_bit}#{opt_def_flags.join}#{root_encoded.join}#{ext_encoded}"
-    when :SEQUENCE_OF
+    when :SEQUENCE_OF, :SET_OF
       ext_bit, len_enc = case (cat = opts[:size_range].belong_to(data.size))
       when :additional
         # 19.4 -> 10.9.4.2(semi_constrained_whole_number)
@@ -711,7 +714,7 @@ decode = proc{|tree, str|
         end
       end
       str.slice!(0, bits * len).scan(/.{#{bits}}/).collect{|chunk| chunk.to_i(2)}
-    when :SEQUENCE
+    when :SEQUENCE, :SET
       has_extension = (opts[:extension] && (str.slice!(0) == '1'))
       data = Hash[*(
         opts[:root].collect{|v| [v[:name], v[:default]] if v[:default]}.compact.flatten(1)
@@ -729,7 +732,7 @@ decode = proc{|tree, str|
             v[:group] ? decoded.to_a : [[v[:name], decoded]]
           }.compact.flatten(2))]) if has_extension
       data
-    when :SEQUENCE_OF
+    when :SEQUENCE_OF, :SET_OF
       len_dec = if opts[:size_range][:additional] && (str.slice!(0) == '1') then
         # 19.4 -> 10.9.4.2(semi_constrained_whole_number)
         :length_otherwise

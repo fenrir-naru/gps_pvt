@@ -73,11 +73,11 @@ RSpec::describe GPS_PVT::PER do
 {"X691_A1": {
 "PersonnelRecord": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
       {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
@@ -87,16 +87,16 @@ RSpec::describe GPS_PVT::PER do
         ],
         "default": []
       }
-    ], "tag": ["APPLICATION", 0]}
+    ], "automatic_tagging": false, "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
-    ] }
+    ], "automatic_tagging": false}
   ]
 },
 "Name": {
@@ -117,11 +117,11 @@ RSpec::describe GPS_PVT::PER do
 {"X691_A2": {
 "PersonnelRecord": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
       {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
@@ -131,16 +131,16 @@ RSpec::describe GPS_PVT::PER do
         ],
         "default": []
       }
-    ], "tag": ["APPLICATION", 0]}
+    ], "automatic_tagging": false, "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
-    ] }
+    ], "automatic_tagging": false}
   ]
 },
 "Name": {
@@ -170,11 +170,11 @@ RSpec::describe GPS_PVT::PER do
 {"X691_A3": {
 "PersonnelRecord": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
-      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "title", "type": ["VisibleString", {"tag": 0}]},
+      {"name": "number", "typeref": "EmployeeNumber"},
       {"name": "dateOfHire", "typeref": "Date", "type": [null, {"tag": 1}]},
       {"name": "nameOfSpouse", "typeref": "Name", "type": [null, {"tag": 2}]},
       {"name": "children",
@@ -184,12 +184,12 @@ RSpec::describe GPS_PVT::PER do
         ],
         "optional": true
       }
-    ], "extension": [], "tag": ["APPLICATION", 0]}
+    ], "extension": [], "automatic_tagging": false, "tag": ["APPLICATION", 0]}
   ]
 },
 "ChildInformation": {
   "type": [
-    "SEQUENCE",
+    "SET",
     {"root": [
       {"name": "name", "typeref": "Name"},
       {"name": "dateOfBirth", "typeref": "Date", "type": [null, {"tag": 0}]}
@@ -199,7 +199,7 @@ RSpec::describe GPS_PVT::PER do
           {"root": {"male": 1, "female": 2, "unknown": 3}, "tag": 1}],
         "optional": true
       }
-    ] }
+    ], "automatic_tagging": false}
   ]
 },
 "Name": {
