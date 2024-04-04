@@ -11,6 +11,14 @@ Rake::ExtensionTask.new("gps_pvt") do |ext|
   ext.lib_dir = "lib/gps_pvt"
 end
 
+require "yard"
+
+YARD::Rake::YardocTask.new do |t|
+  #t.files = ['lib/**/*.rb', 'ext/**/*_wrap.cxx']
+  t.options = ['--embed-mixins']
+  #t.stats_options = ['--list-undoc']
+end
+
 namespace :git do
   task :version do
     @git_version ||= proc{
