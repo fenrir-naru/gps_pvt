@@ -16,6 +16,7 @@ class SUPL_Client
       :port => 7275,
       :debug => 0,
       :protocol => [:lpp, :rrlp],
+      :req_data => [:ephemeris], # :almanac
     }.merge(opts)
   end
 
@@ -152,6 +153,16 @@ class SUPL_Client
     cmd[:sessionID] = @session_id
     proc{|posinit|
       posinit[:sETCapabilities] = @capability
+      req_data = [
+        @opts[:req_data].find_index(:almanac) && :almanacRequested,
+        :utcModelRequested,
+        :ionosphericModelRequested,
+        :referenceLocationRequested,
+        :referenceTimeRequested,
+        :acquisitionAssistanceRequested,
+        :realTimeIntegrityRequested,
+        @opts[:req_data].find_index(:ephemeris) && :navigationModelRequested,
+      ].compact
       posinit[:requestedAssistData] = Hash[*([
         :almanacRequested,
         :utcModelRequested,
@@ -163,15 +174,7 @@ class SUPL_Client
         :realTimeIntegrityRequested,
         :navigationModelRequested,
       ].collect{|k|
-        [k, [
-              :utcModelRequested,
-              :ionosphericModelRequested,
-              :referenceLocationRequested,
-              :referenceTimeRequested,
-              :acquisitionAssistanceRequested,
-              :realTimeIntegrityRequested,
-              :navigationModelRequested,
-            ].include?(k)]
+        [k, req_data.include?(k)]
       }.flatten(1))]
       posinit[:requestedAssistData][:"ver2-RequestedAssistData-extension"] = {
         :ganssRequestedCommonAssistanceDataList => {
@@ -185,18 +188,21 @@ class SUPL_Client
         :ganssRequestedGenericAssistanceDataList => [
           # SBAS
           {:ganssId => 1, :ganssSBASid => [0, 1, 0], # MSAS
-              :ganssRealTimeIntegrity => true, :ganssAlmanac => false,
-              :ganssNavigationModelData => {:ganssWeek => 0, :ganssToe => 0, :"t-toeLimit" => 0},
+              :ganssRealTimeIntegrity => true,
               :ganssReferenceMeasurementInfo => false, :ganssUTCModel => true, :ganssAuxiliaryInformation => false},
           # QZSS
-          {:ganssId => 3, :ganssRealTimeIntegrity => true, :ganssAlmanac => false,
-              :ganssNavigationModelData => {:ganssWeek => 0, :ganssToe => 0, :"t-toeLimit" => 0},
+          {:ganssId => 3, :ganssRealTimeIntegrity => true,
               :ganssReferenceMeasurementInfo => false, :ganssUTCModel => true, :ganssAuxiliaryInformation => false},
           # GLONASS
-          {:ganssId => 4, :ganssRealTimeIntegrity => true, :ganssAlmanac => false,
-              :ganssNavigationModelData => {:ganssWeek => 0, :ganssToe => 0, :"t-toeLimit" => 0},
+          {:ganssId => 4, :ganssRealTimeIntegrity => true,
               :ganssReferenceMeasurementInfo => false, :ganssUTCModel => true, :ganssAuxiliaryInformation => false},
-        ],
+        ].collect{|items|
+          items[:ganssAlmanac] = @opts[:req_data].include?(:almanac)
+          items[:ganssNavigationModelData] = {
+            :ganssWeek => 0, :ganssToe => 0, :"t-toeLimit" => 0
+          } if @opts[:req_data].include?(:ephemeris)
+          items
+        },
       }
       posinit[:requestedAssistData][:navigationModelData] = {
         :gpsWeek => 0,
@@ -302,7 +308,25 @@ class SUPL_Client
 :ephemL2Pflag
 :ephemAODA
 =end
-  
+
+  ALM_KEY_TBL_RRLP = Hash[*({
+    :e => [:almanacE, -21],
+    :i0 => [:almanacKsii, -19, true],
+    :dot_Omega0 => [:almanacOmegaDot, -38, true],
+    :SV_health => :almanacSVhealth,
+    :sqrt_A => [:almanacAPowerHalf, -11],
+    :Omega0 => [:almanacOmega0, -23, true],
+    :omega => [:almanacW, -23, true],
+    :M0 => [:almanacM0, -23, true],
+    :a_f0 => [:almanacAF0, -20], 
+    :a_f1 => [:almanacAF1, -38],
+  }.collect{|dst_k, (src_k, sf_pow2, sc2rad)|
+    sf_pow2 ||= 0
+    sf = sf_pow2 < 0 ? Rational(1, 1 << -sf_pow2) : (1 << sf_pow2)
+    sf = sf.to_f * GPS::GPS_SC2RAD if sc2rad
+    ["#{dst_k}=".to_sym, [src_k, sf]]
+  }.flatten(1))]
+
   def attach_rrlp(msg)
     t_gps = proc{
       week_rem, sec008 = [:gpsWeek, :gpsTOW23b].collect{|k| msg[:referenceTime][:gpsTime][k]}
@@ -337,10 +361,11 @@ class SUPL_Client
       params
     }
     msg.define_singleton_method(:ephemeris){
-      self[:navigationModel][:navModelList].collect{|v|
+      next [] unless (model = self[:navigationModel])
+      model[:navModelList].collect{|sat|
         eph = GPS::Ephemeris::new
-        eph.svid = v[:satelliteID] + 1
-        eph_src = v[:satStatus][:newSatelliteAndModelUC]
+        eph.svid = sat[:satelliteID] + 1
+        eph_src = sat[:satStatus][:newSatelliteAndModelUC]
         EPH_KEY_TBL_RRLP.each{|dst_k, (src_k, sf)|
           v = sf * eph_src[src_k]
           eph.send(dst_k, v.kind_of?(Rational) ? v.to_f : v)
@@ -357,6 +382,30 @@ class SUPL_Client
         eph
       }
     }
+    msg.define_singleton_method(:almanac){
+      next [] unless (model = self[:almanac])
+      week = self[:almanac][:alamanacWNa]
+      week += (t_gps.week >> 8) << 8
+      model[:almanacList].collect{|sat|
+        eph = GPS::Ephemeris::new
+        eph.svid = sat[:satelliteID] + 1
+        ALM_KEY_TBL_RRLP.each{|dst_k, (src_k, sf)|
+          v = sf * sat[src_k]
+          eph.send(dst_k, v.kind_of?(Rational) ? v.to_f : v)
+        }
+        eph.i0 = GPS::GPS_SC2RAD * 0.3 + eph.i0
+        eph.WN = week
+        eph.t_oc = eph.t_oe = sat[:alamanacToa] << 12
+        [:iodc, :t_GD, :a_f2, :iode, :c_rs, :delta_n,
+            :c_uc, :c_us, :c_ic, :c_is, :c_rc, :dot_i0, :iode_subframe3].each{|k|
+          eph.send("#{k}=", 0)
+        }
+        eph.URA_index = -1
+        #eph.fit_interval
+        eph
+      }
+    }
+    :alamanacToa # typo in TS
     msg
   end
 
@@ -412,6 +461,25 @@ class SUPL_Client
 :N_T=, :p=, :delta_tau_n=, :P4=,
 :tau_GPS=, :tau_c=, :day_of_year=, :year=, :n=, :freq_ch=
 =end
+
+  ALM_KEY_TBL_LPP = Hash[*({
+    :e => [:E, -21],
+    :i0 => [:DeltaI, -19, true],
+    :dot_Omega0 => [:OMEGADOT, -38, true],
+    :SV_health => :SVHealth,
+    :sqrt_A => [:SqrtA, -11],
+    :Omega0 => [:OMEGAo, -23, true],
+    :omega => [:Omega, -23, true],
+    :M0 => [:Mo, -23, true],
+    :a_f0 => [:af0, -20], 
+    :a_f1 => [:af1, -38],
+  }.collect{|dst_k, (src_k, sf_pow2, sc2rad)|
+    sf_pow2 ||= 0
+    sf = sf_pow2 < 0 ? Rational(1, 1 << -sf_pow2) : (1 << sf_pow2)
+    sf = sf.to_f * GPS::GPS_SC2RAD if sc2rad
+    ["#{dst_k}=".to_sym,
+        [(src_k.kind_of?(Symbol) ? "navAlm#{src_k}" : src_k).to_sym, sf]]
+  }.flatten(1))]
   
   def attach_lpp(msg)
     t_gps = proc{|data|
@@ -460,9 +528,9 @@ class SUPL_Client
     }.call
     leap_seconds = iono_utc.delta_t_LS rescue t_gps.leap_seconds
     msg.define_singleton_method(:iono_utc){iono_utc}
-    extract_gps_ephemeris = proc{|sat_list, sys|
+    extract_gps_ephemeris = proc{|model, sys|
       offset = {:gps => 1, :qzss => 193}[sys]
-      sat_list.collect{|v|
+      model[:"gnss-SatelliteList"].collect{|v|
         eph = GPS::Ephemeris::new
         eph.svid = v[:svID][:"satellite-id"] + offset
         eph_src = v[:"gnss-ClockModel"][:"nav-ClockModel"].merge(v[:"gnss-OrbitModel"][:"nav-KeplerianSet"])
@@ -489,41 +557,80 @@ class SUPL_Client
           [:"provideAssistanceData-r9"][:"a-gnss-ProvideAssistanceData"] \
           [:"gnss-GenericAssistData"]
       res = [:gps, :qzss].collect{|k|
-        extract_gps_ephemeris.call(
-            assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == k}[0] \
-              [:"gnss-NavigationModel"][:"gnss-SatelliteList"], k)
+        model = assist_data.find{|v| v[:"gnss-ID"][:"gnss-id"] == k}[:"gnss-NavigationModel"] rescue nil
+        next [] unless model
+        extract_gps_ephemeris.call(model, k)
       }.flatten(1)
-      assist_data_glo = assist_data.select{|v| v[:"gnss-ID"][:"gnss-id"] == :glonass}[0]
-      utc_params_glo = {
-        :tau_c= => [:tauC, Rational(1, 1 << 31)],
-      }.collect{|dst_k, (src_k, sf)|
-        [dst_k, sf * assist_data_glo[:"gnss-UTC-Model"][:utcModel3][src_k]]
-      }
-      res += assist_data_glo[:"gnss-NavigationModel"][:"gnss-SatelliteList"].collect{|sat|
-        eph = GPS::Ephemeris_GLONASS::new
-        eph.svid = sat[:svID][:"satellite-id"] + 1
-        eph_src = sat[:"gnss-ClockModel"][:"glonass-ClockModel"].merge(
-            sat[:"gnss-OrbitModel"][:"glonass-ECEF"])
-        (EPH_KEY_TBL_LPP_GLO.collect{|dst_k, (src_k, sf)|
-          v = eph_src[src_k]
-          [dst_k, sf.send(sf.kind_of?(Proc) ? :call : :*, case v
-              when Array; Integer(v.join, 2)
-              when true; 1
-              when false; 0
-              else; v
-              end)]
-        } + utc_params_glo).each{|dst_k, v|
-          eph.send(dst_k, v.kind_of?(Rational) ? v.to_f : v)
+      proc{|assist_data_glo|
+        next unless assist_data_glo
+        next unless nav_model = assist_data_glo[:"gnss-NavigationModel"]
+        utc_params_glo = {
+          :tau_c= => [:tauC, Rational(1, 1 << 31)],
+        }.collect{|dst_k, (src_k, sf)|
+          [dst_k, sf * assist_data_glo[:"gnss-UTC-Model"][:utcModel3][src_k]]
         }
-        eph.B_n = sat[:svHealth][0]
-        eph.F_T_index = Integer(sat[:svHealth][1..4].join, 2)
-        eph.t_b = Integer(sat[:iod][4..-1].join, 2) * 15 * 60
-        eph.set_date((t_gps + 3 * 60 * 60).c_tm(leap_seconds)) # UTC -> Moscow time
-        eph.N_T = eph.NA
-        eph.rehash(leap_seconds)
-        eph
-      }
+        res += nav_model[:"gnss-SatelliteList"].collect{|sat|
+          eph = GPS::Ephemeris_GLONASS::new
+          eph.svid = sat[:svID][:"satellite-id"] + 1
+          eph_src = sat[:"gnss-ClockModel"][:"glonass-ClockModel"].merge(
+              sat[:"gnss-OrbitModel"][:"glonass-ECEF"])
+          (EPH_KEY_TBL_LPP_GLO.collect{|dst_k, (src_k, sf)|
+            v = eph_src[src_k]
+            [dst_k, sf.send(sf.kind_of?(Proc) ? :call : :*, case v
+                when Array; Integer(v.join, 2)
+                when true; 1
+                when false; 0
+                else; v
+                end)]
+          } + utc_params_glo).each{|dst_k, v|
+            eph.send(dst_k, v.kind_of?(Rational) ? v.to_f : v)
+          }
+          eph.B_n = sat[:svHealth][0]
+          eph.F_T_index = Integer(sat[:svHealth][1..4].join, 2)
+          eph.t_b = Integer(sat[:iod][4..-1].join, 2) * 15 * 60
+          eph.set_date((t_gps + 3 * 60 * 60).c_tm(leap_seconds)) # UTC -> Moscow time
+          eph.N_T = eph.NA
+          eph.rehash(leap_seconds)
+          eph
+        }
+      }.call(assist_data.find{|v| v[:"gnss-ID"][:"gnss-id"] == :glonass})
       res
+    }
+    extract_gps_almanac = proc{|alm, sys|
+      next [] unless alm
+      offset = {:gps => 1, :qzss => 193}[sys]
+      week = alm[:weekNumber] # optional but required for non-GLONASS
+      week += (t_gps.week >> 8) << 8
+      t_oa = alm[:toa] << 12 # optional but required for non-GLONASS
+      alm[:"gnss-AlmanacList"].collect{|v|
+        next unless v = v[:"keplerianNAV-Almanac"]
+        eph = GPS::Ephemeris::new
+        eph.svid = v[:svID][:"satellite-id"] + offset
+        ALM_KEY_TBL_LPP.each{|dst_k, (src_k, sf)|
+          v2 = sf * v[src_k]
+          eph.send(dst_k, v2.kind_of?(Rational) ? v2.to_f : v2)
+        }
+        eph.i0 = GPS::GPS_SC2RAD * 0.3 + eph.i0
+        eph.WN = week
+        eph.t_oc = eph.t_oe = t_oa
+        [:iodc, :t_GD, :a_f2, :iode, :c_rs, :delta_n,
+            :c_uc, :c_us, :c_ic, :c_is, :c_rc, :dot_i0, :iode_subframe3].each{|k|
+          eph.send("#{k}=", 0)
+        }
+        eph.URA_index = -1
+        #eph.fit_interval
+        eph
+      }.compact
+    }
+    msg.define_singleton_method(:almanac){
+      assist_data = self[:c1][:provideAssistanceData][:criticalExtensions][:c1] \
+          [:"provideAssistanceData-r9"][:"a-gnss-ProvideAssistanceData"] \
+          [:"gnss-GenericAssistData"]
+      [:gps, :qzss].collect{|k|
+        model = assist_data.find{|v| v[:"gnss-ID"][:"gnss-id"] == k}[:"gnss-Almanac"] rescue nil
+        next [] unless model
+        extract_gps_almanac.call(model, k)
+      }.flatten(1)
     }
     msg
   end
@@ -537,7 +644,7 @@ OpenURI.class_eval{
     options[:port] = target.port
     URI.decode_www_form(target.query || "").each{|k, v|
       case k = k.to_sym
-      when :protocol
+      when :protocol, :req_data
         (options[k] ||= []) << v.to_sym
       end
     }
