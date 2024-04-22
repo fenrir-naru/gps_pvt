@@ -88,9 +88,16 @@ module Util
           end
           nil
         }.call
-        is_file = src.kind_of?(File) || src.kind_of?(Tempfile)
 
-        return src.path if ((!compressed) and is_file)
+        case src
+        when File
+          next src.path
+        when Tempfile
+          # Preserve tempfile after leaving open-uri block
+          src.define_singleton_method(:close!){close(false)}
+          #next src # may be acceptable because of open-uri Kernel.open mod (<= 2.7.0)
+          next src.path.tap{@file = src} # Prevent GC
+        end unless compressed
 
         Tempfile::open(File::basename($0, '.*')){|dst|
           dst.binmode
