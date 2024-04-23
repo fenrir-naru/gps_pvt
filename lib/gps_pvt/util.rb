@@ -95,8 +95,7 @@ module Util
         when Tempfile
           # Preserve tempfile after leaving open-uri block
           src.define_singleton_method(:close!){close(false)}
-          #next src # may be acceptable because of open-uri Kernel.open mod (<= 2.7.0)
-          next src.path.tap{@file = src} # Prevent GC
+          next src # Kernel.open(obj) redirects to obj.open if obj responds to :open
         end unless compressed
 
         Tempfile::open(File::basename($0, '.*')){|dst|
