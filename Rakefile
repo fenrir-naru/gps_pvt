@@ -91,25 +91,28 @@ end
 
 desc "Generate SWIG wrapper codes"
 task :swig do
-  swig_dir = File::join(File::dirname(__FILE__), 'ext', 'ninja-scan-light', 'tool', 'swig')
   out_base_dir = File::join(File::dirname(__FILE__), 'ext', 'gps_pvt')
-  Dir::chdir(swig_dir){
-    Dir::glob("*.i"){|src|
-      mod_name = File::basename(src, '.*')
-      out_dir = File::join(out_base_dir, mod_name)
-      sh "mkdir -p #{out_dir}"
-      wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
-      sh [:make, :clean, wrapper,
-          "BUILD_DIR=#{out_dir}",
-          "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
-      open(wrapper, 'r+'){|io|
-        lines = io.read.lines.collect{|line|
-          line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
-            "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
+  [
+    File::join(File::dirname(__FILE__), 'ext', 'ninja-scan-light', 'tool', 'swig'),
+  ].each{|swig_dir|
+    Dir::chdir(swig_dir){
+      Dir::glob("*.i"){|src|
+        mod_name = File::basename(src, '.*')
+        out_dir = File::join(out_base_dir, mod_name)
+        sh "mkdir -p #{out_dir}"
+        wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
+        sh [:make, :clean, wrapper,
+            "BUILD_DIR=#{out_dir}",
+            "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
+        open(wrapper, 'r+'){|io|
+          lines = io.read.lines.collect{|line|
+            line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
+              "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
+            }
           }
+          io.rewind
+          io.write(lines.join)
         }
-        io.rewind
-        io.write(lines.join)
       }
     }
   }
