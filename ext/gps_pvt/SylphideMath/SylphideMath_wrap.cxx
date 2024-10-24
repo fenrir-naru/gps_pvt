@@ -8495,7 +8495,7 @@ _wrap_Matrix_FrozenD_each__SWIG_0(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -8531,7 +8531,7 @@ _wrap_Matrix_FrozenD_each__SWIG_1(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -11940,7 +11940,7 @@ _wrap_Matrix_FrozenD_f_each__SWIG_0(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -11976,7 +11976,7 @@ _wrap_Matrix_FrozenD_f_each__SWIG_1(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -13956,7 +13956,7 @@ _wrap_MatrixD_resizeN___(int argc, VALUE *argv, VALUE self) {
     }
   }
   result = (Matrix< double,Array2D_Dense< double > > *) &Matrix_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sg__resize(arg1,(unsigned int const *)arg2,(unsigned int const *)arg3);
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -16448,7 +16448,7 @@ _wrap_Matrix_FrozenComplexD_each__SWIG_0(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -16484,7 +16484,7 @@ _wrap_Matrix_FrozenComplexD_each__SWIG_1(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -19891,7 +19891,7 @@ _wrap_Matrix_FrozenComplexD_f_each__SWIG_0(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -19927,7 +19927,7 @@ _wrap_Matrix_FrozenComplexD_f_each__SWIG_1(int argc, VALUE *argv, VALUE self) {
     (&_e)->regenerate();
     SWIG_fail;
   }
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
@@ -21903,7 +21903,7 @@ _wrap_MatrixComplexD_resizeN___(int argc, VALUE *argv, VALUE self) {
     }
   }
   result = (Matrix< Complex< double >,Array2D_Dense< Complex< double > > > *) &Matrix_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sg__resize(arg1,(unsigned int const *)arg2,(unsigned int const *)arg3);
-  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  vresult = self;
   return vresult;
 fail:
   return Qnil;
