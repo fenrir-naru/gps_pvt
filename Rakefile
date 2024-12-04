@@ -94,6 +94,7 @@ task :swig do
   out_base_dir = File::join(File::dirname(__FILE__), 'ext', 'gps_pvt')
   [
     File::join(File::dirname(__FILE__), 'ext', 'ninja-scan-light', 'tool', 'swig'),
+    File::join(File::dirname(__FILE__), 'ext', 'sdr', 'swig'),
   ].each{|swig_dir|
     Dir::chdir(swig_dir){
       Dir::glob("*.i"){|src|
