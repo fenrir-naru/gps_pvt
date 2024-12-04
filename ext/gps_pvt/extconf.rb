@@ -1,8 +1,12 @@
 require "mkmf"
-proc{|ninja_tool_dir|
-  dir_config('ninja_tool', ninja_tool_dir, ninja_tool_dir)
-}.call(File::absolute_path(File::join(
-    File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool')))
+{
+  'ninja_tool' => [File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool'],
+  'sdr' => [File::dirname(__FILE__), '..', 'sdr'],
+}.each{|target, path|
+  path = File::join(path) if path.kind_of?(Array)
+  path = File::absolute_path(path)
+  dir_config(target, path, path)
+}
 cflags = " -Wall -I../../.. -O3" # -march=native
 RE_optflags = /(?<=^|\s)-O(?:[0-3sgz]|fast)?/
 if RE_optflags =~ cflags then
