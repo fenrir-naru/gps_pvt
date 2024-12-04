@@ -29,3 +29,13 @@ end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
 class Ractor
   def take; value; end
 end if GPS_PVT::version_compare(RUBY_VERSION, "3.5.0") >= 0
+
+class Tempfile
+  class << self
+    alias_method(:create_orig, :create)
+    def create(*args, &b)
+      args = [""] if args.empty?
+      create_orig(*args, &b)
+    end
+  end
+end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
