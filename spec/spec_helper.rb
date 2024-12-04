@@ -37,3 +37,13 @@ elsif (/(?:mingw32|mingw-ucrt)$/ =~ RUBY_PLATFORM) then
     def take; Timeout::timeout(30){super}; end
   }
 end
+
+class Tempfile
+  class << self
+    alias_method(:create_orig, :create)
+    def create(*args, &b)
+      args = [""] if args.empty?
+      create_orig(*args, &b)
+    end
+  end
+end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
