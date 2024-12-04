@@ -36,6 +36,7 @@ RSpec::shared_examples GPS_PVT::Signal do
       expect(sig_type::new({:format => fmt, :source => str})\
           .collect{|v| (v + 1).abs.to_i >> 1}).to eq(src_array_01)
       Tempfile::create{|fp|
+        fp.binmode
         fp.write(str)
         fp.rewind
         expect(sig_type::new({:format => fmt, :source => fp})\
