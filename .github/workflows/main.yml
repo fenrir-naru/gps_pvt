@@ -19,9 +19,27 @@ jobs:
     - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
+      id: ruby-inst
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+    - name: Fix Ruby library
+      if: matrix.os == 'windows-latest'
+      # https://github.com/IBM/aspera-cli
+      # copy the file [Ruby main dir]\lib\libx64-ucrt-ruby310.dll.a to [Ruby main dir]\lib\libx64-ucrt-ruby310.a (remove the dll extension)
+      shell: cmd
+      run: |
+        cd /d ${{ steps.ruby-inst.outputs.ruby-prefix }}\lib
+        start /b /wait ruby -e "exit(Gem::Version.new('${{ matrix.ruby }}') >= Gem::Version.new('3.1') ? 0 : 1)"
+        if %errorlevel% == 0 (
+          setlocal enableDelayedExpansion
+          for %%F in (libx64-ucrt-ruby*.dll.a) do (
+            set "filename=%%F"
+            copy "!filename!" "!filename:.dll.a=.a!"
+          )
+        )
+        dir
+        cd >nul
     - name: Apply patch for github actions
       shell: bash
       run: |
