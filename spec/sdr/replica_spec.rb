@@ -2,6 +2,8 @@ require 'rspec'
 
 require 'gps_pvt/Replica'
 
+begin; require 'inline'; rescue LoadError; end
+
 class NativeGenerator
   inline(:C){|builder|
     builder.include('<vector>')
@@ -47,7 +49,7 @@ static VALUE gps_ca_code(int prn, double dt, int len) {
 }
     __C_CODE__
   }
-end if require 'inline'
+end if defined?(Module::inline)
 
 RSpec::describe GPS_PVT::Replica::GPS_CA_Code do
   let(:gen_type){described_class}
@@ -67,7 +69,7 @@ RSpec::describe GPS_PVT::Replica::GPS_CA_Code do
       }.join(', ')}" if idx_diff
       expect(idx_diff).to be_nil, msg_fail
     }
-  end if defined?(:NativeGenerator)
+  end if defined?(NativeGenerator)
   it "has functionality to retreat replica" do
     prn_range.each{|prn|
       gen_f, gen_b = 2.times.collect{gen_type::new(prn)}
