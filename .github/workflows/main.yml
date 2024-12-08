@@ -29,13 +29,8 @@ jobs:
       run: |
         start /b /wait ruby -e "exit(Gem::Version.new('${{ matrix.ruby }}') >= Gem::Version.new('3.1') ? 0 : 1)"
         if %errorlevel% == 0 (
-          gem install specific_install hoe minitest
-          rem To use -i option, install specific_install again.
-          gem specific_install https://github.com/rdp/specific_install.git
-          gem specific_install -i vendor/bundle https://github.com/fenrir-naru/rubyinline.git fix_windoze
+          echo TODO: install fixed RubyInline
         )
-        cd vendor/bundle
-        dir
         cd >nul
     - name: Apply patch for github actions
       shell: bash
