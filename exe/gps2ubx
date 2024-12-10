@@ -25,6 +25,7 @@ options = []
 misc_options = {
   :broadcast_data => false,
   :ubx_rawx => false,
+  :ubx_nav => false,
   :eph_interval => 60 * 5,
 }
 
@@ -57,7 +58,7 @@ files.collect!{|fname, ftype|
 
 options.reject!{|opt|
   case opt[0]
-  when :ubx_rawx, :broadcast_data, :eph_interval
+  when :ubx_rawx, :ubx_nav, :broadcast_data, :eph_interval
     misc_options[opt[0]] = opt[1]
     true
   when :online_ephemeris
@@ -70,10 +71,13 @@ options.reject!{|opt|
 
 rcv = GPS_PVT::Receiver::new(options)
 
-obs = Queue::new
-rcv.define_singleton_method(:run){|meas, t_meas, *args|
-  obs << [t_meas, meas]
-  nil
+outputs = Queue::new # [[time, item1, item2, ...], ...]
+rcv.instance_eval{
+  nav_task = misc_options[:ubx_nav] ? method(:run) : proc{}
+  define_singleton_method(:run){|meas, t_meas, *args|
+    outputs << [t_meas, meas, nav_task.call(meas, t_meas, *args)].compact
+    nil
+  }
 }
 
 proc{|src|
@@ -113,9 +117,9 @@ threads = files.collect{|fname, ftype|
   end
 }.compact
 
-obs = proc{
+outputs = proc{
   tmp = []
-  tmp << obs.pop until obs.empty?
+  tmp << outputs.pop until outputs.empty?
   tmp
 }.call.sort!{|a, b| b[0] <=> a[0]} if threads.empty? # Sort by measurement time
 
@@ -374,17 +378,29 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
   GPS_PVT::UBX::update(ubx).pack("C*")
 }
 
-gen_list = []
-gen_list << gen_gpstime unless misc_options[:ubx_rawx]
-gen_list << (misc_options[:ubx_rawx] ? gen_sfrbx : gen_sfrb) if misc_options[:broadcast_data]
-gen_list << (misc_options[:ubx_rawx] ? gen_rawx : gen_raw)
+gen_list = Hash[*({
+  :Measurement => proc{
+    gen_ary = []
+    gen_ary << gen_gpstime unless misc_options[:ubx_rawx]
+    gen_ary << (misc_options[:ubx_rawx] ? gen_sfrbx : gen_sfrb) if misc_options[:broadcast_data]
+    gen_ary << (misc_options[:ubx_rawx] ? gen_rawx : gen_raw)
+    proc{|t_meas, meas|
+      meas = meas.to_hash
+      gen_ary.collect{|gen| gen.call(t_meas, meas)}.join
+    }
+  }.call,
+  :PVT => proc{|t_meas, pvt|
+    nil
+  },
+}.collect{|k, v| [GPS_PVT::GPS.const_get(k), v]}.flatten(1))]
 STDOUT.binmode
 
 task_dump = proc{
-  until obs.empty? do
-    t_meas, meas = obs.pop
-    meas2 = meas.to_hash
-    gen_list.each{|gen| print gen.call(t_meas, meas2)}
+  until outputs.empty? do
+    t_meas, *items = outputs.pop
+    items.each{|item|
+      print gen_list[item.class].call(t_meas, item)
+    }
   end
 }
 if threads.empty? then
