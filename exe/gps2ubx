@@ -128,7 +128,7 @@ gen_gpstime = proc{
   tmpl = [0xB5, 0x62, 0x01, 0x20, 16, 0]
   gpst = GPS_PVT::GPS::Time
   t_next = gpst::new(*gpst::leap_second_events.find{|wn, sec, leap| leap == 1}[0..1])
-  proc{|t_meas, meas|
+  proc{|t_meas|
     next nil if t_meas < t_next
     t_next = t_meas + 60 # 1 min. interval
     ubx = tmpl.clone
@@ -378,6 +378,80 @@ gen_rawx = proc{|t_meas, meas| # Convert to RXM-RAWX(0x15)
   GPS_PVT::UBX::update(ubx).pack("C*")
 }
 
+gen_nav = proc{|t_meas, pvt|
+  t_msec = (t_meas.seconds * 1E3).round
+  packet = []
+  
+  proc{ # Convert to NAV-SOL (0x01-0x06)
+    ubx_sol = [0xB5, 0x62, 0x01, 0x06, 52, 0]
+    ubx_sol += [
+        t_msec,
+        0, # frac
+        t_meas.week, # week
+        if (pvt.position_solved? and pvt.velocity_solved?) then
+          [
+            0x03, # 3D-Fix
+            0x0D, # GPSfixOK, WKNSET, TOWSET
+            pvt.xyz.to_a.collect{|v| (v * 1E2).to_i}, # ECEF_XYZ [cm]
+            (Math::sqrt((pvt.hsigma ** 2) + (pvt.vsigma ** 2)) * 1E2).to_i, # 3D pos accuracy [cm]
+            (pvt.velocity.absolute(pvt.xyz) - pvt.xyz).to_a.collect{|v| (v * 1E2).to_i}, # ECEF_VXYZ [cm/s]
+            (pvt.vel_sigma * 1E2).to_i, # Speed accuracy [cm/s]
+            (pvt.pdop * 1E2).to_i, # PDOP [0.01]
+          ]
+        else
+          [
+            0, # 3D-Fix
+            0x08, # TOWSET
+            [0] * 3, # ECEF_XYZ [cm]
+            0, # 3D pos accuracy [cm]
+            [0] * 3, # ECEF_VXYZ [cm/s]
+            0, # Speed accuracy [cm/s]
+            0, # PDOP
+          ]
+        end,
+        0,
+        pvt.used_satellites,
+        0].flatten.pack('V2vc2l<3Vl<3VvC2V').unpack('C*')
+    packet += GPS_PVT::UBX::update(ubx_sol + [0, 0])
+  }.call
+    
+  # Convert to NAV-POSLLH (0x01-0x02)
+  if pvt.position_solved? then
+    llh = pvt.llh
+    ubx_posllh = [0xB5, 0x62, 0x01, 0x02, 28, 0]
+    ubx_posllh += [
+        t_msec,
+        (llh.lng / Math::PI * 180 * 1E7).to_i, # Longitude [1E-7 deg]
+        (llh.lat / Math::PI * 180 * 1E7).to_i, # Latitude [1E-7 deg]
+        (llh.alt * 1E3).to_i, # WGS-84 altitude [mm]
+        0, # mean sea level TODO
+        (pvt.hsigma * 1E3).to_i, # HAcc [mm]
+        (pvt.vsigma * 1E3).to_i, # VAcc [mm]
+        ].pack('V*').unpack("C*")
+    packet += GPS_PVT::UBX::update(ubx_posllh + [0, 0])
+  end
+
+  # Convert to NAV-VELNED (0x01-0x12)
+  if pvt.velocity_solved? then
+    vel = pvt.velocity
+    ubx_velned = [0xB5, 0x62, 0x01, 0x12, 36, 0]
+    ubx_velned += [
+        t_msec,
+        (vel.n * 1E2).to_i, # N speed [cm/s]
+        (vel.e * 1E2).to_i, # E speed [cm/s]
+        (vel.d * 1E2).to_i, # D speed [cm/s]
+        (vel.distance * 1E2).to_i, # 3D speed [cm/s]
+        (vel.horizontal * 1E2).to_i, # 2D speed [cm/s]
+        (vel.azimuth / Math::PI * 180 * 1E5).to_i, # Heading [1E-5 deg]
+        (pvt.vel_sigma * 1E2).to_i, # sAcc speed accuracy [cm/s]
+        (2 * 1E5).to_i, # cAcc heading accuracy [1E-5 deg] TODO
+        ].pack('V*').unpack("C*")
+    packet += GPS_PVT::UBX::update(ubx_velned + [0, 0])
+  end
+  
+  (gen_gpstime.call(t_meas) || '') + packet.pack('C*')
+}
+
 gen_list = Hash[*({
   :Measurement => proc{
     gen_ary = []
@@ -389,9 +463,7 @@ gen_list = Hash[*({
       gen_ary.collect{|gen| gen.call(t_meas, meas)}.join
     }
   }.call,
-  :PVT => proc{|t_meas, pvt|
-    nil
-  },
+  :PVT => gen_nav,
 }.collect{|k, v| [GPS_PVT::GPS.const_get(k), v]}.flatten(1))]
 STDOUT.binmode
 
