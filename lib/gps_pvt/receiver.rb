@@ -50,7 +50,7 @@ class Receiver
     }.call] + [[
       [:v_north, :v_east, :v_down, :receiver_clock_error_dot_ms, :vel_sigma],
       proc{|pvt|
-        next [nil] * 4 unless pvt.velocity_solved?
+        next [nil] * 5 unless pvt.velocity_solved?
         [:north, :east, :down].collect{|k| pvt.velocity.send(k)} \
             + [pvt.receiver_error_rate, pvt.vel_sigma] 
       }
