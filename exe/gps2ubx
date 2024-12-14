@@ -3,6 +3,7 @@
 require 'gps_pvt'
 require 'uri'
 require 'gps_pvt/ubx'
+require 'gps_pvt/pvt'
 
 # Convert file(s) to ubx format
 # TODO currently only RINEX observation file is supported.
@@ -33,7 +34,7 @@ misc_options = {
 files = ARGV.collect{|arg|
   next [arg, nil] unless arg =~ /^--([^=]+)=?/
   k, v = [$1.downcase.to_sym, $']
-  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :rtcm3].include?(k) # file type
+  next [v, k] if [:rinex_nav, :rinex_obs, :ubx, :rtcm3, :pvt_csv].include?(k) # file type
   options << [$1.to_sym, $']
   nil
 }.compact
@@ -44,6 +45,7 @@ files.collect!{|fname, ftype|
   when /\.\d{2}[nhqg](?:\.gz)?$/; :rinex_nav
   when /\.\d{2}o(?:\.gz)?$/; :rinex_obs
   when /\.ubx$/; :ubx
+  when /\.csv$/; misc_options[:ubx_nav] = true; :pvt_csv
   end
   if (!(uri = URI::parse(fname)).instance_of?(URI::Generic) rescue false) then
     ftype ||= case uri
@@ -110,6 +112,9 @@ threads = files.collect{|fname, ftype|
   when :rtcm3; proc{rcv.parse_rtcm3(fname){}}
   when :supl; proc{rcv.parse_supl(fname)}
   when :rinex_nav; proc{}
+  when :pvt_csv; proc{GPS_PVT::GPS::PVT_minimal::parse_csv(fname){|t, pvt|
+    outputs << [t, pvt]
+  }}
   end
   case fname
   when URI::Ntrip, URI::Supl; Thread::new(&task)
@@ -424,7 +429,7 @@ gen_nav = proc{|t_meas, pvt|
         (llh.lng / Math::PI * 180 * 1E7).to_i, # Longitude [1E-7 deg]
         (llh.lat / Math::PI * 180 * 1E7).to_i, # Latitude [1E-7 deg]
         (llh.alt * 1E3).to_i, # WGS-84 altitude [mm]
-        0, # mean sea level TODO
+        (llh.alt * 1E3).to_i, # mean sea level TODO fix
         (pvt.hsigma * 1E3).to_i, # HAcc [mm]
         (pvt.vsigma * 1E3).to_i, # VAcc [mm]
         ].pack('V*').unpack("C*")
@@ -464,6 +469,7 @@ gen_list = Hash[*({
     }
   }.call,
   :PVT => gen_nav,
+  :PVT_minimal => gen_nav,
 }.collect{|k, v| [GPS_PVT::GPS.const_get(k), v]}.flatten(1))]
 STDOUT.binmode
 
