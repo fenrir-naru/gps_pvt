@@ -3,6 +3,15 @@ require 'gps_pvt/Coordinate'
 
 module GPS_PVT
 class GPS::PVT_minimal
+  def initialize
+    # GLOBAL POSITIONING SYSTEM STANDARD POSITIONING SERVICE
+    # PERFORMANCE STANDARD 5th edition (Apr. 2020) 3.8
+    @hsigma = 8.0 # 95%
+    @vsigma = 13.0 # 95%
+    @pdop = 6.0 # 98% global
+    @vel_sigma = 0.2 # 85%
+    @use_satellites = 0 # unknown
+  end
   def position_solved?; @xyz || @llh; end
   def velocity_solved?; @velocity; end
   def xyz; @xyz || @llh.xyz; end
