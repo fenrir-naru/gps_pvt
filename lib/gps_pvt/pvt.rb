@@ -10,7 +10,7 @@ class GPS::PVT_minimal
     @vsigma = 13.0 # 95%
     @pdop = 6.0 # 98% global
     @vel_sigma = 0.2 # 85%
-    @use_satellites = 0 # unknown
+    @used_satellites = 0 # unknown
   end
   def position_solved?; @xyz || @llh; end
   def velocity_solved?; @velocity; end
@@ -45,6 +45,9 @@ class GPS::PVT_minimal
         idx = header.find_index{|str| re === str}
         idx && [k, idx]
       }.compact
+      opt_keys = [:pdop, :hsigma, :vsigma, :vel_sigma, :used_satellites].select{|k|
+        idx_table.any?{|k2, idx| k == k2}
+      }
       enum = Enumerator::new{|y|
         io.each_line{|line|
           values = line.chomp.split(/ *, */)
@@ -52,7 +55,7 @@ class GPS::PVT_minimal
             v = values[idx]
             (v == '') ? nil : [k, (Integer(v) rescue Float(v))]
           }.compact.flatten(1))]
-          if items.include?(:week) then
+          if items[:week] then
             t = GPS::Time::new(items[:week], items[:tow])
           else
             # UTC assumption, thus leap seconds must be added.
@@ -60,19 +63,19 @@ class GPS::PVT_minimal
             t += GPS::Time::guess_leap_seconds(t)
           end
           pvt = GPS::PVT_minimal::new
-          if items.include?(:lat) then
+          if items[:lat] then
             pvt.llh = ([:lat, :lng].collect{|k| Math::PI / 180 * items[k]} + [items[:alt]])
-          elsif items.include?(:xyz) then
+          elsif items[:x] then
             pvt.xyz = [:x, :y, :z].collect{|k| items[k]}
           end
-          if items.include?(:vn) then
+          if items[:vn] then
             pvt.velocity = ([:vn, :ve].collect{|k| items[k]} + [items[:vu] || -items[:vd]])
-          elsif items.include?(:vx) then
+          elsif items[:vx] then
             pvt.velocity = Coordinate::ENU::relative_rel(
                 Coordinate::XYZ::new(*([:vx, :vy, :vz].collect{|k| items[k]})),
                 pvt.llh)
           end
-          [:pdop, :hsigma, :vsigma, :vel_sigma, :used_satellites].each{|k| pvt.send("#{k}=", items[k])}
+          opt_keys.each{|k| pvt.send("#{k}=", items[k]) if items[k]}
           y.yield(t, pvt)
         }
       }
