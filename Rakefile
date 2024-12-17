@@ -146,4 +146,5 @@ GitHubChangelogGenerator::RakeTask.new :changelog do |config|
   config.project = $2
 end if (begin; require 'github_changelog_generator/task'; rescue Exception; false; end)
 
+task :build => "ext/ninja-scan-light/tool"
 task :default => ["ext/ninja-scan-light/tool", :compile, :spec]
