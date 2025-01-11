@@ -121,6 +121,7 @@ task :swig do
         }
         io.rewind
         io.write(lines.join)
+        io.truncate(io.pos)
       }
     }
   }
