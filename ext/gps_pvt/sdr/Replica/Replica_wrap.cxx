@@ -1872,7 +1872,7 @@ static swig_module_info swig_module = {swig_types, 20, 0, 0, 0, 0};
 /* -------- TYPES TABLE (END) -------- */
 
 #define SWIG_init    Init_Replica
-#define SWIG_name    "GPS_PVT::Replica"
+#define SWIG_name    "GPS_PVT::SDR::Replica"
 
 static VALUE mReplica;
 
@@ -2703,7 +2703,7 @@ struct GPS_CA_Code : public TimeBasedSignalGenerator<int, tick_t> {
 static swig_class SwigClassGC_VALUE;
 
 /*
-  Document-method: GPS_PVT::Replica::GC_VALUE.inspect
+  Document-method: GPS_PVT::SDR::Replica::GC_VALUE.inspect
 
   call-seq:
     inspect -> VALUE
@@ -2730,7 +2730,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GC_VALUE.to_s
+  Document-method: GPS_PVT::SDR::Replica::GC_VALUE.to_s
 
   call-seq:
     to_s -> VALUE
@@ -2757,9 +2757,9 @@ fail:
 
 
 /*
-  Document-class: GPS_PVT::Replica::Carrier
+  Document-class: GPS_PVT::SDR::Replica::Carrier
 
-  Proxy of C++ GPS_PVT::Replica::Carrier class
+  Proxy of C++ GPS_PVT::SDR::Replica::Carrier class
 
 
 */
@@ -2781,7 +2781,7 @@ _wrap_Carrier_allocate(int argc, VALUE *argv, VALUE self)
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.new
+  Document-method: GPS_PVT::SDR::Replica::Carrier.new
 
   call-seq:
     Carrier.new(tick_t const & init_freq)
@@ -2815,7 +2815,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.current
+  Document-method: GPS_PVT::SDR::Replica::Carrier.current
 
   call-seq:
     current -> ComplexD
@@ -2850,7 +2850,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.generate
+  Document-method: GPS_PVT::SDR::Replica::Carrier.generate
 
   call-seq:
     generate(tick_t const & t, tick_t const & dt, tick_t const & freq) -> Complex
@@ -3027,7 +3027,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.phase_cycle
+  Document-method: GPS_PVT::SDR::Replica::Carrier.phase_cycle
 
   call-seq:
     phase_cycle -> tick_t
@@ -3036,7 +3036,7 @@ Get value of attribute.
 
 */
 /*
-  Document-method: GPS_PVT::Replica::Carrier.phase_cycle=
+  Document-method: GPS_PVT::SDR::Replica::Carrier.phase_cycle=
 
   call-seq:
     phase_cycle=(x) -> tick_t
@@ -3098,7 +3098,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.frequency
+  Document-method: GPS_PVT::SDR::Replica::Carrier.frequency
 
   call-seq:
     frequency -> tick_t
@@ -3107,7 +3107,7 @@ Get value of attribute.
 
 */
 /*
-  Document-method: GPS_PVT::Replica::Carrier.frequency=
+  Document-method: GPS_PVT::SDR::Replica::Carrier.frequency=
 
   call-seq:
     frequency=(x) -> tick_t
@@ -3169,7 +3169,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.advance
+  Document-method: GPS_PVT::SDR::Replica::Carrier.advance
 
   call-seq:
     advance(tick_t const & shift_cycle)
@@ -3209,7 +3209,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::Carrier.advance_time
+  Document-method: GPS_PVT::SDR::Replica::Carrier.advance_time
 
   call-seq:
     advance_time(tick_t const & shift_time)
@@ -3255,16 +3255,16 @@ free_Carrier(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Replica::GPS_CA_Code
+  Document-class: GPS_PVT::SDR::Replica::GPS_CA_Code
 
-  Proxy of C++ GPS_PVT::Replica::GPS_CA_Code class
+  Proxy of C++ GPS_PVT::SDR::Replica::GPS_CA_Code class
 
 
 */
 static swig_class SwigClassGPS_CA_Code;
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.new
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.new
 
   call-seq:
     GPS_CA_Code.new(int const & sid, tick_t const & offset_cycle=0)
@@ -3395,7 +3395,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.current
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.current
 
   call-seq:
     current -> int
@@ -3428,7 +3428,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.generate
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.generate
 
   call-seq:
     generate(tick_t const & t, tick_t const & dt) -> Int
@@ -3481,7 +3481,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.phase_cycle
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.phase_cycle
 
   call-seq:
     phase_cycle -> tick_t
@@ -3490,7 +3490,7 @@ Get value of attribute.
 
 */
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.phase_cycle=
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.phase_cycle=
 
   call-seq:
     phase_cycle=(x) -> tick_t
@@ -3552,7 +3552,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.frequency
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.frequency
 
   call-seq:
     frequency -> tick_t
@@ -3561,7 +3561,7 @@ Get value of attribute.
 
 */
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.frequency=
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.frequency=
 
   call-seq:
     frequency=(x) -> tick_t
@@ -3623,7 +3623,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.advance
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.advance
 
   call-seq:
     advance(tick_t const & shift_cycle)
@@ -3663,7 +3663,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Replica::GPS_CA_Code.advance_time
+  Document-method: GPS_PVT::SDR::Replica::GPS_CA_Code.advance_time
 
   call-seq:
     advance_time(tick_t const & shift_time)
@@ -4044,6 +4044,7 @@ SWIGEXPORT void Init_Replica(void) {
   
   SWIG_InitRuntime();
   mReplica = rb_define_module("GPS_PVT");
+  mReplica = rb_define_module_under(mReplica, "SDR");
   mReplica = rb_define_module_under(mReplica, "Replica");
   
   SWIG_InitializeModule(0);
@@ -4064,7 +4065,7 @@ SWIGEXPORT void Init_Replica(void) {
   swig::SwigGCReferences::initialize();
   
   rb_require("gps_pvt/SylphideMath");
-  rb_require("gps_pvt/Signal");
+  rb_require("gps_pvt/sdr/Signal");
   
 #ifdef HAVE_RB_EXT_RACTOR_SAFE
   rb_ext_ractor_safe(true);

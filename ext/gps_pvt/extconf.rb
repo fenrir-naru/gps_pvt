@@ -1,7 +1,10 @@
 require "mkmf"
+
+extconf_dir = File::dirname(__FILE__)
+
 {
-  'ninja_tool' => [File::dirname(__FILE__), '..', 'ninja-scan-light', 'tool'],
-  'sdr' => [File::dirname(__FILE__), '..', 'sdr'],
+  'ninja_tool' => [extconf_dir, '..', 'ninja-scan-light', 'tool'],
+  'sdr' => [extconf_dir, '..', 'sdr'],
 }.each{|target, path|
   path = File::join(path) if path.kind_of?(Array)
   path = File::absolute_path(path)
@@ -29,30 +32,34 @@ IO_TARGETS.mod{
   alias_method(:open_orig, :open)
 }
 
-Dir::glob(File::join(File::dirname(__FILE__), "*/")).each{|dir|
-  mod_name = File::basename(dir)
-  
-  dst = File::join(Dir.getwd, mod_name)
-  FileUtils::mkdir_p(dst) if dir != dst
-  
-  $stderr.puts "For #{mod_name} ..."
+require 'pathname'
+
+Pathname::glob(File::join(extconf_dir, "**/")){|dir|
+  mod_path = dir.relative_path_from(Pathname(extconf_dir))
+  mod_name =  mod_path.basename
 
   # @see https://stackoverflow.com/a/35842162/15992898
-  $srcs = Dir::glob(File::join(dir, '*.cxx')).collect{|path|
-    File::join(mod_name, File::basename(path))
+  $srcs = Pathname::glob(dir.join('*.cxx')).collect{|cxx_path|
+    mod_path.join(cxx_path.basename).to_s
   }
+  next if $srcs.empty?
   $objs = $srcs.collect{|path|
     path.sub(/\.[^\.]+$/, '.o')
   }
+  
+  $stderr.puts "For #{mod_path} ..."
+  
+  dst = Pathname::getwd.join(mod_path)
+  FileUtils::mkdir_p(dst) if dir != dst
 
   IO_TARGETS.mod{
     # rename Makefile to Makefile.#{mod_name}
     define_method(:open){|*args, &b|
-      args[0] += ".#{mod_name}" if (args[0] && (args[0] == "Makefile"))
+      args[0] += ".#{mod_path.to_s.gsub('/', '.')}" if (args[0] && (args[0] == "Makefile"))
       open_orig(*args, &b)
     }
   }
-  create_makefile("gps_pvt/#{mod_name}")
+  create_makefile(mod_path.to_s)
 }
 
 IO_TARGETS.mod{
@@ -65,6 +72,9 @@ open("Makefile", 'w'){|io|
   # @see https://stackoverflow.com/a/17845120/15992898
   io.write(<<-__TOPLEVEL_MAKEFILE__)
 TOPTARGETS := all clean distclean realclean install site-install
+
+MAKEOVERRIDES := $(filter-out target_prefix=%,$(MAKEOVERRIDES))
+unexport target_prefix
 
 SUBMFS := $(wildcard Makefile.*)
 

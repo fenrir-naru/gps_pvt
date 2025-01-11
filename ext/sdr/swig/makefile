@@ -48,7 +48,7 @@ $(BUILD_DIR)/%.so : $(BUILD_DIR)/%_wrap.cxx $(RUBY_CONF)
 	cp *.so ../
 
 $(BUILD_DIR) :
-	mkdir $@
+	mkdir -p $@
 
 clean :
 	rm -rf $(BUILD_DIR)/*
