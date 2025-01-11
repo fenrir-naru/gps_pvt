@@ -3,15 +3,15 @@
 require 'rspec'
 require 'tempfile'
 
-require 'gps_pvt/Signal.so'
+require 'gps_pvt/sdr/Signal.so'
 
-(GPS_PVT::Signal.constants - [:GC_VALUE]).each{|k|
-  GPS_PVT::Signal.const_get(k).instance_eval{
+(GPS_PVT::SDR::Signal.constants - [:GC_VALUE]).each{|k|
+  GPS_PVT::SDR::Signal.const_get(k).instance_eval{
     define_method(:==){|another| self.to_a == another.to_a}
   }
 }
 
-RSpec::shared_examples GPS_PVT::Signal do
+RSpec::shared_examples GPS_PVT::SDR::Signal do
   it "has constructor without any argument" do
     expect{ sig_type::new() }.not_to raise_error
     expect(sig_type::new().size).to eq(0)
@@ -229,10 +229,10 @@ RSpec::shared_examples GPS_PVT::Signal do
   end if defined?(Ractor)
 end
 
-RSpec::describe GPS_PVT::Signal::Int do
+RSpec::describe GPS_PVT::SDR::Signal::Int do
   let(:sig_type){described_class}
   let(:src_array){(1<<10).times.collect{rand(1<<10)}}
-  include_examples GPS_PVT::Signal
+  include_examples GPS_PVT::SDR::Signal
 end
 
 RSpec::shared_examples :cw do
@@ -254,14 +254,14 @@ RSpec::shared_examples :cw do
   end
 end
 
-RSpec::describe GPS_PVT::Signal::Real do
+RSpec::describe GPS_PVT::SDR::Signal::Real do
   let(:sig_type){described_class}
   let(:src_array){(1<<10).times.collect{rand}}
-  include_examples GPS_PVT::Signal
+  include_examples GPS_PVT::SDR::Signal
   include_examples :cw
   it "has type converter" do
     [:Int].each{|arg_type|
-      arg_type = GPS_PVT::Signal.const_get(arg_type)
+      arg_type = GPS_PVT::SDR::Signal.const_get(arg_type)
       expect{ sig_type::new(arg_type::new) }.not_to raise_error
       [:*, :+, :-].each{|func|
         expect(sig_type::new.send(func, arg_type::new).class).to be(sig_type)
@@ -271,15 +271,15 @@ RSpec::describe GPS_PVT::Signal::Real do
   it "has r2c (Hilbert transform), whose inverted operation is c2r in complex version." do
     sig = sig_type::cw(1E-3, 2E-7, freq) # sampling freq. = 5MHz
     sig_c = sig.r2c
-    expect(sig_c).to be_a_kind_of(GPS_PVT::Signal::Complex)
+    expect(sig_c).to be_a_kind_of(GPS_PVT::SDR::Signal::Complex)
     expect(sig_c.size).to eq(((sig.size + 1) / 2).floor)
     sig2 = sig_c.c2r
-    expect(sig2).to be_a_kind_of(GPS_PVT::Signal::Real)
+    expect(sig2).to be_a_kind_of(GPS_PVT::SDR::Signal::Real)
     expect(sig.zip(sig2.to_a).all?{|a, b| (a - b).abs < 1E-6}).to be(true)
   end
 end
 
-RSpec::describe GPS_PVT::Signal::Complex do
+RSpec::describe GPS_PVT::SDR::Signal::Complex do
   let(:sig_type){described_class}
   let(:src_array){
     klass = Class::new(Complex){
@@ -289,11 +289,11 @@ RSpec::describe GPS_PVT::Signal::Complex do
     }
     (1<<10).times.collect{klass::rect(rand, rand)}
   }
-  include_examples GPS_PVT::Signal
+  include_examples GPS_PVT::SDR::Signal
   include_examples :cw
   it "has type converter" do
     [:Int, :Real].each{|arg_type|
-      arg_type = GPS_PVT::Signal.const_get(arg_type)
+      arg_type = GPS_PVT::SDR::Signal.const_get(arg_type)
       expect{ sig_type::new(arg_type::new) }.not_to raise_error
       [:*, :+, :-].each{|func|
         expect(sig_type::new.send(func, arg_type::new).class).to be(sig_type)
@@ -320,14 +320,14 @@ RSpec::shared_examples :Signal_Partial do
   end
 end
 
-RSpec::describe GPS_PVT::Signal::Int_Partial do
+RSpec::describe GPS_PVT::SDR::Signal::Int_Partial do
   include_examples :Signal_Partial
 end
 
-RSpec::describe GPS_PVT::Signal::Real_Partial do
+RSpec::describe GPS_PVT::SDR::Signal::Real_Partial do
   include_examples :Signal_Partial
 end
 
-RSpec::describe GPS_PVT::Signal::Complex_Partial do
+RSpec::describe GPS_PVT::SDR::Signal::Complex_Partial do
   include_examples :Signal_Partial
 end

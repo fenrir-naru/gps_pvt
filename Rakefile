@@ -91,29 +91,36 @@ end
 
 desc "Generate SWIG wrapper codes"
 task :swig do
-  out_base_dir = File::join(File::dirname(__FILE__), 'ext', 'gps_pvt')
-  [
+  mods = Hash[*([ # {mod_name => [src.i, mod_path=[...]], ...}
     File::join(File::dirname(__FILE__), 'ext', 'ninja-scan-light', 'tool', 'swig'),
-    File::join(File::dirname(__FILE__), 'ext', 'sdr', 'swig'),
-  ].each{|swig_dir|
-    Dir::chdir(swig_dir){
-      Dir::glob("*.i"){|src|
-        mod_name = File::basename(src, '.*')
-        out_dir = File::join(out_base_dir, mod_name)
-        sh "mkdir -p #{out_dir}"
-        wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
-        sh [:make, :clean, wrapper,
-            "BUILD_DIR=#{out_dir}",
-            "SWIGFLAGS='-c++ -ruby -prefix \"GPS_PVT::\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
-        open(wrapper, 'r+'){|io|
-          lines = io.read.lines.collect{|line|
-            line.sub(/rb_require\(\"([^\"]+)\"\)/){ # from camel to underscore downcase style
-              "rb_require(\"#{$1.sub('GPS_PVT', 'gps_pvt')}\")"
-            }
+    [File::join(File::dirname(__FILE__), 'ext', 'sdr', 'swig'), 'SDR'],
+  ].collect{|swig_dir, extra_mod_path|
+    Dir::glob(File::join(swig_dir, "*.i")).collect{|src|
+      [
+        File::basename(src, '.*'),
+        [src, ['GPS_PVT', extra_mod_path].flatten.compact],
+      ]
+    }
+  }.flatten(2))]
+  out_base_dir = File::join(File::dirname(__FILE__), 'ext')
+  mods.each{|mod_name, (src, mod_path)|
+    Dir::chdir(File::dirname(src)){
+      out_dir = File::join(out_base_dir, mod_path.collect{|v| v.downcase}, mod_name)
+      mod_prefix = mod_path.collect{|v| "#{v}::"}.join
+      sh "mkdir -p #{out_dir}"
+      wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
+      sh [:make, :clean, wrapper,
+          "BUILD_DIR=#{out_dir}",
+          "SWIGFLAGS='-c++ -ruby -prefix \"#{mod_prefix}\"#{" -D__MINGW__" if ENV["MSYSTEM"]}'"].join(' ')
+      open(wrapper, 'r+'){|io|
+        lines = io.read.lines.collect{|line|
+          line.sub(/rb_require\(\"((?:[^\/"]+\/)*)([^"]+)\"\)/){ # from camel to underscore downcase style
+            src, path = mods[$2]
+            "rb_require(\"#{path ? File::join(path.collect{|v| v.downcase}, $2) : "#{$1}#{$2}"}\")"
           }
-          io.rewind
-          io.write(lines.join)
         }
+        io.rewind
+        io.write(lines.join)
       }
     }
   }

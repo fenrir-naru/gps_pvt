@@ -1,6 +1,6 @@
 require 'rspec'
 
-require 'gps_pvt/Replica'
+require 'gps_pvt/sdr/Replica'
 
 begin; require 'inline'; rescue LoadError; end
 
@@ -51,7 +51,7 @@ static VALUE gps_ca_code(int prn, double dt, int len) {
   }
 end if defined?(Module::inline)
 
-RSpec::describe GPS_PVT::Replica::GPS_CA_Code do
+RSpec::describe GPS_PVT::SDR::Replica::GPS_CA_Code do
   let(:gen_type){described_class}
   let(:prn_range){1..32}
   let(:duration){1E-2}
