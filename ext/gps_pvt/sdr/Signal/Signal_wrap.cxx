@@ -1881,7 +1881,7 @@ static swig_module_info swig_module = {swig_types, 26, 0, 0, 0, 0};
 /* -------- TYPES TABLE (END) -------- */
 
 #define SWIG_init    Init_Signal
-#define SWIG_name    "GPS_PVT::Signal"
+#define SWIG_name    "GPS_PVT::SDR::Signal"
 
 static VALUE mSignal;
 
@@ -3454,7 +3454,7 @@ SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_int_Sg__ifft(Signal_Par
 static swig_class SwigClassGC_VALUE;
 
 /*
-  Document-method: GPS_PVT::Signal::GC_VALUE.inspect
+  Document-method: GPS_PVT::SDR::Signal::GC_VALUE.inspect
 
   call-seq:
     inspect -> VALUE
@@ -3481,7 +3481,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::GC_VALUE.to_s
+  Document-method: GPS_PVT::SDR::Signal::GC_VALUE.to_s
 
   call-seq:
     to_s -> VALUE
@@ -3508,16 +3508,16 @@ fail:
 
 
 /*
-  Document-class: GPS_PVT::Signal::Real
+  Document-class: GPS_PVT::SDR::Signal::Real
 
-  Proxy of C++ GPS_PVT::Signal::Real class
+  Proxy of C++ GPS_PVT::SDR::Signal::Real class
 
 
 */
 static swig_class SwigClassReal;
 
 /*
-  Document-method: GPS_PVT::Signal::Real.cw
+  Document-method: GPS_PVT::SDR::Signal::Real.cw
 
   call-seq:
     cw(Signal< double >::real_t const & t, Signal< double >::real_t const & dt, Signal< double >::real_t const & freq) -> Real
@@ -3572,7 +3572,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.size
+  Document-method: GPS_PVT::SDR::Signal::Real.size
 
   call-seq:
     size -> Signal< double >::size_t
@@ -3604,7 +3604,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.-@
+  Document-method: GPS_PVT::SDR::Signal::Real.-@
 
   call-seq:
     -@ -> Real
@@ -3636,7 +3636,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.resize
+  Document-method: GPS_PVT::SDR::Signal::Real.resize
 
   call-seq:
     resize(new_size) -> Real
@@ -3678,7 +3678,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.rotate
+  Document-method: GPS_PVT::SDR::Signal::Real.rotate
 
   call-seq:
     rotate(int offset) -> Real
@@ -3719,7 +3719,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.circular
+  Document-method: GPS_PVT::SDR::Signal::Real.circular
 
   call-seq:
     circular(int offset, Signal< double >::size_t length) -> Real
@@ -3860,7 +3860,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.slice
+  Document-method: GPS_PVT::SDR::Signal::Real.slice
 
   call-seq:
     slice(start, length) -> Real
@@ -3910,7 +3910,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.real
+  Document-method: GPS_PVT::SDR::Signal::Real.real
 
   call-seq:
     real -> Real
@@ -3943,7 +3943,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.imaginary
+  Document-method: GPS_PVT::SDR::Signal::Real.imaginary
 
   call-seq:
     imaginary -> Real
@@ -3976,7 +3976,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.conjugate
+  Document-method: GPS_PVT::SDR::Signal::Real.conjugate
 
   call-seq:
     conjugate -> Real
@@ -4009,7 +4009,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.abs
+  Document-method: GPS_PVT::SDR::Signal::Real.abs
 
   call-seq:
     abs -> Real
@@ -4042,7 +4042,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.sum
+  Document-method: GPS_PVT::SDR::Signal::Real.sum
 
   call-seq:
     sum -> Signal< double >::value_t
@@ -4075,7 +4075,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.ft
+  Document-method: GPS_PVT::SDR::Signal::Real.ft
 
   call-seq:
     ft(Signal< double >::real_t const & k) -> ComplexD
@@ -4120,7 +4120,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.fft
+  Document-method: GPS_PVT::SDR::Signal::Real.fft
 
   call-seq:
     fft -> Complex
@@ -4153,7 +4153,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.ift
+  Document-method: GPS_PVT::SDR::Signal::Real.ift
 
   call-seq:
     ift(Signal< double >::real_t const & n) -> ComplexD
@@ -4198,7 +4198,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.ifft
+  Document-method: GPS_PVT::SDR::Signal::Real.ifft
 
   call-seq:
     ifft -> Complex
@@ -4231,7 +4231,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.new
+  Document-method: GPS_PVT::SDR::Signal::Real.new
 
   call-seq:
     Real.new
@@ -4315,7 +4315,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.replace!
+  Document-method: GPS_PVT::SDR::Signal::Real.replace!
 
   call-seq:
     replace!(special_input=nil)
@@ -4434,7 +4434,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.append!
+  Document-method: GPS_PVT::SDR::Signal::Real.append!
 
   call-seq:
     append!(void const * special_input=nil)
@@ -4554,7 +4554,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.shift!
+  Document-method: GPS_PVT::SDR::Signal::Real.shift!
 
   call-seq:
     shift!(n=1)
@@ -4666,7 +4666,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.pop!
+  Document-method: GPS_PVT::SDR::Signal::Real.pop!
 
   call-seq:
     pop!(n=1)
@@ -4778,7 +4778,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.copy
+  Document-method: GPS_PVT::SDR::Signal::Real.copy
 
   call-seq:
     copy -> Real
@@ -4811,7 +4811,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.[]
+  Document-method: GPS_PVT::SDR::Signal::Real.[]
 
   call-seq:
     [](i) -> double
@@ -4955,7 +4955,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.[]=
+  Document-method: GPS_PVT::SDR::Signal::Real.[]=
 
   call-seq:
     []=(i, v) -> double &
@@ -5007,7 +5007,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Real.max_abs_index
 
   call-seq:
     max_abs_index -> Signal< double >::size_t
@@ -5040,7 +5040,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Real.min_abs_index
 
   call-seq:
     min_abs_index -> Signal< double >::size_t
@@ -5073,7 +5073,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.partial
+  Document-method: GPS_PVT::SDR::Signal::Real.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Real_Partial
@@ -5129,7 +5129,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.each
+  Document-method: GPS_PVT::SDR::Signal::Real.each
 
   call-seq:
     each
@@ -5173,7 +5173,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Real.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -5208,7 +5208,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.*
+  Document-method: GPS_PVT::SDR::Signal::Real.*
 
   call-seq:
     *(double const & k) -> Real
@@ -5254,7 +5254,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.+
+  Document-method: GPS_PVT::SDR::Signal::Real.+
 
   call-seq:
     +(v) -> Real
@@ -5300,7 +5300,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.-
+  Document-method: GPS_PVT::SDR::Signal::Real.-
 
   call-seq:
     -(v) -> Real
@@ -5345,7 +5345,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.*
+  Document-method: GPS_PVT::SDR::Signal::Real.*
 
   call-seq:
     *(double const & k) -> Real
@@ -5392,7 +5392,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.+
+  Document-method: GPS_PVT::SDR::Signal::Real.+
 
   call-seq:
     +(v) -> Real
@@ -5439,7 +5439,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.-
+  Document-method: GPS_PVT::SDR::Signal::Real.-
 
   call-seq:
     -(v) -> Real
@@ -5485,7 +5485,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Real.dot_product
 
   call-seq:
     dot_product(Real sig) -> double
@@ -5545,7 +5545,7 @@ _wrap_Real_allocate(int argc, VALUE *argv, VALUE self)
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.new
+  Document-method: GPS_PVT::SDR::Signal::Real.new
 
   call-seq:
     Real.new
@@ -5635,7 +5635,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.*
+  Document-method: GPS_PVT::SDR::Signal::Real.*
 
   call-seq:
     *(double const & k) -> Real
@@ -5681,7 +5681,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.+
+  Document-method: GPS_PVT::SDR::Signal::Real.+
 
   call-seq:
     +(v) -> Real
@@ -5727,7 +5727,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.-
+  Document-method: GPS_PVT::SDR::Signal::Real.-
 
   call-seq:
     -(v) -> Real
@@ -5772,7 +5772,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.*
+  Document-method: GPS_PVT::SDR::Signal::Real.*
 
   call-seq:
     *(double const & k) -> Real
@@ -5900,7 +5900,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.+
+  Document-method: GPS_PVT::SDR::Signal::Real.+
 
   call-seq:
     +(v) -> Real
@@ -6028,7 +6028,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.-
+  Document-method: GPS_PVT::SDR::Signal::Real.-
 
   call-seq:
     -(v) -> Real
@@ -6155,7 +6155,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Real.dot_product
 
   call-seq:
     dot_product(Real sig) -> double
@@ -6249,7 +6249,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real.r2c
+  Document-method: GPS_PVT::SDR::Signal::Real.r2c
 
   call-seq:
     r2c -> Complex
@@ -6288,9 +6288,9 @@ free_Signal_Sl_double_Sg_(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Signal
+  Document-class: GPS_PVT::SDR::Signal
 
-  Proxy of C++ GPS_PVT::Signal class
+  Proxy of C++ GPS_PVT::SDR::Signal class
 
 
 
@@ -6298,7 +6298,7 @@ free_Signal_Sl_double_Sg_(void *self) {
 static swig_class SwigClassComplex;
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.cw
+  Document-method: GPS_PVT::SDR::Signal::Complex.cw
 
   call-seq:
     cw(Signal< Complex< double > >::real_t const & t, Signal< Complex< double > >::real_t const & dt, 
@@ -6354,7 +6354,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.size
+  Document-method: GPS_PVT::SDR::Signal::Complex.size
 
   call-seq:
     size -> Signal< Complex< double > >::size_t
@@ -6386,7 +6386,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-@
+  Document-method: GPS_PVT::SDR::Signal::Complex.-@
 
   call-seq:
     -@ -> Complex
@@ -6418,7 +6418,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.resize
+  Document-method: GPS_PVT::SDR::Signal::Complex.resize
 
   call-seq:
     resize(new_size) -> Complex
@@ -6460,7 +6460,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.rotate
+  Document-method: GPS_PVT::SDR::Signal::Complex.rotate
 
   call-seq:
     rotate(int offset) -> Complex
@@ -6501,7 +6501,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.circular
+  Document-method: GPS_PVT::SDR::Signal::Complex.circular
 
   call-seq:
     circular(int offset, Signal< Complex< double > >::size_t length) -> Complex
@@ -6642,7 +6642,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.slice
+  Document-method: GPS_PVT::SDR::Signal::Complex.slice
 
   call-seq:
     slice(start, length) -> Complex
@@ -6692,7 +6692,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.real
+  Document-method: GPS_PVT::SDR::Signal::Complex.real
 
   call-seq:
     real -> Real
@@ -6725,7 +6725,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.imaginary
+  Document-method: GPS_PVT::SDR::Signal::Complex.imaginary
 
   call-seq:
     imaginary -> Real
@@ -6758,7 +6758,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.conjugate
+  Document-method: GPS_PVT::SDR::Signal::Complex.conjugate
 
   call-seq:
     conjugate -> Complex
@@ -6791,7 +6791,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.abs
+  Document-method: GPS_PVT::SDR::Signal::Complex.abs
 
   call-seq:
     abs -> Real
@@ -6824,7 +6824,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.sum
+  Document-method: GPS_PVT::SDR::Signal::Complex.sum
 
   call-seq:
     sum -> ComplexD
@@ -6859,7 +6859,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.ft
+  Document-method: GPS_PVT::SDR::Signal::Complex.ft
 
   call-seq:
     ft(Signal< Complex< double > >::real_t const & k) -> ComplexD
@@ -6904,7 +6904,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.fft
+  Document-method: GPS_PVT::SDR::Signal::Complex.fft
 
   call-seq:
     fft -> Complex
@@ -6937,7 +6937,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.ift
+  Document-method: GPS_PVT::SDR::Signal::Complex.ift
 
   call-seq:
     ift(Signal< Complex< double > >::real_t const & n) -> ComplexD
@@ -6982,7 +6982,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.ifft
+  Document-method: GPS_PVT::SDR::Signal::Complex.ifft
 
   call-seq:
     ifft -> Complex
@@ -7015,7 +7015,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.new
+  Document-method: GPS_PVT::SDR::Signal::Complex.new
 
   call-seq:
     Complex.new
@@ -7100,7 +7100,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.replace!
+  Document-method: GPS_PVT::SDR::Signal::Complex.replace!
 
   call-seq:
     replace!(special_input=nil)
@@ -7219,7 +7219,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.append!
+  Document-method: GPS_PVT::SDR::Signal::Complex.append!
 
   call-seq:
     append!(void const * special_input=nil)
@@ -7339,7 +7339,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.shift!
+  Document-method: GPS_PVT::SDR::Signal::Complex.shift!
 
   call-seq:
     shift!(n=1)
@@ -7451,7 +7451,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.pop!
+  Document-method: GPS_PVT::SDR::Signal::Complex.pop!
 
   call-seq:
     pop!(n=1)
@@ -7563,7 +7563,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.copy
+  Document-method: GPS_PVT::SDR::Signal::Complex.copy
 
   call-seq:
     copy -> Complex
@@ -7596,7 +7596,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.[]
+  Document-method: GPS_PVT::SDR::Signal::Complex.[]
 
   call-seq:
     [](i) -> ComplexD
@@ -7742,7 +7742,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.[]=
+  Document-method: GPS_PVT::SDR::Signal::Complex.[]=
 
   call-seq:
     []=(i, v) -> ComplexD
@@ -7792,7 +7792,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Complex.max_abs_index
 
   call-seq:
     max_abs_index -> Signal< Complex< double > >::size_t
@@ -7825,7 +7825,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Complex.min_abs_index
 
   call-seq:
     min_abs_index -> Signal< Complex< double > >::size_t
@@ -7858,7 +7858,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.partial
+  Document-method: GPS_PVT::SDR::Signal::Complex.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Complex_Partial
@@ -7914,7 +7914,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.each
+  Document-method: GPS_PVT::SDR::Signal::Complex.each
 
   call-seq:
     each
@@ -7958,7 +7958,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Complex.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -7993,7 +7993,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -8039,7 +8039,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -8085,7 +8085,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -8130,7 +8130,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -8179,7 +8179,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -8228,7 +8228,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -8276,7 +8276,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex.dot_product
 
   call-seq:
     dot_product(Complex sig) -> ComplexD
@@ -8324,7 +8324,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.new
+  Document-method: GPS_PVT::SDR::Signal::Complex.new
 
   call-seq:
     Complex.new
@@ -8466,7 +8466,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -8514,7 +8514,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -8562,7 +8562,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -8609,7 +8609,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -8658,7 +8658,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -8707,7 +8707,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -8755,7 +8755,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex.dot_product
 
   call-seq:
     dot_product(Complex sig) -> ComplexD
@@ -8803,7 +8803,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -8851,7 +8851,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -8899,7 +8899,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -8946,7 +8946,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.*
+  Document-method: GPS_PVT::SDR::Signal::Complex.*
 
   call-seq:
     *(ComplexD k) -> Complex
@@ -9106,7 +9106,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.+
+  Document-method: GPS_PVT::SDR::Signal::Complex.+
 
   call-seq:
     +(v) -> Complex
@@ -9266,7 +9266,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.-
+  Document-method: GPS_PVT::SDR::Signal::Complex.-
 
   call-seq:
     -(v) -> Complex
@@ -9425,7 +9425,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex.dot_product
 
   call-seq:
     dot_product(Complex sig) -> ComplexD
@@ -9537,7 +9537,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex.c2r
+  Document-method: GPS_PVT::SDR::Signal::Complex.c2r
 
   call-seq:
     c2r -> Real
@@ -9576,16 +9576,16 @@ free_Signal_Sl_Complex_Sl_double_Sg__Sg_(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Signal::Int
+  Document-class: GPS_PVT::SDR::Signal::Int
 
-  Proxy of C++ GPS_PVT::Signal::Int class
+  Proxy of C++ GPS_PVT::SDR::Signal::Int class
 
 
 */
 static swig_class SwigClassInt;
 
 /*
-  Document-method: GPS_PVT::Signal::Int.size
+  Document-method: GPS_PVT::SDR::Signal::Int.size
 
   call-seq:
     size -> Signal< int >::size_t
@@ -9617,7 +9617,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.-@
+  Document-method: GPS_PVT::SDR::Signal::Int.-@
 
   call-seq:
     -@ -> Int
@@ -9649,7 +9649,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.resize
+  Document-method: GPS_PVT::SDR::Signal::Int.resize
 
   call-seq:
     resize(new_size) -> Int
@@ -9691,7 +9691,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.rotate
+  Document-method: GPS_PVT::SDR::Signal::Int.rotate
 
   call-seq:
     rotate(int offset) -> Int
@@ -9732,7 +9732,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.circular
+  Document-method: GPS_PVT::SDR::Signal::Int.circular
 
   call-seq:
     circular(int offset, Signal< int >::size_t length) -> Int
@@ -9873,7 +9873,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.slice
+  Document-method: GPS_PVT::SDR::Signal::Int.slice
 
   call-seq:
     slice(start, length) -> Int
@@ -9923,7 +9923,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.abs
+  Document-method: GPS_PVT::SDR::Signal::Int.abs
 
   call-seq:
     abs -> Int
@@ -9956,7 +9956,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.sum
+  Document-method: GPS_PVT::SDR::Signal::Int.sum
 
   call-seq:
     sum -> Signal< int >::value_t
@@ -9989,7 +9989,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.new
+  Document-method: GPS_PVT::SDR::Signal::Int.new
 
   call-seq:
     Int.new
@@ -10129,7 +10129,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.replace!
+  Document-method: GPS_PVT::SDR::Signal::Int.replace!
 
   call-seq:
     replace!(special_input=nil)
@@ -10248,7 +10248,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.append!
+  Document-method: GPS_PVT::SDR::Signal::Int.append!
 
   call-seq:
     append!(void const * special_input=nil)
@@ -10368,7 +10368,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.shift!
+  Document-method: GPS_PVT::SDR::Signal::Int.shift!
 
   call-seq:
     shift!(n=1)
@@ -10480,7 +10480,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.pop!
+  Document-method: GPS_PVT::SDR::Signal::Int.pop!
 
   call-seq:
     pop!(n=1)
@@ -10592,7 +10592,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.copy
+  Document-method: GPS_PVT::SDR::Signal::Int.copy
 
   call-seq:
     copy -> Int
@@ -10625,7 +10625,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.[]
+  Document-method: GPS_PVT::SDR::Signal::Int.[]
 
   call-seq:
     [](i) -> int
@@ -10769,7 +10769,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.[]=
+  Document-method: GPS_PVT::SDR::Signal::Int.[]=
 
   call-seq:
     []=(i, v) -> int &
@@ -10821,7 +10821,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Int.max_abs_index
 
   call-seq:
     max_abs_index -> Signal< int >::size_t
@@ -10854,7 +10854,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Int.min_abs_index
 
   call-seq:
     min_abs_index -> Signal< int >::size_t
@@ -10887,7 +10887,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.partial
+  Document-method: GPS_PVT::SDR::Signal::Int.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Int_Partial
@@ -10943,7 +10943,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.each
+  Document-method: GPS_PVT::SDR::Signal::Int.each
 
   call-seq:
     each
@@ -10987,7 +10987,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Int.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -11022,7 +11022,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.*
+  Document-method: GPS_PVT::SDR::Signal::Int.*
 
   call-seq:
     *(int const & k) -> Int
@@ -11066,7 +11066,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.+
+  Document-method: GPS_PVT::SDR::Signal::Int.+
 
   call-seq:
     +(v) -> Int
@@ -11109,7 +11109,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.-
+  Document-method: GPS_PVT::SDR::Signal::Int.-
 
   call-seq:
     -(v) -> Int
@@ -11152,7 +11152,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.*
+  Document-method: GPS_PVT::SDR::Signal::Int.*
 
   call-seq:
     *(int const & k) -> Int
@@ -11247,7 +11247,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.+
+  Document-method: GPS_PVT::SDR::Signal::Int.+
 
   call-seq:
     +(v) -> Int
@@ -11341,7 +11341,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.-
+  Document-method: GPS_PVT::SDR::Signal::Int.-
 
   call-seq:
     -(v) -> Int
@@ -11435,7 +11435,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Int.dot_product
 
   call-seq:
     dot_product(Int sig) -> int
@@ -11479,7 +11479,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.ft
+  Document-method: GPS_PVT::SDR::Signal::Int.ft
 
   call-seq:
     ft(double const & k) -> ComplexD
@@ -11524,7 +11524,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.fft
+  Document-method: GPS_PVT::SDR::Signal::Int.fft
 
   call-seq:
     fft -> Complex
@@ -11557,7 +11557,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.ift
+  Document-method: GPS_PVT::SDR::Signal::Int.ift
 
   call-seq:
     ift(double const & n) -> ComplexD
@@ -11602,7 +11602,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.ifft
+  Document-method: GPS_PVT::SDR::Signal::Int.ifft
 
   call-seq:
     ifft -> Complex
@@ -11635,7 +11635,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int.r2c
+  Document-method: GPS_PVT::SDR::Signal::Int.r2c
 
   call-seq:
     r2c -> Complex
@@ -11674,16 +11674,16 @@ free_Signal_Sl_int_Sg_(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Signal::Real_Partial
+  Document-class: GPS_PVT::SDR::Signal::Real_Partial
 
-  Proxy of C++ GPS_PVT::Signal::Real_Partial class
+  Proxy of C++ GPS_PVT::SDR::Signal::Real_Partial class
 
 
 */
 static swig_class SwigClassReal_Partial;
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.size
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.size
 
   call-seq:
     size -> std::size_t
@@ -11715,7 +11715,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.-@
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.-@
 
   call-seq:
     -@ -> Real
@@ -11747,7 +11747,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.slice
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.slice
 
   call-seq:
     slice(start, length) -> Real
@@ -11799,7 +11799,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.real
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.real
 
   call-seq:
     real -> Real
@@ -11832,7 +11832,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.imaginary
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.imaginary
 
   call-seq:
     imaginary -> Real
@@ -11865,7 +11865,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.conjugate
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.conjugate
 
   call-seq:
     conjugate -> Real
@@ -11898,7 +11898,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.abs
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.abs
 
   call-seq:
     abs -> Real
@@ -11931,7 +11931,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.sum
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.sum
 
   call-seq:
     sum -> double
@@ -11964,7 +11964,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.ft
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.ft
 
   call-seq:
     ft(Signal< double,std::vector< double > >::real_t const & k) -> ComplexD
@@ -12009,7 +12009,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.ift
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.ift
 
   call-seq:
     ift(Signal< double,std::vector< double > >::real_t const & n) -> ComplexD
@@ -12054,7 +12054,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.fft
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.fft
 
   call-seq:
     fft -> Complex
@@ -12087,7 +12087,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.ifft
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.ifft
 
   call-seq:
     ifft -> Complex
@@ -12120,7 +12120,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.copy
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.copy
 
   call-seq:
     copy -> Real
@@ -12153,7 +12153,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.[]
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.[]
 
   call-seq:
     [](i) -> double
@@ -12297,7 +12297,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.max_abs_index
 
   call-seq:
     max_abs_index -> size_t
@@ -12330,7 +12330,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.min_abs_index
 
   call-seq:
     min_abs_index -> size_t
@@ -12363,7 +12363,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.partial
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Real_Partial
@@ -12419,7 +12419,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.each
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.each
 
   call-seq:
     each
@@ -12463,7 +12463,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -12498,7 +12498,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.*
 
   call-seq:
     *(Real arg) -> Real
@@ -12543,7 +12543,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.+
 
   call-seq:
     +(Real arg) -> Real
@@ -12588,7 +12588,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.-
 
   call-seq:
     -(arg) -> Real
@@ -12632,7 +12632,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.dot_product
 
   call-seq:
     dot_product(Real arg) -> double
@@ -12677,7 +12677,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.*
 
   call-seq:
     *(Real arg) -> Real
@@ -12771,7 +12771,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.+
 
   call-seq:
     +(Real arg) -> Real
@@ -12865,7 +12865,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.-
 
   call-seq:
     -(arg) -> Real
@@ -12958,7 +12958,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Real_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.dot_product
 
   call-seq:
     dot_product(Real arg) -> double
@@ -13058,16 +13058,16 @@ free_Signal_Partial_Sl_double_Sg_(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Signal::Complex_Partial
+  Document-class: GPS_PVT::SDR::Signal::Complex_Partial
 
-  Proxy of C++ GPS_PVT::Signal::Complex_Partial class
+  Proxy of C++ GPS_PVT::SDR::Signal::Complex_Partial class
 
 
 */
 static swig_class SwigClassComplex_Partial;
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.size
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.size
 
   call-seq:
     size -> std::size_t
@@ -13099,7 +13099,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.-@
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.-@
 
   call-seq:
     -@ -> Complex
@@ -13131,7 +13131,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.slice
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.slice
 
   call-seq:
     slice(start, length) -> Complex
@@ -13183,7 +13183,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.real
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.real
 
   call-seq:
     real -> Real
@@ -13216,7 +13216,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.imaginary
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.imaginary
 
   call-seq:
     imaginary -> Real
@@ -13249,7 +13249,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.conjugate
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.conjugate
 
   call-seq:
     conjugate -> Complex
@@ -13282,7 +13282,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.abs
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.abs
 
   call-seq:
     abs -> Real
@@ -13315,7 +13315,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.sum
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.sum
 
   call-seq:
     sum -> ComplexD
@@ -13350,7 +13350,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.ft
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.ft
 
   call-seq:
     ft(Signal< Complex< double >,std::vector< Complex< double > > >::real_t const & k) -> ComplexD
@@ -13395,7 +13395,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.ift
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.ift
 
   call-seq:
     ift(Signal< Complex< double >,std::vector< Complex< double > > >::real_t const & n) -> ComplexD
@@ -13440,7 +13440,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.fft
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.fft
 
   call-seq:
     fft -> Complex
@@ -13473,7 +13473,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.ifft
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.ifft
 
   call-seq:
     ifft -> Complex
@@ -13506,7 +13506,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.copy
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.copy
 
   call-seq:
     copy -> Complex
@@ -13539,7 +13539,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.[]
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.[]
 
   call-seq:
     [](i) -> ComplexD
@@ -13685,7 +13685,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.max_abs_index
 
   call-seq:
     max_abs_index -> size_t
@@ -13718,7 +13718,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.min_abs_index
 
   call-seq:
     min_abs_index -> size_t
@@ -13751,7 +13751,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.partial
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Complex_Partial
@@ -13807,7 +13807,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.each
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.each
 
   call-seq:
     each
@@ -13851,7 +13851,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -13886,7 +13886,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.*
 
   call-seq:
     *(Complex arg) -> Complex
@@ -13932,7 +13932,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.+
 
   call-seq:
     +(Complex arg) -> Complex
@@ -13978,7 +13978,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.-
 
   call-seq:
     -(arg) -> Complex
@@ -14023,7 +14023,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.dot_product
 
   call-seq:
     dot_product(Complex arg) -> ComplexD
@@ -14071,7 +14071,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.*
 
   call-seq:
     *(Complex arg) -> Complex
@@ -14117,7 +14117,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.+
 
   call-seq:
     +(Complex arg) -> Complex
@@ -14163,7 +14163,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.-
 
   call-seq:
     -(arg) -> Complex
@@ -14208,7 +14208,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.dot_product
 
   call-seq:
     dot_product(Complex arg) -> ComplexD
@@ -14256,7 +14256,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.*
 
   call-seq:
     *(Complex arg) -> Complex
@@ -14366,7 +14366,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.+
 
   call-seq:
     +(Complex arg) -> Complex
@@ -14476,7 +14476,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.-
 
   call-seq:
     -(arg) -> Complex
@@ -14585,7 +14585,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Complex_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.dot_product
 
   call-seq:
     dot_product(Complex arg) -> ComplexD
@@ -14703,16 +14703,16 @@ free_Signal_Partial_Sl_Complex_Sl_double_Sg__Sg_(void *self) {
 }
 
 /*
-  Document-class: GPS_PVT::Signal::Int_Partial
+  Document-class: GPS_PVT::SDR::Signal::Int_Partial
 
-  Proxy of C++ GPS_PVT::Signal::Int_Partial class
+  Proxy of C++ GPS_PVT::SDR::Signal::Int_Partial class
 
 
 */
 static swig_class SwigClassInt_Partial;
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.size
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.size
 
   call-seq:
     size -> std::size_t
@@ -14744,7 +14744,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.-@
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.-@
 
   call-seq:
     -@ -> Int
@@ -14776,7 +14776,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.slice
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.slice
 
   call-seq:
     slice(start, length) -> Int
@@ -14828,7 +14828,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.abs
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.abs
 
   call-seq:
     abs -> Int
@@ -14861,7 +14861,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.sum
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.sum
 
   call-seq:
     sum -> int
@@ -14894,7 +14894,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.copy
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.copy
 
   call-seq:
     copy -> Int
@@ -14927,7 +14927,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.[]
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.[]
 
   call-seq:
     [](i) -> int
@@ -15071,7 +15071,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.max_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.max_abs_index
 
   call-seq:
     max_abs_index -> size_t
@@ -15104,7 +15104,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.min_abs_index
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.min_abs_index
 
   call-seq:
     min_abs_index -> size_t
@@ -15137,7 +15137,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.partial
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.partial
 
   call-seq:
     partial(int const & start, unsigned int const & length) -> Int_Partial
@@ -15193,7 +15193,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.each
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.each
 
   call-seq:
     each
@@ -15237,7 +15237,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.to_shareable
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.to_shareable
 
   call-seq:
     to_shareable -> VALUE
@@ -15272,7 +15272,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.*
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.*
 
   call-seq:
     *(Int arg) -> Int
@@ -15316,7 +15316,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.+
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.+
 
   call-seq:
     +(Int arg) -> Int
@@ -15360,7 +15360,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.-
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.-
 
   call-seq:
     -(arg) -> Int
@@ -15403,7 +15403,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.dot_product
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.dot_product
 
   call-seq:
     dot_product(Int arg) -> int
@@ -15447,7 +15447,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.ft
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.ft
 
   call-seq:
     ft(double const & k) -> ComplexD
@@ -15492,7 +15492,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.fft
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.fft
 
   call-seq:
     fft -> Complex
@@ -15525,7 +15525,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.ift
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.ift
 
   call-seq:
     ift(double const & n) -> ComplexD
@@ -15570,7 +15570,7 @@ fail:
 
 
 /*
-  Document-method: GPS_PVT::Signal::Int_Partial.ifft
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.ifft
 
   call-seq:
     ifft -> Complex
@@ -15971,6 +15971,7 @@ SWIGEXPORT void Init_Signal(void) {
   
   SWIG_InitRuntime();
   mSignal = rb_define_module("GPS_PVT");
+  mSignal = rb_define_module_under(mSignal, "SDR");
   mSignal = rb_define_module_under(mSignal, "Signal");
   
   SWIG_InitializeModule(0);
@@ -16209,4 +16210,5 @@ SWIGEXPORT void Init_Signal(void) {
   SwigClassInt_Partial.destroy = (void (*)(void *)) free_Signal_Partial_Sl_int_Sg_;
   SwigClassInt_Partial.trackObjects = 0;
 }
+
 
