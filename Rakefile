@@ -122,6 +122,7 @@ task :swig do
         }
         io.rewind
         io.write(lines.join)
+        io.truncate(io.pos)
       }
       FileUtils.instance_eval{
         wrapper_orig = File::join(out_dir_orig, "#{mod_name}_wrap.cxx")
