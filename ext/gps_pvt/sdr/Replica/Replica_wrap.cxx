@@ -2677,8 +2677,8 @@ SWIG_From_int  (int value)
 }
 
 
-struct GPS_CA_Code : public TimeBasedSignalGenerator<int, tick_t> {
-  typedef TimeBasedSignalGenerator<int, tick_t> super_t;
+struct GPS_CA_Code : public TimeBasedSignalGenerator<GPS_CA_Code, int, tick_t> {
+  typedef TimeBasedSignalGenerator<GPS_CA_Code, int, tick_t> super_t;
   typedef typename GPS_Signal<tick_t>::CA_Code code_t;
   code_t code;
   int phase_cycle_int;
