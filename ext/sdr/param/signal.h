@@ -25,31 +25,31 @@
 template <class T, class BufferT = std::vector<T> >
 class Signal;
 
-template <class T_Signal, class T_Tick = double>
+template <class T_Generator, class T_Signal, class T_Tick = double>
 struct SignalGenerator {
   typedef T_Tick tick_t;
   tick_t phase_cycle;
   SignalGenerator(const tick_t &offset_cycle = 0)
       : phase_cycle(offset_cycle){}
-  virtual ~SignalGenerator(){}
-  virtual T_Signal current() const = 0;
-  virtual void advance(const tick_t &shift_cycle){
+  ~SignalGenerator(){}
+  T_Signal current() const;
+  void advance(const tick_t &shift_cycle){
     phase_cycle += shift_cycle;
   }
   Signal<T_Signal> generate(
       const tick_t &t, const tick_t &dt, const tick_t &freq);
 };
 
-template <class T_Signal, class T_Tick = double>
-struct TimeBasedSignalGenerator : public SignalGenerator<T_Signal, T_Tick> {
-  typedef SignalGenerator<T_Signal, T_Tick> super_t;
+template <class T_Generator, class T_Signal, class T_Tick = double>
+struct TimeBasedSignalGenerator : public SignalGenerator<T_Generator, T_Signal, T_Tick> {
+  typedef SignalGenerator<T_Generator, T_Signal, T_Tick> super_t;
   typename super_t::tick_t frequency;
   TimeBasedSignalGenerator(
       const typename super_t::tick_t &init_freq,
       const typename super_t::tick_t &offset_time = 0)
       : super_t(offset_time * init_freq), frequency(init_freq) {}
   void advance_time(const typename super_t::tick_t &shift_time){
-    this->advance(frequency * shift_time);
+    static_cast<T_Generator *>(this)->advance(frequency * shift_time);
   }
   using super_t::generate;
   Signal<T_Signal> generate(
@@ -57,8 +57,9 @@ struct TimeBasedSignalGenerator : public SignalGenerator<T_Signal, T_Tick> {
 };
 
 template <class T_Signal>
-struct CosineWave : public TimeBasedSignalGenerator<T_Signal> {
-  typedef TimeBasedSignalGenerator<T_Signal> super_t;
+struct CosineWave
+    : public TimeBasedSignalGenerator<CosineWave<T_Signal>, T_Signal> {
+  typedef TimeBasedSignalGenerator<CosineWave<T_Signal>, T_Signal> super_t;
   CosineWave(const typename super_t::tick_t &init_freq)
       : super_t(init_freq) {}
   T_Signal current() const {
@@ -67,8 +68,8 @@ struct CosineWave : public TimeBasedSignalGenerator<T_Signal> {
 };
 template <class T_Signal>
 struct CosineWave<Complex<T_Signal> >
-    : public TimeBasedSignalGenerator<Complex<T_Signal> > {
-  typedef TimeBasedSignalGenerator<Complex<T_Signal> > super_t;
+    : public TimeBasedSignalGenerator<CosineWave<Complex<T_Signal> >, Complex<T_Signal> > {
+  typedef TimeBasedSignalGenerator<CosineWave<Complex<T_Signal> >, Complex<T_Signal> > super_t;
   CosineWave(const typename super_t::tick_t &init_freq)
       : super_t(init_freq) {}
   Complex<T_Signal> current() const {
@@ -133,32 +134,28 @@ protected:
   }
 public:
   template <class T2, class BufferT2>
-  Signal(const Signal<T2, BufferT2> &sig) : samples() {
-    samples.reserve(sig.samples.size());
-    std::copy(sig.samples.begin(), sig.samples.end(), std::back_inserter(samples));
-  }
-  template <class T_Signal, class T_Tick>
+  Signal(const Signal<T2, BufferT2> &sig)
+      : samples(sig.samples.begin(), sig.samples.end()) {}
+  template <class T_Generator, class T_Signal, class T_Tick>
   Signal(
-      SignalGenerator<T_Signal, T_Tick> &gen,
+      SignalGenerator<T_Generator, T_Signal, T_Tick> &gen,
       const T_Tick &t, const T_Tick &dt, const T_Tick &freq)
-      : samples() {
-    int len(std::round(t / dt));
-    samples.reserve(len);
-    for(; len > 0; --len){
-      samples.push_back(gen.current());
-      gen.advance(freq * dt);
+      : samples(std::round(t / dt)) {
+    for(typename buf_t::iterator it(samples.begin()), it_end(samples.end());
+        it != it_end; ++it){
+      *it = static_cast<T_Generator &>(gen).current();
+      static_cast<T_Generator &>(gen).advance(freq * dt);
     }
   }
-  template <class T_Signal, class T_Tick>
+  template <class T_Generator, class T_Signal, class T_Tick>
   Signal(
-      TimeBasedSignalGenerator<T_Signal, T_Tick> &gen,
+      TimeBasedSignalGenerator<T_Generator, T_Signal, T_Tick> &gen,
       const T_Tick &t, const T_Tick &dt)
-      : samples() {
-    int len(std::round(t / dt));
-    samples.reserve(len);
-    for(; len > 0; --len){
-      samples.push_back(gen.current());
-      gen.advance_time(dt);
+      : samples(std::round(t / dt)) {
+    for(typename buf_t::iterator it(samples.begin()), it_end(samples.end());
+        it != it_end; ++it){
+      *it = static_cast<T_Generator &>(gen).current();
+      static_cast<T_Generator &>(gen).advance_time(dt);
     }
   }
 
@@ -257,29 +254,30 @@ public:
   self_t &rotate(int offset){
     offset = std::div(offset, samples.size()).rem;
     if(offset < 0){offset += samples.size();}
-    buf_t buf;
-    buf.reserve(samples.size());
-    std::copy(samples.begin() + offset, samples.end(), std::back_inserter(buf));
-    std::copy(samples.begin(), samples.begin() + offset, std::back_inserter(buf));
+    buf_t buf(samples.size());
+    std::copy(samples.begin() + offset, samples.end(), buf.begin());
+    std::copy(samples.begin(), samples.begin() + offset, buf.end() - offset);
     samples.swap(buf);
     return *this;
   }
   sig_t circular(int offset, size_t length) const {
     offset = std::div(offset, samples.size()).rem;
     if(offset < 0){offset += samples.size();}
-    sig_t res(length);
+    typename sig_t::buf_t buf(length);
+    typename sig_t::buf_t::iterator it(buf.begin());
     typename buf_t::const_iterator it_first(samples.begin() + offset);
     size_t length_latter(samples.size() - offset);
     if(length >= length_latter){
-      std::copy(it_first, samples.end(), std::back_inserter(res.samples));
-      for(length -= length_latter; length > samples.size(); length -= samples.size()){
-        std::copy(samples.begin(), samples.end(), std::back_inserter(res.samples));
+      std::copy(it_first, samples.end(), it);
+      it += length_latter;
+      for(length -= length_latter; length > samples.size(); length -= samples.size(), it += samples.size()){
+        std::copy(samples.begin(), samples.end(), it);
       }
-      std::copy(samples.begin(), samples.begin() + length, std::back_inserter(res.samples));
+      std::copy(samples.begin(), samples.begin() + length, it);
     }else{
-      std::copy(it_first, it_first + length, std::back_inserter(res.samples));
+      std::copy(it_first, it_first + length, it);
     }
-    return res;
+    return sig_t(buf);
   }
   sig_t circular(const int &offset) const {
     return circular(offset, size());
@@ -299,7 +297,7 @@ public:
 
 protected:
   sig_r_t pick(const bool &is_real) const {
-    sig_r_t res(samples.size());
+    typename sig_r_t::buf_t buf(samples.size());
     if(is_real){
       struct op_t {
         real_t operator()(const real_t &v) const {return v;}
@@ -307,7 +305,7 @@ protected:
       };
       std::transform(
           samples.begin(), samples.end(),
-          std::back_inserter(res.samples), op_t());
+          buf.begin(), op_t());
     }else{
       struct op_t {
         real_t operator()(const real_t &v) const {return real_t(0);}
@@ -315,9 +313,9 @@ protected:
       };
       std::transform(
           samples.begin(), samples.end(),
-          std::back_inserter(res.samples), op_t());
+          buf.begin(), op_t());
     }
-    return res;
+    return sig_r_t(buf);
   }
 public:
   sig_r_t real() const {return pick(true);}
@@ -327,24 +325,24 @@ public:
       real_t operator()(const real_t &v) const {return v;}
       complex_t operator()(const complex_t &v) const {return v.conjugate();}
     };
-    sig_t res(samples.size());
+    typename sig_t::buf_t buf(samples.size());
     std::transform(
         samples.begin(), samples.end(),
-        std::back_inserter(res.samples),
+        buf.begin(),
         op_t());
-    return res;
+    return sig_t(buf);
   }
   sig_r_t abs() const {
     struct op_t {
       real_t operator()(const real_t &v) const {return std::abs(v);}
       real_t operator()(const complex_t &v) const {return v.abs();}
     };
-    sig_r_t res(samples.size());
+    typename sig_r_t::buf_t buf(samples.size());
     std::transform(
         samples.begin(), samples.end(),
-        std::back_inserter(res.samples),
+        buf.begin(),
         op_t());
-    return res;
+    return sig_r_t(buf);
   }
   value_t sum() const {
     return std::accumulate(samples.begin(), samples.end(), value_t(0));
@@ -383,16 +381,16 @@ public:
   }
 };
 
-template <class T_Signal, class T_Tick>
-Signal<T_Signal> SignalGenerator<T_Signal, T_Tick>::generate(
+template <class T_Generator, class T_Signal, class T_Tick>
+Signal<T_Signal> SignalGenerator<T_Generator, T_Signal, T_Tick>::generate(
     const tick_t &t, const tick_t &dt, const tick_t &freq) {
-  return Signal<T_Signal>(*this, t, dt, freq);
+  return Signal<T_Signal>(static_cast<T_Generator &>(*this), t, dt, freq);
 }
 
-template <class T_Signal, class T_Tick>
-Signal<T_Signal> TimeBasedSignalGenerator<T_Signal, T_Tick>::generate(
+template <class T_Generator, class T_Signal, class T_Tick>
+Signal<T_Signal> TimeBasedSignalGenerator<T_Generator, T_Signal, T_Tick>::generate(
     const typename super_t::tick_t &t, const typename super_t::tick_t &dt) {
-  return Signal<T_Signal>(*this, t, dt);
+  return Signal<T_Signal>(static_cast<T_Generator &>(*this), t, dt);
 }
 
 template <class SignalT>

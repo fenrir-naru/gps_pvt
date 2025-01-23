@@ -60,22 +60,36 @@ struct SignalUtil {
     switch(TYPE(src)){
       case T_STRING: {
         unsigned char *buf((unsigned char *)(RSTRING_PTR(src)));
-        for(int i(0), len(RSTRING_LEN(src)); i < len; ++i, ++buf){
+        int len_src(RSTRING_LEN(src));
+        int len_dst(len_src * (8 / bits));
+        dst.resize(dst.size() + len_dst);
+        typename Signal<T>::buf_t::iterator it(dst.end() - len_dst);
+        for(int i(0); i < len_src; ++i, ++buf){
           unsigned char c(*buf);
-          for(int j(8 / bits); j > 0; --j, c >>= bits){
-            dst.push_back((int)((c & mask) << 1) - (int)mask);
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
+            *it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
         return true;
       }
       case T_FILE: {
         rb_io_ascii8bit_binmode(src);
-        while(!RTEST(rb_io_eof(src))){
-          unsigned char c(NUM2CHR(rb_io_getbyte(src)));
-          for(int j(8 / bits); j > 0; --j, c >>= bits){
-            dst.push_back((int)((c & mask) << 1) - (int)mask);
+        typename Signal<T>::buf_t::iterator it_end(dst.end()), it(it_end);
+        static const int size_buf_add(1024 * bits);
+        while(true){
+          VALUE v(rb_io_getbyte(src));
+          if(!RTEST(v)){break;} // eof?
+          if(it == it_end){
+            dst.resize(dst.size() + size_buf_add);
+            it_end = dst.end();
+            it = it_end - size_buf_add;
+          }
+          unsigned char c(NUM2CHR(v));
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
+            *it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
+        if(it != it_end){dst.resize(it - dst.begin());}
         return true;
       }
       default: return false;
@@ -93,12 +107,13 @@ struct SignalUtil {
     bool valid_input(false);
     if(value){
       if(RB_TYPE_P(*value, T_ARRAY)){
-        res.reserve(len = RARRAY_LEN(*value));
+        res.resize(len = RARRAY_LEN(*value));
+        typename Signal<T>::buf_t::iterator it(res.begin());
         T elm;
-        for(; i < len; i++){
+        for(; i < len; i++, ++it){
           elm_val = RARRAY_AREF(*value, i);
           if(!SWIG_IsOK(swig::asval(elm_val, &elm))){break;}
-          res.push_back(elm);
+          *it = elm;
         }
         valid_input = true;
       }else if(RB_TYPE_P(*value, T_HASH)){
