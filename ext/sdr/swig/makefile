@@ -44,7 +44,7 @@ $(BUILD_DIR)/%.so : $(BUILD_DIR)/%_wrap.cxx $(RUBY_CONF)
 	cd $(BUILD_DIR)/$(PACKAGE); \
 	echo 'create_makefile("$(PACKAGE)")' >> $(RUBY_CONF); \
 	$(RUBY) $(RUBY_CONF); \
-	make; \
+	make V=1; \
 	cp *.so ../
 
 $(BUILD_DIR) :
