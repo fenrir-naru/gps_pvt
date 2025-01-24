@@ -7,7 +7,16 @@ require 'gps_pvt/sdr/Signal.so'
 
 (GPS_PVT::SDR::Signal.constants - [:GC_VALUE]).each{|k|
   GPS_PVT::SDR::Signal.const_get(k).instance_eval{
-    define_method(:==){|another| self.to_a == another.to_a}
+    case k.to_s
+    when /^Complex/
+      define_method(:==){|another|
+        (self.to_a == another.to_a) || self.to_a.zip(another.to_a).all?{|a, b|
+          (a - b).abs <= 1E-8
+        }
+      }
+    else
+      define_method(:==){|another| self.to_a == another.to_a}
+    end
   }
 }
 
