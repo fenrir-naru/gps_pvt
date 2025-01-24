@@ -11,9 +11,9 @@ extconf_dir = File::dirname(__FILE__)
   dir_config(target, path, path)
 }
 cflags = " -Wall"
-$CFLAGS += cflags
-$CPPFLAGS += cflags
-$LOCAL_LIBS += " -lstdc++ "
+$CFLAGS << cflags
+$CXXFLAGS << cflags
+$LOCAL_LIBS << " -lstdc++ "
 
 IO_TARGETS = [
   [Kernel, :instance_eval],
@@ -31,7 +31,7 @@ require 'pathname'
 
 Pathname::glob(File::join(extconf_dir, "**/")){|dir|
   mod_path = dir.relative_path_from(Pathname(extconf_dir))
-  mod_name =  mod_path.basename
+  mod_name = mod_path.basename
 
   # @see https://stackoverflow.com/a/35842162/15992898
   $srcs = Pathname::glob(dir.join('*.cxx')).collect{|cxx_path|
@@ -44,6 +44,16 @@ Pathname::glob(File::join(extconf_dir, "**/")){|dir|
   
   $stderr.puts "For #{mod_path} ..."
   
+  cfg_recovery = case mod_path.to_s
+  when /^sdr\//
+    Hash[*([:CFLAGS, :CXXFLAGS].collect{|k|
+      orig = eval("$#{k}").clone
+      eval("$#{k}").gsub!(/(?<=^|\s)-O(?:[0-3sgz]|fast)?/, '')
+      eval("$#{k}") << " -O3 -march=native"
+      [k, orig]
+    }.flatten(1))]
+  end || {}
+  
   dst = Pathname::getwd.join(mod_path)
   FileUtils::mkdir_p(dst) if dir != dst
 
@@ -55,6 +65,8 @@ Pathname::glob(File::join(extconf_dir, "**/")){|dir|
     }
   }
   create_makefile(mod_path.to_s)
+  
+  cfg_recovery.each{|k, v| eval("$#{k}").replace(v)}
 }
 
 IO_TARGETS.mod{
