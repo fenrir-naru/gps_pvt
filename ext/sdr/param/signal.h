@@ -401,31 +401,37 @@ struct PartialSignalBuffer {
 
   sig_raw_t *orig;
   typedef typename sig_raw_t::size_t size_type;
-  size_type idx_head, length;
-  size_type size() const {return length;}
-  value_t &operator[](const size_type &i) {return orig->samples[idx_head + i];}
-  const value_t &operator[](const size_type &i) const {return orig->samples[idx_head + i];}
+  int idx_begin, idx_end;
+  // When idx_end >= 0, valid range is [idx_begin, idx_end),
+  // otherwise valid range is [idx_begin, idx_end]
+
   typedef typename sig_raw_t::buf_t::iterator iterator;
   iterator begin() {
-    return orig->samples.begin() + idx_head;
+    return (idx_begin >= 0 ? orig->samples.begin() : orig->samples.end()) + idx_begin;
   }
   iterator end() {
-    return begin() + length;
+    return (idx_end >= 0 ? orig->samples.begin() : (orig->samples.end() + 1)) + idx_end;
   }
+  value_t &operator[](const size_type &i) {return *(begin() + i);}
   typedef typename sig_raw_t::buf_t::const_iterator const_iterator;
   const_iterator begin() const {
-    return orig->samples.begin() + idx_head;
+    return (idx_begin >= 0 ? orig->samples.begin() : orig->samples.end()) + idx_begin;
   }
   const_iterator end() const {
-    return begin() + length;
+    return (idx_end >= 0 ? orig->samples.begin() : (orig->samples.end() + 1)) + idx_end;
   }
+  size_type size() const {
+    typename std::iterator_traits<const_iterator>::difference_type delta(
+        std::distance(begin(), end()));
+    return (delta < 0) ? 0 : delta;
+  }
+  const value_t &operator[](const size_type &i) const {return *(begin() + i);}
 
   static sig_partial_t generate_signal(
       sig_raw_t &orig, int start, const size_type &length){
     int end(orig.get_slice_end(start, length));
     if(end < 0){start = end = 0;}
-    typename sig_partial_t::buf_t buf = {
-        &orig, size_type(start), size_type(end - start)};
+    typename sig_partial_t::buf_t buf = {&orig, start, end};
     return sig_partial_t(buf);
   }
   static sig_partial_t generate_signal(
@@ -433,7 +439,7 @@ struct PartialSignalBuffer {
     int end(orig.get_slice_end(start, length));
     if(end < 0){start = end = 0;}
     typename sig_partial_t::buf_t buf = {
-        orig.samples.orig, orig.samples.idx_head + size_type(start), size_type(end - start)};
+        orig.samples.orig, orig.samples.idx_begin + start, orig.samples.idx_begin + end};
     return sig_partial_t(buf);
   }
 };
