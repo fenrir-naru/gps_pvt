@@ -194,7 +194,7 @@ struct SignalUtil {
     typename Signal<Complex<T> >::buf_t x1;
     x1.reserve(x.size() << 1);
 #if 0 // skip reordering in (6.15) because it depends on IF configuration
-    typename Signal<Complex<T> >::buf_t n_half((x.size() + 1) >> 1);
+    typename Signal<Complex<T> >::buf_t::size_type n_half((x.size() + 1) >> 1);
     std::copy( // (6.15)-1
         x.samples.begin() + n_half, x.samples.end(),
         std::back_inserter(x1));
@@ -217,6 +217,9 @@ struct SignalUtil {
 };
 }
 
+// @see SylphideMath.i
+%typemap(in, numinputs=0) SWIG_Object *_self "$1 = &self;"
+
 template <class T>
 struct Signal_Partial {
   std::size_t size() const;
@@ -232,6 +235,7 @@ struct Signal_Partial {
   typename Signal<T>::sig_c_t fft() const; 
   typename Signal<T>::sig_c_t ifft() const;
   %extend {
+    %fragment(SWIG_Traits_frag(Signal<T>));
     %ignore Signal_Partial();
     Signal<T> copy() const {return Signal<T>(*$self);}
     T __getitem__(const unsigned int &i) const {
@@ -246,15 +250,28 @@ struct Signal_Partial {
     size_t min_abs_index() const {
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-    %typemap(ret) Signal_Partial<T> {
+    SWIG_Object partial(
+        SWIG_Object *_self,
+        const int &start, const unsigned int &length) {
+      SWIG_Object res(swig::from(Signal_Partial<T>(
+          PartialSignalBuffer<Signal<T> >::generate_signal(
+            const_cast<Signal_Partial<T> &>(*$self), start, length))));
 #if defined(SWIGRUBY)
-      rb_iv_set(vresult, "@__orig_sig__", rb_iv_get(self, "@__orig_sig__"));
+      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
 #endif
+      return res;
     }
-    Signal_Partial<T> partial(const int &start, const unsigned int &length) {
-      return PartialSignalBuffer<Signal<T> >::generate_signal(*$self, start, length);
-    }
-    %clear Signal_Partial<T>;
+#if defined(SWIGRUBY)
+  SWIG_Object to_shareable(SWIG_Object *_self) const {
+    SWIG_Object res(swig::from(Signal_Partial<T>(*self)));
+    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+%#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+%#endif
+    rb_obj_freeze(res);
+    return res;
+  }
+#endif
   }
 };
 
@@ -281,10 +298,22 @@ struct Signal_Partial
   %typemap(out) T & "$result = swig::from(*$1);"
   
   %fragment(SWIG_Traits_frag(SignalUtil));
+  
+  %fragment(SWIG_Traits_frag(Signal<T>), "header",
+      fragment=SWIG_Traits_frag(T)){
+    namespace swig {
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<T> >() {
+        return $descriptor(Signal_Partial<T> *);
+      }
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<T> *>() {
+        return $descriptor(Signal_Partial<T> *);
+      }
+    }
+  }
+  %fragment(SWIG_Traits_frag(Signal<T>));
 
-  // @see SylphideMath.i
-  %typemap(in, numinputs=0) SWIG_Object *self_p ""
-  %typemap(argout) SWIG_Object *self_p "$result = self;"
   %typemap(out) Signal<T> & "$result = self;"
 
 #if defined(SWIGRUBY)
@@ -308,23 +337,27 @@ struct Signal_Partial
   Signal(const void *special_input) throw(native_exception, std::invalid_argument) {
     return new Signal<T>(SignalUtil::to_buffer<T>(special_input));
   }
-  void replace(SWIG_Object *self_p, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
+  SWIG_Object replace(SWIG_Object *_self, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
     typename Signal<T>::buf_t buf(SignalUtil::to_buffer<T>(special_input));
     $self->samples.swap(buf);
+    return *_self;
   }
-  void append(SWIG_Object *self_p, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
+  SWIG_Object append(SWIG_Object *_self, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
     typename Signal<T>::buf_t buf(SignalUtil::to_buffer<T>(special_input));
     $self->samples.insert($self->samples.end(), buf.begin(), buf.end());
+    return *_self;
   }
-  void shift(SWIG_Object *self_p, size_t n = 1){
+  SWIG_Object shift(SWIG_Object *_self, size_t n = 1){
     size_t current($self->samples.size());
     if(current < n){n = current;}
     $self->samples.erase($self->samples.begin(), $self->samples.begin() + n);
+    return *_self;
   }
-  void pop(SWIG_Object *self_p, size_t n = 1){
+  SWIG_Object pop(SWIG_Object *_self, size_t n = 1){
     size_t current($self->samples.size());
     if(current < n){n = current;}
     $self->samples.erase($self->samples.end() - n, $self->samples.end());
+    return *_self;
   }
 #ifdef SWIGRUBY
   %rename("replace!") replace;
@@ -366,27 +399,36 @@ struct Signal_Partial
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
   
-  %typemap(ret) Signal_Partial<T> {
+  SWIG_Object partial(
+      SWIG_Object *_self,
+      const int &start, const unsigned int &length) const {
+    SWIG_Object res(swig::from(Signal_Partial<T>(
+        PartialSignalBuffer<Signal<T> >::generate_signal(
+          const_cast<Signal<T> &>(*$self), start, length))));
 #if defined(SWIGRUBY)
-    rb_iv_set(vresult, "@__orig_sig__", self);
+    rb_iv_set(res, "@__orig_sig__", *_self);
 #endif
+    return res;
   }
-  Signal_Partial<T> partial(const int &start, const unsigned int &length) {
-    return PartialSignalBuffer<Signal<T> >::generate_signal(*$self, start, length);
+#if defined(SWIGRUBY)
+  SWIG_Object to_shareable(SWIG_Object *_self) const {
+    PartialSignalBuffer<Signal<T> > buf = {const_cast<Signal<T> *>($self), 0, -1};
+    SWIG_Object res(swig::from(Signal_Partial<T>(buf)));
+    rb_iv_set(res, "@__orig_sig__", *_self);
+%#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+%#endif
+    rb_obj_freeze(res);
+    return res;
   }
-  %clear Signal_Partial<T>;
+#endif
   
   %typemap(out) T &;
-  
-  %clear SWIG_Object *self_p;
   %clear Signal<T> &;
 };
 
 %define add_common_ext(target_class)
 %extend target_class {
-  %typemap(in,numinputs=0) SWIG_Object self_ "$1 = self;"
-  %typemap(in,numinputs=0) SWIG_Object *self_p_ ""
-  %typemap(argout) SWIG_Object *self_p_ "$result = self;"
 #if defined(SWIGRUBY)
   %typemap(in,numinputs=0) const void *check_block {
     if(!rb_block_given_p()){
@@ -398,26 +440,12 @@ struct Signal_Partial
 #endif
 
   %catches(native_exception) each;
-  void each(SWIG_Object *self_p_, const void *check_block) const {
+  SWIG_Object each(SWIG_Object *_self, const void *check_block) const {
     SignalUtil::each(*$self);
+    return *_self;
   }
-
-#if defined(SWIGRUBY)  
-  SWIG_Object to_shareable(SWIG_Object self_) const {
-    static const ID func(rb_intern("partial"));
-    SWIG_Object res(rb_funcall(self_, func,
-        2, SWIG_From(long)(0), SWIG_From(size_t)($self->size())));
-    rb_obj_freeze(res);
-%#if defined(HAVE_RB_EXT_RACTOR_SAFE)
-    RB_FL_SET(res, RUBY_FL_SHAREABLE);
-%#endif
-    return res;
-  }
-#endif
   
   %clear const void *check_block;
-  %clear SWIG_Object *self_p_;
-  %clear SWIG_Object self_;
 };
 #if defined(SWIGRUBY)
 %mixin target_class "Enumerable";
@@ -595,3 +623,4 @@ type_resolver(int, 0);
 };
 %template(Int_Partial) Signal_Partial<int>;
 
+%clear SWIG_Object *_self;
