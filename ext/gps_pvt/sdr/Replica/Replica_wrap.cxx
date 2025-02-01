@@ -1853,19 +1853,22 @@ int SWIG_Ruby_arity( VALUE proc, int minimal )
 #define SWIGTYPE_p_MatrixViewFilterT_MatrixViewBaseT_t_t swig_types[6]
 #define SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t swig_types[7]
 #define SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t swig_types[8]
-#define SWIGTYPE_p_char swig_types[9]
-#define SWIGTYPE_p_complex_t swig_types[10]
-#define SWIGTYPE_p_double swig_types[11]
-#define SWIGTYPE_p_real_t swig_types[12]
-#define SWIGTYPE_p_self_t swig_types[13]
-#define SWIGTYPE_p_sig_c_t swig_types[14]
-#define SWIGTYPE_p_sig_r_t swig_types[15]
-#define SWIGTYPE_p_sig_t swig_types[16]
-#define SWIGTYPE_p_size_t swig_types[17]
-#define SWIGTYPE_p_swig__GC_VALUE swig_types[18]
-#define SWIGTYPE_p_value_t swig_types[19]
-static swig_type_info *swig_types[21];
-static swig_module_info swig_module = {swig_types, 20, 0, 0, 0, 0};
+#define SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t swig_types[9]
+#define SWIGTYPE_p_Signal_PartialT_double_t swig_types[10]
+#define SWIGTYPE_p_Signal_PartialT_int_t swig_types[11]
+#define SWIGTYPE_p_char swig_types[12]
+#define SWIGTYPE_p_complex_t swig_types[13]
+#define SWIGTYPE_p_double swig_types[14]
+#define SWIGTYPE_p_real_t swig_types[15]
+#define SWIGTYPE_p_self_t swig_types[16]
+#define SWIGTYPE_p_sig_c_t swig_types[17]
+#define SWIGTYPE_p_sig_r_t swig_types[18]
+#define SWIGTYPE_p_sig_t swig_types[19]
+#define SWIGTYPE_p_size_t swig_types[20]
+#define SWIGTYPE_p_swig__GC_VALUE swig_types[21]
+#define SWIGTYPE_p_value_t swig_types[22]
+static swig_type_info *swig_types[24];
+static swig_module_info swig_module = {swig_types, 23, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3720,6 +3723,9 @@ static swig_type_info _swigt__p_MatrixViewBaseT_t = {"_p_MatrixViewBaseT_t", "Ma
 static swig_type_info _swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t = {"_p_MatrixViewFilterT_MatrixViewBaseT_t_t", "MatrixViewFilter< MatrixViewBase< > > *|MatView_f *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t = {"_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t", "Signal< Complex< double > > *|Signal< Complex< double >,std::vector< Complex< double > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SignalT_int_std__vectorT_int_t_t = {"_p_SignalT_int_std__vectorT_int_t_t", "Signal< int,std::vector< int > > *|Signal< int > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Signal_PartialT_ComplexT_double_t_t = {"_p_Signal_PartialT_ComplexT_double_t_t", "Signal_Partial< Complex< double > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Signal_PartialT_double_t = {"_p_Signal_PartialT_double_t", "Signal_Partial< double > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Signal_PartialT_int_t = {"_p_Signal_PartialT_int_t", "Signal_Partial< int > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_complex_t = {"_p_complex_t", "complex_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "tick_t *|double *", 0, 0, (void*)0, 0};
@@ -3742,6 +3748,9 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t,
   &_swigt__p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t,
   &_swigt__p_SignalT_int_std__vectorT_int_t_t,
+  &_swigt__p_Signal_PartialT_ComplexT_double_t_t,
+  &_swigt__p_Signal_PartialT_double_t,
+  &_swigt__p_Signal_PartialT_int_t,
   &_swigt__p_char,
   &_swigt__p_complex_t,
   &_swigt__p_double,
@@ -3764,6 +3773,9 @@ static swig_cast_info _swigc__p_MatrixViewBaseT_t[] = {  {&_swigt__p_MatrixViewB
 static swig_cast_info _swigc__p_MatrixViewFilterT_MatrixViewBaseT_t_t[] = {  {&_swigt__p_MatrixViewFilterT_MatrixViewBaseT_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t[] = {  {&_swigt__p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SignalT_int_std__vectorT_int_t_t[] = {  {&_swigt__p_SignalT_int_std__vectorT_int_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Signal_PartialT_ComplexT_double_t_t[] = {  {&_swigt__p_Signal_PartialT_ComplexT_double_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Signal_PartialT_double_t[] = {  {&_swigt__p_Signal_PartialT_double_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Signal_PartialT_int_t[] = {  {&_swigt__p_Signal_PartialT_int_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_complex_t[] = {  {&_swigt__p_complex_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
@@ -3786,6 +3798,9 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_MatrixViewFilterT_MatrixViewBaseT_t_t,
   _swigc__p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t,
   _swigc__p_SignalT_int_std__vectorT_int_t_t,
+  _swigc__p_Signal_PartialT_ComplexT_double_t_t,
+  _swigc__p_Signal_PartialT_double_t,
+  _swigc__p_Signal_PartialT_int_t,
   _swigc__p_char,
   _swigc__p_complex_t,
   _swigc__p_double,

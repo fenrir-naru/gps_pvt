@@ -2737,6 +2737,18 @@ struct SignalUtil {
 };
 
 
+    namespace swig {
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<double> >() {
+        return SWIGTYPE_p_Signal_PartialT_double_t;
+      }
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<double> *>() {
+        return SWIGTYPE_p_Signal_PartialT_double_t;
+      }
+    }
+  
+
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -2925,23 +2937,27 @@ SWIGINTERN Signal< double > *new_Signal_Sl_double_Sg___SWIG_1(Signal< double > c
 SWIGINTERN Signal< double > *new_Signal_Sl_double_Sg___SWIG_2(void const *special_input){
     return new Signal<double>(SignalUtil::to_buffer<double>(special_input));
   }
-SWIGINTERN void Signal_Sl_double_Sg__replace__SWIG_0(Signal< double > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_double_Sg__replace__SWIG_0(Signal< double > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<double>::buf_t buf(SignalUtil::to_buffer<double>(special_input));
     self->samples.swap(buf);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_double_Sg__append__SWIG_0(Signal< double > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_double_Sg__append__SWIG_0(Signal< double > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<double>::buf_t buf(SignalUtil::to_buffer<double>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_double_Sg__shift__SWIG_0(Signal< double > *self,VALUE *self_p,Signal< double >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_double_Sg__shift__SWIG_0(Signal< double > *self,VALUE *_self,Signal< double >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.begin(), self->samples.begin() + n);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_double_Sg__pop__SWIG_0(Signal< double > *self,VALUE *self_p,Signal< double >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_double_Sg__pop__SWIG_0(Signal< double > *self,VALUE *_self,Signal< double >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.end() - n, self->samples.end());
+    return *_self;
   }
 SWIGINTERN Signal< double > Signal_Sl_double_Sg__copy(Signal< double > const *self){return Signal<double>(*self);}
 
@@ -2976,21 +2992,28 @@ SWIGINTERN Signal< double >::size_t Signal_Sl_double_Sg__max_abs_index(Signal< d
 SWIGINTERN Signal< double >::size_t Signal_Sl_double_Sg__min_abs_index(Signal< double > const *self){
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
-SWIGINTERN Signal_Partial< double > Signal_Sl_double_Sg__partial(Signal< double > *self,int const &start,unsigned int const &length){
-    return PartialSignalBuffer<Signal<double> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Sl_double_Sg__partial(Signal< double > const *self,VALUE *_self,int const &start,unsigned int const &length){
+    VALUE res(swig::from(Signal_Partial<double>(
+        PartialSignalBuffer<Signal<double> >::generate_signal(
+          const_cast<Signal<double> &>(*self), start, length))));
+
+    rb_iv_set(res, "@__orig_sig__", *_self);
+
+    return res;
   }
-SWIGINTERN void Signal_Sl_double_Sg__each(Signal< double > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Sl_double_Sg__to_shareable(Signal< double > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Sl_double_Sg__to_shareable(Signal< double > const *self,VALUE *_self){
+    PartialSignalBuffer<Signal<double> > buf = {const_cast<Signal<double> *>(self), 0, -1};
+    VALUE res(swig::from(Signal_Partial<double>(buf)));
+    rb_iv_set(res, "@__orig_sig__", *_self);
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Sl_double_Sg__each(Signal< double > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN double Signal_Sl_double_Sg__dot_product__SWIG_1(Signal< double > const *self,Signal< double > const &sig){return self->dot_product(sig);}
 SWIGINTERN Signal< double > *new_Signal_Sl_double_Sg___SWIG_3(Signal< int > const &arg){return new Signal<double>(arg);}
@@ -3082,6 +3105,18 @@ SWIGINTERN Signal< Complex< double > > Signal_Sl_double_Sg__r2c(Signal< double >
       }
     }
   
+
+    namespace swig {
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<Complex< double >> >() {
+        return SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t;
+      }
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<Complex< double >> *>() {
+        return SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t;
+      }
+    }
+  
 SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg___SWIG_0(){
     if(rb_block_given_p()){return new Signal<Complex< double >>(SignalUtil::to_buffer<Complex< double >>());}
     return new Signal<Complex< double >>();
@@ -3092,23 +3127,27 @@ SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg__
 SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg___SWIG_2(void const *special_input){
     return new Signal<Complex< double >>(SignalUtil::to_buffer<Complex< double >>(special_input));
   }
-SWIGINTERN void Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(Signal< Complex< double > > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<Complex< double >>::buf_t buf(SignalUtil::to_buffer<Complex< double >>(special_input));
     self->samples.swap(buf);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(Signal< Complex< double > > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<Complex< double >>::buf_t buf(SignalUtil::to_buffer<Complex< double >>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(Signal< Complex< double > > *self,VALUE *self_p,Signal< Complex< double > >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,Signal< Complex< double > >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.begin(), self->samples.begin() + n);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(Signal< Complex< double > > *self,VALUE *self_p,Signal< Complex< double > >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,Signal< Complex< double > >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.end() - n, self->samples.end());
+    return *_self;
   }
 SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg__copy(Signal< Complex< double > > const *self){return Signal<Complex< double >>(*self);}
 SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg____getitem____SWIG_0(Signal< Complex< double > > const *self,unsigned int const &i){
@@ -3127,21 +3166,28 @@ SWIGINTERN Signal< Complex< double > >::size_t Signal_Sl_Complex_Sl_double_Sg__S
 SWIGINTERN Signal< Complex< double > >::size_t Signal_Sl_Complex_Sl_double_Sg__Sg__min_abs_index(Signal< Complex< double > > const *self){
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
-SWIGINTERN Signal_Partial< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg__partial(Signal< Complex< double > > *self,int const &start,unsigned int const &length){
-    return PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__partial(Signal< Complex< double > > const *self,VALUE *_self,int const &start,unsigned int const &length){
+    VALUE res(swig::from(Signal_Partial<Complex< double >>(
+        PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(
+          const_cast<Signal<Complex< double >> &>(*self), start, length))));
+
+    rb_iv_set(res, "@__orig_sig__", *_self);
+
+    return res;
   }
-SWIGINTERN void Signal_Sl_Complex_Sl_double_Sg__Sg__each(Signal< Complex< double > > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal< Complex< double > > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal< Complex< double > > const *self,VALUE *_self){
+    PartialSignalBuffer<Signal<Complex< double >> > buf = {const_cast<Signal<Complex< double >> *>(self), 0, -1};
+    VALUE res(swig::from(Signal_Partial<Complex< double >>(buf)));
+    rb_iv_set(res, "@__orig_sig__", *_self);
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__each(Signal< Complex< double > > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_1(Signal< Complex< double > > const *self,Signal< Complex< double > > const &sig){return self->dot_product(sig);}
 SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg___SWIG_3(Signal< double > const &arg){return new Signal<Complex<double> >(arg);}
@@ -3218,6 +3264,18 @@ namespace swig {
   };
 }
 
+
+    namespace swig {
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<int> >() {
+        return SWIGTYPE_p_Signal_PartialT_int_t;
+      }
+      template <>
+      inline swig_type_info *type_info<Signal_Partial<int> *>() {
+        return SWIGTYPE_p_Signal_PartialT_int_t;
+      }
+    }
+  
 SWIGINTERN Signal< int > *new_Signal_Sl_int_Sg___SWIG_0(){
     if(rb_block_given_p()){return new Signal<int>(SignalUtil::to_buffer<int>());}
     return new Signal<int>();
@@ -3228,23 +3286,27 @@ SWIGINTERN Signal< int > *new_Signal_Sl_int_Sg___SWIG_1(Signal< int > const &ori
 SWIGINTERN Signal< int > *new_Signal_Sl_int_Sg___SWIG_2(void const *special_input){
     return new Signal<int>(SignalUtil::to_buffer<int>(special_input));
   }
-SWIGINTERN void Signal_Sl_int_Sg__replace__SWIG_0(Signal< int > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_int_Sg__replace__SWIG_0(Signal< int > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<int>::buf_t buf(SignalUtil::to_buffer<int>(special_input));
     self->samples.swap(buf);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_int_Sg__append__SWIG_0(Signal< int > *self,VALUE *self_p,void const *special_input=NULL){
+SWIGINTERN VALUE Signal_Sl_int_Sg__append__SWIG_0(Signal< int > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<int>::buf_t buf(SignalUtil::to_buffer<int>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_int_Sg__shift__SWIG_0(Signal< int > *self,VALUE *self_p,Signal< int >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_int_Sg__shift__SWIG_0(Signal< int > *self,VALUE *_self,Signal< int >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.begin(), self->samples.begin() + n);
+    return *_self;
   }
-SWIGINTERN void Signal_Sl_int_Sg__pop__SWIG_0(Signal< int > *self,VALUE *self_p,Signal< int >::size_t n=1){
+SWIGINTERN VALUE Signal_Sl_int_Sg__pop__SWIG_0(Signal< int > *self,VALUE *_self,Signal< int >::size_t n=1){
     size_t current(self->samples.size());
     if(current < n){n = current;}
     self->samples.erase(self->samples.end() - n, self->samples.end());
+    return *_self;
   }
 SWIGINTERN Signal< int > Signal_Sl_int_Sg__copy(Signal< int > const *self){return Signal<int>(*self);}
 SWIGINTERN int Signal_Sl_int_Sg____getitem____SWIG_0(Signal< int > const *self,unsigned int const &i){
@@ -3263,21 +3325,28 @@ SWIGINTERN Signal< int >::size_t Signal_Sl_int_Sg__max_abs_index(Signal< int > c
 SWIGINTERN Signal< int >::size_t Signal_Sl_int_Sg__min_abs_index(Signal< int > const *self){
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
-SWIGINTERN Signal_Partial< int > Signal_Sl_int_Sg__partial(Signal< int > *self,int const &start,unsigned int const &length){
-    return PartialSignalBuffer<Signal<int> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Sl_int_Sg__partial(Signal< int > const *self,VALUE *_self,int const &start,unsigned int const &length){
+    VALUE res(swig::from(Signal_Partial<int>(
+        PartialSignalBuffer<Signal<int> >::generate_signal(
+          const_cast<Signal<int> &>(*self), start, length))));
+
+    rb_iv_set(res, "@__orig_sig__", *_self);
+
+    return res;
   }
-SWIGINTERN void Signal_Sl_int_Sg__each(Signal< int > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Sl_int_Sg__to_shareable(Signal< int > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Sl_int_Sg__to_shareable(Signal< int > const *self,VALUE *_self){
+    PartialSignalBuffer<Signal<int> > buf = {const_cast<Signal<int> *>(self), 0, -1};
+    VALUE res(swig::from(Signal_Partial<int>(buf)));
+    rb_iv_set(res, "@__orig_sig__", *_self);
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Sl_int_Sg__each(Signal< int > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN int Signal_Sl_int_Sg__dot_product(Signal< int > const *self,Signal< int > const &sig){return self->dot_product(sig);}
 SWIGINTERN Complex< double > Signal_Sl_int_Sg__ft(Signal< int > const *self,double const &k){
@@ -3308,21 +3377,27 @@ SWIGINTERN size_t Signal_Partial_Sl_double_Sg__max_abs_index(Signal_Partial< dou
 SWIGINTERN size_t Signal_Partial_Sl_double_Sg__min_abs_index(Signal_Partial< double > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN Signal_Partial< double > Signal_Partial_Sl_double_Sg__partial(Signal_Partial< double > *self,int const &start,unsigned int const &length){
-      return PartialSignalBuffer<Signal<double> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__partial(Signal_Partial< double > *self,VALUE *_self,int const &start,unsigned int const &length){
+      VALUE res(swig::from(Signal_Partial<double>(
+          PartialSignalBuffer<Signal<double> >::generate_signal(
+            const_cast<Signal_Partial<double> &>(*self), start, length))));
+
+      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+
+      return res;
     }
-SWIGINTERN void Signal_Partial_Sl_double_Sg__each(Signal_Partial< double > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__to_shareable(Signal_Partial< double > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__to_shareable(Signal_Partial< double > const *self,VALUE *_self){
+    VALUE res(swig::from(Signal_Partial<double>(*self)));
+    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__each(Signal_Partial< double > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN Signal< double > Signal_Partial_Sl_double_Sg____mul____SWIG_0(Signal_Partial< double > const *self,Signal< double > const &arg){
     return self->operator*(arg);
@@ -3361,21 +3436,27 @@ SWIGINTERN size_t Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__max_abs_index(Sign
 SWIGINTERN size_t Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__min_abs_index(Signal_Partial< Complex< double > > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN Signal_Partial< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(Signal_Partial< Complex< double > > *self,int const &start,unsigned int const &length){
-      return PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(Signal_Partial< Complex< double > > *self,VALUE *_self,int const &start,unsigned int const &length){
+      VALUE res(swig::from(Signal_Partial<Complex< double >>(
+          PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(
+            const_cast<Signal_Partial<Complex< double >> &>(*self), start, length))));
+
+      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+
+      return res;
     }
-SWIGINTERN void Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__each(Signal_Partial< Complex< double > > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal_Partial< Complex< double > > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal_Partial< Complex< double > > const *self,VALUE *_self){
+    VALUE res(swig::from(Signal_Partial<Complex< double >>(*self)));
+    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__each(Signal_Partial< Complex< double > > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg____mul____SWIG_0(Signal_Partial< Complex< double > > const *self,Signal< Complex< double > > const &arg){
     return self->operator*(arg);
@@ -3426,21 +3507,27 @@ SWIGINTERN size_t Signal_Partial_Sl_int_Sg__max_abs_index(Signal_Partial< int > 
 SWIGINTERN size_t Signal_Partial_Sl_int_Sg__min_abs_index(Signal_Partial< int > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN Signal_Partial< int > Signal_Partial_Sl_int_Sg__partial(Signal_Partial< int > *self,int const &start,unsigned int const &length){
-      return PartialSignalBuffer<Signal<int> >::generate_signal(*self, start, length);
+SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__partial(Signal_Partial< int > *self,VALUE *_self,int const &start,unsigned int const &length){
+      VALUE res(swig::from(Signal_Partial<int>(
+          PartialSignalBuffer<Signal<int> >::generate_signal(
+            const_cast<Signal_Partial<int> &>(*self), start, length))));
+
+      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+
+      return res;
     }
-SWIGINTERN void Signal_Partial_Sl_int_Sg__each(Signal_Partial< int > const *self,VALUE *self_p_,void const *check_block){
-    SignalUtil::each(*self);
-  }
-SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__to_shareable(Signal_Partial< int > const *self,VALUE self_){
-    static const ID func(rb_intern("partial"));
-    VALUE res(rb_funcall(self_, func,
-        2, SWIG_From_long  (0), SWIG_From_size_t  (self->size())));
-    rb_obj_freeze(res);
+SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__to_shareable(Signal_Partial< int > const *self,VALUE *_self){
+    VALUE res(swig::from(Signal_Partial<int>(*self)));
+    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
+    rb_obj_freeze(res);
     return res;
+  }
+SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__each(Signal_Partial< int > const *self,VALUE *_self,void const *check_block){
+    SignalUtil::each(*self);
+    return *_self;
   }
 SWIGINTERN Signal< int > Signal_Partial_Sl_int_Sg____mul__(Signal_Partial< int > const *self,Signal< int > const &arg){
     return self->operator*(arg);
@@ -4333,8 +4420,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real.replace!
 
   call-seq:
-    replace!(special_input=nil)
-    replace!
+    replace!(special_input=nil) -> VALUE
+    replace! -> VALUE
 
 Replace all or a portion of the Real.
 */
@@ -4345,9 +4432,10 @@ _wrap_Real_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -4358,14 +4446,14 @@ _wrap_Real_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_double_Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_double_Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4378,9 +4466,10 @@ _wrap_Real_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -4390,14 +4479,14 @@ _wrap_Real_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
   try {
-    Signal_Sl_double_Sg__replace__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_double_Sg__replace__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4441,8 +4530,8 @@ SWIGINTERN VALUE _wrap_Real_replaceN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "replace!", 
-    "    void replace!(VALUE *self_p, void const *special_input)\n"
-    "    void replace!(VALUE *self_p)\n");
+    "    VALUE replace!(VALUE *_self, void const *special_input)\n"
+    "    VALUE replace!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -4452,8 +4541,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real.append!
 
   call-seq:
-    append!(void const * special_input=nil)
-    append!
+    append!(void const * special_input=nil) -> VALUE
+    append! -> VALUE
 
 An instance method.
 
@@ -4465,9 +4554,10 @@ _wrap_Real_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -4478,14 +4568,14 @@ _wrap_Real_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_double_Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_double_Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4498,9 +4588,10 @@ _wrap_Real_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -4510,14 +4601,14 @@ _wrap_Real_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
   try {
-    Signal_Sl_double_Sg__append__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_double_Sg__append__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4561,8 +4652,8 @@ SWIGINTERN VALUE _wrap_Real_appendN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "append!", 
-    "    void append!(VALUE *self_p, void const *special_input)\n"
-    "    void append!(VALUE *self_p)\n");
+    "    VALUE append!(VALUE *_self, void const *special_input)\n"
+    "    VALUE append!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -4572,8 +4663,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real.shift!
 
   call-seq:
-    shift!(n=1)
-    shift!
+    shift!(n=1) -> VALUE
+    shift! -> VALUE
 
 Remove and return element at the beginning of the Real.
 */
@@ -4586,9 +4677,10 @@ _wrap_Real_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -4602,8 +4694,8 @@ _wrap_Real_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< double >::size_t","shift", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< double >::size_t >(val3);
-  Signal_Sl_double_Sg__shift__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_double_Sg__shift__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4616,9 +4708,10 @@ _wrap_Real_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -4627,8 +4720,8 @@ _wrap_Real_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","shift", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
-  Signal_Sl_double_Sg__shift__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_double_Sg__shift__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4673,8 +4766,8 @@ SWIGINTERN VALUE _wrap_Real_shiftN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "shift!", 
-    "    void shift!(VALUE *self_p, Signal< double >::size_t n)\n"
-    "    void shift!(VALUE *self_p)\n");
+    "    VALUE shift!(VALUE *_self, Signal< double >::size_t n)\n"
+    "    VALUE shift!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -4684,8 +4777,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real.pop!
 
   call-seq:
-    pop!(n=1)
-    pop!
+    pop!(n=1) -> VALUE
+    pop! -> VALUE
 
 Remove and return element at the end of the Real.
 */
@@ -4698,9 +4791,10 @@ _wrap_Real_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -4714,8 +4808,8 @@ _wrap_Real_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< double >::size_t","pop", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< double >::size_t >(val3);
-  Signal_Sl_double_Sg__pop__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_double_Sg__pop__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4728,9 +4822,10 @@ _wrap_Real_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -4739,8 +4834,8 @@ _wrap_Real_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","pop", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
-  Signal_Sl_double_Sg__pop__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_double_Sg__pop__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -4785,8 +4880,8 @@ SWIGINTERN VALUE _wrap_Real_popN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "pop!", 
-    "    void pop!(VALUE *self_p, Signal< double >::size_t n)\n"
-    "    void pop!(VALUE *self_p)\n");
+    "    VALUE pop!(VALUE *_self, Signal< double >::size_t n)\n"
+    "    VALUE pop!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -5091,7 +5186,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Real_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -5099,88 +5194,43 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Real_partial(int argc, VALUE *argv, VALUE self) {
   Signal< double > *arg1 = (Signal< double > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< double > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Sl_double_Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< double >(static_cast< const Signal_Partial< double >& >(result))), SWIGTYPE_p_Signal_PartialT_double_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", self);
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Real.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Real.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Real_each(int argc, VALUE *argv, VALUE self) {
-  Signal< double > *arg1 = (Signal< double > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal< double > * >(argp1);
-  try {
-    Signal_Sl_double_Sg__each((Signal< double > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Sl_double_Sg__partial((Signal< double > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -5199,13 +5249,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Real_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal< double > *arg1 = (Signal< double > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -5215,6 +5265,51 @@ _wrap_Real_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< double > * >(argp1);
   result = (VALUE)Signal_Sl_double_Sg__to_shareable((Signal< double > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Real.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Real_each(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  try {
+    result = (VALUE)Signal_Sl_double_Sg__each((Signal< double > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -7118,8 +7213,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex.replace!
 
   call-seq:
-    replace!(special_input=nil)
-    replace!
+    replace!(special_input=nil) -> VALUE
+    replace! -> VALUE
 
 Replace all or a portion of the Complex.
 */
@@ -7130,9 +7225,10 @@ _wrap_Complex_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -7143,14 +7239,14 @@ _wrap_Complex_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7163,9 +7259,10 @@ _wrap_Complex_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -7175,14 +7272,14 @@ _wrap_Complex_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   try {
-    Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7226,8 +7323,8 @@ SWIGINTERN VALUE _wrap_Complex_replaceN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "replace!", 
-    "    void replace!(VALUE *self_p, void const *special_input)\n"
-    "    void replace!(VALUE *self_p)\n");
+    "    VALUE replace!(VALUE *_self, void const *special_input)\n"
+    "    VALUE replace!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -7237,8 +7334,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex.append!
 
   call-seq:
-    append!(void const * special_input=nil)
-    append!
+    append!(void const * special_input=nil) -> VALUE
+    append! -> VALUE
 
 An instance method.
 
@@ -7250,9 +7347,10 @@ _wrap_Complex_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -7263,14 +7361,14 @@ _wrap_Complex_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7283,9 +7381,10 @@ _wrap_Complex_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -7295,14 +7394,14 @@ _wrap_Complex_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   try {
-    Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7346,8 +7445,8 @@ SWIGINTERN VALUE _wrap_Complex_appendN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "append!", 
-    "    void append!(VALUE *self_p, void const *special_input)\n"
-    "    void append!(VALUE *self_p)\n");
+    "    VALUE append!(VALUE *_self, void const *special_input)\n"
+    "    VALUE append!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -7357,8 +7456,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex.shift!
 
   call-seq:
-    shift!(n=1)
-    shift!
+    shift!(n=1) -> VALUE
+    shift! -> VALUE
 
 Remove and return element at the beginning of the Complex.
 */
@@ -7371,9 +7470,10 @@ _wrap_Complex_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -7387,8 +7487,8 @@ _wrap_Complex_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< Complex< double > >::size_t","shift", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< Complex< double > >::size_t >(val3);
-  Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7401,9 +7501,10 @@ _wrap_Complex_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -7412,8 +7513,8 @@ _wrap_Complex_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","shift", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
-  Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__shift__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7458,8 +7559,8 @@ SWIGINTERN VALUE _wrap_Complex_shiftN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "shift!", 
-    "    void shift!(VALUE *self_p, Signal< Complex< double > >::size_t n)\n"
-    "    void shift!(VALUE *self_p)\n");
+    "    VALUE shift!(VALUE *_self, Signal< Complex< double > >::size_t n)\n"
+    "    VALUE shift!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -7469,8 +7570,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex.pop!
 
   call-seq:
-    pop!(n=1)
-    pop!
+    pop!(n=1) -> VALUE
+    pop! -> VALUE
 
 Remove and return element at the end of the Complex.
 */
@@ -7483,9 +7584,10 @@ _wrap_Complex_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -7499,8 +7601,8 @@ _wrap_Complex_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< Complex< double > >::size_t","pop", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< Complex< double > >::size_t >(val3);
-  Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7513,9 +7615,10 @@ _wrap_Complex_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -7524,8 +7627,8 @@ _wrap_Complex_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","pop", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
-  Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__pop__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7570,8 +7673,8 @@ SWIGINTERN VALUE _wrap_Complex_popN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "pop!", 
-    "    void pop!(VALUE *self_p, Signal< Complex< double > >::size_t n)\n"
-    "    void pop!(VALUE *self_p)\n");
+    "    VALUE pop!(VALUE *_self, Signal< Complex< double > >::size_t n)\n"
+    "    VALUE pop!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -7876,7 +7979,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Complex_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -7884,88 +7987,43 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Complex_partial(int argc, VALUE *argv, VALUE self) {
   Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< Complex< double > > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Sl_Complex_Sl_double_Sg__Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< Complex< double > >(static_cast< const Signal_Partial< Complex< double > >& >(result))), SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", self);
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Complex.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Complex.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Complex_each(int argc, VALUE *argv, VALUE self) {
-  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
-  try {
-    Signal_Sl_Complex_Sl_double_Sg__Sg__each((Signal< Complex< double > > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__partial((Signal< Complex< double > > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -7984,13 +8042,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Complex_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -8000,6 +8058,51 @@ _wrap_Complex_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__to_shareable((Signal< Complex< double > > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Complex.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Complex_each(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  try {
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__each((Signal< Complex< double > > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -10147,8 +10250,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int.replace!
 
   call-seq:
-    replace!(special_input=nil)
-    replace!
+    replace!(special_input=nil) -> VALUE
+    replace! -> VALUE
 
 Replace all or a portion of the Int.
 */
@@ -10159,9 +10262,10 @@ _wrap_Int_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -10172,14 +10276,14 @@ _wrap_Int_replaceN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_int_Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_int_Sg__replace__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10192,9 +10296,10 @@ _wrap_Int_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -10204,14 +10309,14 @@ _wrap_Int_replaceN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
   try {
-    Signal_Sl_int_Sg__replace__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_int_Sg__replace__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10255,8 +10360,8 @@ SWIGINTERN VALUE _wrap_Int_replaceN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "replace!", 
-    "    void replace!(VALUE *self_p, void const *special_input)\n"
-    "    void replace!(VALUE *self_p)\n");
+    "    VALUE replace!(VALUE *_self, void const *special_input)\n"
+    "    VALUE replace!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -10266,8 +10371,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int.append!
 
   call-seq:
-    append!(void const * special_input=nil)
-    append!
+    append!(void const * special_input=nil) -> VALUE
+    append! -> VALUE
 
 An instance method.
 
@@ -10279,9 +10384,10 @@ _wrap_Int_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   void *arg3 = (void *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -10292,14 +10398,14 @@ _wrap_Int_appendN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
   arg3 = &argv[0];
   try {
-    Signal_Sl_int_Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
+    result = (VALUE)Signal_Sl_int_Sg__append__SWIG_0(arg1,arg2,(void const *)arg3);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10312,9 +10418,10 @@ _wrap_Int_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -10324,14 +10431,14 @@ _wrap_Int_appendN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
   try {
-    Signal_Sl_int_Sg__append__SWIG_0(arg1,arg2);
+    result = (VALUE)Signal_Sl_int_Sg__append__SWIG_0(arg1,arg2);
   } catch(native_exception &_e) {
     (&_e)->regenerate();
     SWIG_fail;
   } catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
   }
-  vresult = self;
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10375,8 +10482,8 @@ SWIGINTERN VALUE _wrap_Int_appendN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "append!", 
-    "    void append!(VALUE *self_p, void const *special_input)\n"
-    "    void append!(VALUE *self_p)\n");
+    "    VALUE append!(VALUE *_self, void const *special_input)\n"
+    "    VALUE append!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -10386,8 +10493,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int.shift!
 
   call-seq:
-    shift!(n=1)
-    shift!
+    shift!(n=1) -> VALUE
+    shift! -> VALUE
 
 Remove and return element at the beginning of the Int.
 */
@@ -10400,9 +10507,10 @@ _wrap_Int_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -10416,8 +10524,8 @@ _wrap_Int_shiftN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< int >::size_t","shift", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< int >::size_t >(val3);
-  Signal_Sl_int_Sg__shift__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_int_Sg__shift__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10430,9 +10538,10 @@ _wrap_Int_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -10441,8 +10550,8 @@ _wrap_Int_shiftN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","shift", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
-  Signal_Sl_int_Sg__shift__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_int_Sg__shift__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10487,8 +10596,8 @@ SWIGINTERN VALUE _wrap_Int_shiftN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "shift!", 
-    "    void shift!(VALUE *self_p, Signal< int >::size_t n)\n"
-    "    void shift!(VALUE *self_p)\n");
+    "    VALUE shift!(VALUE *_self, Signal< int >::size_t n)\n"
+    "    VALUE shift!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -10498,8 +10607,8 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int.pop!
 
   call-seq:
-    pop!(n=1)
-    pop!
+    pop!(n=1) -> VALUE
+    pop! -> VALUE
 
 Remove and return element at the end of the Int.
 */
@@ -10512,9 +10621,10 @@ _wrap_Int_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
   int res1 = 0 ;
   size_t val3 ;
   int ecode3 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
@@ -10528,8 +10638,8 @@ _wrap_Int_popN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "Signal< int >::size_t","pop", 3, argv[0] ));
   } 
   arg3 = static_cast< Signal< int >::size_t >(val3);
-  Signal_Sl_int_Sg__pop__SWIG_0(arg1,arg2,arg3);
-  vresult = self;
+  result = (VALUE)Signal_Sl_int_Sg__pop__SWIG_0(arg1,arg2,arg3);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10542,9 +10652,10 @@ _wrap_Int_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
   VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
-  
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -10553,8 +10664,8 @@ _wrap_Int_popN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","pop", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
-  Signal_Sl_int_Sg__pop__SWIG_0(arg1,arg2);
-  vresult = self;
+  result = (VALUE)Signal_Sl_int_Sg__pop__SWIG_0(arg1,arg2);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -10599,8 +10710,8 @@ SWIGINTERN VALUE _wrap_Int_popN___(int nargs, VALUE *args, VALUE self) {
   
 fail:
   Ruby_Format_OverloadedError( argc, 3, "pop!", 
-    "    void pop!(VALUE *self_p, Signal< int >::size_t n)\n"
-    "    void pop!(VALUE *self_p)\n");
+    "    VALUE pop!(VALUE *_self, Signal< int >::size_t n)\n"
+    "    VALUE pop!(VALUE *_self)\n");
   
   return Qnil;
 }
@@ -10905,7 +11016,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Int_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -10913,88 +11024,43 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Int_partial(int argc, VALUE *argv, VALUE self) {
   Signal< int > *arg1 = (Signal< int > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< int > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Sl_int_Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< int >(static_cast< const Signal_Partial< int >& >(result))), SWIGTYPE_p_Signal_PartialT_int_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", self);
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Int.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Int.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Int_each(int argc, VALUE *argv, VALUE self) {
-  Signal< int > *arg1 = (Signal< int > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal< int > * >(argp1);
-  try {
-    Signal_Sl_int_Sg__each((Signal< int > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Sl_int_Sg__partial((Signal< int > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -11013,13 +11079,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Int_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal< int > *arg1 = (Signal< int > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -11029,6 +11095,51 @@ _wrap_Int_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< int > * >(argp1);
   result = (VALUE)Signal_Sl_int_Sg__to_shareable((Signal< int > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Int.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Int.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Int_each(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  try {
+    result = (VALUE)Signal_Sl_int_Sg__each((Signal< int > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -12381,7 +12492,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Real_Partial.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Real_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -12389,19 +12500,21 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Real_Partial_partial(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< double > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
@@ -12410,67 +12523,20 @@ _wrap_Real_Partial_partial(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Partial_Sl_double_Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< double >(static_cast< const Signal_Partial< double >& >(result))), SWIGTYPE_p_Signal_PartialT_double_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", rb_iv_get(self, "@__orig_sig__"));
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Real_Partial.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Real_Partial.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Real_Partial_each(int argc, VALUE *argv, VALUE self) {
-  Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
-  try {
-    Signal_Partial_Sl_double_Sg__each((Signal_Partial< double > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Partial_Sl_double_Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -12489,13 +12555,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Real_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -12505,6 +12571,51 @@ _wrap_Real_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
   result = (VALUE)Signal_Partial_Sl_double_Sg__to_shareable((Signal_Partial< double > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Real_Partial.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Real_Partial_each(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
+  try {
+    result = (VALUE)Signal_Partial_Sl_double_Sg__each((Signal_Partial< double > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -13769,7 +13880,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Complex_Partial.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Complex_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -13777,19 +13888,21 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Complex_Partial_partial(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< Complex< double > > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
@@ -13798,67 +13911,20 @@ _wrap_Complex_Partial_partial(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< Complex< double > >(static_cast< const Signal_Partial< Complex< double > >& >(result))), SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", rb_iv_get(self, "@__orig_sig__"));
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Complex_Partial.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Complex_Partial_each(int argc, VALUE *argv, VALUE self) {
-  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
-  try {
-    Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__each((Signal_Partial< Complex< double > > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -13877,13 +13943,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Complex_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -13893,6 +13959,51 @@ _wrap_Complex_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
   result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable((Signal_Partial< Complex< double > > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Complex_Partial.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Complex_Partial_each(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
+  try {
+    result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__each((Signal_Partial< Complex< double > > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -15155,7 +15266,7 @@ fail:
   Document-method: GPS_PVT::SDR::Signal::Int_Partial.partial
 
   call-seq:
-    partial(int const & start, unsigned int const & length) -> Int_Partial
+    partial(int const & start, unsigned int const & length) -> VALUE
 
 An instance method.
 
@@ -15163,19 +15274,21 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Int_Partial_partial(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
-  int *arg2 = 0 ;
-  unsigned int *arg3 = 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int *arg3 = 0 ;
+  unsigned int *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  unsigned int temp3 ;
-  unsigned int val3 ;
+  int temp3 ;
+  int val3 ;
   int ecode3 = 0 ;
-  Signal_Partial< int > result;
+  unsigned int temp4 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
   VALUE vresult = Qnil;
   
+  arg2 = &self;
   if ((argc < 2) || (argc > 2)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
   }
@@ -15184,67 +15297,20 @@ _wrap_Int_Partial_partial(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(argv[0], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","partial", 2, argv[0] ));
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  ecode3 = SWIG_AsVal_unsigned_SS_int(argv[1], &val3);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "unsigned int","partial", 3, argv[1] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","partial", 3, argv[0] ));
   } 
-  temp3 = static_cast< unsigned int >(val3);
+  temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = Signal_Partial_Sl_int_Sg__partial(arg1,(int const &)*arg2,(unsigned int const &)*arg3);
-  vresult = SWIG_NewPointerObj((new Signal_Partial< int >(static_cast< const Signal_Partial< int >& >(result))), SWIGTYPE_p_Signal_PartialT_int_t, SWIG_POINTER_OWN |  0 );
-  {
-    rb_iv_set(vresult, "@__orig_sig__", rb_iv_get(self, "@__orig_sig__"));
-    
-  }    return vresult;
-fail:
-  return Qnil;
-}
-
-
-/*
-  Document-method: GPS_PVT::SDR::Signal::Int_Partial.each
-
-  call-seq:
-    each
-
-Iterate thru each element in the Int_Partial.  A block must be provided.
-*/
-SWIGINTERN VALUE
-_wrap_Int_Partial_each(int argc, VALUE *argv, VALUE self) {
-  Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
-  VALUE *arg2 = (VALUE *) 0 ;
-  void *arg3 = (void *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  VALUE vresult = Qnil;
-  
-  
-  {
-    if(!rb_block_given_p()){
-      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
-    }
-  }
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","each", 1, self )); 
-  }
-  arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
-  try {
-    Signal_Partial_Sl_int_Sg__each((Signal_Partial< int > const *)arg1,arg2,(void const *)arg3);
-  } catch(native_exception &_e) {
-    (&_e)->regenerate();
-    SWIG_fail;
-  }
-  vresult = self;
+  ecode4 = SWIG_AsVal_unsigned_SS_int(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "unsigned int","partial", 4, argv[1] ));
+  } 
+  temp4 = static_cast< unsigned int >(val4);
+  arg4 = &temp4;
+  result = (VALUE)Signal_Partial_Sl_int_Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  vresult = result;
   return vresult;
 fail:
   return Qnil;
@@ -15263,13 +15329,13 @@ An instance method.
 SWIGINTERN VALUE
 _wrap_Int_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
-  VALUE arg2 = (VALUE) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   VALUE result;
   VALUE vresult = Qnil;
   
-  arg2 = self;
+  arg2 = &self;
   if ((argc < 0) || (argc > 0)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
   }
@@ -15279,6 +15345,51 @@ _wrap_Int_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
   result = (VALUE)Signal_Partial_Sl_int_Sg__to_shareable((Signal_Partial< int > const *)arg1,arg2);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.each
+
+  call-seq:
+    each -> VALUE
+
+Iterate thru each element in the Int_Partial.  A block must be provided.
+*/
+SWIGINTERN VALUE
+_wrap_Int_Partial_each(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  {
+    if(!rb_block_given_p()){
+      return rb_enumeratorize(self, ID2SYM(rb_frame_callee()), argc, argv);
+    }
+  }
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","each", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
+  try {
+    result = (VALUE)Signal_Partial_Sl_int_Sg__each((Signal_Partial< int > const *)arg1,arg2,(void const *)arg3);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  }
   vresult = result;
   return vresult;
 fail:
@@ -16044,8 +16155,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "max_abs_index", VALUEFUNC(_wrap_Real_max_abs_index), -1);
   rb_define_method(SwigClassReal.klass, "min_abs_index", VALUEFUNC(_wrap_Real_min_abs_index), -1);
   rb_define_method(SwigClassReal.klass, "partial", VALUEFUNC(_wrap_Real_partial), -1);
-  rb_define_method(SwigClassReal.klass, "each", VALUEFUNC(_wrap_Real_each), -1);
   rb_define_method(SwigClassReal.klass, "to_shareable", VALUEFUNC(_wrap_Real_to_shareable), -1);
+  rb_define_method(SwigClassReal.klass, "each", VALUEFUNC(_wrap_Real_each), -1);
   rb_define_method(SwigClassReal.klass, "*", VALUEFUNC(_wrap_Real___mul__), -1);
   rb_define_method(SwigClassReal.klass, "+", VALUEFUNC(_wrap_Real___add__), -1);
   rb_define_method(SwigClassReal.klass, "-", VALUEFUNC(_wrap_Real___sub__), -1);
@@ -16086,8 +16197,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex.klass, "max_abs_index", VALUEFUNC(_wrap_Complex_max_abs_index), -1);
   rb_define_method(SwigClassComplex.klass, "min_abs_index", VALUEFUNC(_wrap_Complex_min_abs_index), -1);
   rb_define_method(SwigClassComplex.klass, "partial", VALUEFUNC(_wrap_Complex_partial), -1);
-  rb_define_method(SwigClassComplex.klass, "each", VALUEFUNC(_wrap_Complex_each), -1);
   rb_define_method(SwigClassComplex.klass, "to_shareable", VALUEFUNC(_wrap_Complex_to_shareable), -1);
+  rb_define_method(SwigClassComplex.klass, "each", VALUEFUNC(_wrap_Complex_each), -1);
   rb_define_method(SwigClassComplex.klass, "*", VALUEFUNC(_wrap_Complex___mul__), -1);
   rb_define_method(SwigClassComplex.klass, "+", VALUEFUNC(_wrap_Complex___add__), -1);
   rb_define_method(SwigClassComplex.klass, "-", VALUEFUNC(_wrap_Complex___sub__), -1);
@@ -16120,8 +16231,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt.klass, "max_abs_index", VALUEFUNC(_wrap_Int_max_abs_index), -1);
   rb_define_method(SwigClassInt.klass, "min_abs_index", VALUEFUNC(_wrap_Int_min_abs_index), -1);
   rb_define_method(SwigClassInt.klass, "partial", VALUEFUNC(_wrap_Int_partial), -1);
-  rb_define_method(SwigClassInt.klass, "each", VALUEFUNC(_wrap_Int_each), -1);
   rb_define_method(SwigClassInt.klass, "to_shareable", VALUEFUNC(_wrap_Int_to_shareable), -1);
+  rb_define_method(SwigClassInt.klass, "each", VALUEFUNC(_wrap_Int_each), -1);
   rb_define_method(SwigClassInt.klass, "*", VALUEFUNC(_wrap_Int___mul__), -1);
   rb_define_method(SwigClassInt.klass, "+", VALUEFUNC(_wrap_Int___add__), -1);
   rb_define_method(SwigClassInt.klass, "-", VALUEFUNC(_wrap_Int___sub__), -1);
@@ -16156,8 +16267,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal_Partial.klass, "max_abs_index", VALUEFUNC(_wrap_Real_Partial_max_abs_index), -1);
   rb_define_method(SwigClassReal_Partial.klass, "min_abs_index", VALUEFUNC(_wrap_Real_Partial_min_abs_index), -1);
   rb_define_method(SwigClassReal_Partial.klass, "partial", VALUEFUNC(_wrap_Real_Partial_partial), -1);
-  rb_define_method(SwigClassReal_Partial.klass, "each", VALUEFUNC(_wrap_Real_Partial_each), -1);
   rb_define_method(SwigClassReal_Partial.klass, "to_shareable", VALUEFUNC(_wrap_Real_Partial_to_shareable), -1);
+  rb_define_method(SwigClassReal_Partial.klass, "each", VALUEFUNC(_wrap_Real_Partial_each), -1);
   rb_define_method(SwigClassReal_Partial.klass, "*", VALUEFUNC(_wrap_Real_Partial___mul__), -1);
   rb_define_method(SwigClassReal_Partial.klass, "+", VALUEFUNC(_wrap_Real_Partial___add__), -1);
   rb_define_method(SwigClassReal_Partial.klass, "-", VALUEFUNC(_wrap_Real_Partial___sub__), -1);
@@ -16187,8 +16298,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex_Partial.klass, "max_abs_index", VALUEFUNC(_wrap_Complex_Partial_max_abs_index), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "min_abs_index", VALUEFUNC(_wrap_Complex_Partial_min_abs_index), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "partial", VALUEFUNC(_wrap_Complex_Partial_partial), -1);
-  rb_define_method(SwigClassComplex_Partial.klass, "each", VALUEFUNC(_wrap_Complex_Partial_each), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "to_shareable", VALUEFUNC(_wrap_Complex_Partial_to_shareable), -1);
+  rb_define_method(SwigClassComplex_Partial.klass, "each", VALUEFUNC(_wrap_Complex_Partial_each), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "*", VALUEFUNC(_wrap_Complex_Partial___mul__), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "+", VALUEFUNC(_wrap_Complex_Partial___add__), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "-", VALUEFUNC(_wrap_Complex_Partial___sub__), -1);
@@ -16211,8 +16322,8 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt_Partial.klass, "max_abs_index", VALUEFUNC(_wrap_Int_Partial_max_abs_index), -1);
   rb_define_method(SwigClassInt_Partial.klass, "min_abs_index", VALUEFUNC(_wrap_Int_Partial_min_abs_index), -1);
   rb_define_method(SwigClassInt_Partial.klass, "partial", VALUEFUNC(_wrap_Int_Partial_partial), -1);
-  rb_define_method(SwigClassInt_Partial.klass, "each", VALUEFUNC(_wrap_Int_Partial_each), -1);
   rb_define_method(SwigClassInt_Partial.klass, "to_shareable", VALUEFUNC(_wrap_Int_Partial_to_shareable), -1);
+  rb_define_method(SwigClassInt_Partial.klass, "each", VALUEFUNC(_wrap_Int_Partial_each), -1);
   rb_define_method(SwigClassInt_Partial.klass, "*", VALUEFUNC(_wrap_Int_Partial___mul__), -1);
   rb_define_method(SwigClassInt_Partial.klass, "+", VALUEFUNC(_wrap_Int_Partial___add__), -1);
   rb_define_method(SwigClassInt_Partial.klass, "-", VALUEFUNC(_wrap_Int_Partial___sub__), -1);
