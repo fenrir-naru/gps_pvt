@@ -205,7 +205,7 @@ RSpec::shared_examples 'Matrix' do
         expect{mat[:not_square].rank}.to raise_error(RuntimeError)
       end
       it 'cofactor' do
-        SylphideMath::tolerance = 1E-10
+        GPS_PVT::SylphideMath::tolerance = 1E-10
         (5..8).each{|n|
           orig = mat_gen[:square].call(n)
           cmp = Matrix[*orig.to_a]
@@ -218,7 +218,7 @@ RSpec::shared_examples 'Matrix' do
         }
       end
       it 'adjugate' do
-        SylphideMath::tolerance = 1E-10
+        GPS_PVT::SylphideMath::tolerance = 1E-10
         (5..8).each{|n|
           orig = mat_gen[:square].call(n)
           (Matrix[*orig.adjugate.to_a] - Matrix[*orig.to_a].adjugate).each{|v| 
@@ -286,7 +286,7 @@ RSpec::shared_examples 'Matrix' do
       ].each{|arg|
         mat_orig = mat[0].copy
         mat_replaced = arg.kind_of?(Proc) ? mat_orig.send(:replace!, &arg) : mat_orig.send(:replace!, arg)
-        expect(mat_replaced).to equal(mat_orig)
+        expect(mat_replaced).to be(mat_orig)
         expect(mat_replaced).not_to equal(mat[1])
         expect(mat_replaced.to_a).to eq(mat[1].to_a)
       }
@@ -306,7 +306,7 @@ RSpec::shared_examples 'Matrix' do
             idxs[a], idxs[b] = [b, a]
             mat_builtin = Matrix::columns(mat_builtin.column_vectors.values_at(*idxs))
           end
-          expect(mat_mod).to equal(mat[0])
+          expect(mat_mod).to be(mat[0])
           expect(mat[0].to_a).to eq(mat_builtin.to_a)
         }
       }
@@ -337,6 +337,8 @@ RSpec::shared_examples 'Matrix' do
       expect(mat.adjoint.to_a).to eq(Matrix[*compare_with].conj.t.to_a)
     end
     it 'supports submatrix with partial' do
+      expect(mat.partial(params[:rc][0] - 1, params[:rc][1] - 1).to_a) \
+          .to eq(Matrix[*compare_with[0..-2].collect{|values| values[0..-2]}].to_a)
       expect(mat.partial(params[:rc][0] - 1, params[:rc][1] - 1, 1, 1).to_a) \
           .to eq(Matrix[*compare_with[1..-1].collect{|values| values[1..-1]}].to_a)
     end
@@ -389,11 +391,12 @@ RSpec::shared_examples 'Matrix' do
           candidates = (func.to_s =~ /with_index$/) \
               ? indices.collect{|i, j| [compare_with[i][j], i, j]} \
               : indices.collect{|i, j| [compare_with[i][j]]}
-          mat.send(*[func, k].compact){|*v|
+          mat2 = mat.send(*[func, k].compact){|*v|
             i = candidates.find_index(v)
             expect(i).not_to be(nil)
             candidates.delete_at(i)
           }
+          expect(mat2).to be(mat)
           expect(candidates.empty?).to be(true)
         }
       }
@@ -447,7 +450,7 @@ RSpec::shared_examples 'Matrix' do
             v[0] * 2
           }
           expect(candidates.empty?).to be(true)
-          expect(mat2.to_a).to eq(mat.to_a)
+          expect(mat2).to be(mat)
           expect(mat2.to_a).to eq(compare_with.collect.with_index{|values, i|
                 values.collect.with_index{|v, j|
                   indices.include?([i, j]) ? (v * 2) : v
@@ -539,6 +542,7 @@ RSpec::shared_examples 'Matrix' do
       }
       mat_orig = mat[0].to_a
       r, c = [:rows, :columns].collect{|f| mat[0].send(f)}
+      expect(mat[0].resize!(r, c)).to be(mat[0])
       expect(mat[0].resize!(r, c).to_a).to eq(mat_orig)
       expect(mat[0].resize!(r, nil).to_a).to eq(mat_orig)
       expect(mat[0].resize!(nil, c).to_a).to eq(mat_orig)
@@ -598,6 +602,37 @@ RSpec::shared_examples 'Matrix' do
       }
     end
   end
+  describe 'parallelization with Ractor' do
+    it "supports instantiation in sub Ractor" do
+      expect{
+        rac = Ractor::new{
+          mat_type, r, c = receive
+          # @see https://docs.ruby-lang.org/en/master/ractor_md.html#label-Return+value+of+a+block+for+Ractor.new
+          # When the block return value is available, ...,
+          # so any values can be sent with this communication path 
+          # without any modification.
+          mat_type::new(r, c)
+        }
+        rac.send([mat_type, params[:rc]].flatten.freeze)
+        mat = rac.take
+        [:row_size, :column_size].zip(params[:rc]).each{|k, v|
+          expect(mat.send(k)).to eq(v)
+        }
+      }.not_to raise_error
+    end
+    it "supports messaging by using to_shareable between Ractors" do
+      expect{
+        rac = Ractor::new{
+          mat = receive
+        }
+        rac.send(mat_type::new(*params[:rc]).to_shareable)
+        mat = rac.take
+        [:row_size, :column_size].zip(params[:rc]).each{|k, v|
+          expect(mat.send(k)).to eq(v)
+        }
+      }.not_to raise_error
+    end
+  end if defined?(Ractor)
 end
 
 =begin
