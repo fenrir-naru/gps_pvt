@@ -25782,6 +25782,11 @@ SWIGEXPORT void Init_GPS(void) {
   
   swig::SwigGCReferences::initialize();
   
+  
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  rb_ext_ractor_safe(true);
+#endif
+  
   rb_require("gps_pvt/SylphideMath");
   rb_require("gps_pvt/Coordinate");
   rb_define_const(mGPS, "GPS_SC2RAD", SWIG_From_double(static_cast< double >(3.1415926535898)));

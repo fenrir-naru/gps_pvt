@@ -1892,26 +1892,6 @@ static VALUE mSylphideMath;
 #include <stdexcept>
 
 
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
-
-
-  #define SWIG_From_long   LONG2NUM 
-
-
-SWIGINTERNINLINE VALUE
-SWIG_From_int  (int value)
-{    
-  return SWIG_From_long  (value);
-}
-
-
 #include <string>
 #include <sstream>
 #include <vector>
@@ -3075,6 +3055,19 @@ struct MatrixUtil {
 };
 
 
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
+  #define SWIG_From_long   LONG2NUM 
+
+
 SWIGINTERNINLINE VALUE
 SWIG_From_unsigned_SS_long  (unsigned long value)
 {
@@ -3353,6 +3346,19 @@ SWIGINTERN VALUE Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatVi
     }
     return res;
   }
+SWIGINTERN VALUE Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__to_shareable(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self){
+    Matrix_Frozen<double, Array2D_Dense< double >, MatrixViewBase< > > *ptr(
+        new Matrix_Frozen<double, Array2D_Dense< double >, MatrixViewBase< > >(*self));
+    VALUE res(SWIG_NewPointerObj(
+        ptr,
+        SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t,
+        SWIG_POINTER_OWN));
+    rb_obj_freeze(res);
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+#endif
+    return res;
+  }
 SWIGINTERN std::string Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg____str__(Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *self){
     std::stringstream s;
     s << (*self);
@@ -3552,6 +3558,19 @@ SWIGINTERN VALUE Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatVi
       }
       rb_ary_store(res, i, row);
     }
+    return res;
+  }
+SWIGINTERN VALUE Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__to_shareable(Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *self){
+    Matrix_Frozen<double, Array2D_Dense< double >, MatrixViewFilter< MatrixViewBase< > > > *ptr(
+        new Matrix_Frozen<double, Array2D_Dense< double >, MatrixViewFilter< MatrixViewBase< > > >(*self));
+    VALUE res(SWIG_NewPointerObj(
+        ptr,
+        SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,
+        SWIG_POINTER_OWN));
+    rb_obj_freeze(res);
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+#endif
     return res;
   }
 SWIGINTERN std::string Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg____str__(Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *self){
@@ -3900,6 +3919,19 @@ SWIGINTERN VALUE Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Comp
     }
     return res;
   }
+SWIGINTERN VALUE Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__to_shareable(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self){
+    Matrix_Frozen<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewBase< > > *ptr(
+        new Matrix_Frozen<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewBase< > >(*self));
+    VALUE res(SWIG_NewPointerObj(
+        ptr,
+        SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t,
+        SWIG_POINTER_OWN));
+    rb_obj_freeze(res);
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+#endif
+    return res;
+  }
 SWIGINTERN std::string Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg____str__(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *self){
     std::stringstream s;
     s << (*self);
@@ -4099,6 +4131,19 @@ SWIGINTERN VALUE Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Comp
       }
       rb_ary_store(res, i, row);
     }
+    return res;
+  }
+SWIGINTERN VALUE Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__to_shareable(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *self){
+    Matrix_Frozen<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewFilter< MatrixViewBase< > > > *ptr(
+        new Matrix_Frozen<Complex< double >, Array2D_Dense< Complex< double > >, MatrixViewFilter< MatrixViewBase< > > >(*self));
+    VALUE res(SWIG_NewPointerObj(
+        ptr,
+        SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t,
+        SWIG_POINTER_OWN));
+    rb_obj_freeze(res);
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    RB_FL_SET(res, RUBY_FL_SHAREABLE);
+#endif
     return res;
   }
 SWIGINTERN std::string Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg____str__(Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *self){
@@ -8972,6 +9017,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SylphideMath::Matrix_FrozenD.to_shareable
+
+  call-seq:
+    to_shareable -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenD_to_shareable(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > const *","to_shareable", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatViewBase > * >(argp1);
+  result = (VALUE)Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatViewBase_Sg__to_shareable((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewBase< > > const *)arg1);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SylphideMath::Matrix_FrozenD.to_s
 
   call-seq:
@@ -12409,6 +12487,39 @@ _wrap_Matrix_FrozenD_f_to_a(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > * >(argp1);
   result = (VALUE)Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__to_a((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SylphideMath::Matrix_FrozenD_f.to_shareable
+
+  call-seq:
+    to_shareable -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenD_f_to_shareable(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *arg1 = (Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_double_Array2D_DenseT_double_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > const *","to_shareable", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< double,Array2D_Dense< double >,MatView_f > * >(argp1);
+  result = (VALUE)Matrix_Frozen_Sl_double_Sc_Array2D_Dense_Sl_double_Sg__Sc_MatView_f_Sg__to_shareable((Matrix_Frozen< double,Array2D_Dense< double >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1);
   vresult = result;
   return vresult;
 fail:
@@ -16925,6 +17036,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SylphideMath::Matrix_FrozenComplexD.to_shareable
+
+  call-seq:
+    to_shareable -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenComplexD_to_shareable(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewBaseT_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > const *","to_shareable", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatViewBase > * >(argp1);
+  result = (VALUE)Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatViewBase_Sg__to_shareable((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewBase< > > const *)arg1);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SylphideMath::Matrix_FrozenComplexD.to_s
 
   call-seq:
@@ -20368,6 +20512,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SylphideMath::Matrix_FrozenComplexD_f.to_shareable
+
+  call-seq:
+    to_shareable -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Matrix_FrozenComplexD_f_to_shareable(int argc, VALUE *argv, VALUE self) {
+  Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *arg1 = (Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Matrix_FrozenT_ComplexT_double_t_Array2D_DenseT_ComplexT_double_t_t_MatrixViewFilterT_MatrixViewBaseT_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > const *","to_shareable", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatView_f > * >(argp1);
+  result = (VALUE)Matrix_Frozen_Sl_Complex_Sl_double_Sg__Sc_Array2D_Dense_Sl_Complex_Sl_double_Sg__Sg__Sc_MatView_f_Sg__to_shareable((Matrix_Frozen< Complex< double >,Array2D_Dense< Complex< double > >,MatrixViewFilter< MatrixViewBase< > > > const *)arg1);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SylphideMath::Matrix_FrozenComplexD_f.to_s
 
   call-seq:
@@ -22321,7 +22498,6 @@ SWIGEXPORT void Init_SylphideMath(void) {
   }
   
   SWIG_RubyInitializeTrackings();
-  rb_define_const(mSylphideMath, "ENABLE_IOSTREAM", SWIG_From_int(static_cast< int >(1)));
   
   SwigClassGC_VALUE.klass = rb_define_class_under(mSylphideMath, "GC_VALUE", rb_cObject);
   SWIG_TypeClientData(SWIGTYPE_p_swig__GC_VALUE, (void *) &SwigClassGC_VALUE);
@@ -22332,6 +22508,11 @@ SWIGEXPORT void Init_SylphideMath(void) {
   SwigClassGC_VALUE.trackObjects = 0;
   
   swig::SwigGCReferences::initialize();
+  
+  
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  rb_ext_ractor_safe(true);
+#endif
   
   
   SwigClassComplexD.klass = rb_define_class_under(mSylphideMath, "ComplexD", rb_cObject);
@@ -22442,6 +22623,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_method(SwigClassMatrix_FrozenD.klass, "index", VALUEFUNC(_wrap_Matrix_FrozenD_index), -1);
   rb_define_alias(SwigClassMatrix_FrozenD.klass, "find_index", "index");
   rb_define_method(SwigClassMatrix_FrozenD.klass, "to_a", VALUEFUNC(_wrap_Matrix_FrozenD_to_a), -1);
+  rb_define_method(SwigClassMatrix_FrozenD.klass, "to_shareable", VALUEFUNC(_wrap_Matrix_FrozenD_to_shareable), -1);
   rb_define_method(SwigClassMatrix_FrozenD.klass, "to_s", VALUEFUNC(_wrap_Matrix_FrozenD___str__), -1);
   rb_define_method(SwigClassMatrix_FrozenD.klass, "conjugate", VALUEFUNC(_wrap_Matrix_FrozenD_conjugate), -1);
   rb_define_alias(SwigClassMatrix_FrozenD.klass, "conj", "conjugate");
@@ -22518,6 +22700,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_method(SwigClassMatrix_FrozenD_f.klass, "index", VALUEFUNC(_wrap_Matrix_FrozenD_f_index), -1);
   rb_define_alias(SwigClassMatrix_FrozenD_f.klass, "find_index", "index");
   rb_define_method(SwigClassMatrix_FrozenD_f.klass, "to_a", VALUEFUNC(_wrap_Matrix_FrozenD_f_to_a), -1);
+  rb_define_method(SwigClassMatrix_FrozenD_f.klass, "to_shareable", VALUEFUNC(_wrap_Matrix_FrozenD_f_to_shareable), -1);
   rb_define_method(SwigClassMatrix_FrozenD_f.klass, "to_s", VALUEFUNC(_wrap_Matrix_FrozenD_f___str__), -1);
   rb_define_method(SwigClassMatrix_FrozenD_f.klass, "conjugate", VALUEFUNC(_wrap_Matrix_FrozenD_f_conjugate), -1);
   rb_define_alias(SwigClassMatrix_FrozenD_f.klass, "conj", "conjugate");
@@ -22622,6 +22805,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_method(SwigClassMatrix_FrozenComplexD.klass, "index", VALUEFUNC(_wrap_Matrix_FrozenComplexD_index), -1);
   rb_define_alias(SwigClassMatrix_FrozenComplexD.klass, "find_index", "index");
   rb_define_method(SwigClassMatrix_FrozenComplexD.klass, "to_a", VALUEFUNC(_wrap_Matrix_FrozenComplexD_to_a), -1);
+  rb_define_method(SwigClassMatrix_FrozenComplexD.klass, "to_shareable", VALUEFUNC(_wrap_Matrix_FrozenComplexD_to_shareable), -1);
   rb_define_method(SwigClassMatrix_FrozenComplexD.klass, "to_s", VALUEFUNC(_wrap_Matrix_FrozenComplexD___str__), -1);
   rb_define_method(SwigClassMatrix_FrozenComplexD.klass, "conjugate", VALUEFUNC(_wrap_Matrix_FrozenComplexD_conjugate), -1);
   rb_define_alias(SwigClassMatrix_FrozenComplexD.klass, "conj", "conjugate");
@@ -22698,6 +22882,7 @@ SWIGEXPORT void Init_SylphideMath(void) {
   rb_define_method(SwigClassMatrix_FrozenComplexD_f.klass, "index", VALUEFUNC(_wrap_Matrix_FrozenComplexD_f_index), -1);
   rb_define_alias(SwigClassMatrix_FrozenComplexD_f.klass, "find_index", "index");
   rb_define_method(SwigClassMatrix_FrozenComplexD_f.klass, "to_a", VALUEFUNC(_wrap_Matrix_FrozenComplexD_f_to_a), -1);
+  rb_define_method(SwigClassMatrix_FrozenComplexD_f.klass, "to_shareable", VALUEFUNC(_wrap_Matrix_FrozenComplexD_f_to_shareable), -1);
   rb_define_method(SwigClassMatrix_FrozenComplexD_f.klass, "to_s", VALUEFUNC(_wrap_Matrix_FrozenComplexD_f___str__), -1);
   rb_define_method(SwigClassMatrix_FrozenComplexD_f.klass, "conjugate", VALUEFUNC(_wrap_Matrix_FrozenComplexD_f_conjugate), -1);
   rb_define_alias(SwigClassMatrix_FrozenComplexD_f.klass, "conj", "conjugate");

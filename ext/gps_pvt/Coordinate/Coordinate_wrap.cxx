@@ -6610,6 +6610,11 @@ SWIGEXPORT void Init_Coordinate(void) {
   swig::SwigGCReferences::initialize();
   
   
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  rb_ext_ractor_safe(true);
+#endif
+  
+  
   SwigClassBase.klass = rb_define_class_under(mCoordinate, "Base", rb_cObject);
   SWIG_TypeClientData(SWIGTYPE_p_System_3DT_double_t, (void *) &SwigClassBase);
   rb_include_module(SwigClassBase.klass, rb_eval_string("Enumerable"));
