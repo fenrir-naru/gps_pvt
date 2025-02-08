@@ -35,10 +35,11 @@ Gem::Specification.new do |spec|
   spec.files += proc{
     require 'pathname'
     base_dir = Pathname::new(File::absolute_path(File.dirname(__FILE__)))
+    is_windows_git = `git --version` =~ /windows/i
     # get an array of submodule dirs by executing 'pwd' inside each submodule
     `git submodule --quiet foreach pwd`.split($/).collect{|dir|
       # issue git ls-files in submodule's directory
-      `git -C #{dir} ls-files -v`.split($/).collect{|f|
+      `git -C #{is_windows_git ? dir.sub(/^\/([^\/]+)/, "\\1:") : dir} ls-files -v`.split($/).collect{|f|
         next nil unless f =~ /^H */ # consider git sparse checkout
         # get relative path
         f = Pathname::new(File::join(dir, $'))
