@@ -69,8 +69,12 @@ Pathname::glob(File::join(extconf_dir, "**/")){|dir|
       open_orig(*args, &b)
     }
   }
-  create_makefile(mod_path.to_s)
-  
+  create_makefile(mod_path.to_s){|conf|
+    conf.collect!{|lines|
+      lines.sub(/^target_prefix = /){"target_prefix ?= /gps_pvt\noverride target_prefix := $(target_prefix)"}
+    }
+  }
+
   cfg_recovery.each{|k, v| eval("$#{k}").replace(v)}
 }
 
@@ -84,9 +88,6 @@ open("Makefile", 'w'){|io|
   # @see https://stackoverflow.com/a/17845120/15992898
   io.write(<<-__TOPLEVEL_MAKEFILE__)
 TOPTARGETS := all clean distclean realclean install site-install
-
-MAKEOVERRIDES := $(filter-out target_prefix=%,$(MAKEOVERRIDES))
-unexport target_prefix
 
 SUBMFS := $(wildcard Makefile.*)
 
