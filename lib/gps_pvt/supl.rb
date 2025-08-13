@@ -1,5 +1,5 @@
 require_relative 'upl/upl'
-require_relative 'GPS'
+require 'gps_pvt/GPS' # in case GPS.so is generated under ext/gps_pvt
 
 require 'socket'
 require 'openssl'
