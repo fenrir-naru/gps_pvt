@@ -1903,12 +1903,27 @@ static VALUE mSignal;
 #include <sstream>
 #include <string>
 #include <exception>
+// #include <ruby/ractor.h>
 
-#if defined(SWIGRUBY) && defined(isfinite)
-#undef isfinite
-#endif
 
 #include "param/signal.h"
+
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+#include <atomic>
+#endif
+template <class T>
+struct Signal_SideLoaded<T, std::vector<T> > {
+  typedef Signal_SideLoaded<T, std::vector<T> > self_t;
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  typedef std::atomic<int> ref_count_t;
+#else
+  typedef int ref_count_t;
+#endif
+  ref_count_t ref_count; // keep ref_count to correspond to the same instance
+  Signal_SideLoaded() : ref_count(0) {}
+  Signal_SideLoaded(const self_t &another) : ref_count(0) {}
+  self_t &operator=(const self_t &another){return *this;}
+};
 
 
 #include <typeinfo>
@@ -2203,6 +2218,29 @@ namespace swig {
 #include <stddef.h>
 
 
+#if defined(SWIGRUBY) && defined(isfinite)
+#undef isfinite_
+#undef isfinite
+#endif
+
+#include "param/complex.h"
+#include "param/matrix.h"
+
+#if defined(SWIGRUBY) && defined(isfinite_)
+#undef isfinite_
+#define isfinite(x) finite(x)
+#endif
+
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+#include <atomic>
+template <class T>
+template <class U>
+struct Array2D_Dense<T>::property_t<T, U> {
+  typedef std::atomic<int> ref_cnt_t;
+};
+#endif
+
+
 struct native_exception : public std::exception {
 
   int state;
@@ -2214,15 +2252,29 @@ struct native_exception : public std::exception {
 };
 
 
-#include <iostream>
-
-
 template <class T>
 struct Signal_Partial
-    : public Signal<T, PartialSignalBuffer<Signal<T> > > {
-  typedef Signal<T, PartialSignalBuffer<Signal<T> > > super_t;
-  Signal_Partial() : super_t() {}
+    : public Signal<T, Signal_PartialBuffer<Signal<T> > > {
+  typedef Signal<T, Signal_PartialBuffer<Signal<T> > > super_t;
+  //Signal_Partial() : super_t() {} // delete ctor()
   Signal_Partial(const super_t &sig) : super_t(sig) {}
+  Signal_Partial(Signal<T> *orig, const int &idx_begin, const int &idx_end)
+      : super_t() {
+    super_t::samples.orig = orig;
+    super_t::samples.idx_begin = idx_begin;
+    super_t::samples.idx_end = idx_end;
+  }
+#if defined(SWIGRUBY)
+  static void free(void *ptr){
+    Signal_Partial<T> *sig = (Signal_Partial<T> *)ptr;
+    if(sig->samples.orig){
+      if((--(sig->samples.orig->side_loaded.ref_count)) < 0){
+        delete sig->samples.orig;
+      }
+    }
+    delete sig;
+  }
+#endif
 };
 
 
@@ -2574,52 +2626,40 @@ namespace swig {
 
 struct SignalUtil {
 
-  template <class T, int bits>
-  static bool read_packed(const VALUE &src, typename Signal<T>::buf_t &dst){
+  template <class T, int bits, class IteratorT>
+  static bool read_packed(const VALUE &src, IteratorT &dst_it){
     static const unsigned char mask((1 << bits) - 1);
     switch(TYPE(src)){
       case T_STRING: {
         unsigned char *buf((unsigned char *)(RSTRING_PTR(src)));
         int len_src(RSTRING_LEN(src));
-        int len_dst(len_src * (8 / bits));
-        dst.resize(dst.size() + len_dst);
-        typename Signal<T>::buf_t::iterator it(dst.end() - len_dst);
         for(int i(0); i < len_src; ++i, ++buf){
           unsigned char c(*buf);
-          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
-            *it = ((int)((c & mask) << 1) - (int)mask);
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++dst_it){
+            *dst_it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
         return true;
       }
       case T_FILE: {
         rb_io_ascii8bit_binmode(src);
-        typename Signal<T>::buf_t::iterator it_end(dst.end()), it(it_end);
-        static const int size_buf_add(1024 * bits);
         while(true){
           VALUE v(rb_io_getbyte(src));
           if(!RTEST(v)){break;} // eof?
-          if(it == it_end){
-            dst.resize(dst.size() + size_buf_add);
-            it_end = dst.end();
-            it = it_end - size_buf_add;
-          }
           unsigned char c(NUM2CHR(v));
-          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
-            *it = ((int)((c & mask) << 1) - (int)mask);
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++dst_it){
+            *dst_it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
-        if(it != it_end){dst.resize(it - dst.begin());}
         return true;
       }
       default: return false;
     }
   }
 
-  template <class T>
-  static typename Signal<T>::buf_t to_buffer(const void *src = NULL){
+  template <class T, class IteratorT = typename Signal<T>::buf_t::iterator>
+  static void fill_buffer(IteratorT &it, const void *src = NULL){
     typedef typename Signal<T>::size_t size_t;
-    typename Signal<T>::buf_t res;
 
     const VALUE *value(static_cast<const VALUE *>(src));
     size_t len(0), i(0);
@@ -2627,8 +2667,7 @@ struct SignalUtil {
     bool valid_input(false);
     if(value){
       if(RB_TYPE_P(*value, T_ARRAY)){
-        res.resize(len = RARRAY_LEN(*value));
-        typename Signal<T>::buf_t::iterator it(res.begin());
+        len = RARRAY_LEN(*value);
         T elm;
         for(; i < len; i++, ++it){
           elm_val = RARRAY_AREF(*value, i);
@@ -2639,18 +2678,18 @@ struct SignalUtil {
       }else if(RB_TYPE_P(*value, T_HASH)){
         static const VALUE k_src(ID2SYM(rb_intern("source"))), k_format(ID2SYM(rb_intern("format")));
         VALUE v_src(rb_hash_lookup(*value, k_src)), v_format(rb_hash_lookup(*value, k_format));
-        struct {
+        static const struct {
           const VALUE name;
-          bool (*func)(const VALUE &src, typename Signal<T>::buf_t &dst);
+          bool (*func)(const VALUE &src, IteratorT &dst_it);
         } format_list[] = {
-          {ID2SYM(rb_intern("packed_1b")), &read_packed<T, 1>},
-          {ID2SYM(rb_intern("packed_2b")), &read_packed<T, 2>},
-          {ID2SYM(rb_intern("packed_4b")), &read_packed<T, 4>},
-          {ID2SYM(rb_intern("packed_8b")), &read_packed<T, 8>},
+          {ID2SYM(rb_intern("packed_1b")), &read_packed<T, 1, IteratorT>},
+          {ID2SYM(rb_intern("packed_2b")), &read_packed<T, 2, IteratorT>},
+          {ID2SYM(rb_intern("packed_4b")), &read_packed<T, 4, IteratorT>},
+          {ID2SYM(rb_intern("packed_8b")), &read_packed<T, 8, IteratorT>},
         };
         for(int i(0); i < sizeof(format_list) / sizeof(format_list[0]); ++i){
           if(format_list[i].name == v_format){
-            valid_input = (*format_list[i].func)(v_src, res);
+            valid_input = (*format_list[i].func)(v_src, it);
             break;
           }
         }
@@ -2661,7 +2700,7 @@ struct SignalUtil {
       valid_input = true;
       int state;
       T elm;
-      for(; ; i++){
+      for(; ; i++, ++it){
         elm_val = rb_protect(rb_yield, UINT2NUM(i), &state);
         if(state != 0){throw native_exception(state);}
         if(!RTEST(elm_val)){break;} // if nil returned, break loop.
@@ -2669,7 +2708,7 @@ struct SignalUtil {
           len = i + 1;
           break;
         }
-        res.push_back(elm);
+        *it = elm;
       }
     }
     if(!valid_input){
@@ -2687,6 +2726,51 @@ struct SignalUtil {
       throw std::invalid_argument(s.str().append(RSTRING_PTR(v_str), RSTRING_LEN(v_str)));
     }
 
+  }
+  static int buffer_size_required(const void *src) {
+    if(!src){return -1;}
+
+    const VALUE *value(static_cast<const VALUE *>(src));
+    switch(TYPE(*value)){
+      case T_ARRAY: return RARRAY_LEN(*value);
+      case T_HASH: {
+        static const VALUE k_src(ID2SYM(rb_intern("source"))), k_format(ID2SYM(rb_intern("format")));
+        VALUE v_src(rb_hash_lookup(*value, k_src)), v_format(rb_hash_lookup(*value, k_format));
+        static const struct {
+          const VALUE name;
+          int per_byte;
+        } format_list[] = {
+          {ID2SYM(rb_intern("packed_1b")), 8},
+          {ID2SYM(rb_intern("packed_2b")), 4},
+          {ID2SYM(rb_intern("packed_4b")), 2},
+          {ID2SYM(rb_intern("packed_8b")), 1},
+        };
+        for(int i(0); i < sizeof(format_list) / sizeof(format_list[0]); ++i){
+          if(format_list[i].name == v_format){
+            switch(TYPE(v_src)){
+              case T_STRING: return (format_list[i].per_byte * RSTRING_LEN(v_src));
+              case T_FILE: break; // TODO
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    return -1;
+  }
+  template <class T>
+  static typename Signal<T>::buf_t to_buffer(const void *src = NULL){
+    typename Signal<T>::buf_t res;
+    int dst_size(buffer_size_required(src));
+    if(dst_size >= 0){
+      res.resize(dst_size);
+      typename Signal<T>::buf_t::iterator it(res.begin());
+      fill_buffer<T>(it, src);
+    }else{
+      std::back_insert_iterator<typename Signal<T>::buf_t> it(std::back_inserter(res));
+      fill_buffer<T>(it, src);
+    }
     return res;
   }
   template <class SignalT>
@@ -2734,6 +2818,15 @@ struct SignalUtil {
         op_t());
     return Signal<Complex<T> >(x1).ifft().real(); // (6.17)
   }
+#if defined(SWIGRUBY)
+  template <class T>
+  static void free(void *ptr){
+    Signal<T> *sig = (Signal<T> *)ptr;
+    if((--(sig->side_loaded.ref_count)) < 0){
+      delete sig;
+    }
+  }
+#endif
 };
 
 
@@ -2942,6 +3035,32 @@ SWIGINTERN VALUE Signal_Sl_double_Sg__replace__SWIG_0(Signal< double > *self,VAL
     self->samples.swap(buf);
     return *_self;
   }
+SWIGINTERN VALUE Signal_Sl_double_Sg__fill__SWIG_0(Signal< double > *self,VALUE *_self,int idx_start,Signal< double >::size_t const &length,void const *special_input=NULL){
+    int idx_last(self->get_slice_end(idx_start, length));
+    int n(idx_last - idx_start);
+    if((idx_start < 0) || (n < 0) || (n != length)){
+      SWIG_exception(SWIG_ValueError, "Invalid index or length.");
+    }
+    do{
+      if(special_input){
+        const VALUE *obj_p(static_cast<const VALUE *>(special_input));
+        double v;
+        if(SWIG_IsOK(swig::asval(*obj_p, &v))){
+          std::fill(self->samples.begin() + idx_start, self->samples.begin() + idx_last, v);
+          break;
+        }
+      }
+      if(SignalUtil::buffer_size_required(special_input) == length){
+        typename Signal<double>::buf_t::iterator it(self->samples.begin() + idx_start);
+        SignalUtil::fill_buffer<double>(it, special_input);
+        break;
+      }
+      typename Signal<double>::buf_t buf(SignalUtil::to_buffer<double>(special_input));
+      if(buf.size() > length){SWIG_exception(SWIG_ValueError, "Invalid input length.");}
+      std::copy(buf.begin(), buf.begin() + length, self->samples.begin() + idx_start);
+    }while(false);
+    return *_self;
+  }
 SWIGINTERN VALUE Signal_Sl_double_Sg__append__SWIG_0(Signal< double > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<double>::buf_t buf(SignalUtil::to_buffer<double>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
@@ -2983,8 +3102,25 @@ SWIGINTERN Signal< double > Signal_Sl_double_Sg____getitem____SWIG_1(Signal< dou
     // '%alias slice "[]";' does not work because of overloading.
     return (self)->slice(start, length);
   }
-SWIGINTERN double &Signal_Sl_double_Sg____setitem__(Signal< double > *self,unsigned int const &i,double const &v){
+SWIGINTERN double &Signal_Sl_double_Sg____setitem____SWIG_0(Signal< double > *self,unsigned int const &i,double const &v){
     return ((self)->operator[](i) = v);
+  }
+SWIGINTERN VALUE Signal_Sl_double_Sg____setitem____SWIG_1(Signal< double > *self,VALUE *_self,VALUE range,VALUE v){
+    do{
+      if(rb_obj_is_kind_of(range, rb_cRange)){
+        long beg, len;
+        // @see rb_ary_aset implementation
+        if(rb_range_beg_len(range, &beg, &len, self->size(), 1)){
+          // The last argument(1) means to raise rb_eRangeError in case len is out of range.
+          static const ID id_fill(rb_intern("fill!"));
+          rb_funcall(*_self, id_fill, 3,
+              SWIG_From_long(beg), SWIG_From_long(len), v);
+          break;
+        }
+      }
+      SWIG_exception(SWIG_ValueError, "Invalid range.");
+    }while(false);
+    return v;
   }
 SWIGINTERN Signal< double >::size_t Signal_Sl_double_Sg__max_abs_index(Signal< double > const *self){
     return std::distance(self->samples.begin(), self->max_abs_element());
@@ -2993,18 +3129,17 @@ SWIGINTERN Signal< double >::size_t Signal_Sl_double_Sg__min_abs_index(Signal< d
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
 SWIGINTERN VALUE Signal_Sl_double_Sg__partial(Signal< double > const *self,VALUE *_self,int const &start,unsigned int const &length){
-    VALUE res(swig::from(Signal_Partial<double>(
-        PartialSignalBuffer<Signal<double> >::generate_signal(
-          const_cast<Signal<double> &>(*self), start, length))));
-
-    rb_iv_set(res, "@__orig_sig__", *_self);
-
+    Signal<double> *sig(const_cast<Signal<double> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<double>(
+        Signal_PartialBuffer<Signal<double> >::generate_signal(
+          *sig, start, length)), 1));
     return res;
   }
 SWIGINTERN VALUE Signal_Sl_double_Sg__to_shareable(Signal< double > const *self,VALUE *_self){
-    PartialSignalBuffer<Signal<double> > buf = {const_cast<Signal<double> *>(self), 0, -1};
-    VALUE res(swig::from(Signal_Partial<double>(buf)));
-    rb_iv_set(res, "@__orig_sig__", *_self);
+    Signal<double> *sig(const_cast<Signal<double> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<double>(sig, 0, -1), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
@@ -3016,6 +3151,9 @@ SWIGINTERN VALUE Signal_Sl_double_Sg__each(Signal< double > const *self,VALUE *_
     return *_self;
   }
 SWIGINTERN double Signal_Sl_double_Sg__dot_product__SWIG_1(Signal< double > const *self,Signal< double > const &sig){return self->dot_product(sig);}
+SWIGINTERN double Signal_Sl_double_Sg__circular_dot_product__SWIG_1(Signal< double > const *self,int const &offset,Signal< double > const &sig){
+    return self->circular_dot_product(offset, sig);
+  }
 SWIGINTERN Signal< double > *new_Signal_Sl_double_Sg___SWIG_3(Signal< int > const &arg){return new Signal<double>(arg);}
 SWIGINTERN Signal< double > Signal_Sl_double_Sg____mul____SWIG_4(Signal< double > const *self,int const &arg){
     return self->operator*(arg);
@@ -3037,6 +3175,9 @@ SWIGINTERN Signal< double > Signal_Sl_double_Sg____sub____SWIG_5(Signal< double 
   }
 SWIGINTERN double Signal_Sl_double_Sg__dot_product__SWIG_2(Signal< double > const *self,Signal< int > const &arg){
     return self->dot_product(arg);
+  }
+SWIGINTERN double Signal_Sl_double_Sg__circular_dot_product__SWIG_2(Signal< double > const *self,int const &offset,Signal< int > const &arg){
+    return self->circular_dot_product(offset, arg);
   }
 SWIGINTERN Signal< Complex< double > > Signal_Sl_double_Sg__r2c(Signal< double > const *self){
     return SignalUtil::r2c(*self);
@@ -3132,6 +3273,32 @@ SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__replace__SWIG_0(Signal< Com
     self->samples.swap(buf);
     return *_self;
   }
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__fill__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,int idx_start,Signal< Complex< double > >::size_t const &length,void const *special_input=NULL){
+    int idx_last(self->get_slice_end(idx_start, length));
+    int n(idx_last - idx_start);
+    if((idx_start < 0) || (n < 0) || (n != length)){
+      SWIG_exception(SWIG_ValueError, "Invalid index or length.");
+    }
+    do{
+      if(special_input){
+        const VALUE *obj_p(static_cast<const VALUE *>(special_input));
+        Complex< double > v;
+        if(SWIG_IsOK(swig::asval(*obj_p, &v))){
+          std::fill(self->samples.begin() + idx_start, self->samples.begin() + idx_last, v);
+          break;
+        }
+      }
+      if(SignalUtil::buffer_size_required(special_input) == length){
+        typename Signal<Complex< double >>::buf_t::iterator it(self->samples.begin() + idx_start);
+        SignalUtil::fill_buffer<Complex< double >>(it, special_input);
+        break;
+      }
+      typename Signal<Complex< double >>::buf_t buf(SignalUtil::to_buffer<Complex< double >>(special_input));
+      if(buf.size() > length){SWIG_exception(SWIG_ValueError, "Invalid input length.");}
+      std::copy(buf.begin(), buf.begin() + length, self->samples.begin() + idx_start);
+    }while(false);
+    return *_self;
+  }
 SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__append__SWIG_0(Signal< Complex< double > > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<Complex< double >>::buf_t buf(SignalUtil::to_buffer<Complex< double >>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
@@ -3157,8 +3324,25 @@ SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg____get
     // '%alias slice "[]";' does not work because of overloading.
     return (self)->slice(start, length);
   }
-SWIGINTERN Complex< double > &Signal_Sl_Complex_Sl_double_Sg__Sg____setitem__(Signal< Complex< double > > *self,unsigned int const &i,Complex< double > const &v){
+SWIGINTERN Complex< double > &Signal_Sl_Complex_Sl_double_Sg__Sg____setitem____SWIG_0(Signal< Complex< double > > *self,unsigned int const &i,Complex< double > const &v){
     return ((self)->operator[](i) = v);
+  }
+SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg____setitem____SWIG_1(Signal< Complex< double > > *self,VALUE *_self,VALUE range,VALUE v){
+    do{
+      if(rb_obj_is_kind_of(range, rb_cRange)){
+        long beg, len;
+        // @see rb_ary_aset implementation
+        if(rb_range_beg_len(range, &beg, &len, self->size(), 1)){
+          // The last argument(1) means to raise rb_eRangeError in case len is out of range.
+          static const ID id_fill(rb_intern("fill!"));
+          rb_funcall(*_self, id_fill, 3,
+              SWIG_From_long(beg), SWIG_From_long(len), v);
+          break;
+        }
+      }
+      SWIG_exception(SWIG_ValueError, "Invalid range.");
+    }while(false);
+    return v;
   }
 SWIGINTERN Signal< Complex< double > >::size_t Signal_Sl_Complex_Sl_double_Sg__Sg__max_abs_index(Signal< Complex< double > > const *self){
     return std::distance(self->samples.begin(), self->max_abs_element());
@@ -3167,18 +3351,17 @@ SWIGINTERN Signal< Complex< double > >::size_t Signal_Sl_Complex_Sl_double_Sg__S
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
 SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__partial(Signal< Complex< double > > const *self,VALUE *_self,int const &start,unsigned int const &length){
-    VALUE res(swig::from(Signal_Partial<Complex< double >>(
-        PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(
-          const_cast<Signal<Complex< double >> &>(*self), start, length))));
-
-    rb_iv_set(res, "@__orig_sig__", *_self);
-
+    Signal<Complex< double >> *sig(const_cast<Signal<Complex< double >> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<Complex< double >>(
+        Signal_PartialBuffer<Signal<Complex< double >> >::generate_signal(
+          *sig, start, length)), 1));
     return res;
   }
 SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal< Complex< double > > const *self,VALUE *_self){
-    PartialSignalBuffer<Signal<Complex< double >> > buf = {const_cast<Signal<Complex< double >> *>(self), 0, -1};
-    VALUE res(swig::from(Signal_Partial<Complex< double >>(buf)));
-    rb_iv_set(res, "@__orig_sig__", *_self);
+    Signal<Complex< double >> *sig(const_cast<Signal<Complex< double >> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<Complex< double >>(sig, 0, -1), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
@@ -3190,6 +3373,9 @@ SWIGINTERN VALUE Signal_Sl_Complex_Sl_double_Sg__Sg__each(Signal< Complex< doubl
     return *_self;
   }
 SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_1(Signal< Complex< double > > const *self,Signal< Complex< double > > const &sig){return self->dot_product(sig);}
+SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_1(Signal< Complex< double > > const *self,int const &offset,Signal< Complex< double > > const &sig){
+    return self->circular_dot_product(offset, sig);
+  }
 SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg___SWIG_3(Signal< double > const &arg){return new Signal<Complex<double> >(arg);}
 SWIGINTERN Signal< Complex< double > > *new_Signal_Sl_Complex_Sl_double_Sg__Sg___SWIG_4(Signal< int > const &arg){return new Signal<Complex<double> >(arg);}
 SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg____mul____SWIG_4(Signal< Complex< double > > const *self,int const &arg){
@@ -3213,6 +3399,9 @@ SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg____sub
 SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_2(Signal< Complex< double > > const *self,Signal< int > const &arg){
     return self->dot_product(arg);
   }
+SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_2(Signal< Complex< double > > const *self,int const &offset,Signal< int > const &arg){
+    return self->circular_dot_product(offset, arg);
+  }
 SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg____mul____SWIG_6(Signal< Complex< double > > const *self,double const &arg){
     return self->operator*(arg);
   }
@@ -3233,6 +3422,9 @@ SWIGINTERN Signal< Complex< double > > Signal_Sl_Complex_Sl_double_Sg__Sg____sub
   }
 SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_3(Signal< Complex< double > > const *self,Signal< double > const &arg){
     return self->dot_product(arg);
+  }
+SWIGINTERN Complex< double > Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_3(Signal< Complex< double > > const *self,int const &offset,Signal< double > const &arg){
+    return self->circular_dot_product(offset, arg);
   }
 SWIGINTERN Signal< double > Signal_Sl_Complex_Sl_double_Sg__Sg__c2r(Signal< Complex< double > > const *self){
     return SignalUtil::c2r(*self);
@@ -3291,6 +3483,32 @@ SWIGINTERN VALUE Signal_Sl_int_Sg__replace__SWIG_0(Signal< int > *self,VALUE *_s
     self->samples.swap(buf);
     return *_self;
   }
+SWIGINTERN VALUE Signal_Sl_int_Sg__fill__SWIG_0(Signal< int > *self,VALUE *_self,int idx_start,Signal< int >::size_t const &length,void const *special_input=NULL){
+    int idx_last(self->get_slice_end(idx_start, length));
+    int n(idx_last - idx_start);
+    if((idx_start < 0) || (n < 0) || (n != length)){
+      SWIG_exception(SWIG_ValueError, "Invalid index or length.");
+    }
+    do{
+      if(special_input){
+        const VALUE *obj_p(static_cast<const VALUE *>(special_input));
+        int v;
+        if(SWIG_IsOK(swig::asval(*obj_p, &v))){
+          std::fill(self->samples.begin() + idx_start, self->samples.begin() + idx_last, v);
+          break;
+        }
+      }
+      if(SignalUtil::buffer_size_required(special_input) == length){
+        typename Signal<int>::buf_t::iterator it(self->samples.begin() + idx_start);
+        SignalUtil::fill_buffer<int>(it, special_input);
+        break;
+      }
+      typename Signal<int>::buf_t buf(SignalUtil::to_buffer<int>(special_input));
+      if(buf.size() > length){SWIG_exception(SWIG_ValueError, "Invalid input length.");}
+      std::copy(buf.begin(), buf.begin() + length, self->samples.begin() + idx_start);
+    }while(false);
+    return *_self;
+  }
 SWIGINTERN VALUE Signal_Sl_int_Sg__append__SWIG_0(Signal< int > *self,VALUE *_self,void const *special_input=NULL){
     typename Signal<int>::buf_t buf(SignalUtil::to_buffer<int>(special_input));
     self->samples.insert(self->samples.end(), buf.begin(), buf.end());
@@ -3316,8 +3534,25 @@ SWIGINTERN Signal< int > Signal_Sl_int_Sg____getitem____SWIG_1(Signal< int > con
     // '%alias slice "[]";' does not work because of overloading.
     return (self)->slice(start, length);
   }
-SWIGINTERN int &Signal_Sl_int_Sg____setitem__(Signal< int > *self,unsigned int const &i,int const &v){
+SWIGINTERN int &Signal_Sl_int_Sg____setitem____SWIG_0(Signal< int > *self,unsigned int const &i,int const &v){
     return ((self)->operator[](i) = v);
+  }
+SWIGINTERN VALUE Signal_Sl_int_Sg____setitem____SWIG_1(Signal< int > *self,VALUE *_self,VALUE range,VALUE v){
+    do{
+      if(rb_obj_is_kind_of(range, rb_cRange)){
+        long beg, len;
+        // @see rb_ary_aset implementation
+        if(rb_range_beg_len(range, &beg, &len, self->size(), 1)){
+          // The last argument(1) means to raise rb_eRangeError in case len is out of range.
+          static const ID id_fill(rb_intern("fill!"));
+          rb_funcall(*_self, id_fill, 3,
+              SWIG_From_long(beg), SWIG_From_long(len), v);
+          break;
+        }
+      }
+      SWIG_exception(SWIG_ValueError, "Invalid range.");
+    }while(false);
+    return v;
   }
 SWIGINTERN Signal< int >::size_t Signal_Sl_int_Sg__max_abs_index(Signal< int > const *self){
     return std::distance(self->samples.begin(), self->max_abs_element());
@@ -3326,18 +3561,17 @@ SWIGINTERN Signal< int >::size_t Signal_Sl_int_Sg__min_abs_index(Signal< int > c
     return std::distance(self->samples.begin(), self->min_abs_element());
   }
 SWIGINTERN VALUE Signal_Sl_int_Sg__partial(Signal< int > const *self,VALUE *_self,int const &start,unsigned int const &length){
-    VALUE res(swig::from(Signal_Partial<int>(
-        PartialSignalBuffer<Signal<int> >::generate_signal(
-          const_cast<Signal<int> &>(*self), start, length))));
-
-    rb_iv_set(res, "@__orig_sig__", *_self);
-
+    Signal<int> *sig(const_cast<Signal<int> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<int>(
+        Signal_PartialBuffer<Signal<int> >::generate_signal(
+          *sig, start, length)), 1));
     return res;
   }
 SWIGINTERN VALUE Signal_Sl_int_Sg__to_shareable(Signal< int > const *self,VALUE *_self){
-    PartialSignalBuffer<Signal<int> > buf = {const_cast<Signal<int> *>(self), 0, -1};
-    VALUE res(swig::from(Signal_Partial<int>(buf)));
-    rb_iv_set(res, "@__orig_sig__", *_self);
+    Signal<int> *sig(const_cast<Signal<int> *>(self));
+    ++(sig->side_loaded.ref_count);
+    VALUE res(swig::from_ptr(new Signal_Partial<int>(sig, 0, -1), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
@@ -3349,6 +3583,9 @@ SWIGINTERN VALUE Signal_Sl_int_Sg__each(Signal< int > const *self,VALUE *_self,v
     return *_self;
   }
 SWIGINTERN int Signal_Sl_int_Sg__dot_product(Signal< int > const *self,Signal< int > const &sig){return self->dot_product(sig);}
+SWIGINTERN int Signal_Sl_int_Sg__circular_dot_product(Signal< int > const *self,int const &offset,Signal< int > const &sig){
+    return self->circular_dot_product(offset, sig);
+  }
 SWIGINTERN Complex< double > Signal_Sl_int_Sg__ft(Signal< int > const *self,double const &k){
     return FFT_Generic<double>::ft(self->samples, k);
   }
@@ -3377,23 +3614,36 @@ SWIGINTERN size_t Signal_Partial_Sl_double_Sg__max_abs_index(Signal_Partial< dou
 SWIGINTERN size_t Signal_Partial_Sl_double_Sg__min_abs_index(Signal_Partial< double > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__partial(Signal_Partial< double > *self,VALUE *_self,int const &start,unsigned int const &length){
-      VALUE res(swig::from(Signal_Partial<double>(
-          PartialSignalBuffer<Signal<double> >::generate_signal(
-            const_cast<Signal_Partial<double> &>(*self), start, length))));
-
-      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
-
+SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__partial(Signal_Partial< double > const *self,VALUE *_self,int const &start,unsigned int const &length){
+      Signal_Partial<double> *sig(const_cast<Signal_Partial<double> *>(self));
+      if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+        throw std::runtime_error("Original signal was destructed.");
+      }
+      VALUE res(swig::from_ptr(new Signal_Partial<double>(
+          Signal_PartialBuffer<Signal<double> >::generate_signal(
+            *sig, start, length)), 1));
       return res;
     }
 SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__to_shareable(Signal_Partial< double > const *self,VALUE *_self){
-    VALUE res(swig::from(Signal_Partial<double>(*self)));
-    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    if(RB_FL_TEST(*_self, RUBY_FL_SHAREABLE)){
+      return *_self;
+    }
+#else
+    if(rb_obj_frozen_p(*_self)){
+      return *_self;
+    }
+#endif
+    Signal_Partial<double> *sig(const_cast<Signal_Partial<double> *>(self));
+    if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+      throw std::runtime_error("Original signal was destructed.");
+    }
+    VALUE res(swig::from_ptr(new Signal_Partial<double>(*sig), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
     rb_obj_freeze(res);
-    return res;
+    return /*rb_ractor_make_shareable(res);*/ res;
   }
 SWIGINTERN VALUE Signal_Partial_Sl_double_Sg__each(Signal_Partial< double > const *self,VALUE *_self,void const *check_block){
     SignalUtil::each(*self);
@@ -3411,6 +3661,9 @@ SWIGINTERN Signal< double > Signal_Partial_Sl_double_Sg____sub____SWIG_0(Signal_
 SWIGINTERN double Signal_Partial_Sl_double_Sg__dot_product__SWIG_0(Signal_Partial< double > const *self,Signal< double > const &arg){
     return self->dot_product(arg);
   }
+SWIGINTERN double Signal_Partial_Sl_double_Sg__circular_dot_product__SWIG_0(Signal_Partial< double > const *self,int const &offset,Signal< double > const &arg){
+    return self->circular_dot_product(offset, arg);
+  }
 SWIGINTERN Signal< double > Signal_Partial_Sl_double_Sg____mul____SWIG_1(Signal_Partial< double > const *self,Signal< int > const &arg){
     return self->operator*(arg);
   }
@@ -3422,6 +3675,9 @@ SWIGINTERN Signal< double > Signal_Partial_Sl_double_Sg____sub____SWIG_1(Signal_
   }
 SWIGINTERN double Signal_Partial_Sl_double_Sg__dot_product__SWIG_1(Signal_Partial< double > const *self,Signal< int > const &arg){
     return self->dot_product(arg);
+  }
+SWIGINTERN double Signal_Partial_Sl_double_Sg__circular_dot_product__SWIG_1(Signal_Partial< double > const *self,int const &offset,Signal< int > const &arg){
+    return self->circular_dot_product(offset, arg);
   }
 SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__copy(Signal_Partial< Complex< double > > const *self){return Signal<Complex< double >>(*self);}
 SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg____getitem____SWIG_0(Signal_Partial< Complex< double > > const *self,unsigned int const &i){
@@ -3436,23 +3692,36 @@ SWIGINTERN size_t Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__max_abs_index(Sign
 SWIGINTERN size_t Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__min_abs_index(Signal_Partial< Complex< double > > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(Signal_Partial< Complex< double > > *self,VALUE *_self,int const &start,unsigned int const &length){
-      VALUE res(swig::from(Signal_Partial<Complex< double >>(
-          PartialSignalBuffer<Signal<Complex< double >> >::generate_signal(
-            const_cast<Signal_Partial<Complex< double >> &>(*self), start, length))));
-
-      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
-
+SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(Signal_Partial< Complex< double > > const *self,VALUE *_self,int const &start,unsigned int const &length){
+      Signal_Partial<Complex< double >> *sig(const_cast<Signal_Partial<Complex< double >> *>(self));
+      if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+        throw std::runtime_error("Original signal was destructed.");
+      }
+      VALUE res(swig::from_ptr(new Signal_Partial<Complex< double >>(
+          Signal_PartialBuffer<Signal<Complex< double >> >::generate_signal(
+            *sig, start, length)), 1));
       return res;
     }
 SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable(Signal_Partial< Complex< double > > const *self,VALUE *_self){
-    VALUE res(swig::from(Signal_Partial<Complex< double >>(*self)));
-    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    if(RB_FL_TEST(*_self, RUBY_FL_SHAREABLE)){
+      return *_self;
+    }
+#else
+    if(rb_obj_frozen_p(*_self)){
+      return *_self;
+    }
+#endif
+    Signal_Partial<Complex< double >> *sig(const_cast<Signal_Partial<Complex< double >> *>(self));
+    if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+      throw std::runtime_error("Original signal was destructed.");
+    }
+    VALUE res(swig::from_ptr(new Signal_Partial<Complex< double >>(*sig), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
     rb_obj_freeze(res);
-    return res;
+    return /*rb_ractor_make_shareable(res);*/ res;
   }
 SWIGINTERN VALUE Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__each(Signal_Partial< Complex< double > > const *self,VALUE *_self,void const *check_block){
     SignalUtil::each(*self);
@@ -3470,6 +3739,9 @@ SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__S
 SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_0(Signal_Partial< Complex< double > > const *self,Signal< Complex< double > > const &arg){
     return self->dot_product(arg);
   }
+SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_0(Signal_Partial< Complex< double > > const *self,int const &offset,Signal< Complex< double > > const &arg){
+    return self->circular_dot_product(offset, arg);
+  }
 SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg____mul____SWIG_1(Signal_Partial< Complex< double > > const *self,Signal< int > const &arg){
     return self->operator*(arg);
   }
@@ -3482,6 +3754,9 @@ SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__S
 SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_1(Signal_Partial< Complex< double > > const *self,Signal< int > const &arg){
     return self->dot_product(arg);
   }
+SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_1(Signal_Partial< Complex< double > > const *self,int const &offset,Signal< int > const &arg){
+    return self->circular_dot_product(offset, arg);
+  }
 SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg____mul____SWIG_2(Signal_Partial< Complex< double > > const *self,Signal< double > const &arg){
     return self->operator*(arg);
   }
@@ -3493,6 +3768,9 @@ SWIGINTERN Signal< Complex< double > > Signal_Partial_Sl_Complex_Sl_double_Sg__S
   }
 SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_2(Signal_Partial< Complex< double > > const *self,Signal< double > const &arg){
     return self->dot_product(arg);
+  }
+SWIGINTERN Complex< double > Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_2(Signal_Partial< Complex< double > > const *self,int const &offset,Signal< double > const &arg){
+    return self->circular_dot_product(offset, arg);
   }
 SWIGINTERN Signal< int > Signal_Partial_Sl_int_Sg__copy(Signal_Partial< int > const *self){return Signal<int>(*self);}
 SWIGINTERN int Signal_Partial_Sl_int_Sg____getitem____SWIG_0(Signal_Partial< int > const *self,unsigned int const &i){
@@ -3507,23 +3785,36 @@ SWIGINTERN size_t Signal_Partial_Sl_int_Sg__max_abs_index(Signal_Partial< int > 
 SWIGINTERN size_t Signal_Partial_Sl_int_Sg__min_abs_index(Signal_Partial< int > const *self){
       return std::distance(self->samples.begin(), self->min_abs_element());
     }
-SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__partial(Signal_Partial< int > *self,VALUE *_self,int const &start,unsigned int const &length){
-      VALUE res(swig::from(Signal_Partial<int>(
-          PartialSignalBuffer<Signal<int> >::generate_signal(
-            const_cast<Signal_Partial<int> &>(*self), start, length))));
-
-      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
-
+SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__partial(Signal_Partial< int > const *self,VALUE *_self,int const &start,unsigned int const &length){
+      Signal_Partial<int> *sig(const_cast<Signal_Partial<int> *>(self));
+      if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+        throw std::runtime_error("Original signal was destructed.");
+      }
+      VALUE res(swig::from_ptr(new Signal_Partial<int>(
+          Signal_PartialBuffer<Signal<int> >::generate_signal(
+            *sig, start, length)), 1));
       return res;
     }
 SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__to_shareable(Signal_Partial< int > const *self,VALUE *_self){
-    VALUE res(swig::from(Signal_Partial<int>(*self)));
-    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    if(RB_FL_TEST(*_self, RUBY_FL_SHAREABLE)){
+      return *_self;
+    }
+#else
+    if(rb_obj_frozen_p(*_self)){
+      return *_self;
+    }
+#endif
+    Signal_Partial<int> *sig(const_cast<Signal_Partial<int> *>(self));
+    if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+      throw std::runtime_error("Original signal was destructed.");
+    }
+    VALUE res(swig::from_ptr(new Signal_Partial<int>(*sig), 1));
 #if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 #endif
     rb_obj_freeze(res);
-    return res;
+    return /*rb_ractor_make_shareable(res);*/ res;
   }
 SWIGINTERN VALUE Signal_Partial_Sl_int_Sg__each(Signal_Partial< int > const *self,VALUE *_self,void const *check_block){
     SignalUtil::each(*self);
@@ -3540,6 +3831,9 @@ SWIGINTERN Signal< int > Signal_Partial_Sl_int_Sg____sub__(Signal_Partial< int >
   }
 SWIGINTERN int Signal_Partial_Sl_int_Sg__dot_product(Signal_Partial< int > const *self,Signal< int > const &arg){
     return self->dot_product(arg);
+  }
+SWIGINTERN int Signal_Partial_Sl_int_Sg__circular_dot_product(Signal_Partial< int > const *self,int const &offset,Signal< int > const &arg){
+    return self->circular_dot_product(offset, arg);
   }
 SWIGINTERN Complex< double > Signal_Partial_Sl_int_Sg__ft(Signal_Partial< int > const *self,double const &k){
     return FFT_Generic<double>::ft(self->samples.begin(), self->samples.end(), k);
@@ -3772,6 +4066,47 @@ _wrap_Real_resizeN___(int argc, VALUE *argv, VALUE self) {
   temp2 = static_cast< Signal< double >::size_t >(val2);
   arg2 = &temp2;
   result = (Signal< double >::self_t *) &(arg1)->resize((Signal< double >::size_t const &)*arg2);
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real.slide
+
+  call-seq:
+    slide(int offset) -> Real
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_slideN___(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  Signal< double >::self_t *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","slide", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","slide", 2, argv[0] ));
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (Signal< double >::self_t *) &(arg1)->slide(arg2);
   vresult = self;
   return vresult;
 fail:
@@ -4538,6 +4873,188 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Real.fill!
+
+  call-seq:
+    fill!(int idx_start, Signal< double >::size_t const & length, void const * special_input=nil) -> VALUE
+    fill!(int idx_start, Signal< double >::size_t const & length) -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_fillN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< double >::size_t *arg4 = 0 ;
+  void *arg5 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< double >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 3) || (argc > 3)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< double >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< double >::size_t >(val4);
+  arg4 = &temp4;
+  arg5 = &argv[2];
+  try {
+    result = (VALUE)Signal_Sl_double_Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4,(void const *)arg5);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Real_fillN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< double >::size_t *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< double >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< double >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< double >::size_t >(val4);
+  arg4 = &temp4;
+  try {
+    result = (VALUE)Signal_Sl_double_Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Real_fillN___(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[5];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 5) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Real_fillN_____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            _v = rb_block_given_p() ? 0 : 1;
+          }
+          if (_v) {
+            return _wrap_Real_fillN_____SWIG_0(nargs, args, self);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 5, "fill!", 
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< double >::size_t const &length, void const *special_input)\n"
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< double >::size_t const &length)\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Real.append!
 
   call-seq:
@@ -5069,11 +5586,12 @@ fail:
 
   call-seq:
     []=(i, v) -> double &
+    []=(range, v) -> VALUE
 
 Element setter/slicing.
 */
 SWIGINTERN VALUE
-_wrap_Real___setitem__(int argc, VALUE *argv, VALUE self) {
+_wrap_Real___setitem____SWIG_0(int argc, VALUE *argv, VALUE self) {
   Signal< double > *arg1 = (Signal< double > *) 0 ;
   unsigned int *arg2 = 0 ;
   double *arg3 = 0 ;
@@ -5108,10 +5626,97 @@ _wrap_Real___setitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< double >(val3);
   arg3 = &temp3;
-  result = (double *) &Signal_Sl_double_Sg____setitem__(arg1,(unsigned int const &)*arg2,(double const &)*arg3);
+  result = (double *) &Signal_Sl_double_Sg____setitem____SWIG_0(arg1,(unsigned int const &)*arg2,(double const &)*arg3);
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_double, 0 |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Real___setitem____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  VALUE arg3 = (VALUE) 0 ;
+  VALUE arg4 = (VALUE) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > *","__setitem__", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  arg3 = argv[0];
+  arg4 = argv[1];
+  result = (VALUE)Signal_Sl_double_Sg____setitem____SWIG_1(arg1,arg2,arg3,arg4);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Real___setitem__(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_double(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Real___setitem____SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      _v = (argv[1] != 0);
+      if (_v) {
+        _v = (argv[2] != 0);
+        if (_v) {
+          return _wrap_Real___setitem____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "__setitem__", 
+    "    double __setitem__(unsigned int const &i, double const &v)\n"
+    "    VALUE __setitem__(VALUE *_self, VALUE range, VALUE v)\n");
+  
   return Qnil;
 }
 
@@ -5632,6 +6237,61 @@ _wrap_Real_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg2 = reinterpret_cast< Signal< double > * >(argp2);
   result = (double)Signal_Sl_double_Sg__dot_product__SWIG_1((Signal< double > const *)arg1,(Signal< double > const &)*arg2);
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Real sig) -> double
+    circular_dot_product(int const & offset, Int arg) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_circular_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< double > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< double > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< double > * >(argp3);
+  result = (double)Signal_Sl_double_Sg__circular_dot_product__SWIG_1((Signal< double > const *)arg1,(int const &)*arg2,(Signal< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -6359,6 +7019,122 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Real.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Real sig) -> double
+    circular_dot_product(int const & offset, Int arg) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_circular_dot_product__SWIG_2(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = (double)Signal_Sl_double_Sg__circular_dot_product__SWIG_2((Signal< double > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Real_circular_dot_product(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Real_circular_dot_product__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Real_circular_dot_product__SWIG_2(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "circular_dot_product", 
+    "    double circular_dot_product(int const &offset, Signal< double > const &sig)\n"
+    "    double circular_dot_product(int const &offset, Signal< int > const &arg)\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Real.r2c
 
   call-seq:
@@ -6390,12 +7166,6 @@ fail:
   return Qnil;
 }
 
-
-SWIGINTERN void
-free_Signal_Sl_double_Sg_(void *self) {
-    Signal< double > *arg1 = (Signal< double > *)self;
-    delete arg1;
-}
 
 /*
   Document-class: GPS_PVT::SDR::Signal
@@ -6562,6 +7332,47 @@ _wrap_Complex_resizeN___(int argc, VALUE *argv, VALUE self) {
   temp2 = static_cast< Signal< Complex< double > >::size_t >(val2);
   arg2 = &temp2;
   result = (Signal< Complex< double > >::self_t *) &(arg1)->resize((Signal< Complex< double > >::size_t const &)*arg2);
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex.slide
+
+  call-seq:
+    slide(int offset) -> Complex
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_slideN___(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  Signal< Complex< double > >::self_t *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","slide", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","slide", 2, argv[0] ));
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (Signal< Complex< double > >::self_t *) &(arg1)->slide(arg2);
   vresult = self;
   return vresult;
 fail:
@@ -7331,6 +8142,188 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Complex.fill!
+
+  call-seq:
+    fill!(int idx_start, Signal< Complex< double > >::size_t const & length, void const * special_input=nil) -> VALUE
+    fill!(int idx_start, Signal< Complex< double > >::size_t const & length) -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_fillN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< Complex< double > >::size_t *arg4 = 0 ;
+  void *arg5 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< Complex< double > >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 3) || (argc > 3)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< Complex< double > >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< Complex< double > >::size_t >(val4);
+  arg4 = &temp4;
+  arg5 = &argv[2];
+  try {
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4,(void const *)arg5);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Complex_fillN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< Complex< double > >::size_t *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< Complex< double > >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< Complex< double > >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< Complex< double > >::size_t >(val4);
+  arg4 = &temp4;
+  try {
+    result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Complex_fillN___(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[5];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 5) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Complex_fillN_____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            _v = rb_block_given_p() ? 0 : 1;
+          }
+          if (_v) {
+            return _wrap_Complex_fillN_____SWIG_0(nargs, args, self);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 5, "fill!", 
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< Complex< double > >::size_t const &length, void const *special_input)\n"
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< Complex< double > >::size_t const &length)\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Complex.append!
 
   call-seq:
@@ -7864,11 +8857,12 @@ fail:
 
   call-seq:
     []=(i, v) -> ComplexD
+    []=(range, v) -> VALUE
 
 Element setter/slicing.
 */
 SWIGINTERN VALUE
-_wrap_Complex___setitem__(int argc, VALUE *argv, VALUE self) {
+_wrap_Complex___setitem____SWIG_0(int argc, VALUE *argv, VALUE self) {
   Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
   unsigned int *arg2 = 0 ;
   Complex< double > *arg3 = 0 ;
@@ -7901,10 +8895,96 @@ _wrap_Complex___setitem__(int argc, VALUE *argv, VALUE self) {
       SWIG_exception(SWIG_TypeError, "in method '__setitem__', expecting type Complex< double >");
     }
   }
-  result = (Complex< double > *) &Signal_Sl_Complex_Sl_double_Sg__Sg____setitem__(arg1,(unsigned int const &)*arg2,(Complex< double > const &)*arg3);
+  result = (Complex< double > *) &Signal_Sl_Complex_Sl_double_Sg__Sg____setitem____SWIG_0(arg1,(unsigned int const &)*arg2,(Complex< double > const &)*arg3);
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ComplexT_double_t, 0 |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Complex___setitem____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  VALUE arg3 = (VALUE) 0 ;
+  VALUE arg4 = (VALUE) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > *","__setitem__", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  arg3 = argv[0];
+  arg4 = argv[1];
+  result = (VALUE)Signal_Sl_Complex_Sl_double_Sg__Sg____setitem____SWIG_1(arg1,arg2,arg3,arg4);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Complex___setitem__(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          _v = swig::check<Complex< double > * >(argv[2]) || swig::check<Complex< double > >(argv[2]);
+        }
+        if (_v) {
+          return _wrap_Complex___setitem____SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      _v = (argv[1] != 0);
+      if (_v) {
+        _v = (argv[2] != 0);
+        if (_v) {
+          return _wrap_Complex___setitem____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "__setitem__", 
+    "    Complex< double > __setitem__(unsigned int const &i, Complex< double > const &v)\n"
+    "    VALUE __setitem__(VALUE *_self, VALUE range, VALUE v)\n");
+  
   return Qnil;
 }
 
@@ -8442,6 +9522,64 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Complex.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex sig) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_circular_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< Complex< double > > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< Complex< double > > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< Complex< double > > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< Complex< double > > * >(argp3);
+  result = Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_1((Signal< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< Complex< double > > const &)*arg3);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Complex.new
 
   call-seq:
@@ -8911,6 +10049,64 @@ _wrap_Complex_dot_product__SWIG_2(int argc, VALUE *argv, VALUE self) {
   }
   arg2 = reinterpret_cast< Signal< int > * >(argp2);
   result = Signal_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_2((Signal< Complex< double > > const *)arg1,(Signal< int > const &)*arg2);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex sig) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_circular_dot_product__SWIG_2(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_2((Signal< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
   {
     vresult = swig::from(result);
   }
@@ -9655,6 +10851,146 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Complex.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex sig) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_circular_dot_product__SWIG_3(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< double > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< double > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< double > * >(argp3);
+  result = Signal_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_3((Signal< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< double > const &)*arg3);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Complex_circular_dot_product(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_circular_dot_product__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_circular_dot_product__SWIG_2(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_circular_dot_product__SWIG_3(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "circular_dot_product", 
+    "    Complex< double > circular_dot_product(int const &offset, Signal< Complex< double > > const &sig)\n"
+    "    Complex< double > circular_dot_product(int const &offset, Signal< int > const &arg)\n"
+    "    Complex< double > circular_dot_product(int const &offset, Signal< double > const &arg)\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Complex.c2r
 
   call-seq:
@@ -9686,12 +11022,6 @@ fail:
   return Qnil;
 }
 
-
-SWIGINTERN void
-free_Signal_Sl_Complex_Sl_double_Sg__Sg_(void *self) {
-    Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *)self;
-    delete arg1;
-}
 
 /*
   Document-class: GPS_PVT::SDR::Signal::Int
@@ -9801,6 +11131,47 @@ _wrap_Int_resizeN___(int argc, VALUE *argv, VALUE self) {
   temp2 = static_cast< Signal< int >::size_t >(val2);
   arg2 = &temp2;
   result = (Signal< int >::self_t *) &(arg1)->resize((Signal< int >::size_t const &)*arg2);
+  vresult = self;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Int.slide
+
+  call-seq:
+    slide(int offset) -> Int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_slideN___(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  Signal< int >::self_t *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","slide", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","slide", 2, argv[0] ));
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (Signal< int >::self_t *) &(arg1)->slide(arg2);
   vresult = self;
   return vresult;
 fail:
@@ -10368,6 +11739,188 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Int.fill!
+
+  call-seq:
+    fill!(int idx_start, Signal< int >::size_t const & length, void const * special_input=nil) -> VALUE
+    fill!(int idx_start, Signal< int >::size_t const & length) -> VALUE
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_fillN_____SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< int >::size_t *arg4 = 0 ;
+  void *arg5 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< int >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 3) || (argc > 3)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< int >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< int >::size_t >(val4);
+  arg4 = &temp4;
+  arg5 = &argv[2];
+  try {
+    result = (VALUE)Signal_Sl_int_Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4,(void const *)arg5);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Int_fillN_____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  int arg3 ;
+  Signal< int >::size_t *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  Signal< int >::size_t temp4 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","fill", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  ecode3 = SWIG_AsVal_int(argv[0], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","fill", 3, argv[0] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_size_t(argv[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "Signal< int >::size_t","fill", 4, argv[1] ));
+  } 
+  temp4 = static_cast< Signal< int >::size_t >(val4);
+  arg4 = &temp4;
+  try {
+    result = (VALUE)Signal_Sl_int_Sg__fill__SWIG_0(arg1,arg2,arg3,(std::size_t const &)*arg4);
+  } catch(native_exception &_e) {
+    (&_e)->regenerate();
+    SWIG_fail;
+  } catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Int_fillN___(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[5];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 5) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Int_fillN_____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_size_t(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            _v = rb_block_given_p() ? 0 : 1;
+          }
+          if (_v) {
+            return _wrap_Int_fillN_____SWIG_0(nargs, args, self);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 5, "fill!", 
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< int >::size_t const &length, void const *special_input)\n"
+    "    VALUE fill!(VALUE *_self, int idx_start, Signal< int >::size_t const &length)\n");
+  
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Int.append!
 
   call-seq:
@@ -10899,11 +12452,12 @@ fail:
 
   call-seq:
     []=(i, v) -> int &
+    []=(range, v) -> VALUE
 
 Element setter/slicing.
 */
 SWIGINTERN VALUE
-_wrap_Int___setitem__(int argc, VALUE *argv, VALUE self) {
+_wrap_Int___setitem____SWIG_0(int argc, VALUE *argv, VALUE self) {
   Signal< int > *arg1 = (Signal< int > *) 0 ;
   unsigned int *arg2 = 0 ;
   int *arg3 = 0 ;
@@ -10938,10 +12492,97 @@ _wrap_Int___setitem__(int argc, VALUE *argv, VALUE self) {
   } 
   temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = (int *) &Signal_Sl_int_Sg____setitem__(arg1,(unsigned int const &)*arg2,(int const &)*arg3);
+  result = (int *) &Signal_Sl_int_Sg____setitem____SWIG_0(arg1,(unsigned int const &)*arg2,(int const &)*arg3);
   vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Int___setitem____SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  VALUE *arg2 = (VALUE *) 0 ;
+  VALUE arg3 = (VALUE) 0 ;
+  VALUE arg4 = (VALUE) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  arg2 = &self;
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > *","__setitem__", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  arg3 = argv[0];
+  arg4 = argv[1];
+  result = (VALUE)Signal_Sl_int_Sg____setitem____SWIG_1(arg1,arg2,arg3,arg4);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Int___setitem__(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Int___setitem____SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      _v = (argv[1] != 0);
+      if (_v) {
+        _v = (argv[2] != 0);
+        if (_v) {
+          return _wrap_Int___setitem____SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "__setitem__", 
+    "    int __setitem__(unsigned int const &i, int const &v)\n"
+    "    VALUE __setitem__(VALUE *_self, VALUE range, VALUE v)\n");
+  
   return Qnil;
 }
 
@@ -11605,6 +13246,60 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Int.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Int sig) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_circular_dot_product(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = (int)Signal_Sl_int_Sg__circular_dot_product((Signal< int > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Int.ft
 
   call-seq:
@@ -11792,12 +13487,6 @@ fail:
   return Qnil;
 }
 
-
-SWIGINTERN void
-free_Signal_Sl_int_Sg_(void *self) {
-    Signal< int > *arg1 = (Signal< int > *)self;
-    delete arg1;
-}
 
 /*
   Document-class: GPS_PVT::SDR::Signal::Real_Partial
@@ -12520,7 +14209,7 @@ _wrap_Real_Partial_partial(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
   ecode3 = SWIG_AsVal_int(argv[0], &val3);
@@ -12535,7 +14224,11 @@ _wrap_Real_Partial_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< unsigned int >(val4);
   arg4 = &temp4;
-  result = (VALUE)Signal_Partial_Sl_double_Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  try {
+    result = (VALUE)Signal_Partial_Sl_double_Sg__partial((Signal_Partial< double > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -12570,7 +14263,11 @@ _wrap_Real_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","to_shareable", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
-  result = (VALUE)Signal_Partial_Sl_double_Sg__to_shareable((Signal_Partial< double > const *)arg1,arg2);
+  try {
+    result = (VALUE)Signal_Partial_Sl_double_Sg__to_shareable((Signal_Partial< double > const *)arg1,arg2);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -12795,6 +14492,61 @@ _wrap_Real_Partial_dot_product__SWIG_0(int argc, VALUE *argv, VALUE self) {
   }
   arg2 = reinterpret_cast< Signal< double > * >(argp2);
   result = (double)Signal_Partial_Sl_double_Sg__dot_product__SWIG_0((Signal_Partial< double > const *)arg1,(Signal< double > const &)*arg2);
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Real arg) -> double
+    circular_dot_product(int const & offset, Int arg) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_Partial_circular_dot_product__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< double > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< double > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< double > * >(argp3);
+  result = (double)Signal_Partial_Sl_double_Sg__circular_dot_product__SWIG_0((Signal_Partial< double > const *)arg1,(int const &)*arg2,(Signal< double > const &)*arg3);
   vresult = SWIG_From_double(static_cast< double >(result));
   return vresult;
 fail:
@@ -13177,11 +14929,121 @@ fail:
 }
 
 
-SWIGINTERN void
-free_Signal_Partial_Sl_double_Sg_(void *self) {
-    Signal_Partial< double > *arg1 = (Signal_Partial< double > *)self;
-    delete arg1;
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Real arg) -> double
+    circular_dot_product(int const & offset, Int arg) -> double
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_Partial_circular_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  double result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = (double)Signal_Partial_Sl_double_Sg__circular_dot_product__SWIG_1((Signal_Partial< double > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
+  vresult = SWIG_From_double(static_cast< double >(result));
+  return vresult;
+fail:
+  return Qnil;
 }
+
+
+SWIGINTERN VALUE _wrap_Real_Partial_circular_dot_product(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Signal_PartialT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Real_Partial_circular_dot_product__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Signal_PartialT_double_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Real_Partial_circular_dot_product__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "circular_dot_product", 
+    "    double circular_dot_product(int const &offset, Signal< double > const &arg)\n"
+    "    double circular_dot_product(int const &offset, Signal< int > const &arg)\n");
+  
+  return Qnil;
+}
+
 
 /*
   Document-class: GPS_PVT::SDR::Signal::Complex_Partial
@@ -13908,7 +15770,7 @@ _wrap_Complex_Partial_partial(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
   ecode3 = SWIG_AsVal_int(argv[0], &val3);
@@ -13923,7 +15785,11 @@ _wrap_Complex_Partial_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< unsigned int >(val4);
   arg4 = &temp4;
-  result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  try {
+    result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__partial((Signal_Partial< Complex< double > > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -13958,7 +15824,11 @@ _wrap_Complex_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","to_shareable", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
-  result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable((Signal_Partial< Complex< double > > const *)arg1,arg2);
+  try {
+    result = (VALUE)Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__to_shareable((Signal_Partial< Complex< double > > const *)arg1,arg2);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -14197,6 +16067,64 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex arg) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_Partial_circular_dot_product__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< Complex< double > > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< Complex< double > > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< Complex< double > > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< Complex< double > > * >(argp3);
+  result = Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_0((Signal_Partial< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< Complex< double > > const &)*arg3);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Complex_Partial.*
 
   call-seq:
@@ -14372,6 +16300,64 @@ _wrap_Complex_Partial_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
   }
   arg2 = reinterpret_cast< Signal< int > * >(argp2);
   result = Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__dot_product__SWIG_1((Signal_Partial< Complex< double > > const *)arg1,(Signal< int > const &)*arg2);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex arg) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_Partial_circular_dot_product__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_1((Signal_Partial< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
   {
     vresult = swig::from(result);
   }
@@ -14822,11 +16808,145 @@ fail:
 }
 
 
-SWIGINTERN void
-free_Signal_Partial_Sl_Complex_Sl_double_Sg__Sg_(void *self) {
-    Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *)self;
-    delete arg1;
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Complex arg) -> ComplexD
+    circular_dot_product(int const & offset, Int arg) -> ComplexD
+    circular_dot_product(int const & offset, Real arg) -> ComplexD
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_Partial_circular_dot_product__SWIG_2(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< double > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  Complex< double > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< double > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< double > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< double > * >(argp3);
+  result = Signal_Partial_Sl_Complex_Sl_double_Sg__Sg__circular_dot_product__SWIG_2((Signal_Partial< Complex< double > > const *)arg1,(int const &)*arg2,(Signal< double > const &)*arg3);
+  {
+    vresult = swig::from(result);
+  }
+  return vresult;
+fail:
+  return Qnil;
 }
+
+
+SWIGINTERN VALUE _wrap_Complex_Partial_circular_dot_product(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[4];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 4) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_Partial_circular_dot_product__SWIG_0(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_Partial_circular_dot_product__SWIG_1(nargs, args, self);
+        }
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_NO_NULL);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_Complex_Partial_circular_dot_product__SWIG_2(nargs, args, self);
+        }
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 4, "circular_dot_product", 
+    "    Complex< double > circular_dot_product(int const &offset, Signal< Complex< double > > const &arg)\n"
+    "    Complex< double > circular_dot_product(int const &offset, Signal< int > const &arg)\n"
+    "    Complex< double > circular_dot_product(int const &offset, Signal< double > const &arg)\n");
+  
+  return Qnil;
+}
+
 
 /*
   Document-class: GPS_PVT::SDR::Signal::Int_Partial
@@ -15294,7 +17414,7 @@ _wrap_Int_Partial_partial(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_int_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > *","partial", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","partial", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
   ecode3 = SWIG_AsVal_int(argv[0], &val3);
@@ -15309,7 +17429,11 @@ _wrap_Int_Partial_partial(int argc, VALUE *argv, VALUE self) {
   } 
   temp4 = static_cast< unsigned int >(val4);
   arg4 = &temp4;
-  result = (VALUE)Signal_Partial_Sl_int_Sg__partial(arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  try {
+    result = (VALUE)Signal_Partial_Sl_int_Sg__partial((Signal_Partial< int > const *)arg1,arg2,(int const &)*arg3,(unsigned int const &)*arg4);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -15344,7 +17468,11 @@ _wrap_Int_Partial_to_shareable(int argc, VALUE *argv, VALUE self) {
     SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","to_shareable", 1, self )); 
   }
   arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
-  result = (VALUE)Signal_Partial_Sl_int_Sg__to_shareable((Signal_Partial< int > const *)arg1,arg2);
+  try {
+    result = (VALUE)Signal_Partial_Sl_int_Sg__to_shareable((Signal_Partial< int > const *)arg1,arg2);
+  } catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
   vresult = result;
   return vresult;
 fail:
@@ -15573,6 +17701,60 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.circular_dot_product
+
+  call-seq:
+    circular_dot_product(int const & offset, Int arg) -> int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_Partial_circular_dot_product(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
+  int *arg2 = 0 ;
+  Signal< int > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","circular_dot_product", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","circular_dot_product", 2, argv[0] ));
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  res3 = SWIG_ConvertPtr(argv[1], &argp3, SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "Signal< int > const &","circular_dot_product", 3, argv[1] )); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, Ruby_Format_TypeError("invalid null reference ", "Signal< int > const &","circular_dot_product", 3, argv[1])); 
+  }
+  arg3 = reinterpret_cast< Signal< int > * >(argp3);
+  result = (int)Signal_Partial_Sl_int_Sg__circular_dot_product((Signal_Partial< int > const *)arg1,(int const &)*arg2,(Signal< int > const &)*arg3);
+  vresult = SWIG_From_int(static_cast< int >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Int_Partial.ft
 
   call-seq:
@@ -15727,12 +17909,6 @@ fail:
   return Qnil;
 }
 
-
-SWIGINTERN void
-free_Signal_Partial_Sl_int_Sg_(void *self) {
-    Signal_Partial< int > *arg1 = (Signal_Partial< int > *)self;
-    delete arg1;
-}
 
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
@@ -16133,6 +18309,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "size", VALUEFUNC(_wrap_Real_size), -1);
   rb_define_method(SwigClassReal.klass, "-@", VALUEFUNC(_wrap_Real___neg__), -1);
   rb_define_method(SwigClassReal.klass, "resize!", VALUEFUNC(_wrap_Real_resizeN___), -1);
+  rb_define_method(SwigClassReal.klass, "slide!", VALUEFUNC(_wrap_Real_slideN___), -1);
   rb_define_method(SwigClassReal.klass, "rotate!", VALUEFUNC(_wrap_Real_rotateN___), -1);
   rb_define_method(SwigClassReal.klass, "circular", VALUEFUNC(_wrap_Real_circular), -1);
   rb_define_method(SwigClassReal.klass, "slice", VALUEFUNC(_wrap_Real_slice), -1);
@@ -16146,6 +18323,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "ift", VALUEFUNC(_wrap_Real_ift), -1);
   rb_define_method(SwigClassReal.klass, "ifft", VALUEFUNC(_wrap_Real_ifft), -1);
   rb_define_method(SwigClassReal.klass, "replace!", VALUEFUNC(_wrap_Real_replaceN___), -1);
+  rb_define_method(SwigClassReal.klass, "fill!", VALUEFUNC(_wrap_Real_fillN___), -1);
   rb_define_method(SwigClassReal.klass, "append!", VALUEFUNC(_wrap_Real_appendN___), -1);
   rb_define_method(SwigClassReal.klass, "shift!", VALUEFUNC(_wrap_Real_shiftN___), -1);
   rb_define_method(SwigClassReal.klass, "pop!", VALUEFUNC(_wrap_Real_popN___), -1);
@@ -16161,9 +18339,10 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "+", VALUEFUNC(_wrap_Real___add__), -1);
   rb_define_method(SwigClassReal.klass, "-", VALUEFUNC(_wrap_Real___sub__), -1);
   rb_define_method(SwigClassReal.klass, "dot_product", VALUEFUNC(_wrap_Real_dot_product), -1);
+  rb_define_method(SwigClassReal.klass, "circular_dot_product", VALUEFUNC(_wrap_Real_circular_dot_product), -1);
   rb_define_method(SwigClassReal.klass, "r2c", VALUEFUNC(_wrap_Real_r2c), -1);
   SwigClassReal.mark = 0;
-  SwigClassReal.destroy = (void (*)(void *)) free_Signal_Sl_double_Sg_;
+  SwigClassReal.destroy = (void (*)(void *)) SignalUtil::free<double>;
   SwigClassReal.trackObjects = 0;
   
   SwigClassComplex.klass = rb_define_class_under(mSignal, "Complex", rb_cObject);
@@ -16175,6 +18354,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex.klass, "size", VALUEFUNC(_wrap_Complex_size), -1);
   rb_define_method(SwigClassComplex.klass, "-@", VALUEFUNC(_wrap_Complex___neg__), -1);
   rb_define_method(SwigClassComplex.klass, "resize!", VALUEFUNC(_wrap_Complex_resizeN___), -1);
+  rb_define_method(SwigClassComplex.klass, "slide!", VALUEFUNC(_wrap_Complex_slideN___), -1);
   rb_define_method(SwigClassComplex.klass, "rotate!", VALUEFUNC(_wrap_Complex_rotateN___), -1);
   rb_define_method(SwigClassComplex.klass, "circular", VALUEFUNC(_wrap_Complex_circular), -1);
   rb_define_method(SwigClassComplex.klass, "slice", VALUEFUNC(_wrap_Complex_slice), -1);
@@ -16188,6 +18368,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex.klass, "ift", VALUEFUNC(_wrap_Complex_ift), -1);
   rb_define_method(SwigClassComplex.klass, "ifft", VALUEFUNC(_wrap_Complex_ifft), -1);
   rb_define_method(SwigClassComplex.klass, "replace!", VALUEFUNC(_wrap_Complex_replaceN___), -1);
+  rb_define_method(SwigClassComplex.klass, "fill!", VALUEFUNC(_wrap_Complex_fillN___), -1);
   rb_define_method(SwigClassComplex.klass, "append!", VALUEFUNC(_wrap_Complex_appendN___), -1);
   rb_define_method(SwigClassComplex.klass, "shift!", VALUEFUNC(_wrap_Complex_shiftN___), -1);
   rb_define_method(SwigClassComplex.klass, "pop!", VALUEFUNC(_wrap_Complex_popN___), -1);
@@ -16203,9 +18384,10 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex.klass, "+", VALUEFUNC(_wrap_Complex___add__), -1);
   rb_define_method(SwigClassComplex.klass, "-", VALUEFUNC(_wrap_Complex___sub__), -1);
   rb_define_method(SwigClassComplex.klass, "dot_product", VALUEFUNC(_wrap_Complex_dot_product), -1);
+  rb_define_method(SwigClassComplex.klass, "circular_dot_product", VALUEFUNC(_wrap_Complex_circular_dot_product), -1);
   rb_define_method(SwigClassComplex.klass, "c2r", VALUEFUNC(_wrap_Complex_c2r), -1);
   SwigClassComplex.mark = 0;
-  SwigClassComplex.destroy = (void (*)(void *)) free_Signal_Sl_Complex_Sl_double_Sg__Sg_;
+  SwigClassComplex.destroy = (void (*)(void *)) SignalUtil::free<Complex<double> >;
   SwigClassComplex.trackObjects = 0;
   
   SwigClassInt.klass = rb_define_class_under(mSignal, "Int", rb_cObject);
@@ -16216,12 +18398,14 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt.klass, "size", VALUEFUNC(_wrap_Int_size), -1);
   rb_define_method(SwigClassInt.klass, "-@", VALUEFUNC(_wrap_Int___neg__), -1);
   rb_define_method(SwigClassInt.klass, "resize!", VALUEFUNC(_wrap_Int_resizeN___), -1);
+  rb_define_method(SwigClassInt.klass, "slide!", VALUEFUNC(_wrap_Int_slideN___), -1);
   rb_define_method(SwigClassInt.klass, "rotate!", VALUEFUNC(_wrap_Int_rotateN___), -1);
   rb_define_method(SwigClassInt.klass, "circular", VALUEFUNC(_wrap_Int_circular), -1);
   rb_define_method(SwigClassInt.klass, "slice", VALUEFUNC(_wrap_Int_slice), -1);
   rb_define_method(SwigClassInt.klass, "abs", VALUEFUNC(_wrap_Int_abs), -1);
   rb_define_method(SwigClassInt.klass, "sum", VALUEFUNC(_wrap_Int_sum), -1);
   rb_define_method(SwigClassInt.klass, "replace!", VALUEFUNC(_wrap_Int_replaceN___), -1);
+  rb_define_method(SwigClassInt.klass, "fill!", VALUEFUNC(_wrap_Int_fillN___), -1);
   rb_define_method(SwigClassInt.klass, "append!", VALUEFUNC(_wrap_Int_appendN___), -1);
   rb_define_method(SwigClassInt.klass, "shift!", VALUEFUNC(_wrap_Int_shiftN___), -1);
   rb_define_method(SwigClassInt.klass, "pop!", VALUEFUNC(_wrap_Int_popN___), -1);
@@ -16237,13 +18421,14 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt.klass, "+", VALUEFUNC(_wrap_Int___add__), -1);
   rb_define_method(SwigClassInt.klass, "-", VALUEFUNC(_wrap_Int___sub__), -1);
   rb_define_method(SwigClassInt.klass, "dot_product", VALUEFUNC(_wrap_Int_dot_product), -1);
+  rb_define_method(SwigClassInt.klass, "circular_dot_product", VALUEFUNC(_wrap_Int_circular_dot_product), -1);
   rb_define_method(SwigClassInt.klass, "ft", VALUEFUNC(_wrap_Int_ft), -1);
   rb_define_method(SwigClassInt.klass, "fft", VALUEFUNC(_wrap_Int_fft), -1);
   rb_define_method(SwigClassInt.klass, "ift", VALUEFUNC(_wrap_Int_ift), -1);
   rb_define_method(SwigClassInt.klass, "ifft", VALUEFUNC(_wrap_Int_ifft), -1);
   rb_define_method(SwigClassInt.klass, "r2c", VALUEFUNC(_wrap_Int_r2c), -1);
   SwigClassInt.mark = 0;
-  SwigClassInt.destroy = (void (*)(void *)) free_Signal_Sl_int_Sg_;
+  SwigClassInt.destroy = (void (*)(void *)) SignalUtil::free<int>;
   SwigClassInt.trackObjects = 0;
   
   SwigClassReal_Partial.klass = rb_define_class_under(mSignal, "Real_Partial", rb_cObject);
@@ -16273,8 +18458,9 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal_Partial.klass, "+", VALUEFUNC(_wrap_Real_Partial___add__), -1);
   rb_define_method(SwigClassReal_Partial.klass, "-", VALUEFUNC(_wrap_Real_Partial___sub__), -1);
   rb_define_method(SwigClassReal_Partial.klass, "dot_product", VALUEFUNC(_wrap_Real_Partial_dot_product), -1);
+  rb_define_method(SwigClassReal_Partial.klass, "circular_dot_product", VALUEFUNC(_wrap_Real_Partial_circular_dot_product), -1);
   SwigClassReal_Partial.mark = 0;
-  SwigClassReal_Partial.destroy = (void (*)(void *)) free_Signal_Partial_Sl_double_Sg_;
+  SwigClassReal_Partial.destroy = (void (*)(void *)) Signal_Partial<double>::free;
   SwigClassReal_Partial.trackObjects = 0;
   
   SwigClassComplex_Partial.klass = rb_define_class_under(mSignal, "Complex_Partial", rb_cObject);
@@ -16304,8 +18490,9 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex_Partial.klass, "+", VALUEFUNC(_wrap_Complex_Partial___add__), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "-", VALUEFUNC(_wrap_Complex_Partial___sub__), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "dot_product", VALUEFUNC(_wrap_Complex_Partial_dot_product), -1);
+  rb_define_method(SwigClassComplex_Partial.klass, "circular_dot_product", VALUEFUNC(_wrap_Complex_Partial_circular_dot_product), -1);
   SwigClassComplex_Partial.mark = 0;
-  SwigClassComplex_Partial.destroy = (void (*)(void *)) free_Signal_Partial_Sl_Complex_Sl_double_Sg__Sg_;
+  SwigClassComplex_Partial.destroy = (void (*)(void *)) Signal_Partial<Complex<double> >::free;
   SwigClassComplex_Partial.trackObjects = 0;
   
   SwigClassInt_Partial.klass = rb_define_class_under(mSignal, "Int_Partial", rb_cObject);
@@ -16328,12 +18515,13 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt_Partial.klass, "+", VALUEFUNC(_wrap_Int_Partial___add__), -1);
   rb_define_method(SwigClassInt_Partial.klass, "-", VALUEFUNC(_wrap_Int_Partial___sub__), -1);
   rb_define_method(SwigClassInt_Partial.klass, "dot_product", VALUEFUNC(_wrap_Int_Partial_dot_product), -1);
+  rb_define_method(SwigClassInt_Partial.klass, "circular_dot_product", VALUEFUNC(_wrap_Int_Partial_circular_dot_product), -1);
   rb_define_method(SwigClassInt_Partial.klass, "ft", VALUEFUNC(_wrap_Int_Partial_ft), -1);
   rb_define_method(SwigClassInt_Partial.klass, "fft", VALUEFUNC(_wrap_Int_Partial_fft), -1);
   rb_define_method(SwigClassInt_Partial.klass, "ift", VALUEFUNC(_wrap_Int_Partial_ift), -1);
   rb_define_method(SwigClassInt_Partial.klass, "ifft", VALUEFUNC(_wrap_Int_Partial_ifft), -1);
   SwigClassInt_Partial.mark = 0;
-  SwigClassInt_Partial.destroy = (void (*)(void *)) free_Signal_Partial_Sl_int_Sg_;
+  SwigClassInt_Partial.destroy = (void (*)(void *)) Signal_Partial<int>::free;
   SwigClassInt_Partial.trackObjects = 0;
 }
 
