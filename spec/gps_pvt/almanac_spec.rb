@@ -44,7 +44,7 @@ RSpec::describe GPS_PVT::Receiver do
     }
     rcv.send(*args_src1)
 
-    comarator = proc{|eph_a, eph_b|
+    comparator = proc{|eph_a, eph_b|
       values = [eph_a, eph_b].collect{|eph|
         #eph.to_hash.each{|k, v| $stderr.puts [k, v].join(',')}
         pos, vel, delta_t, delta_dt = eph.constellation(base_time)
@@ -57,7 +57,7 @@ RSpec::describe GPS_PVT::Receiver do
 
     rcv.define_singleton_method(:hook_new_ephemeris){|sn, svid, eph_b|
       next unless eph_a = eph_cache.delete([sn, svid])
-      comarator.call(eph_a, eph_b)
+      comparator.call(eph_a, eph_b)
       Thread::exit if eph_cache.empty?
     }
     Timeout::timeout(60){
