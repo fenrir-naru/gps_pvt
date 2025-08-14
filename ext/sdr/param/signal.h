@@ -3,6 +3,10 @@
  *
  * coded by fenrir.
  */
+
+#ifndef __SIGNAL_H
+#define __SIGNAL_H
+
 #include <cstdlib>
 #include <vector>
 #include <algorithm>
@@ -503,3 +507,5 @@ struct Signal_PartialBuffer {
 template <class T, class SignalT>
 struct SignalTypeResolver<T, Signal_PartialBuffer<SignalT> >
     : public SignalTypeResolver<T, typename SignalT::buf_t> {};
+
+#endif /* __SIGNAL_H */
