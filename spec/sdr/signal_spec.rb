@@ -95,6 +95,8 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
       expect{src_sig[i] = v * 2}.not_to raise_error
       expect(src_sig[i]).to eq(src_array[i] * 2)
     }
+    expect{src_sig[0..-1] = src_array}.not_to raise_error
+    expect(src_sig).to eq(src_array)
   end
   it "has binary functions */+/-" do
     [:*, :+, :-].each{|func|
@@ -122,6 +124,21 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
       end
       len2 = [len, len_orig].min
       expect(sig.to_a.slice(0, len2)).to eq(src_array.slice(0, len2))
+    }
+  end
+  it "has slide!(offset)" do
+    len = src_sig.size
+    sig_clone = sig_type::new(src_sig)
+    [0, 1, -1, len/2, -len/2].each{|offset|
+      sig = sig_clone.slide!(offset)
+      expect(sig).to be(sig_clone)
+      expect(sig.size).to eq(len)
+      if offset > 0 then
+        src_array[0...-offset] = src_array[offset..-1]
+      elsif offset < 0 then
+        src_array[-offset..-1] = src_array[0...offset]
+      end
+      expect(sig.to_a).to eq(src_array)
     }
   end
   it "has rotate!(offset)" do
@@ -168,6 +185,18 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
       expect(src_sig.zip(ary).all?{|a, b| a == b}).to be(true)
     }
   end
+  it "has fill!" do
+    len = src_sig.size
+    sig_orig = src_sig
+    ary = nil
+    [ary, proc{|i| ary[i]}].each{|arg|
+      ary = (src_sig + 1).to_a
+      expect(arg.kind_of?(Proc) ? src_sig.fill!(0, len, &arg) : src_sig.fill!(0, len, ary)).to be(sig_orig)
+      expect(src_sig.zip(ary).all?{|a, b| a == b}).to be(true)
+    }
+    expect(src_sig.fill!(0, len, ary[0])).to be(sig_orig)
+    expect(src_sig.zip([ary[0]] * ary.size).all?{|a, b| a == b}).to be(true)
+  end
   it "has append!" do
     sig_orig = src_sig
     ary = nil
@@ -204,6 +233,12 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
   it "has dot_product" do
     expect(src_sig_n01.dot_product(src_sig_n01)).to eq((src_sig_n01 * src_sig_n01).sum)
   end
+  it "has circular_dot_product" do
+    (-2..2).each{|offset|
+      expect(src_sig_n01.circular_dot_product(offset, src_sig_n01)) \
+          .to eq(src_sig_n01.circular(offset).dot_product(src_sig_n01))
+    }
+  end
   it "has max/min_abs_index" do
     [:max, :min].each{|k|
       func = "#{k}_abs_index".to_sym
@@ -232,8 +267,11 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
   end
   it "works correctly with Ractor" do
     expect{
+      src_sig_shareable = src_sig.to_shareable
+      expect(src_sig_shareable.to_shareable).to be(src_sig_shareable) # return self at multiple calls
       rac = Ractor::new{receive.size}
-      rac.send(src_sig.to_shareable)
+      rac.send(src_sig_shareable)
+      expect(RUBY_VERSION =~ /^3\.5/ ? rac.value : rac.take).to eq(src_sig.size)
     }.not_to raise_error
   end if defined?(Ractor)
 end
