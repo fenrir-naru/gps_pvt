@@ -324,6 +324,13 @@ RSpec::describe GPS_PVT::SDR::Signal::Real do
     expect(sig2).to be_a_kind_of(GPS_PVT::SDR::Signal::Real)
     expect(sig.zip(sig2.to_a).all?{|a, b| (a - b).abs < 1E-6}).to be(true)
   end
+  it "has r2i" do
+    sig = sig_type::cw(1E-3, 2E-7, freq) # sampling freq. = 5MHz
+    sf = (1 << 8)
+    sig_i = sig.r2i(sf)
+    expect(sig_i).to be_a_kind_of(GPS_PVT::SDR::Signal::Int)
+    expect(sig.zip(sig_i.to_a).all?{|a, b| (a * sf).truncate == b}).to be(true)
+  end
 end
 
 RSpec::describe GPS_PVT::SDR::Signal::Complex do

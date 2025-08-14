@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <exception>
+#include <cmath>
 // #include <ruby/ractor.h>
 %}
 
@@ -238,26 +239,29 @@ struct SignalUtil {
   static Signal<T> c2r(const Signal<Complex<T> > &sig){
     ///< @see Tsui 6.14 Hilbert transform (6.14)-(6.17)
     Signal<Complex<T> > x(sig.fft()); // (6.14)
-    typename Signal<Complex<T> >::buf_t x1;
-    x1.reserve(x.size() << 1);
+    typename Signal<Complex<T> >::buf_t x1(x.size() << 1);
+    typename Signal<Complex<T> >::buf_t::iterator x1_it(x1.begin());
 #if 0 // skip reordering in (6.15) because it depends on IF configuration
     typename Signal<Complex<T> >::buf_t::size_type n_half((x.size() + 1) >> 1);
     std::copy( // (6.15)-1
         x.samples.begin() + n_half, x.samples.end(),
-        std::back_inserter(x1));
+        x1_it);
+    x1_it += x.samples.size() - n_half;
     std::copy( // (6.15)-2
         x.samples.begin(), x.samples.begin() + n_half,
-        std::back_inserter(x1));
+        x1_it);
+    x1_it += n_half;
 #else
-    std::copy(x.samples.begin(), x.samples.end(), std::back_inserter(x1));
+    std::copy(x.samples.begin(), x.samples.end(), x1_it);
+    x1_it += x.samples.size();
 #endif
-    x1.push_back(0); // (6.16)-1
+    *(x1_it++) = 0; // (6.16)-1
     struct op_t {
       Complex<T> operator()(const Complex<T> &v) const {return v.conjugate();}
     };
     std::transform( // (6.16)-2
-        x1.rbegin() + 1, x1.rend() - 1,
-        std::back_inserter(x1),
+        x1.rend() - x.samples.size(), x1.rend() - 1,
+        x1_it,
         op_t());
     return Signal<Complex<T> >(x1).ifft().real(); // (6.17)
   }
@@ -715,6 +719,23 @@ add_func2(Complex<double>, double);
 %extend Signal<double> {
   Signal<Complex<double> > r2c() const {
     return SignalUtil::r2c(*$self);
+  }
+  Signal<int> r2i(const double &sf = 1) const {
+    typename Signal<int>::buf_t buf($self->size());
+    struct op_t {
+      const double &sf;
+      int operator()(const double &v) const {
+%#if __cplusplus >= 201103L
+        return (int)std::trunc(v * sf);
+%#else
+        return (int)std::floor(std::abs(v * sf)) * (v > 0 ? 1 : -1);
+%#endif
+      }
+    } op = {sf};
+    std::transform(
+        $self->samples.begin(), $self->samples.end(),
+        buf.begin(), op);
+    return Signal<int>(buf);
   }
 }
 %extend Signal<Complex<double> > {

@@ -1903,6 +1903,7 @@ static VALUE mSignal;
 #include <sstream>
 #include <string>
 #include <exception>
+#include <cmath>
 // #include <ruby/ractor.h>
 
 
@@ -2795,8 +2796,8 @@ struct SignalUtil {
   static Signal<T> c2r(const Signal<Complex<T> > &sig){
     ///< @see Tsui 6.14 Hilbert transform (6.14)-(6.17)
     Signal<Complex<T> > x(sig.fft()); // (6.14)
-    typename Signal<Complex<T> >::buf_t x1;
-    x1.reserve(x.size() << 1);
+    typename Signal<Complex<T> >::buf_t x1(x.size() << 1);
+    typename Signal<Complex<T> >::buf_t::iterator x1_it(x1.begin());
 
 
 
@@ -2806,15 +2807,18 @@ struct SignalUtil {
 
 
 
-    std::copy(x.samples.begin(), x.samples.end(), std::back_inserter(x1));
 
-    x1.push_back(0); // (6.16)-1
+
+    std::copy(x.samples.begin(), x.samples.end(), x1_it);
+    x1_it += x.samples.size();
+
+    *(x1_it++) = 0; // (6.16)-1
     struct op_t {
       Complex<T> operator()(const Complex<T> &v) const {return v.conjugate();}
     };
     std::transform( // (6.16)-2
-        x1.rbegin() + 1, x1.rend() - 1,
-        std::back_inserter(x1),
+        x1.rend() - x.samples.size(), x1.rend() - 1,
+        x1_it,
         op_t());
     return Signal<Complex<T> >(x1).ifft().real(); // (6.17)
   }
@@ -3181,6 +3185,23 @@ SWIGINTERN double Signal_Sl_double_Sg__circular_dot_product__SWIG_2(Signal< doub
   }
 SWIGINTERN Signal< Complex< double > > Signal_Sl_double_Sg__r2c(Signal< double > const *self){
     return SignalUtil::r2c(*self);
+  }
+SWIGINTERN Signal< int > Signal_Sl_double_Sg__r2i__SWIG_0(Signal< double > const *self,double const &sf=1){
+    typename Signal<int>::buf_t buf(self->size());
+    struct op_t {
+      const double &sf;
+      int operator()(const double &v) const {
+#if __cplusplus >= 201103L
+        return (int)std::trunc(v * sf);
+#else
+        return (int)std::floor(std::abs(v * sf)) * (v > 0 ? 1 : -1);
+#endif
+      }
+    } op = {sf};
+    std::transform(
+        self->samples.begin(), self->samples.end(),
+        buf.begin(), op);
+    return Signal<int>(buf);
   }
 
 // SWIG_Traits_frag(Complex) is invalid, which will be hidden by SWIG_Traits_frag(Complex<T>)
@@ -7163,6 +7184,119 @@ _wrap_Real_r2c(int argc, VALUE *argv, VALUE self) {
   vresult = SWIG_NewPointerObj((new Signal< Complex< double > >(static_cast< const Signal< Complex< double > >& >(result))), SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Real.r2i
+
+  call-seq:
+    r2i(double const & sf=1) -> Int
+    r2i -> Int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_r2i__SWIG_0(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  double *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  SwigValueWrapper< Signal< int > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 1) || (argc > 1)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","r2i", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  ecode2 = SWIG_AsVal_double(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "double","r2i", 2, argv[0] ));
+  } 
+  temp2 = static_cast< double >(val2);
+  arg2 = &temp2;
+  result = Signal_Sl_double_Sg__r2i__SWIG_0((Signal< double > const *)arg1,(double const &)*arg2);
+  vresult = SWIG_NewPointerObj((new Signal< int >(static_cast< const Signal< int >& >(result))), SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_Real_r2i__SWIG_1(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< int > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","r2i", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  result = Signal_Sl_double_Sg__r2i__SWIG_0((Signal< double > const *)arg1);
+  vresult = SWIG_NewPointerObj((new Signal< int >(static_cast< const Signal< int >& >(result))), SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE _wrap_Real_r2i(int nargs, VALUE *args, VALUE self) {
+  int argc;
+  VALUE argv[3];
+  int ii;
+  
+  argc = nargs + 1;
+  argv[0] = self;
+  if (argc > 3) SWIG_fail;
+  for (ii = 1; (ii < argc); ++ii) {
+    argv[ii] = args[ii-1];
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_Real_r2i__SWIG_1(nargs, args, self);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_double(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_Real_r2i__SWIG_0(nargs, args, self);
+      }
+    }
+  }
+  
+fail:
+  Ruby_Format_OverloadedError( argc, 3, "r2i", 
+    "    Signal< int > r2i(double const &sf)\n"
+    "    Signal< int > r2i()\n");
+  
   return Qnil;
 }
 
@@ -18341,6 +18475,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "dot_product", VALUEFUNC(_wrap_Real_dot_product), -1);
   rb_define_method(SwigClassReal.klass, "circular_dot_product", VALUEFUNC(_wrap_Real_circular_dot_product), -1);
   rb_define_method(SwigClassReal.klass, "r2c", VALUEFUNC(_wrap_Real_r2c), -1);
+  rb_define_method(SwigClassReal.klass, "r2i", VALUEFUNC(_wrap_Real_r2i), -1);
   SwigClassReal.mark = 0;
   SwigClassReal.destroy = (void (*)(void *)) SignalUtil::free<double>;
   SwigClassReal.trackObjects = 0;
