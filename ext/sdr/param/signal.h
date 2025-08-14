@@ -86,7 +86,10 @@ struct SignalTypeResolver<T, std::vector<T2> > {
 };
 
 template <class SignalT>
-struct PartialSignalBuffer;
+struct Signal_PartialBuffer;
+
+template <class T, class BufferT>
+struct Signal_SideLoaded {};
 
 template <class T, class BufferT>
 class Signal {
@@ -125,22 +128,23 @@ public:
   typedef typename SignalTypeResolver<complex_t, BufferT>::assignable_t sig_c_t;
 
   buf_t samples;
+  Signal_SideLoaded<T, BufferT> side_loaded;
 
-  Signal() : samples() {}
-  Signal(const buf_t &buf) : samples(buf) {}
+  Signal() : samples(), side_loaded() {}
+  Signal(const buf_t &buf) : samples(buf), side_loaded() {}
 protected:
-  Signal(const size_t &capacity) : samples() {
+  Signal(const size_t &capacity) : samples(), side_loaded() {
     samples.reserve(capacity);
   }
 public:
   template <class T2, class BufferT2>
   Signal(const Signal<T2, BufferT2> &sig)
-      : samples(sig.samples.begin(), sig.samples.end()) {}
+      : samples(sig.samples.begin(), sig.samples.end()), side_loaded() {}
   template <class T_Generator, class T_Signal, class T_Tick>
   Signal(
       SignalGenerator<T_Generator, T_Signal, T_Tick> &gen,
       const T_Tick &t, const T_Tick &dt, const T_Tick &freq)
-      : samples(std::round(t / dt)) {
+      : samples(std::round(t / dt)), side_loaded() {
     for(typename buf_t::iterator it(samples.begin()), it_end(samples.end());
         it != it_end; ++it){
       *it = static_cast<T_Generator &>(gen).current();
@@ -151,7 +155,7 @@ public:
   Signal(
       TimeBasedSignalGenerator<T_Generator, T_Signal, T_Tick> &gen,
       const T_Tick &t, const T_Tick &dt)
-      : samples(std::round(t / dt)) {
+      : samples(std::round(t / dt)), side_loaded() {
     for(typename buf_t::iterator it(samples.begin()), it_end(samples.end());
         it != it_end; ++it){
       *it = static_cast<T_Generator &>(gen).current();
@@ -169,81 +173,109 @@ public:
   const value_t &operator[](const size_t &i) const {return samples[i];}
 
   // Scalar operation
+protected:
+  template <class Operator>
+  self_t &op_scalar(Operator op){
+    std::transform(samples.begin(), samples.end(), samples.begin(), op);
+    return *this;
+  }
+  template <class Operator>
+  sig_t op_scalar(Operator op) const {
+    typename sig_t::buf_t buf(samples.size());
+    std::transform(samples.begin(), samples.end(), buf.begin(), op);
+    return sig_t(buf);
+  }
   template <class T2>
-  self_t &operator*=(const T2 &k){
-    struct op_t {
+  struct op_scalar_t {
+    struct mul_t {
       T2 k;
       value_t operator()(const value_t &v) const {return v * k;}
     };
-    op_t op = {k};
-    std::transform(samples.begin(), samples.end(), samples.begin(), op);
-    return *this;
-  }
-  template <class T2>
-  sig_t operator*(const T2 &k) const {return (sig_t(*this) *= k);}
-  sig_t operator-() const {return *this * -1;}
-  template <class T2>
-  self_t &operator+=(const T2 &v){
-    struct op_t {
+    struct add_t {
       T2 v2;
       value_t operator()(const value_t &v1) const {return v1 + v2;}
     };
-    op_t op = {v};
-    std::transform(samples.begin(), samples.end(), samples.begin(), op);
-    return *this;
+  };
+public:
+  template <class T2>
+  self_t &operator*=(const T2 &k){
+    typename op_scalar_t<T2>::mul_t op = {k};
+    return op_scalar(op);
   }
   template <class T2>
-  sig_t operator+(const T2 &v) const {return (sig_t(*this) += v);}
+  sig_t operator*(const T2 &k) const {
+    typename op_scalar_t<T2>::mul_t op = {k};
+    return op_scalar(op);
+  }
+  sig_t operator-() const {return *this * -1;}
   template <class T2>
-  self_t &operator-=(const T2 &v){return (*this) += (-v);}
+  self_t &operator+=(const T2 &v){
+    typename op_scalar_t<T2>::add_t op = {v};
+    return op_scalar(op);
+  }
   template <class T2>
-  sig_t operator-(const T2 &v) const {return (sig_t(*this) -= v);}
+  sig_t operator+(const T2 &v) const {
+    typename op_scalar_t<T2>::add_t op = {v};
+    return op_scalar(op);
+  }
+  template <class T2>
+  self_t &operator-=(const T2 &v){
+    typename op_scalar_t<T2>::add_t op = {-v};
+    return op_scalar(op);
+  }
+  template <class T2>
+  sig_t operator-(const T2 &v) const {
+    typename op_scalar_t<T2>::add_t op = {-v};
+    return op_scalar(op);
+  }
 
   // Vector operation
-  template <class T2, class BufferT2>
-  self_t &operator*=(const Signal<T2, BufferT2> &sig){
-    struct op_t {
-      value_t operator()(const value_t &v1, const T2 &v2) const {return v1 * v2;}
-    };
+protected:
+  template <class T2, class BufferT2, class Operator>
+  self_t &op_vector(const Signal<T2, BufferT2> &sig, Operator op){
     std::transform(
         samples.begin(), samples.end(), sig.samples.begin(),
-        samples.begin(),
-        op_t());
+        samples.begin(), op);
     return *this;
+  }
+  template <class T2, class BufferT2, class Operator>
+  sig_t op_vector(const Signal<T2, BufferT2> &sig, Operator op) const {
+    typename sig_t::buf_t buf(samples.size());
+    std::transform(
+        samples.begin(), samples.end(), sig.samples.begin(),
+        buf.begin(), op);
+    return sig_t(buf);
+  }
+  template <class T2>
+  struct op_vector_t {
+    static value_t mul(const value_t &v1, const T2 &v2){return v1 * v2;}
+    static value_t add(const value_t &v1, const T2 &v2){return v1 + v2;}
+    static value_t sub(const value_t &v1, const T2 &v2){return v1 - v2;}
+  };
+public:
+  template <class T2, class BufferT2>
+  self_t &operator*=(const Signal<T2, BufferT2> &sig){
+    return op_vector(sig, op_vector_t<T2>::mul);
   }
   template <class T2, class BufferT2>
   sig_t operator*(const Signal<T2, BufferT2> &sig) const {
-    return (sig_t(*this) *= sig);
+    return op_vector(sig, op_vector_t<T2>::mul);
   }
   template <class T2, class BufferT2>
   self_t &operator+=(const Signal<T2, BufferT2> &sig){
-    struct op_t {
-      value_t operator()(const value_t &v1, const T2 &v2) const {return v1 + v2;}
-    };
-    std::transform(
-        samples.begin(), samples.end(), sig.samples.begin(),
-        samples.begin(),
-        op_t());
-    return *this;
+    return op_vector(sig, op_vector_t<T2>::add);
   }
   template <class T2, class BufferT2>
   sig_t operator+(const Signal<T2, BufferT2> &sig) const {
-    return (sig_t(*this) += sig);
+    return op_vector(sig, op_vector_t<T2>::add);
   }
   template <class T2, class BufferT2>
   self_t &operator-=(const Signal<T2, BufferT2> &sig){
-    struct op_t {
-      value_t operator()(const value_t &v1, const T2 &v2) const {return v1 - v2;}
-    };
-    std::transform(
-        samples.begin(), samples.end(), sig.samples.begin(),
-        samples.begin(),
-        op_t());
-    return *this;
+    return op_vector(sig, op_vector_t<T2>::sub);
   }
   template <class T2, class BufferT2>
   sig_t operator-(const Signal<T2, BufferT2> &sig) const {
-    return (sig_t(*this) -= sig);
+    return op_vector(sig, op_vector_t<T2>::sub);
   }
 
   self_t &resize(const size_t &new_size){
@@ -251,13 +283,19 @@ public:
     return *this;
   }
 
+  self_t &slide(int offset){
+    offset = std::div(offset, samples.size()).rem;
+    if(offset < 0){
+      std::copy_backward(samples.begin(), samples.end() + offset, samples.end());
+    }else{
+      std::copy(samples.begin() + offset, samples.end(), samples.begin());
+    }
+    return *this;
+  }
   self_t &rotate(int offset){
     offset = std::div(offset, samples.size()).rem;
     if(offset < 0){offset += samples.size();}
-    buf_t buf(samples.size());
-    std::copy(samples.begin() + offset, samples.end(), buf.begin());
-    std::copy(samples.begin(), samples.begin() + offset, buf.end() - offset);
-    samples.swap(buf);
+    std::rotate(samples.begin(), samples.begin() + offset, samples.end());
     return *this;
   }
   sig_t circular(int offset, size_t length) const {
@@ -351,6 +389,25 @@ public:
   value_t dot_product(const Signal<T2, BufferT2> &sig) const {
     return std::inner_product(
         samples.begin(), samples.end(), sig.samples.begin(), value_t(0));
+    //return dot_product_t<T2>::run(*this, sig);
+  }
+  template <class T2, class BufferT2>
+  value_t circular_dot_product(const int &offset, const Signal<T2, BufferT2> &sig) const {
+    if(offset >= 0){
+      return std::inner_product(
+          samples.begin(), samples.begin() + offset,
+          sig.samples.end() - offset,
+          std::inner_product(
+            samples.begin() + offset, samples.end(),
+            sig.samples.begin(), value_t(0)));
+    }else{
+      return std::inner_product(
+          samples.begin(), samples.end() + offset,
+          sig.samples.begin() - offset,
+          std::inner_product(
+            samples.end() + offset, samples.end(),
+            sig.samples.begin(), value_t(0)));
+    }
   }
 protected:
   struct cmp_abs_t {
@@ -394,10 +451,10 @@ Signal<T_Signal> TimeBasedSignalGenerator<T_Generator, T_Signal, T_Tick>::genera
 }
 
 template <class SignalT>
-struct PartialSignalBuffer {
+struct Signal_PartialBuffer {
   typedef SignalT sig_raw_t;
   typedef typename sig_raw_t::value_t value_t;
-  typedef Signal<value_t, PartialSignalBuffer<SignalT> > sig_partial_t;
+  typedef Signal<value_t, Signal_PartialBuffer<SignalT> > sig_partial_t;
 
   sig_raw_t *orig;
   typedef typename sig_raw_t::size_t size_type;
@@ -445,5 +502,5 @@ struct PartialSignalBuffer {
 };
 
 template <class T, class SignalT>
-struct SignalTypeResolver<T, PartialSignalBuffer<SignalT> >
+struct SignalTypeResolver<T, Signal_PartialBuffer<SignalT> >
     : public SignalTypeResolver<T, typename SignalT::buf_t> {};
