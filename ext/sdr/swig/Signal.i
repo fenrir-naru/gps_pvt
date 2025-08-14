@@ -4,13 +4,31 @@
 #include <sstream>
 #include <string>
 #include <exception>
-
-#if defined(SWIGRUBY) && defined(isfinite)
-#undef isfinite
-#endif
-
-#include "param/signal.h"
+// #include <ruby/ractor.h>
 %}
+
+%fragment("Signal.i", "header") %{
+#include "param/signal.h"
+
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+#include <atomic>
+#endif
+template <class T>
+struct Signal_SideLoaded<T, std::vector<T> > {
+  typedef Signal_SideLoaded<T, std::vector<T> > self_t;
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  typedef std::atomic<int> ref_count_t;
+#else
+  typedef int ref_count_t;
+#endif
+  ref_count_t ref_count; // keep ref_count to correspond to the same instance
+  Signal_SideLoaded() : ref_count(0) {}
+  Signal_SideLoaded(const self_t &another) : ref_count(0) {}
+  self_t &operator=(const self_t &another){return *this;}
+};
+%}
+
+%fragment("Signal.i");
 
 %include std_common.i
 %include std_string.i
@@ -20,6 +38,7 @@
 %feature("autodoc", "1");
 
 %import "SylphideMath.i"
+%fragment("SylphideMath.i");
 
 %init %{
 #ifdef HAVE_RB_EXT_RACTOR_SAFE
@@ -47,59 +66,43 @@ struct native_exception : public std::exception {
 }
 #endif
 
-%{
-#include <iostream>
-%}
-
 %fragment(SWIG_Traits_frag(SignalUtil), "header") {
 struct SignalUtil {
 #if defined(SWIGRUBY)
-  template <class T, int bits>
-  static bool read_packed(const VALUE &src, typename Signal<T>::buf_t &dst){
+  template <class T, int bits, class IteratorT>
+  static bool read_packed(const VALUE &src, IteratorT &dst_it){
     static const unsigned char mask((1 << bits) - 1);
     switch(TYPE(src)){
       case T_STRING: {
         unsigned char *buf((unsigned char *)(RSTRING_PTR(src)));
         int len_src(RSTRING_LEN(src));
-        int len_dst(len_src * (8 / bits));
-        dst.resize(dst.size() + len_dst);
-        typename Signal<T>::buf_t::iterator it(dst.end() - len_dst);
         for(int i(0); i < len_src; ++i, ++buf){
           unsigned char c(*buf);
-          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
-            *it = ((int)((c & mask) << 1) - (int)mask);
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++dst_it){
+            *dst_it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
         return true;
       }
       case T_FILE: {
         rb_io_ascii8bit_binmode(src);
-        typename Signal<T>::buf_t::iterator it_end(dst.end()), it(it_end);
-        static const int size_buf_add(1024 * bits);
         while(true){
           VALUE v(rb_io_getbyte(src));
           if(!RTEST(v)){break;} // eof?
-          if(it == it_end){
-            dst.resize(dst.size() + size_buf_add);
-            it_end = dst.end();
-            it = it_end - size_buf_add;
-          }
           unsigned char c(NUM2CHR(v));
-          for(int j(8 / bits); j > 0; --j, c >>= bits, ++it){
-            *it = ((int)((c & mask) << 1) - (int)mask);
+          for(int j(8 / bits); j > 0; --j, c >>= bits, ++dst_it){
+            *dst_it = ((int)((c & mask) << 1) - (int)mask);
           }
         }
-        if(it != it_end){dst.resize(it - dst.begin());}
         return true;
       }
       default: return false;
     }
   }
 #endif
-  template <class T>
-  static typename Signal<T>::buf_t to_buffer(const void *src = NULL){
+  template <class T, class IteratorT = typename Signal<T>::buf_t::iterator>
+  static void fill_buffer(IteratorT &it, const void *src = NULL){
     typedef typename Signal<T>::size_t size_t;
-    typename Signal<T>::buf_t res;
 #if defined(SWIGRUBY)
     const VALUE *value(static_cast<const VALUE *>(src));
     size_t len(0), i(0);
@@ -107,8 +110,7 @@ struct SignalUtil {
     bool valid_input(false);
     if(value){
       if(RB_TYPE_P(*value, T_ARRAY)){
-        res.resize(len = RARRAY_LEN(*value));
-        typename Signal<T>::buf_t::iterator it(res.begin());
+        len = RARRAY_LEN(*value);
         T elm;
         for(; i < len; i++, ++it){
           elm_val = RARRAY_AREF(*value, i);
@@ -119,18 +121,18 @@ struct SignalUtil {
       }else if(RB_TYPE_P(*value, T_HASH)){
         static const VALUE k_src(ID2SYM(rb_intern("source"))), k_format(ID2SYM(rb_intern("format")));
         VALUE v_src(rb_hash_lookup(*value, k_src)), v_format(rb_hash_lookup(*value, k_format));
-        struct {
+        static const struct {
           const VALUE name;
-          bool (*func)(const VALUE &src, typename Signal<T>::buf_t &dst);
+          bool (*func)(const VALUE &src, IteratorT &dst_it);
         } format_list[] = {
-          {ID2SYM(rb_intern("packed_1b")), &read_packed<T, 1>},
-          {ID2SYM(rb_intern("packed_2b")), &read_packed<T, 2>},
-          {ID2SYM(rb_intern("packed_4b")), &read_packed<T, 4>},
-          {ID2SYM(rb_intern("packed_8b")), &read_packed<T, 8>},
+          {ID2SYM(rb_intern("packed_1b")), &read_packed<T, 1, IteratorT>},
+          {ID2SYM(rb_intern("packed_2b")), &read_packed<T, 2, IteratorT>},
+          {ID2SYM(rb_intern("packed_4b")), &read_packed<T, 4, IteratorT>},
+          {ID2SYM(rb_intern("packed_8b")), &read_packed<T, 8, IteratorT>},
         };
         for(int i(0); i < sizeof(format_list) / sizeof(format_list[0]); ++i){
           if(format_list[i].name == v_format){
-            valid_input = (*format_list[i].func)(v_src, res);
+            valid_input = (*format_list[i].func)(v_src, it);
             break;
           }
         }
@@ -141,7 +143,7 @@ struct SignalUtil {
       valid_input = true;
       int state;
       T elm;
-      for(; ; i++){
+      for(; ; i++, ++it){
         elm_val = rb_protect(rb_yield, UINT2NUM(i), &state);
         if(state != 0){throw native_exception(state);}
         if(!RTEST(elm_val)){break;} // if nil returned, break loop.
@@ -149,7 +151,7 @@ struct SignalUtil {
           len = i + 1;
           break;
         }
-        res.push_back(elm);
+        *it = elm;
       }
     }
     if(!valid_input){
@@ -167,6 +169,51 @@ struct SignalUtil {
       throw std::invalid_argument(s.str().append(RSTRING_PTR(v_str), RSTRING_LEN(v_str)));
     }
 #endif
+  }
+  static int buffer_size_required(const void *src) {
+    if(!src){return -1;}
+#if defined(SWIGRUBY)
+    const VALUE *value(static_cast<const VALUE *>(src));
+    switch(TYPE(*value)){
+      case T_ARRAY: return RARRAY_LEN(*value);
+      case T_HASH: {
+        static const VALUE k_src(ID2SYM(rb_intern("source"))), k_format(ID2SYM(rb_intern("format")));
+        VALUE v_src(rb_hash_lookup(*value, k_src)), v_format(rb_hash_lookup(*value, k_format));
+        static const struct {
+          const VALUE name;
+          int per_byte;
+        } format_list[] = {
+          {ID2SYM(rb_intern("packed_1b")), 8},
+          {ID2SYM(rb_intern("packed_2b")), 4},
+          {ID2SYM(rb_intern("packed_4b")), 2},
+          {ID2SYM(rb_intern("packed_8b")), 1},
+        };
+        for(int i(0); i < sizeof(format_list) / sizeof(format_list[0]); ++i){
+          if(format_list[i].name == v_format){
+            switch(TYPE(v_src)){
+              case T_STRING: return (format_list[i].per_byte * RSTRING_LEN(v_src));
+              case T_FILE: break; // TODO
+            }
+            break;
+          }
+        }
+      }
+    }
+#endif
+    return -1;
+  }
+  template <class T>
+  static typename Signal<T>::buf_t to_buffer(const void *src = NULL){
+    typename Signal<T>::buf_t res;
+    int dst_size(buffer_size_required(src));
+    if(dst_size >= 0){
+      res.resize(dst_size);
+      typename Signal<T>::buf_t::iterator it(res.begin());
+      fill_buffer<T>(it, src);
+    }else{
+      std::back_insert_iterator<typename Signal<T>::buf_t> it(std::back_inserter(res));
+      fill_buffer<T>(it, src);
+    }
     return res;
   }
   template <class SignalT>
@@ -214,6 +261,15 @@ struct SignalUtil {
         op_t());
     return Signal<Complex<T> >(x1).ifft().real(); // (6.17)
   }
+%#if defined(SWIGRUBY)
+  template <class T>
+  static void free(void *ptr){
+    Signal<T> *sig = (Signal<T> *)ptr;
+    if((--(sig->side_loaded.ref_count)) < 0){
+      delete sig;
+    }
+  }
+%#endif
 };
 }
 
@@ -236,7 +292,9 @@ struct Signal_Partial {
   typename Signal<T>::sig_c_t ifft() const;
   %extend {
     %fragment(SWIG_Traits_frag(Signal<T>));
+    %ignore side_loaded;
     %ignore Signal_Partial();
+    %ignore free(void *);
     Signal<T> copy() const {return Signal<T>(*$self);}
     T __getitem__(const unsigned int &i) const {
       return ($self)->operator[](i);
@@ -252,24 +310,37 @@ struct Signal_Partial {
     }
     SWIG_Object partial(
         SWIG_Object *_self,
-        const int &start, const unsigned int &length) {
-      SWIG_Object res(swig::from(Signal_Partial<T>(
-          PartialSignalBuffer<Signal<T> >::generate_signal(
-            const_cast<Signal_Partial<T> &>(*$self), start, length))));
-#if defined(SWIGRUBY)
-      rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
-#endif
+        const int &start, const unsigned int &length) const throw(std::runtime_error) {
+      Signal_Partial<T> *sig(const_cast<Signal_Partial<T> *>($self));
+      if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+        throw std::runtime_error("Original signal was destructed.");
+      }
+      SWIG_Object res(swig::from_ptr(new Signal_Partial<T>(
+          Signal_PartialBuffer<Signal<T> >::generate_signal(
+            *sig, start, length)), 1));
       return res;
     }
 #if defined(SWIGRUBY)
-  SWIG_Object to_shareable(SWIG_Object *_self) const {
-    SWIG_Object res(swig::from(Signal_Partial<T>(*self)));
-    rb_iv_set(res, "@__orig_sig__", rb_iv_get(*_self, "@__orig_sig__"));
+  SWIG_Object to_shareable(SWIG_Object *_self) const throw(std::runtime_error) {
+%#if defined(HAVE_RB_EXT_RACTOR_SAFE)
+    if(RB_FL_TEST(*_self, RUBY_FL_SHAREABLE)){
+      return *_self;
+    }
+%#else
+    if(rb_obj_frozen_p(*_self)){
+      return *_self;
+    }
+%#endif
+    Signal_Partial<T> *sig(const_cast<Signal_Partial<T> *>($self));
+    if(((sig->samples.orig->side_loaded.ref_count)++) < 0){
+      throw std::runtime_error("Original signal was destructed.");
+    }
+    SWIG_Object res(swig::from_ptr(new Signal_Partial<T>(*sig), 1));
 %#if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 %#endif
     rb_obj_freeze(res);
-    return res;
+    return /*rb_ractor_make_shareable(res);*/ res;
   }
 #endif
   }
@@ -278,10 +349,27 @@ struct Signal_Partial {
 %header {
 template <class T>
 struct Signal_Partial
-    : public Signal<T, PartialSignalBuffer<Signal<T> > > {
-  typedef Signal<T, PartialSignalBuffer<Signal<T> > > super_t;
-  Signal_Partial() : super_t() {}
+    : public Signal<T, Signal_PartialBuffer<Signal<T> > > {
+  typedef Signal<T, Signal_PartialBuffer<Signal<T> > > super_t;
+  //Signal_Partial() : super_t() {} // delete ctor()
   Signal_Partial(const super_t &sig) : super_t(sig) {}
+  Signal_Partial(Signal<T> *orig, const int &idx_begin, const int &idx_end)
+      : super_t() {
+    super_t::samples.orig = orig;
+    super_t::samples.idx_begin = idx_begin;
+    super_t::samples.idx_end = idx_end;
+  }
+%#if defined(SWIGRUBY)
+  static void free(void *ptr){
+    Signal_Partial<T> *sig = (Signal_Partial<T> *)ptr;
+    if(sig->samples.orig){
+      if((--(sig->samples.orig->side_loaded.ref_count)) < 0){
+        delete sig->samples.orig;
+      }
+    }
+    delete sig;
+  }
+%#endif
 };
 }
 
@@ -323,6 +411,7 @@ struct Signal_Partial
 #endif
   %typemap(in) const void *special_input "$1 = &$input;"
 
+  %ignore side_loaded;
 #ifdef SWIGRUBY
   Signal() throw(native_exception, std::invalid_argument) {
     if(rb_block_given_p()){return new Signal<T>(SignalUtil::to_buffer<T>());}
@@ -340,6 +429,35 @@ struct Signal_Partial
   SWIG_Object replace(SWIG_Object *_self, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
     typename Signal<T>::buf_t buf(SignalUtil::to_buffer<T>(special_input));
     $self->samples.swap(buf);
+    return *_self;
+  }
+  SWIG_Object fill(
+      SWIG_Object *_self,
+      int idx_start, const size_t &length,
+      const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
+    int idx_last($self->get_slice_end(idx_start, length));
+    int n(idx_last - idx_start);
+    if((idx_start < 0) || (n < 0) || (n != length)){
+      SWIG_exception(SWIG_ValueError, "Invalid index or length.");
+    }
+    do{
+      if(special_input){
+        const SWIG_Object *obj_p(static_cast<const SWIG_Object *>(special_input));
+        T v;
+        if(SWIG_IsOK(swig::asval(*obj_p, &v))){
+          std::fill($self->samples.begin() + idx_start, $self->samples.begin() + idx_last, v);
+          break;
+        }
+      }
+      if(SignalUtil::buffer_size_required(special_input) == length){
+        typename Signal<T>::buf_t::iterator it($self->samples.begin() + idx_start);
+        SignalUtil::fill_buffer<T>(it, special_input);
+        break;
+      }
+      typename Signal<T>::buf_t buf(SignalUtil::to_buffer<T>(special_input));
+      if(buf.size() > length){SWIG_exception(SWIG_ValueError, "Invalid input length.");}
+      std::copy(buf.begin(), buf.begin() + length, $self->samples.begin() + idx_start);
+    }while(false);
     return *_self;
   }
   SWIG_Object append(SWIG_Object *_self, const void *special_input = NULL) throw(native_exception, std::invalid_argument) {
@@ -361,6 +479,7 @@ struct Signal_Partial
   }
 #ifdef SWIGRUBY
   %rename("replace!") replace;
+  %rename("fill!") fill;
   // %alias append "concat!"; // TODO add if need
   %rename("append!") append;
   %rename("shift!") shift;
@@ -371,6 +490,7 @@ struct Signal_Partial
 
 #ifdef SWIGRUBY
   %bang resize;
+  %bang slide;
   %bang rotate;
 #endif
   %ignore get_slice_end;
@@ -389,6 +509,25 @@ struct Signal_Partial
   T &__setitem__(const unsigned int &i, const T &v){
     return (($self)->operator[](i) = v);
   }
+#ifdef SWIGRUBY
+  SWIG_Object __setitem__(SWIG_Object *_self, SWIG_Object range, SWIG_Object v){
+    do{
+      if(rb_obj_is_kind_of(range, rb_cRange)){
+        long beg, len;
+        // @see rb_ary_aset implementation
+        if(rb_range_beg_len(range, &beg, &len, $self->size(), 1)){
+          // The last argument(1) means to raise rb_eRangeError in case len is out of range.
+          static const ID id_fill(rb_intern("fill!"));
+          rb_funcall(*_self, id_fill, 3,
+              SWIG_From_long(beg), SWIG_From_long(len), v);
+          break;
+        }
+      }
+      SWIG_exception(SWIG_ValueError, "Invalid range.");
+    }while(false);
+    return v;
+  }
+#endif
   
   %ignore max_abs_element;
   size_t max_abs_index() const {
@@ -402,19 +541,18 @@ struct Signal_Partial
   SWIG_Object partial(
       SWIG_Object *_self,
       const int &start, const unsigned int &length) const {
-    SWIG_Object res(swig::from(Signal_Partial<T>(
-        PartialSignalBuffer<Signal<T> >::generate_signal(
-          const_cast<Signal<T> &>(*$self), start, length))));
-#if defined(SWIGRUBY)
-    rb_iv_set(res, "@__orig_sig__", *_self);
-#endif
+    Signal<T> *sig(const_cast<Signal<T> *>($self));
+    ++(sig->side_loaded.ref_count);
+    SWIG_Object res(swig::from_ptr(new Signal_Partial<T>(
+        Signal_PartialBuffer<Signal<T> >::generate_signal(
+          *sig, start, length)), 1));
     return res;
   }
 #if defined(SWIGRUBY)
   SWIG_Object to_shareable(SWIG_Object *_self) const {
-    PartialSignalBuffer<Signal<T> > buf = {const_cast<Signal<T> *>($self), 0, -1};
-    SWIG_Object res(swig::from(Signal_Partial<T>(buf)));
-    rb_iv_set(res, "@__orig_sig__", *_self);
+    Signal<T> *sig(const_cast<Signal<T> *>($self));
+    ++(sig->side_loaded.ref_count);
+    SWIG_Object res(swig::from_ptr(new Signal_Partial<T>(sig, 0, -1), 1));
 %#if defined(HAVE_RB_EXT_RACTOR_SAFE)
     RB_FL_SET(res, RUBY_FL_SHAREABLE);
 %#endif
@@ -506,6 +644,9 @@ add_ctor(Signal<Complex<double> >, Signal<int>);
   
   // %template(dot_product) dot_product<T, BufferT>; // does not work?
   T dot_product(const Signal<T> &sig) const {return $self->dot_product(sig);}
+  T circular_dot_product(const int &offset, const Signal<T> &sig) const {
+    return $self->circular_dot_product(offset, sig);
+  }
 };
 
 %define add_func(func_to, func_from, type_this, type_arg, type_res)
@@ -522,6 +663,11 @@ add_func(__mul__, operator*, Signal_Partial<v>, Signal<v>, Signal<v>);
 add_func(__add__, operator+, Signal_Partial<v>, Signal<v>, Signal<v>);
 add_func(__sub__, operator-, Signal_Partial<v>, Signal<v>, Signal<v>);
 add_func(dot_product, dot_product, Signal_Partial<v>, Signal<v>, v);
+%extend Signal_Partial<v> {
+  v circular_dot_product(const int &offset, const Signal<v> &arg) const {
+    return $self->circular_dot_product(offset, arg);
+  }
+};
 %enddef
 
 add_func2(int);
@@ -541,12 +687,22 @@ add_func(__mul__, operator*, Signal<v1>, Signal<v2>, Signal<v1>);
 add_func(__add__, operator+, Signal<v1>, Signal<v2>, Signal<v1>);
 add_func(__sub__, operator-, Signal<v1>, Signal<v2>, Signal<v1>);
 add_func(dot_product, dot_product, Signal<v1>, Signal<v2>, v1);
+%extend Signal<v1> {
+  v1 circular_dot_product(const int &offset, const Signal<v2> &arg) const {
+    return $self->circular_dot_product(offset, arg);
+  }
+};
 
 // vector(partial)
 add_func(__mul__, operator*, Signal_Partial<v1>, Signal<v2>, Signal<v1>);
 add_func(__add__, operator+, Signal_Partial<v1>, Signal<v2>, Signal<v1>);
 add_func(__sub__, operator-, Signal_Partial<v1>, Signal<v2>, Signal<v1>);
 add_func(dot_product, dot_product, Signal_Partial<v1>, Signal<v2>, v1);
+%extend Signal_Partial<v1> {
+  v1 circular_dot_product(const int &offset, const Signal<v2> &arg) const {
+    return $self->circular_dot_product(offset, arg);
+  }
+};
 %enddef
 
 add_func2(double, int);
@@ -566,6 +722,12 @@ add_func2(Complex<double>, double);
     return SignalUtil::c2r(*$self);
   }
 }
+
+#if defined(SWIGRUBY)
+%freefunc Signal<double> "SignalUtil::free<double>";
+%freefunc Signal<Complex<double> > "SignalUtil::free<Complex<double> >";
+%freefunc Signal<int> "SignalUtil::free<int>";
+#endif
 
 %template(Real) Signal<double>;
 %template(Complex) Signal<Complex<double> >;
@@ -598,6 +760,12 @@ type_resolver(double, 1);
 type_resolver(int, 0);
 
 #undef type_resolver
+
+#if defined(SWIGRUBY)
+%freefunc Signal_Partial<double> "Signal_Partial<double>::free";
+%freefunc Signal_Partial<Complex<double> > "Signal_Partial<Complex<double> >::free";
+%freefunc Signal_Partial<int> "Signal_Partial<int>::free";
+#endif
 
 %template(Real_Partial) Signal_Partial<double>;
 %template(Complex_Partial) Signal_Partial<Complex<double> >;

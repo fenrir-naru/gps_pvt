@@ -2196,6 +2196,49 @@ namespace swig {
 #include <stddef.h>
 
 
+#if defined(SWIGRUBY) && defined(isfinite)
+#undef isfinite_
+#undef isfinite
+#endif
+
+#include "param/complex.h"
+#include "param/matrix.h"
+
+#if defined(SWIGRUBY) && defined(isfinite_)
+#undef isfinite_
+#define isfinite(x) finite(x)
+#endif
+
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+#include <atomic>
+template <class T>
+template <class U>
+struct Array2D_Dense<T>::property_t<T, U> {
+  typedef std::atomic<int> ref_cnt_t;
+};
+#endif
+
+
+#include "param/signal.h"
+
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+#include <atomic>
+#endif
+template <class T>
+struct Signal_SideLoaded<T, std::vector<T> > {
+  typedef Signal_SideLoaded<T, std::vector<T> > self_t;
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+  typedef std::atomic<int> ref_count_t;
+#else
+  typedef int ref_count_t;
+#endif
+  ref_count_t ref_count; // keep ref_count to correspond to the same instance
+  Signal_SideLoaded() : ref_count(0) {}
+  Signal_SideLoaded(const self_t &another) : ref_count(0) {}
+  self_t &operator=(const self_t &another){return *this;}
+};
+
+
 typedef double tick_t;
 
 

@@ -8,7 +8,6 @@
 #endif
 
 #include "navigation/GPS.h"
-#include "param/signal.h"
 %}
 
 %include std_common.i
@@ -17,7 +16,10 @@
 %feature("autodoc", "1");
 
 %import "SylphideMath.i"
+%fragment("SylphideMath.i");
+
 %import "Signal.i"
+%fragment("Signal.i");
 
 %init %{
 #ifdef HAVE_RB_EXT_RACTOR_SAFE
