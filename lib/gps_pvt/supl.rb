@@ -17,15 +17,29 @@ class SUPL_Client
       :debug => 0,
       :protocol => [:lpp, :rrlp],
       :req_data => [:ephemeris], # :almanac
+      :timeout => 60, # [sec]
     }.merge(opts)
   end
 
   def get_assisted_data
     begin
       @socket = TCPSocket::new(@host, @opts[:port])
-      if @opts[:port] == 7275 then
+      if @opts.include?(:ssl) ? @opts[:ssl] : (@opts[:port] == 7275) then
         @socket = OpenSSL::SSL::SSLSocket::new(@socket)
         @socket.connect
+      end
+      if timeout = @opts[:timeout] then
+        @socket.define_singleton_method(:read){|bytes|
+          buf = String::new
+          while (rem = (bytes - buf.size)) > 0
+            begin
+              buf << read_nonblock(rem)
+            rescue IO::WaitReadable
+              break unless IO.select([self], nil, nil, timeout)
+            end
+          end
+          buf
+        }
       end
       send_supl_start
       recv_supl_response
