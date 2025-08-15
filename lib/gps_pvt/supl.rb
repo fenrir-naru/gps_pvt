@@ -3,6 +3,7 @@ require 'gps_pvt/GPS' # in case GPS.so is generated under ext/gps_pvt
 
 require 'socket'
 require 'openssl'
+require 'resolv'
 
 module GPS_PVT
 class SUPL_Client
@@ -23,24 +24,24 @@ class SUPL_Client
 
   def get_assisted_data
     begin
-      @socket = TCPSocket::new(@host, @opts[:port])
+      timeout = @opts[:timeout]
+      host = timeout ? Resolv::getaddress(@host).to_s : @host  
+      @socket = TCPSocket::new(host, @opts[:port])
       if @opts.include?(:ssl) ? @opts[:ssl] : (@opts[:port] == 7275) then
         @socket = OpenSSL::SSL::SSLSocket::new(@socket)
         @socket.connect
       end
-      if timeout = @opts[:timeout] then
-        @socket.define_singleton_method(:read){|bytes|
-          buf = String::new
-          while (rem = (bytes - buf.size)) > 0
-            begin
-              buf << read_nonblock(rem)
-            rescue IO::WaitReadable
-              break unless IO.select([self], nil, nil, timeout)
-            end
+      @socket.define_singleton_method(:read){|bytes|
+        buf = String::new
+        while (rem = (bytes - buf.size)) > 0
+          begin
+            buf << read_nonblock(rem)
+          rescue IO::WaitReadable
+            break unless IO.select([self], nil, nil, timeout)
           end
-          buf
-        }
-      end
+        end
+        buf
+      } if timeout
       send_supl_start
       recv_supl_response
       send_supl_pos_init

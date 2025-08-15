@@ -4,8 +4,6 @@ require 'rspec'
 
 require 'gps_pvt'
 
-require 'resolv-replace' # for timeout
-
 RSpec::describe GPS_PVT::Receiver do
   let(:src){{
     :SEM => URI::parse(
