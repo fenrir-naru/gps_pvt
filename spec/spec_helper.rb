@@ -25,3 +25,7 @@ class Hash
   def compact; select{|k, v| v}; end
   def compact!; select!{|k, v| v}; end
 end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
+
+class Ractor
+  def take; value; end
+end if GPS_PVT::version_compare(RUBY_VERSION, "3.5.0") >= 0
