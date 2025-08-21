@@ -1,4 +1,5 @@
 require "mkmf"
+require 'stringio'
 
 extconf_dir = File::dirname(__FILE__)
 
@@ -66,14 +67,19 @@ Pathname::glob(File::join(extconf_dir, "**/")){|dir|
     # rename Makefile to Makefile.#{mod_name}
     define_method(:open){|*args, &b|
       args[0] += ".#{mod_path.to_s.gsub('/', '.')}" if (args[0] && (args[0] == "Makefile"))
-      open_orig(*args, &b)
+      res = StringIO::new(&b)
+      res.define_singleton_method(:close){
+        open_orig(*args){|io|
+          rewind
+          io.write readlines.collect{|line|
+            line.sub(/^target_prefix = /){"target_prefix ?= /gps_pvt\noverride target_prefix := $(target_prefix)"}
+          }.join
+        }
+      }
+      res
     }
   }
-  create_makefile(mod_path.to_s){|conf|
-    conf.collect!{|lines|
-      lines.sub(/^target_prefix = /){"target_prefix ?= /gps_pvt\noverride target_prefix := $(target_prefix)"}
-    }
-  }
+  create_makefile(mod_path.to_s)
 
   cfg_recovery.each{|k, v| eval("$#{k}").replace(v)}
 }
