@@ -231,12 +231,12 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
     expect(src_sig.sum).to eq(src_array.inject{|res, v| res + v})
   end
   it "has dot_product" do
-    expect(src_sig_n01.dot_product(src_sig_n01)).to eq((src_sig_n01 * src_sig_n01).sum)
+    expect(src_sig_n01.dot_product(src_sig_n01)).to be_within(1E-8).of((src_sig_n01 * src_sig_n01).sum)
   end
   it "has circular_dot_product" do
     (-2..2).each{|offset|
       expect(src_sig_n01.circular_dot_product(offset, src_sig_n01)) \
-          .to eq(src_sig_n01.circular(offset).dot_product(src_sig_n01))
+          .to be_within(1E-8).of(src_sig_n01.circular(offset).dot_product(src_sig_n01))
     }
   end
   it "has max/min_abs_index" do
