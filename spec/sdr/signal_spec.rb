@@ -3,7 +3,7 @@
 require 'rspec'
 require 'tempfile'
 
-require 'gps_pvt/sdr/Signal.so'
+require 'gps_pvt/sdr/Signal'
 
 (GPS_PVT::SDR::Signal.constants - [:GC_VALUE]).each{|k|
   GPS_PVT::SDR::Signal.const_get(k).instance_eval{
@@ -266,12 +266,13 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
     expect((src_sig.fft.ifft - src_sig).abs.all?{|v| v < 1E-8}).to be(true)
   end
   it "works correctly with Ractor" do
+    #skip "Ractor bug?" if RUBY_VERSION =~ /^3\.0/
     expect{
       src_sig_shareable = src_sig.to_shareable
       expect(src_sig_shareable.to_shareable).to be(src_sig_shareable) # return self at multiple calls
       rac = Ractor::new{receive.size}
       rac.send(src_sig_shareable)
-      expect(RUBY_VERSION =~ /^3\.5/ ? rac.value : rac.take).to eq(src_sig.size)
+      expect(rac.take).to eq(src_sig.size)
     }.not_to raise_error
   end if defined?(Ractor)
 end
