@@ -31,12 +31,20 @@ class Ractor
 end if GPS_PVT::version_compare(RUBY_VERSION, "3.5.0") >= 0
 
 if !defined?(Ractor) then
+elsif (GPS_PVT::version_compare(RUBY_VERSION, "3.0") >= 0) && \
+    (GPS_PVT::version_compare(RUBY_VERSION, "3.1") < 0) then
+  Ractor = Class::new(Ractor){
+    require 'rspec'
+    def self.new(*args, &b)
+      Class.new.extend(RSpec::Core::Pending).skip("Ractor bug?")
+    end
+  }
 elsif (/(?:mingw32|mingw-ucrt)$/ =~ RUBY_PLATFORM) then
   Ractor = Class::new(Ractor){
     require 'timeout'
     def take; Timeout::timeout(30){super}; end
   }
-end
+end 
 
 class Tempfile
   class << self
@@ -47,3 +55,17 @@ class Tempfile
     end
   end
 end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
+
+trap 'INT' do
+  puts "rspec pid: #{Process.pid}"
+  Thread.list.tap{|threads|
+    puts
+    puts "=" * 80
+    puts "Received signal; printing all #{threads.count} thread backtraces."
+  }.each{|thr|
+    puts
+    puts "#{thr == Thread.main ? "Main thread" : thr.inspect} backtrace: "
+    puts thr.backtrace.join("\n")
+  }
+  puts "=" * 80
+end
