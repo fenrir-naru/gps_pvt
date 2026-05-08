@@ -67,6 +67,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "racc"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "RubyInline"
+  spec.add_development_dependency "ruby-fftw3"
   spec.add_development_dependency "github_changelog_generator" unless ((Gem::Platform.local.os =~ /mingw/) && (GPS_PVT::version_compare(RUBY_VERSION, "3.1") >= 0))
 
   # For more information and examples about making a new gem, checkout our
