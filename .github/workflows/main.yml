@@ -17,12 +17,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+    - name: before_setup
+      shell: bash
+      run: |
+        case ${{ matrix.os }} in
+        ubuntu-latest)
+          sudo apt-get update && sudo apt-get install -yq libfftw3-dev
+          ;;
+        windows-latest)
+          ;;
+        esac
     - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby-pkgs@v1
       id: ruby-inst
+      env:
+        BUNDLE_BUILD__NARRAY: --with-cflags=-std=c17
+        BUNDLE_BUILD__RUBY___FFTW3: --with-dldflags=-l:narray.so
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+        mingw: _upgrade_ fftw
     - name: Apply patch for github actions
       shell: bash
       run: |
@@ -59,3 +73,11 @@ jobs:
 #      env:
 #        NTRIP_CASTER: "rtk2go.com:2101"
 #        NTRIP_AUTH: "test@example.com:none"
+    - name: Upload artifact for error reproduction when failure
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: gem-build-logs.${{ matrix.os }}_${{ matrix.ruby }}
+        path: |
+          ${{ github.workspace }}/vendor/bundle/ruby/**/gems/
+          ${{ github.workspace }}/vendor/bundle/ruby/**/mkmf.log
