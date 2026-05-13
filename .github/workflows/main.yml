@@ -25,6 +25,9 @@ jobs:
           sudo apt-get update && sudo apt-get install -yq libfftw3-dev
           ;;
         windows-latest)
+          vcpkg install fftw3 --triplet=x64-mingw-static
+          # find $(cygpath -u "$VCPKG_INSTALLATION_ROOT")/packages -name "*fftw3*"
+          echo "BUNDLE_BUILD__RUBY___FFTW3=\"--with-fftw3-dir=$(cygpath -m ${VCPKG_INSTALLATION_ROOT})/packages/fftw3_x64-mingw-static\"" >> $GITHUB_ENV
           ;;
         esac
     - name: Set up Ruby
@@ -32,11 +35,10 @@ jobs:
       id: ruby-inst
       env:
         BUNDLE_BUILD__NARRAY: --with-cflags=-std=c17
-        BUNDLE_BUILD__RUBY___FFTW3: --with-dldflags=-l:narray.so
+        BUNDLE_BUILD__RUBY___FFTW3: --with-dldflags=-l:narray.so ${{ env.BUNDLE_BUILD__RUBY___FFTW3 }}
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-        mingw: _upgrade_ fftw
     - name: Apply patch for github actions
       shell: bash
       run: |
