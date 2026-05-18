@@ -11,4 +11,5 @@ end
 
 group :test do
   gem "ruby-fftw3"
+  gem "numo-fftw", :git => 'https://github.com/ruby-numo/numo-fftw.git'
 end

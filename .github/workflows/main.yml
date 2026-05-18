@@ -28,14 +28,17 @@ jobs:
           vcpkg install fftw3 --triplet=x64-mingw-static
           # find $(cygpath -u "$VCPKG_INSTALLATION_ROOT")/packages -name "*fftw3*"
           echo "BUNDLE_BUILD__RUBY___FFTW3=\"--with-fftw3-dir=$(cygpath -m ${VCPKG_INSTALLATION_ROOT})/packages/fftw3_x64-mingw-static\"" >> $GITHUB_ENV
+          echo "BUNDLE_BUILD__NUMO___FFTW=\"--with-fftw-dir=$(cygpath -m ${VCPKG_INSTALLATION_ROOT})/packages/fftw3_x64-mingw-static\"" >> $GITHUB_ENV
           ;;
         esac
     - name: Set up Ruby
-      uses: ruby/setup-ruby-pkgs@v1
+      uses: ruby/setup-ruby@v1
       id: ruby-inst
       env:
         BUNDLE_BUILD__NARRAY: --with-cflags=-std=c17
         BUNDLE_BUILD__RUBY___FFTW3: --with-dldflags=-l:narray.so ${{ env.BUNDLE_BUILD__RUBY___FFTW3 }}
+        BUNDLE_BUILD__NUMO___NARRAY: --with-cflags=-std=c17
+        BUNDLE_BUILD__NUMO___FFTW: ${{ env.BUNDLE_BUILD__NUMO___FFTW }}
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
