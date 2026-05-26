@@ -15,9 +15,20 @@ jobs:
             ruby: 2.3
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      actions: read
+
     steps:
     - uses: actions/checkout@v6
+    - id: vcpkg-cache
+      if: matrix.os == 'windows-latest'
+      uses: TAServers/vcpkg-cache@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: before_setup
+      env:
+        VCPKG_FEATURE_FLAGS: "binarycaching"
+        VCPKG_BINARY_SOURCES: "clear;files,${{ steps.vcpkg-cache.outputs.path }},readwrite"
       shell: bash
       run: |
         case ${{ matrix.os }} in
