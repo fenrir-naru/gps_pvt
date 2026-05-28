@@ -140,44 +140,42 @@ RSpec::describe FFT do
     }
   }
 
-  begin
-    require 'narray'
-    require 'numru/fftw3'
-  rescue LoadError
-  end
-  
   context 'in comparison with NumRu::FFTW3' do
-    let(:another_lib){Class::new{class << self
-      def fft(values)
-        NumRu::FFTW3::fft(NArray[*values], NumRu::FFTW3::FORWARD).to_a
-      end
-      def ifft(values)
-        # FFTW computes an unnormalized transform: computing a forward followed
-        # by a backward transform (or vice versa) will result in the original data
-        # multiplied by the size of the transform (the product of the dimensions)
-        (NumRu::FFTW3::fft(NArray[*values], NumRu::FFTW3::BACKWARD) / values.size).to_a
-      end
-    end}}
+    lib = proc{
+      require 'narray'
+      require 'numru/fftw3'
+      Class::new{class << self
+        def fft(values)
+          NumRu::FFTW3::fft(NArray[*values], NumRu::FFTW3::FORWARD).to_a
+        end
+        def ifft(values)
+          # FFTW computes an unnormalized transform: computing a forward followed
+          # by a backward transform (or vice versa) will result in the original data
+          # multiplied by the size of the transform (the product of the dimensions)
+          (NumRu::FFTW3::fft(NArray[*values], NumRu::FFTW3::BACKWARD) / values.size).to_a
+        end
+      end}
+    }.call
+    let(:another_lib){lib}
     include_examples :comparison
-  end if defined?(NumRu::FFTW3)
-  
-  begin
-    require 'numo/narray'
-    require 'numo/fftw'
-  rescue LoadError
-  end
-  
+  end if Gem::Specification.find_all_by_name('ruby-fftw3').any?
+
   context 'in comparison with Numo::FFTW' do
-    let(:another_lib){Class::new{class << self
-      def fft(values)
-        Numo::FFTW::dft(Numo::NArray[*values], -1).to_a
-      end
-      def ifft(values)
-        (Numo::FFTW::dft(Numo::NArray[*values], 1) / values.size).to_a
-      end
-    end}}
+    lib = proc{
+      require 'numo/narray'
+      require 'numo/fftw'
+      Class::new{class << self
+        def fft(values)
+          Numo::FFTW::dft(Numo::NArray[*values], -1).to_a
+        end
+        def ifft(values)
+          (Numo::FFTW::dft(Numo::NArray[*values], 1) / values.size).to_a
+        end
+      end}
+    }.call
+    let(:another_lib){lib}
     include_examples :comparison
-  end if defined?(Numo::FFTW)
+  end if Gem::Specification.find_all_by_name('numo-fftw').any?
 
   it "has the same results by using DFT and FFT in forward and backward transformations" do
     src[0..1].each{|values|
