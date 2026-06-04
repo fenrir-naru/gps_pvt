@@ -101,6 +101,33 @@ static VALUE #{func}(int argc, VALUE *argv, VALUE self) {
   }
 end
 
+def generate_benchmark(str_eval)
+  return eval(str_eval) unless /(?:mingw32|mingw-ucrt)$/ =~ RUBY_PLATFORM
+
+  # need to run with bundler?
+  # use ENV["BUNDLE_BIN_PATH"] or `ps -p #{$$} -o command=`?
+  require 'open3'
+  stdin, stdout, wait_thr = Open3::popen2(RbConfig.ruby, '-e', 'eval($stdin.read)')
+  stdin << <<-__SCRIPT__
+    $stdout.sync = true
+    require "drb"
+    b = binding
+    DRb.start_service(nil, Class::new{
+      define_singleton_method(:run){|str| eval(str, b)}
+    })
+    puts DRb.uri
+    DRb.thread.join
+  __SCRIPT__
+  stdin.close
+  pid = wait_thr.pid
+  Process.detach(pid)
+  kill_proc = proc{Process.kill(:KILL, pid)}
+  require 'drb'
+  DRbObject.new_with_uri(stdout.gets.chomp).run(str_eval).tap{|x|
+    ObjectSpace.define_finalizer(x, kill_proc)
+  }
+end
+
 RSpec::describe FFT do
   let(:target){described_class}
   let(:src){
@@ -141,7 +168,7 @@ RSpec::describe FFT do
   }
 
   context 'in comparison with NumRu::FFTW3' do
-    lib = proc{
+    lib = generate_benchmark(%q{
       require 'narray'
       require 'numru/fftw3'
       Class::new{class << self
@@ -155,13 +182,13 @@ RSpec::describe FFT do
           (NumRu::FFTW3::fft(NArray[*values], NumRu::FFTW3::BACKWARD) / values.size).to_a
         end
       end}
-    }.call
+    })
     let(:another_lib){lib}
     include_examples :comparison
   end if Gem::Specification.find_all_by_name('ruby-fftw3').any?
 
   context 'in comparison with Numo::FFTW' do
-    lib = proc{
+    lib = generate_benchmark(%q{
       require 'numo/narray'
       require 'numo/fftw'
       Class::new{class << self
@@ -172,7 +199,7 @@ RSpec::describe FFT do
           (Numo::FFTW::dft(Numo::NArray[*values], 1) / values.size).to_a
         end
       end}
-    }.call
+    })
     let(:another_lib){lib}
     include_examples :comparison
   end if Gem::Specification.find_all_by_name('numo-fftw').any?
