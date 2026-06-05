@@ -27,5 +27,13 @@ class Hash
 end if GPS_PVT::version_compare(RUBY_VERSION, "2.4.0") < 0
 
 class Ractor
-  def take; value; end
+  alias_method :take, :value
 end if GPS_PVT::version_compare(RUBY_VERSION, "3.5.0") >= 0
+
+if !defined?(Ractor) then
+elsif (/(?:mingw32|mingw-ucrt)$/ =~ RUBY_PLATFORM) then
+  Ractor = Class::new(Ractor){
+    require 'timeout'
+    def take; Timeout::timeout(30){super}; end
+  }
+end
