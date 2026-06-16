@@ -4500,6 +4500,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Real.abs2
+
+  call-seq:
+    abs2 -> Real
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal< double > *arg1 = (Signal< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< double > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< double > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< double > * >(argp1);
+  result = ((Signal< double > const *)arg1)->abs2();
+  vresult = SWIG_NewPointerObj((new Signal< double >::sig_r_t(static_cast< const Signal< double >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Real.sum
 
   call-seq:
@@ -7871,6 +7904,39 @@ _wrap_Complex_abs(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
   result = ((Signal< Complex< double > > const *)arg1)->abs();
+  vresult = SWIG_NewPointerObj((new Signal< Complex< double > >::sig_r_t(static_cast< const Signal< Complex< double > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex.abs2
+
+  call-seq:
+    abs2 -> Real
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal< Complex< double > > *arg1 = (Signal< Complex< double > > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< double > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_ComplexT_double_t_std__vectorT_ComplexT_double_t_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< Complex< double > > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< Complex< double > > * >(argp1);
+  result = ((Signal< Complex< double > > const *)arg1)->abs2();
   vresult = SWIG_NewPointerObj((new Signal< Complex< double > >::sig_r_t(static_cast< const Signal< Complex< double > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -11579,6 +11645,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Int.abs2
+
+  call-seq:
+    abs2 -> Int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal< int > *arg1 = (Signal< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< int > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal< int > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal< int > * >(argp1);
+  result = ((Signal< int > const *)arg1)->abs2();
+  vresult = SWIG_NewPointerObj((new Signal< int >::sig_r_t(static_cast< const Signal< int >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Int.sum
 
   call-seq:
@@ -13880,6 +13979,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Real_Partial.abs2
+
+  call-seq:
+    abs2 -> Real
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Real_Partial_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< double > *arg1 = (Signal_Partial< double > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< double > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_double_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< double > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< double > * >(argp1);
+  result = ((Signal_Partial< double > const *)arg1)->abs2();
+  vresult = SWIG_NewPointerObj((new Signal< double,std::vector< double > >::sig_r_t(static_cast< const Signal< double,std::vector< double > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Real_Partial.sum
 
   call-seq:
@@ -15429,6 +15561,39 @@ _wrap_Complex_Partial_abs(int argc, VALUE *argv, VALUE self) {
   }
   arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
   result = ((Signal_Partial< Complex< double > > const *)arg1)->abs();
+  vresult = SWIG_NewPointerObj((new Signal< Complex< double >,std::vector< Complex< double > > >::sig_r_t(static_cast< const Signal< Complex< double >,std::vector< Complex< double > > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
+  Document-method: GPS_PVT::SDR::Signal::Complex_Partial.abs2
+
+  call-seq:
+    abs2 -> Real
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Complex_Partial_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< Complex< double > > *arg1 = (Signal_Partial< Complex< double > > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< double > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_ComplexT_double_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< Complex< double > > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< Complex< double > > * >(argp1);
+  result = ((Signal_Partial< Complex< double > > const *)arg1)->abs2();
   vresult = SWIG_NewPointerObj((new Signal< Complex< double >,std::vector< Complex< double > > >::sig_r_t(static_cast< const Signal< Complex< double >,std::vector< Complex< double > > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_double_std__vectorT_double_t_t, SWIG_POINTER_OWN |  0 );
   return vresult;
 fail:
@@ -17241,6 +17406,39 @@ fail:
 
 
 /*
+  Document-method: GPS_PVT::SDR::Signal::Int_Partial.abs2
+
+  call-seq:
+    abs2 -> Int
+
+An instance method.
+
+*/
+SWIGINTERN VALUE
+_wrap_Int_Partial_abs2(int argc, VALUE *argv, VALUE self) {
+  Signal_Partial< int > *arg1 = (Signal_Partial< int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  SwigValueWrapper< Signal< int > > result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_Signal_PartialT_int_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "Signal_Partial< int > const *","abs2", 1, self )); 
+  }
+  arg1 = reinterpret_cast< Signal_Partial< int > * >(argp1);
+  result = ((Signal_Partial< int > const *)arg1)->abs2();
+  vresult = SWIG_NewPointerObj((new Signal< int,std::vector< int > >::sig_r_t(static_cast< const Signal< int,std::vector< int > >::sig_r_t& >(result))), SWIGTYPE_p_SignalT_int_std__vectorT_int_t_t, SWIG_POINTER_OWN |  0 );
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+/*
   Document-method: GPS_PVT::SDR::Signal::Int_Partial.sum
 
   call-seq:
@@ -18451,6 +18649,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal.klass, "imaginary", VALUEFUNC(_wrap_Real_imaginary), -1);
   rb_define_method(SwigClassReal.klass, "conjugate", VALUEFUNC(_wrap_Real_conjugate), -1);
   rb_define_method(SwigClassReal.klass, "abs", VALUEFUNC(_wrap_Real_abs), -1);
+  rb_define_method(SwigClassReal.klass, "abs2", VALUEFUNC(_wrap_Real_abs2), -1);
   rb_define_method(SwigClassReal.klass, "sum", VALUEFUNC(_wrap_Real_sum), -1);
   rb_define_method(SwigClassReal.klass, "ft", VALUEFUNC(_wrap_Real_ft), -1);
   rb_define_method(SwigClassReal.klass, "fft", VALUEFUNC(_wrap_Real_fft), -1);
@@ -18497,6 +18696,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex.klass, "imaginary", VALUEFUNC(_wrap_Complex_imaginary), -1);
   rb_define_method(SwigClassComplex.klass, "conjugate", VALUEFUNC(_wrap_Complex_conjugate), -1);
   rb_define_method(SwigClassComplex.klass, "abs", VALUEFUNC(_wrap_Complex_abs), -1);
+  rb_define_method(SwigClassComplex.klass, "abs2", VALUEFUNC(_wrap_Complex_abs2), -1);
   rb_define_method(SwigClassComplex.klass, "sum", VALUEFUNC(_wrap_Complex_sum), -1);
   rb_define_method(SwigClassComplex.klass, "ft", VALUEFUNC(_wrap_Complex_ft), -1);
   rb_define_method(SwigClassComplex.klass, "fft", VALUEFUNC(_wrap_Complex_fft), -1);
@@ -18538,6 +18738,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt.klass, "circular", VALUEFUNC(_wrap_Int_circular), -1);
   rb_define_method(SwigClassInt.klass, "slice", VALUEFUNC(_wrap_Int_slice), -1);
   rb_define_method(SwigClassInt.klass, "abs", VALUEFUNC(_wrap_Int_abs), -1);
+  rb_define_method(SwigClassInt.klass, "abs2", VALUEFUNC(_wrap_Int_abs2), -1);
   rb_define_method(SwigClassInt.klass, "sum", VALUEFUNC(_wrap_Int_sum), -1);
   rb_define_method(SwigClassInt.klass, "replace!", VALUEFUNC(_wrap_Int_replaceN___), -1);
   rb_define_method(SwigClassInt.klass, "fill!", VALUEFUNC(_wrap_Int_fillN___), -1);
@@ -18577,6 +18778,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassReal_Partial.klass, "imaginary", VALUEFUNC(_wrap_Real_Partial_imaginary), -1);
   rb_define_method(SwigClassReal_Partial.klass, "conjugate", VALUEFUNC(_wrap_Real_Partial_conjugate), -1);
   rb_define_method(SwigClassReal_Partial.klass, "abs", VALUEFUNC(_wrap_Real_Partial_abs), -1);
+  rb_define_method(SwigClassReal_Partial.klass, "abs2", VALUEFUNC(_wrap_Real_Partial_abs2), -1);
   rb_define_method(SwigClassReal_Partial.klass, "sum", VALUEFUNC(_wrap_Real_Partial_sum), -1);
   rb_define_method(SwigClassReal_Partial.klass, "ft", VALUEFUNC(_wrap_Real_Partial_ft), -1);
   rb_define_method(SwigClassReal_Partial.klass, "ift", VALUEFUNC(_wrap_Real_Partial_ift), -1);
@@ -18609,6 +18811,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassComplex_Partial.klass, "imaginary", VALUEFUNC(_wrap_Complex_Partial_imaginary), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "conjugate", VALUEFUNC(_wrap_Complex_Partial_conjugate), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "abs", VALUEFUNC(_wrap_Complex_Partial_abs), -1);
+  rb_define_method(SwigClassComplex_Partial.klass, "abs2", VALUEFUNC(_wrap_Complex_Partial_abs2), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "sum", VALUEFUNC(_wrap_Complex_Partial_sum), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "ft", VALUEFUNC(_wrap_Complex_Partial_ft), -1);
   rb_define_method(SwigClassComplex_Partial.klass, "ift", VALUEFUNC(_wrap_Complex_Partial_ift), -1);
@@ -18638,6 +18841,7 @@ SWIGEXPORT void Init_Signal(void) {
   rb_define_method(SwigClassInt_Partial.klass, "-@", VALUEFUNC(_wrap_Int_Partial___neg__), -1);
   rb_define_method(SwigClassInt_Partial.klass, "slice", VALUEFUNC(_wrap_Int_Partial_slice), -1);
   rb_define_method(SwigClassInt_Partial.klass, "abs", VALUEFUNC(_wrap_Int_Partial_abs), -1);
+  rb_define_method(SwigClassInt_Partial.klass, "abs2", VALUEFUNC(_wrap_Int_Partial_abs2), -1);
   rb_define_method(SwigClassInt_Partial.klass, "sum", VALUEFUNC(_wrap_Int_Partial_sum), -1);
   rb_define_method(SwigClassInt_Partial.klass, "copy", VALUEFUNC(_wrap_Int_Partial_copy), -1);
   rb_define_method(SwigClassInt_Partial.klass, "[]", VALUEFUNC(_wrap_Int_Partial___getitem__), -1);

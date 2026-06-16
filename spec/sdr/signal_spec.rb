@@ -227,6 +227,9 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
   it "has abs" do
     expect(src_sig.abs.zip(src_array.collect{|v| v.abs}).all?{|a, b| (a - b).abs < 1E-8}).to be(true)
   end
+  it "has abs2" do
+    expect(src_sig.abs2.zip(src_array.collect{|v| v.abs2}).all?{|a, b| (a - b).abs < 1E-8}).to be(true)
+  end
   it "has sum" do
     expect(src_sig.sum).to eq(src_array.inject{|res, v| res + v})
   end

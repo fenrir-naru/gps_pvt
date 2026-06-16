@@ -289,6 +289,7 @@ struct Signal_Partial {
   typename Signal<T>::sig_r_t imaginary() const;
   typename Signal<T>::sig_t conjugate() const;
   typename Signal<T>::sig_r_t abs() const;
+  typename Signal<T>::sig_r_t abs2() const;
   T sum() const;
   typename Signal<T>::complex_t ft(const typename Signal<T>::real_t &k) const;
   typename Signal<T>::complex_t ift(const typename Signal<T>::real_t &n) const;

@@ -386,6 +386,18 @@ public:
         op_t());
     return sig_r_t(buf);
   }
+  sig_r_t abs2() const {
+    struct op_t {
+      real_t operator()(const real_t &v) const {return v * v;}
+      real_t operator()(const complex_t &v) const {return v.abs2();}
+    };
+    typename sig_r_t::buf_t buf(samples.size());
+    std::transform(
+        samples.begin(), samples.end(),
+        buf.begin(),
+        op_t());
+    return sig_r_t(buf);
+  }
   value_t sum() const {
     return std::accumulate(samples.begin(), samples.end(), value_t(0));
   }
@@ -414,9 +426,11 @@ public:
   }
 protected:
   struct cmp_abs_t {
-    bool operator()(const real_t &v1, const real_t &v2) const {return v1 < v2;}
+    bool operator()(const real_t &v1, const real_t &v2) const {
+      return std::abs(v1) < std::abs(v2);
+    }
     bool operator()(const complex_t &v1, const complex_t &v2) const {
-      return v1.abs() < v2.abs();
+      return v1.abs2() < v2.abs2();
     }
   };
 public:
