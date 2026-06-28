@@ -338,66 +338,40 @@ public:
   }
 
 protected:
-  sig_r_t pick(const bool &is_real) const {
+  template <class Operator>
+  sig_r_t op_real(Operator op) const {
     typename sig_r_t::buf_t buf(samples.size());
-    if(is_real){
-      struct op_t {
-        real_t operator()(const real_t &v) const {return v;}
-        real_t operator()(const complex_t &v) const {return v.real();}
-      };
-      std::transform(
-          samples.begin(), samples.end(),
-          buf.begin(), op_t());
-    }else{
-      struct op_t {
-        real_t operator()(const real_t &v) const {return real_t(0);}
-        real_t operator()(const complex_t &v) const {return v.imaginary();}
-      };
-      std::transform(
-          samples.begin(), samples.end(),
-          buf.begin(), op_t());
-    }
+    std::transform(samples.begin(), samples.end(), buf.begin(), op);
     return sig_r_t(buf);
   }
-public:
-  sig_r_t real() const {return pick(true);}
-  sig_r_t imaginary() const {return pick(false);}
-  sig_t conjugate() const {
-    struct op_t {
+  struct op_property_t {
+    struct r_t {
+      real_t operator()(const real_t &v) const {return v;}
+      real_t operator()(const complex_t &v) const {return v.real();}
+    };
+    struct i_t {
+      real_t operator()(const real_t &v) const {return real_t(0);}
+      real_t operator()(const complex_t &v) const {return v.imaginary();}
+    };
+    struct conjugate_t {
       real_t operator()(const real_t &v) const {return v;}
       complex_t operator()(const complex_t &v) const {return v.conjugate();}
     };
-    typename sig_t::buf_t buf(samples.size());
-    std::transform(
-        samples.begin(), samples.end(),
-        buf.begin(),
-        op_t());
-    return sig_t(buf);
-  }
-  sig_r_t abs() const {
-    struct op_t {
+    struct abs_t {
       real_t operator()(const real_t &v) const {return std::abs(v);}
       real_t operator()(const complex_t &v) const {return v.abs();}
     };
-    typename sig_r_t::buf_t buf(samples.size());
-    std::transform(
-        samples.begin(), samples.end(),
-        buf.begin(),
-        op_t());
-    return sig_r_t(buf);
-  }
-  sig_r_t abs2() const {
-    struct op_t {
+    struct abs2_t {
       real_t operator()(const real_t &v) const {return v * v;}
       real_t operator()(const complex_t &v) const {return v.abs2();}
     };
-    typename sig_r_t::buf_t buf(samples.size());
-    std::transform(
-        samples.begin(), samples.end(),
-        buf.begin(),
-        op_t());
-    return sig_r_t(buf);
-  }
+  };
+public:
+  sig_r_t real() const {return op_real(typename op_property_t::r_t());}
+  sig_r_t imaginary() const {return op_real(typename op_property_t::i_t());}
+  sig_t conjugate() const {return op_scalar(typename op_property_t::conjugate_t());}
+  sig_r_t abs() const {return op_real(typename op_property_t::abs_t());}
+  sig_r_t abs2() const {return op_real(typename op_property_t::abs2_t());}
   value_t sum() const {
     return std::accumulate(samples.begin(), samples.end(), value_t(0));
   }
