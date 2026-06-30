@@ -353,7 +353,7 @@ protected:
       real_t operator()(const real_t &v) const {return real_t(0);}
       real_t operator()(const complex_t &v) const {return v.imaginary();}
     };
-    struct conjugate_t {
+    struct conj_t {
       real_t operator()(const real_t &v) const {return v;}
       complex_t operator()(const complex_t &v) const {return v.conjugate();}
     };
@@ -369,12 +369,43 @@ protected:
 public:
   sig_r_t real() const {return op_real(typename op_property_t::r_t());}
   sig_r_t imaginary() const {return op_real(typename op_property_t::i_t());}
-  sig_t conjugate() const {return op_scalar(typename op_property_t::conjugate_t());}
+  sig_t conjugate() const {return op_scalar(typename op_property_t::conj_t());}
   sig_r_t abs() const {return op_real(typename op_property_t::abs_t());}
   sig_r_t abs2() const {return op_real(typename op_property_t::abs2_t());}
   value_t sum() const {
     return std::accumulate(samples.begin(), samples.end(), value_t(0));
   }
+protected:
+  template <class OperatorT>
+  struct sum_t {
+    OperatorT op;
+    template <class T2>
+    T2 operator()(const T2 &acc, const value_t &v) const {
+      return acc + op(v);
+    }
+  };
+public:
+  real_t sum_real() const {
+    return std::accumulate(samples.begin(), samples.end(), real_t(0),
+        sum_t<typename op_property_t::r_t>());
+  }
+  real_t sum_imaginary() const {
+    return std::accumulate(samples.begin(), samples.end(), real_t(0),
+        sum_t<typename op_property_t::i_t>());
+  }
+  value_t sum_conjugate() const {
+    return std::accumulate(samples.begin(), samples.end(), value_t(0),
+        sum_t<typename op_property_t::conj_t>());
+  }
+  real_t sum_abs() const {
+    return std::accumulate(samples.begin(), samples.end(), real_t(0),
+        sum_t<typename op_property_t::abs_t>());
+  }
+  real_t sum_abs2() const {
+    return std::accumulate(samples.begin(), samples.end(), real_t(0),
+        sum_t<typename op_property_t::abs2_t>());
+  }
+
   template <class T2, class BufferT2>
   value_t dot_product(const Signal<T2, BufferT2> &sig) const {
     return std::inner_product(

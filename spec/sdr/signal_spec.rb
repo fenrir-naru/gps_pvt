@@ -233,6 +233,12 @@ RSpec::shared_examples GPS_PVT::SDR::Signal do
   it "has sum" do
     expect(src_sig.sum).to eq(src_array.inject{|res, v| res + v})
   end
+  described_class.instance_methods.collect{|k| [k, $'.to_sym] if k.to_s =~ /^sum_/}.compact.each{|k, prop|
+    it "has sum_#{prop}" do
+      expect(src_sig.send(k)).to eq(src_sig.send(prop).sum)
+      #expect(src_sig.send(k)).to eq(src_array.inject(0){|res, v| res + v.send(prop)})
+    end
+  }
   it "has dot_product" do
     expect(src_sig_n01.dot_product(src_sig_n01)).to be_within(1E-8).of((src_sig_n01 * src_sig_n01).sum)
   end

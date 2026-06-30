@@ -291,6 +291,11 @@ struct Signal_Partial {
   typename Signal<T>::sig_r_t abs() const;
   typename Signal<T>::sig_r_t abs2() const;
   T sum() const;
+  typename Signal<T>::real_t sum_real() const;
+  typename Signal<T>::real_t sum_imaginary() const;
+  T sum_conjugate() const;
+  typename Signal<T>::real_t sum_abs() const;
+  typename Signal<T>::real_t sum_abs2() const;
   typename Signal<T>::complex_t ft(const typename Signal<T>::real_t &k) const;
   typename Signal<T>::complex_t ift(const typename Signal<T>::real_t &n) const;
   typename Signal<T>::sig_c_t fft() const; 
@@ -760,6 +765,9 @@ type_resolver(double, 1);
   %ignore real;
   %ignore imaginary;
   %ignore conjugate;
+  %ignore sum_real;
+  %ignore sum_imaginary;
+  %ignore sum_conjugate;
   %ignore ft(const real_t &k) const;
   Complex<double> ft(const double &k) const {
     return FFT_Generic<double>::ft($self->samples, k);
@@ -796,6 +804,9 @@ type_resolver(int, 0);
   %ignore real;
   %ignore imaginary;
   %ignore conjugate;
+  %ignore sum_real;
+  %ignore sum_imaginary;
+  %ignore sum_conjugate;
   %ignore ft(const typename Signal<int>::real_t &k) const;
   Complex<double> ft(const double &k) const {
     return FFT_Generic<double>::ft($self->samples.begin(), $self->samples.end(), k);
