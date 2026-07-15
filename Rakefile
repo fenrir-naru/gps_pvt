@@ -98,7 +98,8 @@ task :swig do
     Dir::chdir(swig_dir){
       Dir::glob("*.i"){|src|
         mod_name = File::basename(src, '.*')
-        out_dir = File::join(out_base_dir, mod_name)
+        out_dir_orig = File::join(out_base_dir, mod_name)
+        out_dir = "#{out_dir_orig}.new"
         sh "mkdir -p #{out_dir}"
         wrapper = File::join(out_dir, "#{mod_name}_wrap.cxx")
         sh [:make, :clean, wrapper,
@@ -112,6 +113,15 @@ task :swig do
           }
           io.rewind
           io.write(lines.join)
+        }
+        FileUtils.instance_eval{
+          wrapper_orig = File::join(out_dir_orig, "#{mod_name}_wrap.cxx")
+          if File::exist?(wrapper_orig) and cmp(wrapper, wrapper_orig) then
+            rm_rf(out_dir)
+          else
+            rm_rf(out_dir_orig)
+            mv(out_dir, out_dir_orig)
+          end
         }
       }
     }
