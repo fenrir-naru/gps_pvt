@@ -100,7 +100,10 @@ module Util
 
         Tempfile::open(File::basename($0, '.*')){|dst|
           dst.binmode
-          dst.write((compressed ? inflate(is_file ? src.path : src, compressed) : src).read)
+          dst.write((compressed ? inflate((case src
+              when File, TempFile; src.path
+              else; src
+              end), compressed) : src).read)
           dst.rewind
           dst.path
         }
